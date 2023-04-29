@@ -43,6 +43,14 @@ trait CodecOverview
    def isNotBusy: Boolean =
       true
    
+   /**
+    * 
+    * use one of the two base-class(es) in `java.io`,
+    * to tell whether this's a binary-fmt or text-fmt
+    * 
+    */
+   type Rd <: java.io.Closeable
+   
 }
 
 
