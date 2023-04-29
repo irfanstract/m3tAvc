@@ -71,6 +71,7 @@ trait CodecOverview
 trait CodecTemplateOps extends
 AnyRef 
 with CodecOverview 
+with CodecTplIsInstantiable
 { this1 =>
 
 } /* interface CodecTemplateOps */
