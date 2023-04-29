@@ -28,6 +28,7 @@ object  CodecOverview {
          case object IsUnspecified1
          IsUnspecified1
    }
+   def mv = Seq[IsUnspecified.type]()
 
 }
 trait CodecOverview 
@@ -74,6 +75,17 @@ with CodecOverview
 with CodecTplIsInstantiable
 { this1 =>
 
+   // /**
+   //  * check if matches the
+   //  *
+   //  * @param src 
+   //  */
+   // @`throws`[CodecTemplateOps.Mpr.MoreBytesPlease  ]("needs to buffer more bytes")
+   // @`throws`[CodecTemplateOps.Mpr.Mismatch         ]("clearly mismatch")
+   // def matchesPreRead(src: PreReadDataSrc): Instance
+
+   // export CodecOverview.IsUnspecified
+
 } /* interface CodecTemplateOps */
 object CodecTemplateOps
 {
@@ -98,6 +110,15 @@ object CodecTemplateOps
          B match {
             case (java.nio.ByteBuffer   | Byte  ) => java.io.InputStream
             case (java.nio.CharBuffer   | Char  ) => java.io.Reader
+         }
+
+      type Wr[B <: java.io.Closeable] <: (
+         AnyRef
+         & java.io.Closeable
+      ) = 
+         B match {
+            case (java.io.InputStream) => java.io.OutputStream
+            case (java.io.Reader     ) => java.io.Writer
          }
 
       type AsBuffered[B <: java.io.Closeable] <: (
@@ -145,6 +166,9 @@ AnyRef
 }
 object  CodecTplIsInstantiable
 {
+   
+   /* test */ 
+   summon[((CodecOverview) with CodecTplIsInstantiable { type Rd = java.io.InputStream })#ReadableBufferedSrc <:< java.io.BufferedInputStream ]
 
    /* test */ 
    summon[((CodecOverview) with CodecTplIsInstantiable { type Rd = java.io.Reader })#ReadableBufferedSrc <:< java.io.BufferedReader ]
@@ -153,6 +177,91 @@ object  CodecTplIsInstantiable
 
 
 
+// /**
+//  * 
+//  * instance constructed thru either way ; stateful
+//  * 
+//  */
+// trait CodecInstanceOps[+C <: CodecTemplateOps] extends 
+// AnyRef 
+// with java.io.Closeable
+// { this1 =>
+//
+//    val associatedCodec: C
+//
+//    export associatedCodec.mimeType
+//    export associatedCodec.fourCcName
+//
+//    export associatedCodec.mediaKind
+//
+//    override 
+//    def close(): Unit
+//
+//    def isNotBusy: Boolean =
+//       false
+//    export associatedCodec.{isNotBusy as isGloballyNotBusy}
+// 
+// }
+// object  CodecInstanceOps {
+// 
+//    /**
+//     * instance constructed with arguments `(ref: URI)`
+//     */
+//    trait FromUrl1 extends 
+//    AnyRef 
+//    with CodecInstanceOps[CodecTemplateOps]
+//    {
+//       //
+//    }
+// 
+// }
+
+// @annotation.experimental
+// def basicBufferedStreamDemux1(mimeType1: String) =
+//    object zcd extends BbsdZcdImpl(mimeType1 = mimeType1 : mimeType1.type)
+//    // ???
+//    // ???
+//    // // zcd.template : (CodecTemplateOps { val mediaKind: EMediaKind.Mix.type })
+//    // ???
+//    // ???
+//    zcd.template
+   
+// @annotation.experimental
+// lazy val zeroFrameDemux: (
+//    CodecTemplateOps { 
+//       val mediaKind: EMediaKind.Mix.type 
+//    }
+// ) =
+//    basicBufferedStreamDemux1(
+//       mimeType1 = "application/x-lavfzeroframedemux" ,
+//    )
+// 
+// sealed trait  BbsdZcdImpl(val mimeType1: String) 
+// { this1 =>
+//    
+//       object template extends CodecTemplateOps :
+// 
+//          final val mimeType: mimeType1.type = mimeType1
+//          export EMediaKind.{Mix as mediaKind}
+// 
+//          type Instance >: Instance1 <: Instance1
+// 
+//          def matchesPreRead(src: ReadableBufferedSrc): Instance = 
+//             Instance1()
+//          def startForUrl(options: java.net.URI): Instance = ???
+//          
+//          // def startForOptions(options: CDO): Instance = ???
+// 
+// 
+//       class Instance1() extends 
+//       CodecInstanceOps[template.type]
+//       with CodecInstanceOps.FromUrl1
+//       {
+//          lazy val associatedCodec: template.type = template
+//       }
+// 
+// }
+// 
 
 
 
