@@ -59,6 +59,21 @@ trait CodecOverview
 
 
 
+/**
+ * 
+ * every instance of [[CodecTemplateOps]]
+ * is a stateless interface to a codec impl
+ * 
+ * to get an instance decoding from desired URL,
+ * use [[startForUrl]] or the related methods
+ * 
+ */
+trait CodecTemplateOps extends
+AnyRef 
+with CodecOverview 
+{ this1 =>
+
+} /* interface CodecTemplateOps */
 object CodecTemplateOps
 {
 
