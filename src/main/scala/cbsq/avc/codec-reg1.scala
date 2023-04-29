@@ -153,6 +153,45 @@ object  CodecTplIsInstantiable
 
 
 
+/**
+ * 
+ * instance constructed thru either way ; stateful
+ * 
+ */
+trait CodecInstanceOps[+C <: CodecTemplateOps] extends 
+AnyRef 
+with java.io.Closeable
+{ this1 =>
+
+   val associatedCodec: C
+
+   export associatedCodec.mimeType
+   export associatedCodec.fourCcName
+
+   export associatedCodec.mediaKind
+
+   override 
+   def close(): Unit
+
+   def isNotBusy: Boolean =
+      false
+   export associatedCodec.{isNotBusy as isGloballyNotBusy}
+   
+}
+object  CodecInstanceOps {
+   
+   /**
+    * instance constructed with arguments `(ref: URI)`
+    */
+   trait FromUrl1 extends 
+   AnyRef 
+   with CodecInstanceOps[CodecTemplateOps]
+   {
+      //
+   }
+   
+}
+
 
 
 
