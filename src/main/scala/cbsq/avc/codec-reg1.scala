@@ -21,9 +21,13 @@ import MediaKind as EMediaKind
 
 object  CodecOverview {
    
-   lazy val IsUnspecified : Null | Product =
-      case object IsUnspecified1
-      IsUnspecified1
+   export isunsp.{value as IsUnspecified}
+   protected 
+   object isunsp {
+      lazy val value : Null | Product =
+         case object IsUnspecified1
+         IsUnspecified1
+   }
 
 }
 trait CodecOverview 
