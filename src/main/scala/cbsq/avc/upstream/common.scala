@@ -83,6 +83,10 @@ extension[Value](this1: Resolvable[Value] )
 
 }
 
+export cbsq.avc.ColorChannelsFmt
+export cbsq.avc.PixelFmt
+export cbsq.avc.{KBuffer, KByteBuffer }
+
 
 
 
