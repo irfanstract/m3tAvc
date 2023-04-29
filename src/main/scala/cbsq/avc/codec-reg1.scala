@@ -51,6 +51,29 @@ trait CodecOverview
 
 
 
+object CodecTemplateOps
+{
+
+   object Mpr {
+      /**
+       * expecting the callers to buffer more bytes
+       */ 
+      class MoreBytesPlease extends java.io.IOException
+      /**
+       * it's clear that the (buffered) data does not belong
+       */ 
+      class Mismatch        extends java.io.IOException
+   }
+
+}
+
+
+
+
+
+
+
+
 
 
 
