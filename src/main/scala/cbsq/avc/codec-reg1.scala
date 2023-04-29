@@ -96,6 +96,44 @@ object CodecTemplateOps
    }
    
 }
+/* the definitions needed to be split, to avoid compiler crash */
+sealed 
+trait CodecTplIsInstantiable extends
+AnyRef 
+{ this1 : CodecOverview =>
+
+   type Instance
+   
+   def startForUrl(href: java.net.URI): Instance
+
+   /**
+    * check if matches the
+    *
+    * @param src 
+    */
+   @`throws`[CodecTemplateOps.Mpr.MoreBytesPlease  ]("needs to buffer more bytes")
+   @`throws`[CodecTemplateOps.Mpr.Mismatch         ]("clearly mismatch")
+   def matchesPreRead(src: ReadableBufferedSrc): Instance
+
+   // type ReadableBufferedSrc <: (
+   //    Nothing 
+   //    | java.io.BufferedInputStream 
+   //    | java.io.BufferedReader
+   // )
+   type ReadableBufferedSrc = (
+      CodecTemplateOps.ioUtil.AsBuffered[(
+         this1.Rd
+      )]
+   )
+
+}
+object  CodecTplIsInstantiable
+{
+
+   /* test */ 
+   summon[((CodecOverview) with CodecTplIsInstantiable { type Rd = java.io.Reader })#ReadableBufferedSrc <:< java.io.BufferedReader ]
+
+}
 
 
 
