@@ -31,6 +31,18 @@ object  %%! {
         B match {
           case (java.nio.ByteBuffer   | Byte  ) => java.io.InputStream
           case (java.nio.CharBuffer   | Char  ) => java.io.Reader
+          case (
+            Char
+            | IArray[Char]
+            | String 
+            | java.lang.CharSequence 
+            | java.lang.StringBuilder | java.lang.StringBuffer 
+            | java.nio.CharBuffer 
+            | Array[Char]
+            | java.io.Reader 
+            | java.io.Writer
+          ) => 
+            java.io.Reader
         }
 
     type AsBuffered[B <: java.io.Closeable] <: (
