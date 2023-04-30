@@ -40,6 +40,8 @@ object  %%! {
         B match {
           case (java.io.InputStream) => java.io.BufferedInputStream
           case (java.io.Reader     ) => java.io.BufferedReader
+          case (java.io.OutputStream) => java.io.BufferedOutputStream
+          case (java.io.Writer      ) => java.io.BufferedWriter
         }
 
   }
