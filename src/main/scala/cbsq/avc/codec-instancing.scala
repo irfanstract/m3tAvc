@@ -106,7 +106,7 @@ AnyRef
     * 
     */
    type DestibleFd
-      >: ioUtil.AsBuffered[this1.Rd ]
+      >: ioUtil.AsBuffered[this1.Rd ] & this1.Rd
       <: this1.Rd
 
 }
