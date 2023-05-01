@@ -54,9 +54,12 @@ def dcdTest1(): BbsdCodecInstantiale["application/x-lavfmt-discarddemux", EMedia
                >: (ioUtil.AsBuffered[this1.Rd ] & this1.Rd)
                <: this1.Rd
                
-            def startC(flags: Seq[String]): Instance = ???
-            def startForFd(src: DestibleFd): false | Instance = ???
-            def startForUrl(href: java.net.URI, flags: IndexedSeq[String]): Instance = ???
+            def startC(flags: Seq[String]): Instance = 
+               throw UnsupportedOperationException(s"TODO ; args being $flags")
+            def startForFd(src: DestibleFd): false | Instance = 
+               throw UnsupportedOperationException(s"TODO ; input being $src")
+            def startForUrl(href: java.net.URI, flags: IndexedSeq[String]): Instance = 
+               startC(Seq() :+ ("--src-url=" + href.toASCIIString() ) :++ flags )
 
             final val mediaKind = EMediaKind.Mix : EMediaKind.Mix.type
 
