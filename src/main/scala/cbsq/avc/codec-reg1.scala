@@ -66,42 +66,6 @@ def dcdDebugTestNoop1(): Unit = {}
 
 type Dsd = BbsdZcdImpl["application/x-lavfmt-discarddemux", EMediaKind.Mix.type]
 
-/**
- * 
- * a *demuxer* which *consumes all input* yet does not output any *frame*.
- * 
- */
-// @annotation.experimental
-@deprecated("experimental")
-lazy val discardingDemuxer =
-   // bbsd(
-   //    mimeType1 = "application/x-lavfzeroframedemux" ,
-   // )
-   (new BbsdZcdImpl(
-      mimeType1 = "application/x-lavfmt-discarddemux" ,
-      mediaKindP = EMediaKind.Mix ,
-   ) {
-      
-      def openUrlOrArgs(
-         url: Null | (java.net.URI | java.net.URLConnection | DestibleFd1) ,
-         args1: IndexedSeq[String] ,
-      ) =
-         // TODO
-         new Instance1() {
-
-            lazy val decodedFormO: Some[BbsdAvFrameIterator.OfRegOfHandlerForMediaKind[EMediaKind.Mix.type ] ] =
-               throw UnsupportedOperationException("TODO")
-            // lazy val decodedFormO = None
-
-         }
-
-      type RelevantFd 
-         >: java.io.InputStream
-         <: java.io.InputStream
-
-   } )
-   .template
-
 // @deprecated("experimental")
 // protected 
 sealed trait  BbsdZcdImpl[
