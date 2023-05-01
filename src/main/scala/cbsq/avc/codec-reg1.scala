@@ -219,22 +219,6 @@ sealed trait  BbsdZcdImpl[
       args1: IndexedSeq[String] ,
    ) : Instance1AC
    
-   /* the definitions needed to be split, to avoid compiler crash */
-   // sealed 
-   trait Instance1AC extends 
-      AnyRef
-      with java.io.Closeable 
-      // TODO - 
-      with CodecInstanceOps[template.type]
-      with CodecInstanceOps.FromUrl1
-   { thisCodecInstance =>
-      
-      val associatedCodec: template.type = template
-
-      lazy val decodedFormO: Option[BbsdAvFrameIterator.OfRegOfHandlerForMediaKind[thisCodecBackend.mediaKindP.type ] ]
-      
-   }
-
 }
 
 
