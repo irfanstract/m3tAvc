@@ -130,43 +130,6 @@ sealed trait  BbsdZcdImpl[
   
    }
 
-   // object template extends OverviewXOps
-   // val template: OverviewXOps
-   object template extends 
-      OverviewXOps
-      with TPossiblySupportsEventsForwarded[InstanceAgnosticEvent](backingSourcer = instanceAgnosticEvents)
-   {
-      
-      // thisCodecInstantiable: thisCodecBackend.template.type =>
-      thisCodecInstantiable =>
-
-      type Instance 
-         >: thisCodecBackend.Instance1AC 
-         <: thisCodecBackend.Instance1AC
-
-      /**
-       * 
-       */
-      type DestibleFd
-         >: thisCodecBackend.DestibleFd1
-         <: thisCodecBackend.DestibleFd1
-
-      inline def startForFd(src: DestibleFd): Instance = 
-         thisCodecBackend.openUrlOrArgs(url = src, args1 = IndexedSeq() )
-         
-      inline def startForUrl(
-         href: java.net.URI, 
-         flags: IndexedSeq[String] ,
-      ): Instance =
-         thisCodecBackend.openUrlOrArgs(url = href, args1 = flags )
-      
-      inline def startC(args: String*): Instance = 
-         thisCodecBackend.openUrlOrArgs(url = null, args1 = args.toIndexedSeq )
-      
-      // def startForOptions(options: CDO): Instance = ???
-      
-   }
-   
    protected 
    trait  DedicAliasToGlobalEvtIterator 
       extends 
@@ -205,20 +168,6 @@ sealed trait  BbsdZcdImpl[
 
    }
 
-   /**
-    * starts, decoding, or encoding,
-    * as specified by `url` or `args1`
-    * 
-    * note - 
-    * `flags` here might be incompatible with that of [[CodecTemplateOps#startC]]
-    *
-    * @param href 
-    */
-   def openUrlOrArgs(
-      url: Null | (java.net.URI | java.net.URLConnection | DestibleFd1) ,
-      args1: IndexedSeq[String] ,
-   ) : Instance1AC
-   
 }
 
 
