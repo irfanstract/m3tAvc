@@ -127,6 +127,16 @@ object  CodecTplIsInstantiable
 
 }
 
+@deprecated("experimental")
+trait Ctpr extends 
+   AnyRef
+   with CodecOverview
+   with CodecTplIsInstantiable 
+{
+   final val mimeType = null
+   type Rd <: java.io.Closeable
+}
+
 
 
 /**
