@@ -38,31 +38,41 @@ package cbsq.avc
 
 def dcdDebugTestNoop1(): Unit = {}
 
-// def dcdTest1(): BbsdZcdImpl["application/x-lavfmt-discarddemux", EMediaKind.Mix.type] = {
-//    (new BbsdZcdImpl(
-//       mimeType1 = "application/x-lavfmt-discarddemux" ,
-//       mediaKindP = EMediaKind.Mix ,
-//    ) {
+def dcdTest1(): BbsdCodecInstantiale["application/x-lavfmt-discarddemux", EMediaKind.Mix.type, ?] = {
+   (new BbsdCodecInstantiale(
+      mimeType1 = "application/x-lavfmt-discarddemux" ,
+      mediaKindP = EMediaKind.Mix ,
+      openUrlOrArgs1 = (thisCodecInstantiable) => {
+         new Ctpr 
+         { this1 =>
+
+            type Rd
+               >: thisCodecInstantiable.Rd
+               <: thisCodecInstantiable.Rd
+            
+            type DestibleFd
+               >: (ioUtil.AsBuffered[this1.Rd ] & this1.Rd)
+               <: this1.Rd
+               
+            def startC(flags: Seq[String]): Instance = ???
+            def startForFd(src: DestibleFd): false | Instance = ???
+            def startForUrl(href: java.net.URI, flags: IndexedSeq[String]): Instance = ???
+
+            final val mediaKind = EMediaKind.Mix : EMediaKind.Mix.type
+
+         }
+      } ,
+   ) {
       
-//       def openUrlOrArgs(
-//          url: Null | (java.net.URI | java.net.URLConnection | DestibleFd1) ,
-//          args1: IndexedSeq[String] ,
-//       ) =
-//          // TODO
-//          new Instance1() {
+      type Rd 
+         >: java.io.InputStream
+         <: java.io.InputStream
 
-//             // lazy val decodedFormO: Some[BbsdAvFrameIterator.OfRegOfHandlerForMediaKind[EMediaKind.Mix.type ] ] =
-//             //    throw UnsupportedOperationException("TODO")
-//             lazy val decodedFormO = None
-
-//          }
-
-//       type RelevantFd 
-//          >: java.io.InputStream
-//          <: java.io.InputStream
-
-//    } )
-// }
+      override def toString(): String = 
+         "DcdtDUmmyCodecTest(....)"
+      
+   } )
+}
 
 type Dsd = BbsdCodecInstantiale["application/x-lavfmt-discarddemux", EMediaKind.Mix.type, ?]
 
