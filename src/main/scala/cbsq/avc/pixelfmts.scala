@@ -136,6 +136,15 @@ object  PixelFmt {
 
    }
 
+   trait XPbd[V : ClassTag] extends 
+   CommonPxFmtOps { final val pixelBitDepth = summon[ClassTag[V]] }
+
+   trait XHasAlpha[+V <: Singleton & Boolean : ValueOf] extends 
+   CommonPxFmtOps { final val hasAlphaChannel = valueOf[V] }
+
+   trait XCsp[+V <: Singleton & ColorChannelsFmt[?] : ValueOf] extends 
+   CommonPxFmtOps { final val colorSpace = valueOf[V] }
+
    // export consts.*
 
    extension (c: PixelFmt)
