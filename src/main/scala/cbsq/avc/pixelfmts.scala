@@ -63,6 +63,12 @@ object  PixelFmt {
    with XPbd[Int]
    with XHasAlpha[false] 
 
+   case 
+   object ofBgr0h32 extends 
+   ArgbFamilyPixelFmt
+   with XPbd[Int]
+   with XHasAlpha[false] 
+
    /**
     * 
     * the *statics* of each `case` shall implement this common protocol.
