@@ -39,6 +39,36 @@ object  PixelFmt {
 
    export reflect.ClassTag
    
+   case 
+   object ofABgr32 extends 
+   ArgbFamilyPixelFmt 
+   with XPbd[Int]
+   with XHasAlpha[true] 
+   
+   case 
+   object ofARgb32 extends 
+   ArgbFamilyPixelFmt 
+   with XPbd[Int]
+   with XHasAlpha[true] 
+   
+   case 
+   object of0Bgr32 extends 
+   ArgbFamilyPixelFmt
+   with XPbd[Int]
+   with XHasAlpha[false] 
+
+   case 
+   object of0Rgb32 extends 
+   ArgbFamilyPixelFmt
+   with XPbd[Int]
+   with XHasAlpha[false] 
+
+   case 
+   object ofBgr0h32 extends 
+   ArgbFamilyPixelFmt
+   with XPbd[Int]
+   with XHasAlpha[false] 
+
    /**
     * 
     * the *statics* of each `case` shall implement this common protocol.
@@ -135,6 +165,15 @@ object  PixelFmt {
       val hasAlphaChannel  : Boolean
 
    }
+
+   trait XPbd[V : ClassTag] extends 
+   CommonPxFmtOps { final val pixelBitDepth = summon[ClassTag[V]] }
+
+   trait XHasAlpha[+V <: Singleton & Boolean : ValueOf] extends 
+   CommonPxFmtOps { final val hasAlphaChannel = valueOf[V] }
+
+   trait XCsp[+V <: Singleton & ColorChannelsFmt[?] : ValueOf] extends 
+   CommonPxFmtOps { final val colorSpace = valueOf[V] }
 
    // export consts.*
 
