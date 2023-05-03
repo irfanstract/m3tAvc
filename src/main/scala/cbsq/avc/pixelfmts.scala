@@ -39,6 +39,30 @@ object  PixelFmt {
 
    export reflect.ClassTag
    
+   case 
+   object ofABgr32 extends 
+   ArgbFamilyPixelFmt 
+   with XPbd[Int]
+   with XHasAlpha[true] 
+   
+   case 
+   object ofARgb32 extends 
+   ArgbFamilyPixelFmt 
+   with XPbd[Int]
+   with XHasAlpha[true] 
+   
+   case 
+   object of0Bgr32 extends 
+   ArgbFamilyPixelFmt
+   with XPbd[Int]
+   with XHasAlpha[false] 
+
+   case 
+   object of0Rgb32 extends 
+   ArgbFamilyPixelFmt
+   with XPbd[Int]
+   with XHasAlpha[false] 
+
    /**
     * 
     * the *statics* of each `case` shall implement this common protocol.
