@@ -62,6 +62,15 @@ object FileSize {
    def fromByteCount[BN <: Long](v: BN): FileSize & MExactly[BN] =
       Fsz1(bytes = v)
 
+   extension [V <: Int | Long : Integral](value: V) {
+
+      inline def B = {
+         import Numeric.Implicits.*
+         cbsq.FileSize.fromByteCount(value.toLong : Long )
+      }
+
+   }
+
 }
 
 
