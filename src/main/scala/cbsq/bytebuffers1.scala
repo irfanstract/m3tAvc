@@ -59,6 +59,10 @@ object FileSize {
    sealed case class Fsz1[+BN <: Long](bytes: BN) extends FileSize with MExactly[BN] :
       val int32s = bytes / 0x4
 
+      override def toString(): String = {
+         s"${bytes }B"
+      }
+
    def fromByteCount[BN <: Long](v: BN): FileSize & MExactly[BN] =
       Fsz1(bytes = v)
 
