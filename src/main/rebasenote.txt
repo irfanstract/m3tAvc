@@ -1,0 +1,306 @@
+
+
+
+
+
+
+
+
+
+label onto
+break
+
+# Branch AvcKBuffers101
+reset onto
+pick a8420e6 `src/cbsq/avc` - introduce `bytebuffer.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcKBuffers101
+
+# Branch AvcPixelFmts101
+reset onto
+pick f528cf4 `src/cbsq/avc` - introduce `colorspace.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point
+merge -C e644a9f AvcKBuffers101 # Merge branch 'AvcKBuffers101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-2
+pick 8efabb0 `src/cbsq/avc` - introduce `pixelfmts.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcPixelFmts101
+
+# Branch AvcNumerics101
+reset branch-point-2 # Merge branch 'AvcKBuffers101'
+merge -C 45f92f6 AvcPixelFmts101 # Merge branch 'AvcPixelFmts101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-3
+pick 4eb387b `src/cbsq/avc` - introduce `numeric.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcNumerics101
+
+# Branch AvcUpstreamCommon101
+reset branch-point-3 # Merge branch 'AvcPixelFmts101'
+merge -C 96b766c AvcNumerics101 # Merge branch 'AvcNumerics101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-5
+pick 53406cc `src/cbsq/avc/upstream` - introduce `README.md`
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 395a1cb `src/cbsq/avc/upstream` - init `common.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-4
+pick 52d7e01 `src/cbsq/avc/upstream` - `common.scala` - `extension[Value](this1: Resolvable[Value] )`
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 1721b23 `src/cbsq/avc/upstream` - `common.scala` - add these lines - ``` export cbsq.avc.ColorChannelsFmt export cbsq.avc.PixelFmt export cbsq.avc.{KBuffer, KByteBuffer } ```
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcUpstreamCommon101
+
+# Branch onto-2
+reset branch-point-4 # `src/cbsq/avc/upstream` - init `common.scala`
+merge -C a7d687c AvcUpstreamCommon101 # Merge branch 'AvcUpstreamCommon101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label onto-2
+
+# Branch AvcImplUpstreamVerB
+reset onto-2 # Merge branch 'AvcUpstreamCommon101'
+pick 5ae350c NOTE # empty
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcImplUpstreamVerB
+
+# Branch onto-3
+reset branch-point-5 # Merge branch 'AvcNumerics101'
+merge -C 0c96317 onto-2 # Merge branch 'onto'
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge -C d4b4b07 AvcImplUpstreamVerB # Merge branch 'AvcImplUpstreamVerB'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label onto-3
+
+# Branch AvcDefsColorSpaces1
+reset branch-point # `src/cbsq/avc` - introduce `colorspace.scala`
+pick 3c5eac0 NOTE # empty
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge -C a79321f onto-3 # Merge branch 'onto'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 1de208b Revert "`src/cbsq/avc` - introduce `colorspace.scala`"
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 081f845 `src/cbsq/avc` - introduce `colorspace.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-6
+pick fef20bb NOTE # empty
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcDefsColorSpaces1
+
+# Branch AvcUtilMediaKinds101
+reset branch-point-6 # `src/cbsq/avc` - introduce `colorspace.scala`
+merge -C 9691843 AvcDefsColorSpaces1 # Merge branch 'AvcDefsColorSpaces1'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-7
+pick 332e8ad `src/cbsq/avc` - introduce `media-kinds.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcUtilMediaKinds101
+
+# Branch AvcUtilIoUtil101
+reset branch-point-7 # Merge branch 'AvcDefsColorSpaces1'
+break
+merge -C 169a034 AvcUtilMediaKinds101 # Merge branch 'AvcUtilMediaKinds101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-8
+pick 3612067 `src/cbsq/avc` - introduce `io-util.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcUtilIoUtil101
+
+# Branch AvcCodecsRegistry101
+reset branch-point-8 # Merge branch 'AvcUtilMediaKinds101'
+merge -C 0b52e89 AvcUtilIoUtil101 # Merge branch 'AvcUtilIoUtil101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-9
+pick 72ac514 `src/cbsq/avc/codecs` - introduce `fcccodes.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcCodecsRegistry101
+
+# Branch AvcOntoCc
+reset branch-point-9 # Merge branch 'AvcUtilIoUtil101'
+merge -C 8ab758e AvcCodecsRegistry101 # Merge branch 'AvcCodecsRegistry101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcOntoCc
+
+# Branch AvcUtilIoUtil101A
+reset AvcUtilIoUtil101 # `src/cbsq/avc` - introduce `io-util.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge -C 24358e7 AvcOntoCc # Merge branch 'AvcOntoCc'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 055b7f3 `src/cbsq/avc` - `io-util.scala` - `AsBuffered` - add for `OutputStream` and `Writer`
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick a82d470 `src/cbsq/avc` - `io-util.scala` - `ReaderFor` - add for `case String | CharSequence | StringBuilder | ...`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcUtilIoUtil101A
+
+# Branch AvcCodecAttributes101
+reset AvcOntoCc # Merge branch 'AvcCodecsRegistry101'
+merge -C a2048e4 AvcUtilIoUtil101A # Merge branch 'AvcUtilIoUtil101A'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-10
+pick dd76544 `src/cbsq/avc` - update `codec-attribs.scala` this way
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcCodecAttributes101
+
+# Branch AvcCodecOutput101
+reset branch-point-10 # Merge branch 'AvcUtilIoUtil101A'
+pick 03b5cb3 `src/cbsq/avc` - update `codec-output.scala` this way
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcCodecOutput101
+
+# Branch onto1
+reset branch-point-10 # Merge branch 'AvcUtilIoUtil101A'
+merge -C a614ea9 AvcCodecAttributes101 # Merge branch 'AvcCodecAttributes101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge -C d4b287e AvcCodecOutput101 # Merge branch 'AvcCodecOutput101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 0cf45e3 NOTE # empty
+exec ..\\cbtc202304\\await-two-secs.cmd
+label onto1
+
+# Branch onto-4
+reset AvcCodecOutput101 # `src/cbsq/avc` - update `codec-output.scala` this way
+merge -C 111e5af onto1 # Merge branch 'onto1'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 3e42e7b Revert "`src/cbsq/avc` - update `codec-output.scala` this way"
+exec ..\\cbtc202304\\await-two-secs.cmd
+label onto-4
+
+# Branch onto-5
+reset AvcDefsColorSpaces1 # NOTE
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge -C d937b8c onto-4 # Merge branch 'onto'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label onto-5
+
+# Branch AvcPixelFmts102
+reset AvcPixelFmts101 # `src/cbsq/avc` - introduce `pixelfmts.scala`
+merge -C 5cb4fe2 onto-5 # Merge branch 'onto'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 2cfd58e Revert "`src/cbsq/avc` - introduce `pixelfmts.scala`"
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick f2949ef `src/cbsq/avc` - introduce `pixelfmts.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-11
+pick d3bd7fa `src/cbsq/avc` - `pixelfmts.scala` - add these `CommonPxFmtOps`-specialising mixins
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 6a6843b `src/cbsq/avc` - `pixelfmts.scala` - add these `(0|A)(BGR|RGB)32` cases
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 1d9a868 `src/cbsq/avc` - `pixelfmts.scala` - add these `BGR0h32` cases
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcPixelFmts102
+
+# Branch AvcImplBitmapImgAlloc100Pre
+reset branch-point-11 #  `src/cbsq/avc` - introduce `pixelfmts.scala`
+break
+pick ec888a3 `src/cbsq/avc` - introduce `bitmap-img-alloc.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-12
+merge -C 7e6f688 AvcPixelFmts102 # Merge branch 'AvcPixelFmts102'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcImplBitmapImgAlloc100Pre
+
+# Branch AvcImplBitmapImgAlloc100
+reset branch-point-12 #  `src/cbsq/avc` - introduce `bitmap-img-alloc.scala`
+merge -C d716ad5 AvcImplBitmapImgAlloc100Pre # Merge branch 'AvcImplBitmapImgAlloc100Pre'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 1806e9e NOTE # empty
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcImplBitmapImgAlloc100
+
+# Branch AvcCodecOutputReadInterface101
+reset AvcImplBitmapImgAlloc100Pre # Merge branch 'AvcPixelFmts102'
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge -C ab7f81a AvcImplBitmapImgAlloc100 # Merge branch 'AvcImplBitmapImgAlloc100'
+exec ..\\cbtc202304\\await-two-secs.cmd
+label OntoIco1
+
+reset onto-4
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge OntoIco1
+pick 9f3b8df `src/cbsq/avc` - introduce `codec-output.scala`
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcCodecOutputReadInterface101
+
+# Branch AvcUtilServiceSpecificArgBuilderPattern102
+reset AvcCodecAttributes101 # `src/cbsq/avc` - update `codec-attribs.scala` this way
+merge -C b44bca2 AvcCodecOutputReadInterface101 # Merge branch 'AvcCodecOutputReadInterface101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 588c4cd NOTE # empty
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick a9c864f Revert "`src/cbsq/avc` - update `codec-attribs.scala` this way"
+exec ..\\cbtc202304\\await-two-secs.cmd
+label branch-point-13
+pick 4ea8606 `src/cbsq/avc` - init `util-servicespecific-argbuilderpattern.sc` this way
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcUtilServiceSpecificArgBuilderPattern102
+
+# Branch AvcCodecAttribsAfterAdtp102
+reset branch-point-13 # Revert "`src/cbsq/avc` - update `codec-attribs.scala` this way"
+merge -C f72ce89 AvcUtilServiceSpecificArgBuilderPattern102 # Merge branch 'AvcUtilServiceSpecificArgBuilderPattern102'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 78f764a `src/cbsq/avc` - update `codec-attribs.scala` this way
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcCodecAttribsAfterAdtp102
+
+# Branch AvcUtilIoTaskTemplateInterface102
+reset branch-point-13 # Revert "`src/cbsq/avc` - update `codec-attribs.scala` this way"
+pick 3d9747f `src/cbsq/avc` - init `util-io-task-template.sc` this way
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcUtilIoTaskTemplateInterface102
+
+# Branch AvcIoUtilNullSinking101
+reset AvcUtilIoUtil101A
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge branch-point-13 # Revert "`src/cbsq/avc` - update `codec-attribs.scala` this way"
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 318a184 `src/cbsq/avc` - init `io-nullsinking.scala` this way
+exec ..\\cbtc202304\\await-two-secs.cmd
+label AvcIoUtilNullSinking101
+
+reset branch-point-13 # Revert "`src/cbsq/avc` - update `codec-attribs.scala` this way"
+merge -C 7a44e66 AvcCodecAttribsAfterAdtp102 # Merge branch 'AvcCodecAttribsAfterAdtp102'
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge -C 61235b9 AvcUtilIoTaskTemplateInterface102 # Merge branch 'AvcUtilIoTaskTemplateInterface102'
+exec ..\\cbtc202304\\await-two-secs.cmd
+merge -C 62c5524 AvcIoUtilNullSinking101 # Merge branch 'AvcIoUtilNullSinking101'
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick ae4ab21 `src/cbsq/avc` - init `nullcodec1.scala` this way
+exec ..\\cbtc202304\\await-two-secs.cmd
+pick 865177e `src/cbsq/avc` - init `codec-countingbytes1.scala` this way
+exec ..\\cbtc202304\\await-two-secs.cmd
+
+# Rebase 1f24b8c..865177e onto 1f24b8c (195 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup [-C | -c] <commit> = like "squash" but keep only the previous
+#                    commit's log message, unless -C is used, in which case
+#                    keep only this commit's message; -c is same as -C but
+#                    opens the editor
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+# .       create a merge commit using the original merge commit's
+# .       message (or the oneline, if no original merge commit was
+# .       specified); use -c <commit> to reword the commit message
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+
+
+
+
+
+
+
