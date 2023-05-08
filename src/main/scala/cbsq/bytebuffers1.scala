@@ -98,6 +98,63 @@ object ByteBlob {
 
    }
 
+   extension (buf : ByteBlob) {
+
+      @deprecated("experimental")
+      inline
+      def newDirectReader() = {
+         new java.io.ByteArrayInputStream((
+            buf.unsafeArray
+         ))
+      }
+
+      def newByteWiseReader(): java.io.InputStream & java.io.DataInput = {
+         new java.io.DataInputStream((
+            newDirectReader()
+         ))
+      }
+
+      def newGrossReader() : java.io.InputStream = {
+         newDirectReader()
+      }
+
+   }
+
+   /**
+    * 
+    * exactly the remaining bytes , [[java.nio.ByteBuffer]]
+    * 
+    */
+   def takeJbbRemainder(srcBuf: java.nio.ByteBuffer): ByteBlob = {
+      val b1 = new Array[Byte](srcBuf.remaining() )
+      srcBuf get b1
+      unsafeWrapArray(b1 )
+   }
+
+   /**
+    * 
+    * exactly the remaining bytes 
+    * 
+    */
+   def takeJIoInputStreamRemainder(src: java.io.InputStream): ByteBlob = {
+      val b1 = {
+         /** 
+          * note : always new array/buffer
+          */
+         src.readAllBytes()
+      }
+      unsafeWrapArray(b1)
+   }
+
+   /**
+    * 
+    * exact copy
+    * 
+    */
+   inline def copyOf(src: java.io.ByteArrayOutputStream): ByteBlob = {
+      unsafeWrapArray(buf = src.toByteArray() )
+   }
+
 }
 
 type Utf
