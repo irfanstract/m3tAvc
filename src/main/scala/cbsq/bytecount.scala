@@ -13,7 +13,7 @@ package cbsq
 sealed 
 abstract class FileSize protected () {
 
-   val bytes: Long
+   val inBytes: Long
 
    /**
     * 
@@ -33,7 +33,7 @@ abstract class FileSize protected () {
     */
    override
    def toString(): String = {
-      s"${bytes }bytes"
+      s"${inBytes }bytes"
    }
 
 }
@@ -42,26 +42,26 @@ object FileSize {
    extension (v: FileSize) {
 
       inline def bits =
-         v.bytes * 0x8
+         v.inBytes * 0x8
 
    }
 
    sealed trait MExactly[+BN <: Long] 
    extends FileSize
    {
-      val bytes: BN
+      val inBytes: BN
    }
 
    protected 
    sealed 
-   case class Fsz1[+BN <: Long](bytes: BN) 
+   case class Fsz1[+BN <: Long](inBytes: BN) 
    extends 
    FileSize 
    with MExactly[BN] 
    {
 
       val int32s = {
-         bytes
+         inBytes
          .toDouble
          ./(0x4)
          // .toDouble
@@ -72,7 +72,7 @@ object FileSize {
    extension (v: FileSize) {
 
       inline def int16s = {
-         v.bytes
+         v.inBytes
          .toDouble
          ./(0x2)
          // .toDouble
@@ -83,7 +83,7 @@ object FileSize {
    extension (v: FileSize) {
 
       inline def int64s = {
-         v.bytes
+         v.inBytes
          .toDouble
          ./(0x8)
          .toDouble
@@ -92,7 +92,7 @@ object FileSize {
    }
 
    def fromByteCount[BN <: Singleton & Long](v: BN): FileSize & MExactly[BN] =
-      Fsz1(bytes = v)
+      Fsz1(inBytes = v)
 
    /**
     * 
