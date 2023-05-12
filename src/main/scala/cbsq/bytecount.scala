@@ -94,6 +94,10 @@ object FileSize {
    def fromByteCount[BN <: Singleton & Long](v: BN): FileSize & MExactly[BN] =
       Fsz1(inBytes = v)
 
+   export boxingImplicits.*
+
+   object boxingImplicits {
+      
    /**
     * 
     * enables usages like `5MB`, `24KB`, etc
@@ -123,6 +127,8 @@ object FileSize {
          import Numeric.Implicits.*
          (value.toLong * 1024 * 1024 * 1024 ).B
       }
+
+   }
 
    }
 
