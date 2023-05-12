@@ -13,7 +13,7 @@ package cbsq
 sealed 
 abstract class FileSize protected () {
 
-   val bytes: Long
+   val inBytes: Long
 
    /**
     * 
@@ -33,7 +33,7 @@ abstract class FileSize protected () {
     */
    override
    def toString(): String = {
-      s"${bytes }bytes"
+      s"${inBytes }bytes"
    }
 
 }
@@ -42,26 +42,26 @@ object FileSize {
    extension (v: FileSize) {
 
       inline def bits =
-         v.bytes * 0x8
+         v.inBytes * 0x8
 
    }
 
    sealed trait MExactly[+BN <: Long] 
    extends FileSize
    {
-      val bytes: BN
+      val inBytes: BN
    }
 
    protected 
    sealed 
-   case class Fsz1[+BN <: Long](bytes: BN) 
+   case class Fsz1[+BN <: Long](inBytes: BN) 
    extends 
    FileSize 
    with MExactly[BN] 
    {
 
       val int32s = {
-         bytes
+         inBytes
          .toDouble
          ./(0x4)
          // .toDouble
@@ -72,7 +72,7 @@ object FileSize {
    extension (v: FileSize) {
 
       inline def int16s = {
-         v.bytes
+         v.inBytes
          .toDouble
          ./(0x2)
          // .toDouble
@@ -83,7 +83,7 @@ object FileSize {
    extension (v: FileSize) {
 
       inline def int64s = {
-         v.bytes
+         v.inBytes
          .toDouble
          ./(0x8)
          .toDouble
@@ -92,8 +92,12 @@ object FileSize {
    }
 
    def fromByteCount[BN <: Singleton & Long](v: BN): FileSize & MExactly[BN] =
-      Fsz1(bytes = v)
+      Fsz1(inBytes = v)
 
+   export boxingImplicits.*
+
+   object boxingImplicits {
+      
    /**
     * 
     * enables usages like `5MB`, `24KB`, etc
@@ -124,6 +128,85 @@ object FileSize {
          (value.toLong * 1024 * 1024 * 1024 ).B
       }
 
+   }
+
+   }
+
+   /* arithmetic usages */
+
+   extension (v: FileSize) {
+
+      def unary_- = {
+         (v.inBytes)
+         .unary_-
+         .B
+      }
+      
+      def unary_+ = {
+         (v.inBytes)
+         .B
+      }
+      
+   }
+
+   extension (v1: FileSize) {
+
+      def +(v2: FileSize) : FileSize = {
+         (v1.inBytes + v2.inBytes )
+         .B
+      }
+
+   }
+
+   extension (v1: FileSize) {
+
+      def -(v2: FileSize) : FileSize = {
+         v1 + -v2
+      }
+
+   }
+
+   extension (v1: FileSize) {
+
+      def *:(v2: Double) : FileSize = {
+         (v2 * v1.inBytes )
+         .toLong
+         .B
+      }
+
+   }
+
+   extension (v1: FileSize) {
+
+      def /(v2: Double) : FileSize = {
+         (v1.inBytes.toDouble / v2 )
+         .toLong
+         .B
+      }
+
+   }
+
+   /**
+    * 
+    * otherwise `<` `>=` etc won't work.
+    * 
+    */
+   given [C <: FileSize]: Ordering[C] = (
+      Ordering.by((v: FileSize) => v.inBytes )
+   )
+
+   /**
+    * 
+    * manually-writen auto-boxing to `OrderingOps`.
+    * 
+    * avoids the need for writing `import Ordering.implicits.*`.
+    * 
+    */
+   given [C <: FileSize]: Conversion[FileSize, math.Ordering[FileSize]#OrderingOps ] = {
+      (v: FileSize) => (
+         summon[Ordering[FileSize] ]
+         .mkOrderingOps(v )
+      )
    }
 
 }
