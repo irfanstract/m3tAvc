@@ -28,6 +28,8 @@ object ioNullsinkings {
    import java.io.Writer.nullWriter
 
    def drainAndWait(s: java.io.Closeable): Unit =
+      import language.unsafeNulls /* known usage */
+
       s match {
 
          case s : java.nio.channels.ReadableByteChannel =>
@@ -43,6 +45,8 @@ object ioNullsinkings {
       }
 
    def countAndWait(s: java.io.Closeable): Unit =
+      import language.unsafeNulls /* known usage */
+
       s match {
 
          case s : java.nio.channels.ReadableByteChannel =>

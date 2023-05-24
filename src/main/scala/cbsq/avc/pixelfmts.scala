@@ -180,6 +180,8 @@ object  PixelFmt {
    extension (c: PixelFmt)
       
       def upperCasedName: String =
+         import language.unsafeNulls /* known usage */
+
          val M = "\\Aof(?=[A-Z0-9])(.*)\\z".r
          c.toString() match
             case M(name) =>

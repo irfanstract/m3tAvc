@@ -95,6 +95,8 @@ sealed trait chvl extends
    AnyRef 
 {
    
+      import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+      
       /**
        * 
        * extending `Singleton` is necessary,
@@ -654,6 +656,8 @@ trait EBsd extends
             <: cbsq.ByteBlob | java.net.URI
 
          def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique) = {
+            import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+            
             encodedLength match {
                case encodedLength : cbsq.FileSize =>
                   val b = cbsq.ByteBlob.copyOf(r readNBytes(encodedLength.inBytes.toInt ) )
@@ -804,6 +808,8 @@ trait EBsd extends
          
                override
                def toString(): String = {
+                  import language.unsafeNulls /* for this `toString` impl */
+
                   (
                      Seq()
                      :+ s"<!e:${className.ebmlClassNameFmatted } >"
@@ -986,6 +992,8 @@ trait EBsd extends
 
                   override
                   def toString(): String = {
+                     import language.unsafeNulls /* for this `toString` impl */
+                     
                      super.toString()
                      .replaceFirst("\\s*(?=\\>)", s" (length)=${efpr.payloadLength }")
                   }

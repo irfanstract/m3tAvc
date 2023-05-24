@@ -11,6 +11,7 @@ package cbsq.riffmt.ebmls
 
 
 
+import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
 
 
 

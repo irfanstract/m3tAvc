@@ -50,7 +50,7 @@ object FourCC {
    // def apply1[S <: String]()(using V : ValueOf[S], aside1 : Conversion[Float, Float] ): ByString[String] =
    //    apply(valueOf[S] )
    def apply[S <: String](value: S): ByString[String] =
-      applyForNormalised(value = value.toUpperCase(java.util.Locale.ROOT) )
+      applyForNormalised(value = value.toUpperCase(java.util.Locale.ROOT).nn )
    export FourCC.ByString.{unapply }
    
    protected 

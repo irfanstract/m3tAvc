@@ -20,6 +20,8 @@ object matrCd {
    )
 
    val doc = {
+      import language.unsafeNulls /* to use certain `DocumentBuilder`-related methods */
+
       import org.xml.sax
       import javax.xml.parsers.*
       val builder = {

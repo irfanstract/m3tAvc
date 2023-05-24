@@ -12,6 +12,8 @@ package cbsq.w3dom
 
 
 
+import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+
 
 
 

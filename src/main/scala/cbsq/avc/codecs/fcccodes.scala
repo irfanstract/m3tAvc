@@ -99,6 +99,8 @@ protected
 class fccCodeRegsImpl extends FccCodeRegsOps
 {
 
+  // import language.unsafeNulls /* does not play well with `AtomicReference.get` */
+
   type Reg >: RegOps <: RegOps 
   
   private 
@@ -106,9 +108,12 @@ class fccCodeRegsImpl extends FccCodeRegsOps
     new java.util.concurrent.atomic.AtomicReference[Set[Reg] ](Set() )
 
   def registereds =
-    lsc.get()
+    lsc
+    .get().nn
 
   def registerFmt(addend: Reg): addend.type =
+    import language.unsafeNulls /* `updateAndGet` */
+
     lsc
       .updateAndGet(existingList => {
         if (existingList contains addend) {
