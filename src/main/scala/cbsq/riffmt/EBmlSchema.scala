@@ -1166,7 +1166,11 @@ trait EBsd extends
                            r.isAtEofRelevantly
                         } : Boolean
                         if (noMore) {
-                           sys.process.stderr.println("no more child to parse, ceasing")
+                           sys.process.stderr.println((
+                              summon[CodeSchemeOps.TraversalDiagnostique]
+                              .newLexerException(msg = "no more child to parse, ceasing", r = r )
+                              .getMessage()
+                           ))
                            None
                         } else { 
                            try 
