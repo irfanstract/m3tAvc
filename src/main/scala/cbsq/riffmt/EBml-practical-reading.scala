@@ -77,6 +77,7 @@ def ebmlPracticalTest1(): Unit = {
                } = ({
                   import EBml.{CodeSchemeOps, FramePayloadScheme, CodeUnitScheme}
                   import EBml.CodeSchemeOps.{Lazy}
+                  import cbsq.riffmt.ebmls.{totalDtdAnalyse, elementDtdAnalyse}
                   // given byteManipImplicits.OctetReadingOp[BigInt] = r => {
                   //    r.readEbmlInteger(unsigned = true, invalidateAllSameBitExamples = false)
                   // }
@@ -106,32 +107,49 @@ def ebmlPracticalTest1(): Unit = {
                         } ,
                      )
                   )
+                  def appropriateScheme1(c: elementDtdAnalyse ) = {
+                     // TODO
+                     c.mValueTypeSimpleName match {
+
+                        case "master" =>
+                           genericFramePayloadScheme
+                           
+                        case "utf-8" =>
+                           utfScheme
+
+                        case "string" =>
+                           rawBytesScheme
+
+                        case "binary" =>
+                           rawBytesScheme
+
+                        case "uinteger" | "integer" =>
+                           rawBytesScheme
+
+                        case "date" =>
+                           rawBytesScheme
+
+                        case "float" =>
+                           rawBytesScheme
+
+                     }
+                  }
                   /* https://matroska.org/technical/elements.html */
                   new FramePayloadScheme.XSc {
 
+                     /* `cbsq.avc.codecs.matrCd` */
                      val schemeMap = ({
                         import cbsq.SlfOnEveryValue.implicits.*
                         import byteManipImplicits.*
                         def debug1() : Unit = {
                            java.lang.ref.Reference.reachabilityFence(BigInt )
                         }
+                        val intrinsicElems1 = {
                         Map[Int, (
                            FramePayloadScheme & CodeUnitScheme.XLengthOverrideable { 
                               // type Instance <: Seq[FramePayloadScheme.OfMulti[?, ?]#Instance ]
                            }
                         )](
-
-                           // 0xBF -> (
-                           //    CodeUnitScheme.OfStr(encodedLength = (0x4).B.self, enc = EBmlCharset.RawOctetString, defaultEncodedValue = {
-                           //       // TODO
-                           //       ""
-                           //    })
-                           //    // new AnyRef with FramePayloadScheme {}
-                           //    // CodeUnitScheme.alwaysFailingInstance(() => {
-                           //    //    debug1()
-                           //    //    "deliberate unrolling"
-                           //    // })
-                           // ) ,
 
                            /* VOID */
                            0xEC -> (
@@ -149,93 +167,24 @@ def ebmlPracticalTest1(): Unit = {
                               })
                            ) ,
 
-                           /* SEGMENT */
-
-                           0x18538067 -> (
-                              genericFramePayloadScheme
-                           ) ,
-
-                           // 0x114D9B74 -> (
-                           //    FramePayloadScheme.ofOneOrMoreOfAnyOf1C(c = Lazy(s.schemeMap ) )
-                           //    // CodeUnitScheme.alwaysFailingInstance(() => {
-                           //    //    debug1()
-                           //    //    "deliberate unrolling"
-                           //    // })
-                           // ) ,
-
-                           /* SEEKING */
-
-                           0x114D9B74 -> (
-                              genericFramePayloadScheme
-                           ) ,
-
-                           0x4DBB -> (
-                              genericFramePayloadScheme
-                           ) ,
-
-                           0x53AB -> (
-                              rawBytesScheme
-                           ) ,
-
-                           0x53AC -> (
-                              // TODO
-                              CodeUnitScheme.OfStr(encodedLength = CodeSchemeOps.cHasVariableLength, enc = EBmlCharset.EBmlBigInt, defaultEncodedValue = "")
-                           ) ,
-
-                           /* INFO */
-
-                           0x1549A966 -> (
-                              genericFramePayloadScheme
-                           ) ,
-
-                           0x73A4 -> (
-                              rawBytesScheme
-                           ) ,
-
-                           0x7384 -> (
-                              rawBytesScheme
-                           ) ,
-
-                           0x2AD7B1 -> (
-                              rawBytesScheme
-                           ) ,
-
-                           0x4489 -> (
-                              rawBytesScheme
-                           ) ,
-
-                           0x7BA9 -> (
-                              rawBytesScheme
-                           ) ,
-
-                           0x4D80 -> (
-                              rawBytesScheme
-                           ) ,
-                           0x5741 -> (
-                              rawBytesScheme
-                           ) ,
-
-                           /* CLUSTER */
-
-                           0x1F43B675 -> (
-                              genericFramePayloadScheme
-                           ) ,
-
-                           0x1654AE6B -> (
-                              genericFramePayloadScheme
-                           ) ,
-                           0xAE -> (
-                              genericFramePayloadScheme
-                           ) ,
-
-                           0xD7 -> (
-                              rawBytesScheme
-                           ) ,
-                           0x73C5 -> (
-                              rawBytesScheme
-                           ) ,
-
                         )
+                        }
+                        Map[Int, (
+                           FramePayloadScheme & CodeUnitScheme.XLengthOverrideable { 
+                              // type Instance <: Seq[FramePayloadScheme.OfMulti[?, ?]#Instance ]
+                           }
+                        )]()
+                        .concat(intrinsicElems1 )
+                        .concat[(
+                           FramePayloadScheme & CodeUnitScheme.XLengthOverrideable { 
+                              // type Instance <: Seq[FramePayloadScheme.OfMulti[?, ?]#Instance ]
+                           }
+                        )]({
+                           // TODO
+                           cbsq.avc.codecs.matrCd.entries
+                           .map(e => (e.clsId.toInt, appropriateScheme1(e) ) )
+                           .toMap
+                        })
                         .map({
                            case (k, v) =>
                               (k: BigInt, v)
