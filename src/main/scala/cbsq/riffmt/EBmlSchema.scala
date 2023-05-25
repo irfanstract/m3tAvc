@@ -265,6 +265,8 @@ trait EBsd extends
 
          val path : String
 
+         def fullScheme : Null | collection.immutable.Iterable[cbsq.riffmt.ebmls.elementDtdAnalyse]
+
       }
       object TraversalDiagnostique {
 
@@ -272,6 +274,8 @@ trait EBsd extends
 
             val path = "???"
 
+            val fullScheme = null
+            
          }
 
          // given defaultInstance : TraversalDiagnostique = nullaryInstance
