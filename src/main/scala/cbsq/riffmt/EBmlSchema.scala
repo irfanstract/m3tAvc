@@ -267,6 +267,8 @@ trait EBsd extends
 
          def fullScheme : Null | collection.immutable.Iterable[cbsq.riffmt.ebmls.elementDtdAnalyse]
 
+         val RecoverableParsingError : PartialFunction[TraversalDiagnostique.EpError, Seq[Any] ]
+
       }
       object TraversalDiagnostique {
 
@@ -275,6 +277,10 @@ trait EBsd extends
             val path = "???"
 
             val fullScheme = null
+            
+            val RecoverableParsingError = {
+               PartialFunction.empty
+            }
             
          }
 
@@ -328,6 +334,33 @@ trait EBsd extends
                   export parent.{fullScheme => _, * }
 
                   val fullScheme = s
+                  
+               }
+            } : TraversalDiagnostique
+            
+         }
+         
+         object PSO {
+
+            def unapplySeq(e: EpError)(using TraversalDiagnostique) = {
+               summon[TraversalDiagnostique]
+               .RecoverableParsingError
+               .lift.apply(e )
+            }
+
+         }
+         
+         type EpError
+            <: String | Matchable | Throwable
+         
+         extension (parent: TraversalDiagnostique) {
+
+            def withCustomErrorHandler(s: PartialFunction[EpError, Seq[Any] ] ) = {
+               new TraversalDiagnostique {
+
+                  export parent.{RecoverableParsingError => _, * }
+
+                  val RecoverableParsingError = s
                   
                }
             } : TraversalDiagnostique
