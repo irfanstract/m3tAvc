@@ -320,6 +320,20 @@ trait EBsd extends
             
          }
 
+         extension (parent: TraversalDiagnostique) {
+
+            def withFullSchemeInfo(s: collection.immutable.Iterable[cbsq.riffmt.ebmls.elementDtdAnalyse]) = {
+               new TraversalDiagnostique {
+
+                  export parent.{fullScheme => _, * }
+
+                  val fullScheme = s
+                  
+               }
+            } : TraversalDiagnostique
+            
+         }
+         
       }
       
       /**
