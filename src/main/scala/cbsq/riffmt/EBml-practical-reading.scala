@@ -71,9 +71,18 @@ def ebmlPracticalTest1(): Unit = {
                import cbsq.avc.codecs.matrCd.{scheme => s, entries => sE}
                val e = (
                   s.schemeMap(0x18538067)
-                  .readAndParse(r)(using EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance withFullSchemeInfo sE )
+                  .readAndParse(r)(using {
+                     EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance
+                     .withFullSchemeInfo( sE)
+                     .withCustomErrorHandler({
+                        
+                        case _ =>
+                           Seq()
+
+                     })
+                  } )
                )
-               println(e.toString() )
+               println(e.toString() take (10 * 1024 ) )
             })({
                // import EBmlPrimitivesIo.asMarkableStream
                r
