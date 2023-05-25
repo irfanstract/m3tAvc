@@ -269,22 +269,27 @@ trait EBsd extends
       object TraversalDiagnostique {
 
          val nullaryInstance : TraversalDiagnostique = new TraversalDiagnostique {
+
             val path = "???"
+
          }
 
          // given defaultInstance : TraversalDiagnostique = nullaryInstance
 
          private[CodeSchemeOps] 
          def ofChildImpl(parent: TraversalDiagnostique, divName: String): TraversalDiagnostique = {
-            if (parent == nullaryInstance) {
-               return (
-               new TraversalDiagnostique {
-                  val path = divName
-               }
-               )
-            }
             new TraversalDiagnostique {
-               val path = parent.path + "/" + divName
+
+               val path = {
+                  if (parent == nullaryInstance ) {
+                     divName
+                  } else {
+                     parent.path + "/" + divName
+                  }
+               }
+
+               export parent.{path => _, *}
+               
             }
          }
          extension (parent: TraversalDiagnostique) {
