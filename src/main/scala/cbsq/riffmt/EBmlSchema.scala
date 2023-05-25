@@ -369,6 +369,27 @@ trait EBsd extends
          
       }
       
+      abstract class XStringifCtx
+      {
+
+         val elementSimpleNames1: PartialFunction[BigInt, String]
+
+      }
+      object XStringifCtx
+      {
+
+         lazy val defaultInstance = {
+            new XStringifCtx {
+
+               val elementSimpleNames1 = {
+                  PartialFunction.empty
+               }
+               
+            }
+         }
+
+      }
+      
       /**
        * 
        * ```
