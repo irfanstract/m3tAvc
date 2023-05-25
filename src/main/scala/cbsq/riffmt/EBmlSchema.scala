@@ -1268,6 +1268,14 @@ trait EBsd extends
 
                            catch {
                               
+                              case z @ CodeSchemeOps.TraversalDiagnostique.PSO(v @ _*) =>
+                                 sys.process.stderr.println((
+                                    summon[CodeSchemeOps.TraversalDiagnostique]
+                                    .newLexerException(msg = s"tolerated exception, ($z) $v ", r = r )
+                                    .getMessage()
+                                 ))
+                                 None
+
                               case z : java.io.EOFException =>
                                  // sys.process.stderr.println(z)
                                  // None
