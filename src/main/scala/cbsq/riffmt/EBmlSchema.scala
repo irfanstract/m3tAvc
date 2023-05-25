@@ -888,13 +888,17 @@ trait EBsd extends
       with `elements_@&%!`.Element
       {
          
+               lazy val classSimpleName: String = {
+                  className.ebmlClassNameFmatted
+               }
+
                override
                def toString(): String = {
                   import language.unsafeNulls /* for this `toString` impl */
 
                   (
                      Seq()
-                     :+ s"<!e:${className.ebmlClassNameFmatted } >"
+                     :+ s"<!e:${classSimpleName } >"
                      :++ (
                         children
                         // .tapEach({
