@@ -247,6 +247,7 @@ trait EBsd extends
       type RnpSource
         <: java.io.InputStream | java.io.DataInput
 
+      @annotation.experimental
       def writeBnr(d: Instance, dest: RnpDest): WbnrR
 
       type RnpDest
@@ -340,6 +341,7 @@ trait EBsd extends
 
       extension(this1: FramePayloadScheme | CodeUnitScheme) {
 
+         @annotation.experimental
          def binarise(d: this1.Instance) = {
             val o = (
                new java.io.ByteArrayOutputStream()
@@ -419,12 +421,12 @@ trait EBsd extends
 
       // OfNumber, OfStr, OfSelectFrame, OfClassId, etc
 
-      @annotation.experimental
+      // @annotation.experimental
       type OfPrm[
          +K <: Singleton & ("|" ) ,
       ] = OfPrmOf[K, ?, ?]
       
-      @annotation.experimental
+      // @annotation.experimental
       def ofAnyOf[
          Instance1 ,
          ChildSchema <: (FramePayloadScheme) { type Instance <: Instance1 } ,
@@ -436,7 +438,7 @@ trait EBsd extends
          )
       }
 
-      @annotation.experimental
+      // @annotation.experimental
       sealed 
       case class OfPrmOf[
          +K <: Singleton & ("|" ) ,
@@ -519,9 +521,10 @@ trait EBsd extends
             r.readEbmlDateBytes(supposedReadingLength = supposedReadingLength )
          }
          
+         @annotation.experimental
          def writeBnr(d: Instance, dest: RnpDest): WbnrR = {
             util.control.NonLocalReturns.returning[WbnrR](resolve ?=> {
-               @annotation.experimental
+               // @annotation.experimental
                val e = {
                   resolve.throwReturn(??)
                }
@@ -633,7 +636,7 @@ trait EBsd extends
 
       }
 
-      @annotation.experimental
+      // @annotation.experimental
       sealed 
       case class OfStr[
          +Len             <: S[cHasVariableLength.type | cbsq.FileSize], 
@@ -668,6 +671,7 @@ trait EBsd extends
             }
          }
 
+         @annotation.experimental
          def writeBnr(d: Instance, dest: RnpDest): WbnrR = ??
 
          // TODO
@@ -743,6 +747,7 @@ trait EBsd extends
         >: UnpickleInputStream
         <: java.io.InputStream
 
+      @annotation.experimental
       def writeBnr(d: Instance, dest: RnpDest): WbnrR
 
       type RnpDest
@@ -850,7 +855,7 @@ trait EBsd extends
 
       }
 
-      @annotation.experimental
+      // @annotation.experimental
       opaque type OfFrame
          <: (
          CodeUnitScheme & OfFixedLengthStrv0 & FramePayloadScheme.OfFixedLengthStrv {
@@ -863,7 +868,7 @@ trait EBsd extends
          )
          = Offr[?, ?]      
       
-      @annotation.experimental
+      // @annotation.experimental
       protected 
       sealed 
       case class Offr[
@@ -1083,7 +1088,7 @@ trait EBsd extends
          }
 
          // @deprecated("experimental")
-         // @annotation.experimental
+         @annotation.experimental
          def writeBnr(d: Instance, dest: RnpDest): WbnrR = {
             // dest writeEbmlFrame (({
             //    import d.{typeInt, payloadLength, payload }
@@ -1094,7 +1099,7 @@ trait EBsd extends
 
       }
 
-      @annotation.experimental
+      // @annotation.experimental
       opaque type OfMulti
          <: (
          FramePayloadScheme & FramePayloadScheme.OfFixedLengthStrv {
@@ -1107,7 +1112,7 @@ trait EBsd extends
          )
          = VariadicImpl[?, ?]
       
-      @annotation.experimental
+      // @annotation.experimental
       // protected 
       sealed 
       case class VariadicImpl[
@@ -1207,30 +1212,31 @@ trait EBsd extends
             }
          }
 
+         @annotation.experimental
          def writeBnr(d: Instance, dest: RnpDest): WbnrR = ??
          
       }
       
       export CodeUnitScheme.ofAnyOf
 
-      @annotation.experimental
+      // @annotation.experimental
       def ofOneOrMoreOfAnyOf[ChildSchema <: FScOps](c: Set[? <: ChildSchema]): (
          FramePayloadScheme & FramePayloadScheme.OfFixedLengthStrv
       ) = {
          ofOneOrMoreOfAnyOf1(c = c)
       }
-      @annotation.experimental
+      // @annotation.experimental
       def ofOneOrMoreOfAnyOf1[ChildSchema <: FScOps](c: Set[? <: ChildSchema]) = {
          ofOneOrMoreOfAnyOf1A(c = Lazy(c) )
       }
-      @annotation.experimental
+      // @annotation.experimental
       def ofOneOrMoreOfAnyOf1A[ChildSchema <: FScOps](c: Lazy[Set[? <: ChildSchema] ]) = {
          lazy val cCached = c.value
          VariadicImpl(encodedLength = cHasVariableLength, childSchemeM1 = () => {
                ofAnyOf(c = cCached )
          } )
       }
-      @annotation.experimental
+      // @annotation.experimental
       def ofOneOrMoreOfAnyOf1C[
          ChildSchema <: (
             FScOps {   
@@ -1249,7 +1255,7 @@ trait EBsd extends
       }
       
       // @deprecated("experimental")
-      @annotation.experimental
+      // @annotation.experimental
       trait XSc {
 
          val schemeMap : Map[BigInt, FScOps ]
@@ -1265,7 +1271,7 @@ trait EBsd extends
          >: FramePayloadScheme & CodeUnitScheme.XLengthOverrideable
          <: FramePayloadScheme & CodeUnitScheme.XLengthOverrideable
 
-      @annotation.experimental
+      // @annotation.experimental
       // @deprecated("experimental")
       def ofFrame(scheme : (
          PartialFunction[BigInt, (
@@ -1287,7 +1293,7 @@ trait EBsd extends
        * in-turn conforming to any of these schemes
        * 
        */
-      @annotation.experimental
+      // @annotation.experimental
       // @deprecated("experimental")
       def ofFrameOfExactlyOneOccurInSch(schemeLzy : Lazy[XSc ]) = {
          // TODO
@@ -1315,7 +1321,7 @@ trait EBsd extends
        * each in-turn conforming to any of these schemes
        * 
        */
-      @annotation.experimental
+      // @annotation.experimental
       // @deprecated("experimental")
       def ofFrameOfOneOrMoreOfAnyInSch(schemeLzy : Lazy[XSc ]) = {
          // TODO
@@ -1353,7 +1359,7 @@ trait EBsd extends
          }
       }
    
-      @annotation.experimental
+      // @annotation.experimental
       def newSchema(
          initSchemeMap: (this1: FramePayloadScheme.XSc) => Map[BigInt, FScOps] ,
       ) = {
