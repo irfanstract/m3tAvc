@@ -992,8 +992,35 @@ trait EBsd extends
                 * 
                 */
                ernp(using (
-                  summon[CodeSchemeOps.TraversalDiagnostique ]
-                  .ofChild(divName = s"<${efpr.typeAsUtf } (${efpr.payloadLength })>")
+                  {
+                     val currentPath = summon[CodeSchemeOps.TraversalDiagnostique ]
+                     currentPath
+                     .ofChild(divName = {
+
+                        val typeNm = {
+
+                           Option(currentPath.fullScheme).map(_.nn)
+                           
+                           .flatMap(s => {
+                              s
+                              .collectFirst({
+                                 case e if (e.clsId == efpr.typeInt ) =>
+                                    e.mName
+                              })
+                              
+                           })
+                           .fold[String]({
+                              efpr.typeInt
+                              .toString(0x10).prependedAll("0x")
+                              
+                           } )(s => s )
+
+                        }
+                        
+                        s"<${typeNm } (${efpr.payloadLength })>"
+
+                     })
+                  }
                ) )(efpr = efpr )
          }
 
