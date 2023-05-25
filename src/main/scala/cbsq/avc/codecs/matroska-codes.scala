@@ -53,6 +53,11 @@ object matrCd {
       .elemDecls1
    )
       
+   lazy val scheme = {
+      import cbsq.riffmt.getEbmlSchema
+      getEbmlSchema(doc )
+   }
+
 }
 
 extension (eStr : String) {
