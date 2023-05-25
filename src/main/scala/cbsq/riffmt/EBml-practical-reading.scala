@@ -68,12 +68,10 @@ def ebmlPracticalTest1(): Unit = {
          try {
             ((r: UnpickleInputStream) => {
                println("CONTENTS" )
-               lazy val s = {
-                  cbsq.avc.codecs.matrCd.scheme
-               }
+               import cbsq.avc.codecs.matrCd.{scheme => s, entries => sE}
                val e = (
                   s.schemeMap(0x18538067)
-                  .readAndParse(r)(using EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance )
+                  .readAndParse(r)(using EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance withFullSchemeInfo sE )
                )
                println(e.toString() )
             })({
