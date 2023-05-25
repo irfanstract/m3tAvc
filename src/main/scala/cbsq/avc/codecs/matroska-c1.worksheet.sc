@@ -17,5 +17,9 @@ matrCd.entries
 ) )
 .mkString("\n")
 
+matrCd.entries
+.map(_.mValueTypeSimpleName)
+.toSet
+
 
 
