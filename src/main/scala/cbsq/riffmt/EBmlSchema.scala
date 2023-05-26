@@ -1057,6 +1057,21 @@ trait EBsd extends
 
                         val typeNm = {
 
+                           getXElementEfprSimpleName(using currentPath )(efpr = efpr )
+
+                        }
+                        
+                        s"<${typeNm } (${efpr.payloadLength })>"
+
+                     })
+                  }
+               ) )(efpr = efpr )
+         }
+
+         def getXElementEfprSimpleName(using currentPath : CodeSchemeOps.TraversalDiagnostique)(
+            efpr: EbmRawFrameElement[String] ,
+         ): String = {
+
                            Option(currentPath.fullScheme).map(_.nn)
                            
                            .flatMap(s => {
@@ -1073,13 +1088,6 @@ trait EBsd extends
                               
                            } )(s => s )
 
-                        }
-                        
-                        s"<${typeNm } (${efpr.payloadLength })>"
-
-                     })
-                  }
-               ) )(efpr = efpr )
          }
 
          // TODO
