@@ -240,6 +240,8 @@ object ByteBlob {
     * 
     */
    def takeJIoInputStreamRemainder(src: java.io.InputStream): ByteBlob = {
+      import language.unsafeNulls /* known usage */
+
       val b1 = {
          /** 
           * note : always new array/buffer
@@ -255,6 +257,8 @@ object ByteBlob {
     * 
     */
    inline def copyOf(src: java.io.ByteArrayOutputStream): ByteBlob = {
+      import language.unsafeNulls /* known usage */
+
       unsafeWrapArray(buf = src.toByteArray() )
    }
 
@@ -285,6 +289,7 @@ export java.nio.{
 //    {}
 
 def newInt32Buffer(size: Int): JInt32Buffer = 
+   import language.unsafeNulls /* known usage */
    java.nio.IntBuffer.allocate(size)
 
    

@@ -10,6 +10,8 @@ package cbsq.avc
 
 lazy val countingByteCodec = {
    
+   import language.unsafeNulls
+
    import bdIoUtil.drainAndWait
 
    import bdUtilCct.{CTasking, CTasking1 }
@@ -109,6 +111,8 @@ lazy val countingByteCodec = {
 
 @main
 def runCountingBytesDemuxTest(args: String* ): Unit = {
+   import language.unsafeNulls
+
    import concurrent.ExecutionContext.Implicits.*
    import concurrent.duration.*
    class XIOE extends java.io.IOException("not supported")
