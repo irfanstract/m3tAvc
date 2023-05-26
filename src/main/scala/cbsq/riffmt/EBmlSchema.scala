@@ -1107,6 +1107,16 @@ trait EBsd extends
          ) = {
                (new `E S` with `elements_@&%!`.Element {
 
+                  override
+                  lazy val classSimpleName: String = {
+
+                     getXElementEfprSimpleName(using {
+                        summon[CodeSchemeOps.TraversalDiagnostique ]
+
+                     } )(efpr = efpr )
+                     
+                  }
+
                   val className = {
                      efpr.typeInt
                   }
