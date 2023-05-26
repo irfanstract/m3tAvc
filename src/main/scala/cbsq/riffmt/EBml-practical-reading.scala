@@ -75,7 +75,7 @@ def ebmlPracticalTest1(): Unit = {
                      EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance
                      .withFullSchemeInfo( sE)
                      .withCustomErrorHandler({
-                        
+
                         case _ =>
                            Seq()
 
