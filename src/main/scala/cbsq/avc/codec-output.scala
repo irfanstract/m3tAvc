@@ -102,6 +102,13 @@ object BbsdAvFrameHandler
 
    }
 
+   /**
+    * 
+    * `this` defines
+    * - `Timestamp`
+    * - `propagateRefresh(...): Unit`
+    * 
+    */
    trait  TsAndPr {
       
       type Timestamp
