@@ -898,7 +898,7 @@ trait EBsd extends
 
                   (
                      Seq()
-                     :+ s"<!e:${classSimpleName } >"
+                     :+ s"<${classSimpleName } >"
                      :++ (
                         children
                         // .tapEach({
