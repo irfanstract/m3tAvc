@@ -21,16 +21,60 @@ export cbsq.avc.{MediaKind as EMediaKind } //
 
 
 
+trait MediaDeviceBeingOfSpecificMediaType 
+   extends
+   AnyRef
+{
+   
+   /**
+    * 
+    * tells 
+    * whether 
+    * this (Codec) is 
+    * of *audio*, *subtitles*, *video*, or some other *media-type*, or a mux/mix thereof
+    * 
+    */
+   val mediaKind : EMediaKind
+
+}
+
+trait MediaDeviceArgsAndInstancing1
+   extends
+   AnyRef
+   with Adcp
+{
+
+   type Args
+
+   def spawn(args: Args): (
+      Instance
+   )
+ 
+   type Instance <: (
+      AnyRef
+      & java.io.Closeable
+   )
+
+}
+
 object  MediaDeviceOverview
 {
 
 }
 
+/**
+ * 
+ * interface to a media capture dvc display dvc (provider).
+ * 
+ */
+@deprecatedInheritance("intended to be sealed")
 // sealed
 trait MediaDeviceOverview 
 extends 
 AnyRef
+with MediaDeviceBeingOfSpecificMediaType
 with mdoSupertraits1.ArgsAndTheirBuildability
+with MediaDeviceArgsAndInstancing1
 { this1 =>
    
    /**
@@ -43,17 +87,13 @@ with mdoSupertraits1.ArgsAndTheirBuildability
     */
    val mediaKind : EMediaKind
 
-   type Instance <: (
-      AnyRef
-      & java.io.Closeable
-   )
-
-   def spawn(args: Args): (
-      Instance
-   )
- 
 }
 
+/**
+ * 
+ * the side-`class/trait`s which the main `class/trait` `extends`
+ * 
+ */
 object mdoSupertraits1 {
       
    sealed 
@@ -112,24 +152,25 @@ object  MediaCodecProperties {
 
 }
 
+/**
+ * 
+ * interface to a *codec*.
+ * 
+ * technically
+ * *codec*s are just another examples of *device*s --
+ * every *codec* is effectively a *device* which decode-from or encode-to b/c streams
+ * 
+ */
 // sealed
 trait MediaCodecProperties 
    extends 
    AnyRef
    with MediaDeviceOverview
+   with MediaDeviceBeingOfSpecificMediaType
    with mcdcSupertraits.ArgsAndTheirBuildability
+   with MediaDeviceArgsAndInstancing1
    // with TPossiblySupportsEvents
 { this1 =>
-
-   /**
-    * 
-    * tells 
-    * whether 
-    * this (Codec) is 
-    * of *audio*, *subtitles*, *video*, or some other *media-type*, or a mux/mix thereof
-    * 
-    */
-   val mediaKind : EMediaKind
 
    /**
     * 
@@ -164,17 +205,13 @@ trait MediaCodecProperties
 
    summon[CharacteristicFd <:< java.io.Closeable]
 
-   type Instance <: (
-      AnyRef
-      & java.io.Closeable
-   )
-
-   def spawn(args: Args): (
-      Instance
-   )
-
 }
 
+/**
+ * 
+ * the side-`class/trait`s which the main `class/trait` `extends`
+ * 
+ */
 object mcdcSupertraits {
    
    sealed 
@@ -194,8 +231,18 @@ object mcdcSupertraits {
       
       extension [A <: Args](a: A) {
          
+         /**
+          * 
+          * for given URL (actually `URI`)
+          * 
+          */
          def forUrl(s: JUrlOrPath)(using ArgsDerivCompletibility[A, a.type, ardtForUrl.type] ): Args
       
+         /**
+          * 
+          * for an already-opened stream
+          * 
+          */
          def forOpenedStream(s: CharacteristicFd )(using ArgsDerivCompletibility[A, a.type, ardtForOpenedStream.type] ): Args
       
       }
