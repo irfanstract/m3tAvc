@@ -19,17 +19,22 @@ class  BbsdAvFrameHandler
 object BbsdAvFrameHandler 
 {
 
-   val videoToolkit = 
-      object c extends Selectable
-      {
+   val videoToolkit: BbsdAvfhVideoToolkitOps = {
+      object c extends BbsdAvfhVideoToolkitOps
+      c
+   }
+
+   protected
+   trait BbsdAvfhVideoToolkitOps
+   {
 
          type VideoBuffer
             >: java.awt.image.WritableRenderedImage
             <: AnyRef
 
          export cbsq.avc.{ColorChannelsFmt }
-      }
-      c
+
+   }
    
    /**
     * 
