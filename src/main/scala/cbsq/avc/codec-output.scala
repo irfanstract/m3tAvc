@@ -31,6 +31,12 @@ object BbsdAvFrameHandler
       }
       c
    
+   /**
+    * 
+    * invoke `switchBuffer`, and then (on `thisBbfh`)
+    * run an interval-delimited loop of invoc of the *propagateRefresh* method
+    * 
+    */
    abstract class OfVideoBufferSwitchToAndRefresh extends 
       Ovbsr 
       with OSwitchOfBuf[videoToolkit.VideoBuffer, Unit ]
@@ -39,6 +45,15 @@ object BbsdAvFrameHandler
 
    }
 
+   /**
+    * 
+    * invoke `switchBuffer`, and then (on the returned BBFH)
+    * run an interval-delimited loop of invoc of the *propagateRefresh* method
+    * 
+    * `switchBuffer` can be called more-tah-once,
+    * resulting in multiple independent `TsAndPr`s
+    * 
+    */
    abstract class OfVideoBufferWrapRefresh
       extends 
       Ovbsr 
@@ -59,6 +74,15 @@ object BbsdAvFrameHandler
 
    }
 
+   /**
+    * 
+    * invoke `allocate` ("allocate a video-buffer"), and then (on the returned BBFH)
+    * run an interval-delimited loop of invoc of the *propagateRefresh* method
+    * 
+    * `allocate` can be called more-than-once,
+    * resulting in multiple independent `TsAndPr`s
+    * 
+    */
    abstract class OfVideoBufferAllocAndRefresh
       extends 
       Ovbsr 
