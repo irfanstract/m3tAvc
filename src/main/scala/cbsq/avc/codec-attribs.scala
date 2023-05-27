@@ -161,7 +161,7 @@ object  MediaCodecProperties {
  * every *codec* is effectively a *device* which decode-from or encode-to b/c streams
  * 
  */
-// sealed
+sealed
 trait MediaCodecProperties 
    extends 
    AnyRef
@@ -266,7 +266,8 @@ object mcdcSupertraits {
    
 }
 
-protected
+@deprecated("experimental")
+// protected
 trait MediaCodecPropertiesMixin extends MediaCodecProperties
 
 
