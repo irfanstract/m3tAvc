@@ -82,7 +82,7 @@ def ebmlPracticalTest1(): Unit = {
                      })
                   } )
                )
-               println(e.toString() replaceAll ({ import scala.util.matching.Regex.quote ; s"(\\w{64})\\w{3,}(?:${quote("...") })?" }, "$1...") take (100 * 1024 ) )
+               println(e.toString() replaceAll ({ import scala.util.matching.Regex.quote ; s"(\\w{64})\\w{3,}(?:${quote("...") })?" }, "$1...") take (10 * 1024 ) )
             })({
                // import EBmlPrimitivesIo.asMarkableStream
                r
