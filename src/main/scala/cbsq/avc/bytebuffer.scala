@@ -97,6 +97,30 @@ type JBB[Character] <: java.nio.Buffer =
  * bytebuf1 + MvBytes.stdPayloadOffset
  * ```
  * 
+ * instances demonstrate some important properties.
+ * - equality (between two) is well-defined honouring
+ *   - the corresponding behaviour of C's "pointer"s
+ *   - always happen here `(p + off) == (p + off)`
+ *   - the associativity of the `+` op like `(p + off1 + off2) == (p + (off1 + off2 ) )`
+ * 
+ * ```
+ * // example
+ * 
+ * val bp1 = KByteBuffer.allocate(len = 0x32 )
+ * // bp1: KByteBuffer = KByteBuffer(0@java.nio.HeapByteBuffer[pos=0 lim=50 cap=50]) 
+ * 
+ * val bp101 = (bp1 + 0x4 + 0x4)
+ * // bp101: KByteBuffer = KByteBuffer(8@java.nio.HeapByteBuffer[pos=0 lim=50 cap=50]) 
+ * 
+ * val bp102 = (bp1 + 0x8)
+ * // bp102: KByteBuffer = KByteBuffer(8@java.nio.HeapByteBuffer[pos=0 lim=50 cap=50]) 
+ * 
+ * bp101 == bp102 
+ * // res0: Boolean = true
+ * 
+ * 
+ * ```
+ * 
  */
 sealed trait KBuffer { this1 =>
 
@@ -172,6 +196,13 @@ object KBuffer {
 /**
  * 
  * (C/C++)-style *pointer-type* `int8_t*`.
+ * 
+ * instances demonstrate some important properties.
+ * - equality (between two) is well-defined honouring
+ *   - the corresponding behaviour of C's "pointer"s
+ *   - always happen here `(p + off) == (p + off)`
+ *   - the associativity of the `+` op like `(p + off1 + off2) == (p + (off1 + off2 ) )`
+ * 
  * 
  */
 sealed 
