@@ -32,7 +32,15 @@ trait Acp[+Instance] {
 
       colorSpace:  ColorChannelsFmt[ColorChannelsFmt.Properties1] ,
 
-      pixFmt: ([T] =>> PixelFmt { val colorSpace: T })[colorSpace.type] ,
+      pixFmt: (
+         ([SpecificColorSpace1] =>> (
+
+            PixelFmt {
+               val colorSpace: SpecificColorSpace1 
+            }
+            
+         ))[colorSpace.type]
+      ) ,
       
    ): Instance
    
