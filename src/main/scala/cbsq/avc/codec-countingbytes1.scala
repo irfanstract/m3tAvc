@@ -27,6 +27,10 @@ lazy val countingByteCodec = {
       val mediaKind: EMediaKind.Mix.type =
          EMediaKind.Mix
 
+      val instancingLevel: MediaDeviceInstancingLevel = {
+         MediaDeviceInstancingLevel.ofCompleteCodecSpace
+      }
+
       /* we deliberately choose `U_R_I`, not `U_R_L`. */
 
       type CharacteristicFd

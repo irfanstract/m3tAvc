@@ -158,6 +158,10 @@ def newBlankingDemuxer() =
       val mediaKind: EMediaKind.Mix.type =
          EMediaKind.Mix
 
+      val instancingLevel: MediaDeviceInstancingLevel = {
+         MediaDeviceInstancingLevel.ofCompleteCodecSpace
+      }
+
       type CharacteristicFd
          >: java.io.InputStream | java.nio.channels.SeekableByteChannel | java.io.Reader
          <: java.io.InputStream | java.nio.channels.SeekableByteChannel | java.io.Reader
