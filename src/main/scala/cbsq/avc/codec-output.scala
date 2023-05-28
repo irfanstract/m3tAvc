@@ -198,12 +198,16 @@ trait SupportsSwitchingToNextFrame[+R]
 
 }
 
-trait SupportsCurrentlyPointedFrameTRangeQuery1
+trait SupportsCurrentlyPointedFrameTRangeQuery[+R <: Matchable]
 {
 
-   def currentFrameTRange : (Double, Double)
+   def currentFrameTRange : R
 
 }
+
+type SupportsCurrentlyPointedFrameTRangeQuery1 = (
+   SupportsCurrentlyPointedFrameTRangeQuery[(Double, Double)]
+)
 
 trait SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[-B <: AnyRef]
 {
