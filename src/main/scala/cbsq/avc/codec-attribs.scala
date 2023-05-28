@@ -38,6 +38,74 @@ trait MediaDeviceBeingOfSpecificMediaType
 
 }
 
+trait MediaDeviceBeingAtSpecificInstancingLevel
+   extends
+   AnyRef
+{
+
+   /**
+    * 
+    * tells
+    * whether
+    * this Device is merely the decoder, merely the encoder, or is the whole pair of them
+    * 
+    * some providers may give the same handle for either level, in which case
+    * eg this method will always return the same MIL(s), and `this.spawn(...)` will simply return `this`
+    * 
+    */
+   val instancingLevel: MediaDeviceInstancingLevel
+
+}
+
+object MediaDeviceBeingAtSpecificInstancingLevel
+{
+
+}
+
+enum MediaDeviceInstancingLevel {
+
+   /* the `spawn`ed version of the "template" version */
+
+   case ofTheDecodingHandInstance
+   case ofTheEncodingHandInstance
+
+   /* the "template" version ; defining `defaultArgs` and `spawn(...)` */
+
+   case ofTheDecodingHandTemplate
+   case ofTheEncodingHandTemplate
+   
+   /* the complete codec pair */
+
+   case ofCompleteCodecSpace
+   
+}
+object MediaDeviceInstancingLevel {
+
+   import MediaDeviceInstancingLevel.*
+
+   /**
+    * 
+    * the `spawn`ed version of the "template" version
+    * 
+    */
+   type OfEitherTheDecodingOrEncodingHandInstance = (
+        ofTheDecodingHandInstance.type 
+      | ofTheEncodingHandInstance.type
+   )
+
+   /**
+    * 
+    * the "template" versions
+    * are the pre-instantiated versions, defining `defaultArgs` and `spawn(...)`
+    * 
+    */
+   type OfEitherTheDecodingOrEncodingHandTemplate = (
+        ofTheDecodingHandTemplate.type
+      | ofTheEncodingHandTemplate.type
+   )
+
+}
+
 trait MediaDeviceArgsAndInstancing1
    extends
    AnyRef
