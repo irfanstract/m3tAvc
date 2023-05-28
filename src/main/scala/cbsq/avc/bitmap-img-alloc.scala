@@ -30,7 +30,7 @@ trait Acp[+Instance] {
    def allocate(
       resolution: ((Int, Int)) ,
 
-      colorSpace:  ColorChannelsFmt[ColorChannelsFmt.Properties1] ,
+      colorSpace:  ColorChannelsFmt[?] ,
 
       pixFmt: (
          ([SpecificColorSpace1] =>> (
