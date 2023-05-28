@@ -177,15 +177,32 @@ object BbsdAvFrameIterator
       )]
    )
 
-   trait OfIterAndBuf[
+   type OfIterAndBuf[
       B <: AnyRef ,
-   ] extends 
-      BbsdAvFrameIterator 
+   ] = (
+      AnyRef
+      with BbsdAvFrameIterator 
+      with SupportsSwitchingToNextFrame[Unit]
+      with SupportsCurrentlyPointedFrameTRangeQuery1
+      with SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[B]
+   )
+
+   trait SupportsSwitchingToNextFrame[+R]
    {
       
-      def switchToNextFrame(): Unit
+      def switchToNextFrame(): R
+
+   }
+
+   trait SupportsCurrentlyPointedFrameTRangeQuery1
+   {
 
       def currentFrameTRange : (Double, Double)
+
+   }
+   
+   trait SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[-B <: AnyRef]
+   {
 
       def renderCurrentFrameData(dest: B): Unit
 
