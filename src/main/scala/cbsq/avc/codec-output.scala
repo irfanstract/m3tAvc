@@ -187,28 +187,30 @@ object BbsdAvFrameIterator
       with SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[B]
    )
 
-   trait SupportsSwitchingToNextFrame[+R]
-   {
-      
-      def switchToNextFrame(): R
+}
 
-   }
 
-   trait SupportsCurrentlyPointedFrameTRangeQuery1
-   {
 
-      def currentFrameTRange : (Double, Double)
-
-   }
+trait SupportsSwitchingToNextFrame[+R]
+{
    
-   trait SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[-B <: AnyRef]
-   {
-
-      def renderCurrentFrameData(dest: B): Unit
-
-   }
+   def switchToNextFrame(): R
 
 }
+
+trait SupportsCurrentlyPointedFrameTRangeQuery1
+{
+
+   def currentFrameTRange : (Double, Double)
+
+}
+
+trait SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[-B <: AnyRef]
+{
+
+   def renderCurrentFrameData(dest: B): Unit
+
+} /* SupportsBlittingOfCurrentlyFrameDataOntoPassedDest */
 
 
 
