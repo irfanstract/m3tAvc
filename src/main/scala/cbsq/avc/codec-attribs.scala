@@ -420,7 +420,7 @@ trait TPossiblySupportsEvents
     * may optionally emit events
     * 
     */
-   lazy val events : Iterator[EventInfo]
+   lazy val events : EventIterator[EventInfo]
    type EventInfo <: AnyRef
 
 }
@@ -437,7 +437,7 @@ trait TPossiblySupportsEvents
 @deprecated("experimental")
 // protected 
 trait  TPossiblySupportsEventsForwarded[SpecificEvent <: AnyRef](
-  private[TPossiblySupportsEventsForwarded] val backingSourcer : Singleton & Iterator[SpecificEvent] ,
+  private[TPossiblySupportsEventsForwarded] val backingSourcer : Singleton & EventIterator[SpecificEvent] ,
 )
    extends 
    TPossiblySupportsEvents
@@ -492,8 +492,8 @@ with TPossiblySupportsEvents
     * unless this `val` is overridden, would not emit anything.
     * 
     */
-   lazy val events : Iterator[EventInfo] =
-      Iterator()
+   lazy val events : EventIterator[EventInfo] =
+      newEventEmitter[Nothing]()._2
  
 }
 
