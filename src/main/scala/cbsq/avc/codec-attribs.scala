@@ -209,6 +209,31 @@ object mdoSupertraits1 {
 }
 
 
+/**
+ * 
+ * a capture device or display device
+ * does not take file/URL arguments
+ * 
+ */
+trait MediaEndPointDeviceOverview extends
+AnyRef
+with MediaDeviceOverview
+{
+
+   require((
+      !(this.isInstanceOf[MediaCodecOverview] )
+   ) , s"an 'end-point device' cannot additionally be a 'codec'. (${this.getClass().getName() }) " )
+   
+}
+
+object MediaEndPointDeviceOverview
+{
+
+   //
+   
+}
+
+
 object  MediaCodecProperties {
 
    export isunsp.{value as IsUnspecified}
