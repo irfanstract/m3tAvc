@@ -99,7 +99,6 @@ with MediaCodecPropertiesMixin
 
          type Args 
             >: String | java.net.URI | java.net.URL | java.nio.file.Path | CharacteristicFd
-            <: String | java.net.URI | java.net.URL | java.nio.file.Path | CharacteristicFd
 
          val argsInitially: Args
 
