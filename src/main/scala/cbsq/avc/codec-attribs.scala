@@ -215,7 +215,7 @@ object mdoSupertraits1 {
  * does not take file/URL arguments
  * 
  */
-trait MediaEndPointDeviceOverview extends
+trait MediaEndPointDeviceProperties extends
 AnyRef
 with MediaDeviceProperties
 {
@@ -226,7 +226,7 @@ with MediaDeviceProperties
    
 }
 
-object MediaEndPointDeviceOverview
+object MediaEndPointDeviceProperties
 {
 
    //
