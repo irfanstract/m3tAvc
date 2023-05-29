@@ -125,7 +125,7 @@ trait MediaDeviceArgsAndInstancing1
 
 }
 
-object  MediaDeviceOverview
+object  MediaDeviceProperties
 {
 
 }
@@ -137,7 +137,7 @@ object  MediaDeviceOverview
  */
 @deprecatedInheritance("intended to be sealed")
 // sealed
-trait MediaDeviceOverview 
+trait MediaDeviceProperties 
 extends 
 AnyRef
 with MediaDeviceBeingOfSpecificMediaType
@@ -217,7 +217,7 @@ object mdoSupertraits1 {
  */
 trait MediaEndPointDeviceOverview extends
 AnyRef
-with MediaDeviceOverview
+with MediaDeviceProperties
 {
 
    require((
@@ -259,7 +259,7 @@ sealed
 trait MediaCodecProperties 
    extends 
    AnyRef
-   with MediaDeviceOverview
+   with MediaDeviceProperties
    with MediaDeviceBeingOfSpecificMediaType
    with MediaDeviceBeingAtSpecificInstancingLevel
    with mcdcSupertraits.ArgsAndTheirBuildability
@@ -376,7 +376,7 @@ trait MediaCodecPropertiesMixin extends MediaCodecProperties
 
 /**
  * 
- * extra utils for [[MediaDeviceOverview]]
+ * extra utils for [[MediaDeviceProperties]]
  * 
  */
 protected 
@@ -395,7 +395,7 @@ object mcdcParamBuilders
 }
 
 private
-def mediaDvcArgsBuildersDemo(c: MediaDeviceOverview): Unit = {
+def mediaDvcArgsBuildersDemo(c: MediaDeviceProperties): Unit = {
    ()
    def randomStringArg(): c.SpecString =
       ???
