@@ -137,16 +137,14 @@ object LateBoundValue
        * 
        * no need to make this method private as it will always return the same value
        * 
-       * to avoid the problem of worksheets hanging forever due to the question remaining unresolved indefinitely,
-       * we impose timeout of, maybe, tens of seconds
-       * 
        */
       def getValue(): Gv = {
 
          import concurrent.duration.*
 
          val timeout : FiniteDuration = {
-            12.seconds
+            nhwgvTimeoutPolicies
+            .getTimeoutValue()
          }
 
          for (_ <- startTimingOutIterator(timeout = timeout ) ) {
@@ -160,7 +158,7 @@ object LateBoundValue
             }
          }
 
-         throw new java.util.concurrent.TimeoutException("time up; consider manual await with larger timeout")
+         throw new java.util.concurrent.TimeoutException(s"time up ($timeout); consider manual await with larger timeout")
 
       }
 
@@ -210,6 +208,41 @@ object LateBoundValue
             }
          )
          
+   }
+
+   @deprecated("experimental")
+   object nhwgvTimeoutPolicies
+   {
+
+      def getTimeoutValue(): concurrent.duration.FiniteDuration = {
+
+         timeoutValueThreadLocal
+         .get().nn
+
+      }
+
+      def setTimeoutCtxValue(
+         value: concurrent.duration.FiniteDuration,
+         
+      ): Unit = {
+
+         timeoutValueThreadLocal
+         .set(value )
+
+      }
+
+      private[nhwgvTimeoutPolicies ] 
+      val timeoutValueThreadLocal = {
+
+         new InheritableThreadLocal[concurrent.duration.FiniteDuration]() {
+            set({
+               import concurrent.duration.*
+               24.hours
+            })
+         }
+         
+      }
+
    }
 
 }
