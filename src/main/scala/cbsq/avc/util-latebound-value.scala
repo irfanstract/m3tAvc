@@ -76,7 +76,7 @@ object LateBoundValue
    {
 
       private[LateBoundValue]
-      lazy val prm : concurrent.Promise[V] 
+      lazy val prmPr : concurrent.Promise[concurrent.Future[V] ] 
 
       /**
        * 
@@ -88,12 +88,24 @@ object LateBoundValue
        */
       private[NhwCompleteWith]
       final
-      lazy val prmExportible = prm
+      lazy val prmPrExportible = prmPr
 
-      export prmExportible.{
-         success ,
-         complete ,
-         completeWith ,
+      def success(v: V) : concurrent.Promise[?] = {
+         prmPr
+         .success({
+            concurrent.Future.successful(v : v.type )
+         })
+      }
+      
+      def complete(v0: util.Try[V]) : concurrent.Promise[?] = {
+         prmPr
+         .success({
+            concurrent.Future.fromTry(v0 )
+         })
+      }
+      
+      export prmPrExportible.{
+         success => completeWith ,
       }
 
    }
@@ -109,7 +121,9 @@ object LateBoundValue
       override
       final      
       lazy val asFuture = {
-         prm.future
+         prmPr
+         .future
+         .flatten
       }
 
    }
@@ -175,8 +189,8 @@ object LateBoundValue
 
       private[LateBoundValue]
       override
-      lazy val prm : concurrent.Promise[V] = {
-         concurrent.Promise[V]
+      lazy val prmPr = {
+         concurrent.Promise()
       }
 
       override
