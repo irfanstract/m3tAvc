@@ -181,6 +181,30 @@ object LateBoundValue
       
    }
 
+   def startTimingOutIterator(
+      timeout : concurrent.duration.Duration ,
+      
+   ): Iterator[Unit] = {
+
+         import concurrent.duration.*
+
+         (
+            new collection.AbstractIterator[Unit] {
+
+               protected 
+               val initialT = 0.seconds.fromNow
+
+               def hasNext = {
+                  (0.seconds.fromNow - initialT ) < timeout
+               }
+
+               def next = {}
+               
+            }
+         )
+         
+   }
+
 }
 
 
