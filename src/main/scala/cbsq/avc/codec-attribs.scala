@@ -47,7 +47,9 @@ trait MediaDeviceBeingAtSpecificInstancingLevel
     * 
     * tells
     * whether
-    * this Device is merely the decoder, merely the encoder, or is the whole pair of them
+    * this DeviceOverview
+    * denotes the whole pair of zero-or-more hands (each a grabber-or-decoder, emitter-or-encoder, postcod-filter, or else), or
+    * one of the(se) hands
     * 
     * some providers may give the same handle for either level, in which case
     * eg this method will always return the same MIL(s), and `this.spawn(...)` will simply return `this`
