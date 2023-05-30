@@ -40,6 +40,12 @@ trait Adcp
       Args
    )
 
+   extension [A <: Args](a: A) {
+      
+      def asReset(using ArgsDerivResettibility[A, a.type] ): argsInitially.type
+      
+   }
+   
    /*
     * 
     * THE DERIVATIONAL TYPE_GUARDS
