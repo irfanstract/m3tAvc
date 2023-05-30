@@ -75,9 +75,6 @@ with MediaDeviceBeingOfSpecificMediaType
  */
 object mdoSupertraits1 {
       
-   export mdoParamBuilders.ArgsAndTheirBuildability
-   export mdoParamBuilders.XArdt
-
    // sealed 
    // abstract 
    // class KCto
@@ -187,9 +184,6 @@ trait MediaCodecProperties
  */
 object mcdcSupertraits {
    
-   export mcdcParamBuilders.ArgsAndTheirBuildability
-   export mcdcParamBuilders.XArdt
-
    type JUrlOrPath = (
       java.net.URI | java.nio.file.Path
    )

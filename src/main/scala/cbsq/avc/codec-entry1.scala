@@ -54,7 +54,7 @@ extends
 AnyRef
 with MediaDeviceProperties
 with MediaDeviceBeingAtSpecificInstancingLevel
-with mdoSupertraits1.ArgsAndTheirBuildability
+with mdoParamBuilders.ArgsAndTheirBuildability
 with MediaDeviceArgsAndInstancing1
 with TPossiblySupportsEvents
 {
@@ -88,7 +88,7 @@ AnyRef
 with MediaDeviceOverview
 with MediaCodecPropertiesMixin
 with MediaDeviceBeingAtSpecificInstancingLevel
-with mcdcSupertraits.ArgsAndTheirBuildability
+with mcdcParamBuilders.ArgsAndTheirBuildability
 with MediaDeviceArgsAndInstancing1
 with TPossiblySupportsEvents
 {
@@ -172,7 +172,7 @@ object mcdcParamBuilders
       extends 
       AnyRef
       with Adcp
-      with mdoSupertraits1.ArgsAndTheirBuildability
+      with mdoParamBuilders.ArgsAndTheirBuildability
       with XArdt
    { this1: MediaCodecProperties =>
       
