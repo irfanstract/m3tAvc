@@ -144,8 +144,6 @@ extends
 AnyRef
 with MediaDeviceBeingOfSpecificMediaType
 with MediaDeviceBeingAtSpecificInstancingLevel
-with mdoSupertraits1.ArgsAndTheirBuildability
-with MediaDeviceArgsAndInstancing1
 { this1 =>
    
    /**
@@ -264,8 +262,6 @@ trait MediaCodecProperties
    with MediaDeviceProperties
    with MediaDeviceBeingOfSpecificMediaType
    with MediaDeviceBeingAtSpecificInstancingLevel
-   with mcdcSupertraits.ArgsAndTheirBuildability
-   with MediaDeviceArgsAndInstancing1
    // with TPossiblySupportsEvents
 { this1 =>
 
@@ -397,7 +393,7 @@ object mcdcParamBuilders
 }
 
 private
-def mediaDvcArgsBuildersDemo(c: MediaDeviceProperties): Unit = {
+def mediaDvcArgsBuildersDemo(c: MediaDeviceOverview): Unit = {
    ()
    def randomStringArg(): c.SpecString =
       ???
@@ -508,6 +504,8 @@ trait MediaDeviceOverview
 extends
 AnyRef
 with MediaDeviceProperties
+with mdoSupertraits1.ArgsAndTheirBuildability
+with MediaDeviceArgsAndInstancing1
 with TPossiblySupportsEvents
 {
 
@@ -539,6 +537,8 @@ extends
 AnyRef
 with MediaDeviceOverview
 with MediaCodecPropertiesMixin
+with mcdcSupertraits.ArgsAndTheirBuildability
+with MediaDeviceArgsAndInstancing1
 with TPossiblySupportsEvents
 {
 
