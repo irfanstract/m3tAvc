@@ -143,7 +143,6 @@ trait MediaDeviceProperties
 extends 
 AnyRef
 with MediaDeviceBeingOfSpecificMediaType
-with MediaDeviceBeingAtSpecificInstancingLevel
 { this1 =>
    
    /**
@@ -261,7 +260,6 @@ trait MediaCodecProperties
    AnyRef
    with MediaDeviceProperties
    with MediaDeviceBeingOfSpecificMediaType
-   with MediaDeviceBeingAtSpecificInstancingLevel
    // with TPossiblySupportsEvents
 { this1 =>
 
@@ -504,6 +502,7 @@ trait MediaDeviceOverview
 extends
 AnyRef
 with MediaDeviceProperties
+with MediaDeviceBeingAtSpecificInstancingLevel
 with mdoSupertraits1.ArgsAndTheirBuildability
 with MediaDeviceArgsAndInstancing1
 with TPossiblySupportsEvents
@@ -537,6 +536,7 @@ extends
 AnyRef
 with MediaDeviceOverview
 with MediaCodecPropertiesMixin
+with MediaDeviceBeingAtSpecificInstancingLevel
 with mcdcSupertraits.ArgsAndTheirBuildability
 with MediaDeviceArgsAndInstancing1
 with TPossiblySupportsEvents
