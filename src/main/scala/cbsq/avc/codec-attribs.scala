@@ -496,14 +496,46 @@ trait  TPossiblySupportsEventsForwarded[SpecificEvent <: AnyRef](
 
 
 
+object MediaDeviceOverview
+{
+
+   summon[MediaDeviceOverview <:< MediaDeviceProperties]
+   
+}
+trait MediaDeviceOverview 
+extends
+AnyRef
+with MediaDeviceProperties
+with TPossiblySupportsEvents
+{
+
+   /**
+    * 
+    * may optionally emit events
+    * 
+    * impl :
+    * by default, no event would be generated.
+    * 
+    */
+   override
+   lazy val events : EventIterator[EventInfo] =
+      newEventEmitter[Nothing]()._2
+ 
+}
+
+
+
 object   MediaCodecOverview {
 
    export MediaCodecProperties.IsUnspecified
+
+   summon[MediaCodecOverview <:< MediaDeviceOverview]
 
 }
 trait    MediaCodecOverview 
 extends
 AnyRef
+with MediaDeviceOverview
 with MediaCodecPropertiesMixin
 with TPossiblySupportsEvents
 {
@@ -517,6 +549,7 @@ with TPossiblySupportsEvents
     * unless this `val` is overridden, would not emit anything.
     * 
     */
+   override
    lazy val events : EventIterator[EventInfo] =
       newEventEmitter[Nothing]()._2
  
