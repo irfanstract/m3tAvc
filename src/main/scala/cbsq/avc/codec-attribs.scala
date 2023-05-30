@@ -220,7 +220,7 @@ with MediaDeviceProperties
 {
 
    require((
-      !(this.isInstanceOf[MediaCodecOverview] )
+      !(this.isInstanceOf[MediaCodecProperties] )
    ) , s"an 'end-point device' cannot additionally be a 'codec'. (${this.getClass().getName() }) " )
    
 }
