@@ -292,7 +292,7 @@ trait MediaCodecProperties
          | java.nio.channels.SeekableByteChannel
          | java.io.Reader
          | java.io.Writer
-         | java.io.CharArrayWriter /* MISSING `java.nio.channels.CharChannel` */
+         | (java.nio.channels.Channel & CharSequence) /* MISSING `java.nio.channels.CharChannel` */
       )
    )
 
