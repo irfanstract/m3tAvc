@@ -17,15 +17,6 @@ package cbsq.avc.upstream
 
 
 
-export cbsq.avc.LateBoundValue
-
-
-
-
-
-
-
-
 trait GrowableSeq[E] extends
    AnyRef
    with collection.Seq[E]

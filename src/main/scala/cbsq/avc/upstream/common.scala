@@ -61,6 +61,8 @@ def notImplemented: Nothing = {
    Predef.???
 }
 
+export cbsq.avc.LateBoundValue
+
 extension[Value](this1: Resolvable[Value] )
 {
    
