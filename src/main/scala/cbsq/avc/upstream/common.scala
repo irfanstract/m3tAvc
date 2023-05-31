@@ -71,6 +71,12 @@ def notImplemented: Nothing = {
    Predef.???
 }
 
+def breakably(c : (ValueOf[""] ?=> Unit) => Unit ) = {
+   util.control.NonLocalReturns.returning[Unit](r0 ?=> {
+      c(_ ?=> r0.throwReturn(() ) )
+   })
+}
+
 export cbsq.avc.LateBoundValue
 
 extension[Value](this1: Resolvable[Value] )
