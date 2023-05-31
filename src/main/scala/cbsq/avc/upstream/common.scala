@@ -55,8 +55,15 @@ package cbsq.avc.upstream
 
 export cbsq.mCommons.{
    URL => _,
+   Resolvable => _ ,
    * ,
 }
+
+type Resolvable[Value] = (
+   AnyRef
+   & cbsq.avc.LateBoundValue.NhwCompleteWith[Value]
+   & cbsq.avc.LateBoundValue.NhwGetValue[Value]
+)
 
 // @annotation.experimental
 protected 
@@ -75,7 +82,7 @@ extension[Value](this1: Resolvable[Value] )
     */
    transparent inline def valueOrFail: Value =
       java.lang.Thread.sleep(7L)
-      this1.future.value match {
+      this1.asFuture.value match {
          case None => 
             throw IllegalStateException("unresolved")
          case Some(util.Failure(z)) => 
@@ -90,7 +97,7 @@ extension[Value](this1: Resolvable[Value] )
     * 
     */
    transparent inline def valueOrTimeout(timeout: Duration): Value =
-      concurrent.Await.result(this1.future, timeout)
+      concurrent.Await.result(this1.asFuture, timeout)
 
 }
 
