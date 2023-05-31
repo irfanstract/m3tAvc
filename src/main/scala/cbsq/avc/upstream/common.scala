@@ -55,6 +55,12 @@ package cbsq.avc.upstream
 
 export cbsq.mCommons.{URL => _, * }
 
+// @annotation.experimental
+protected 
+def notImplemented: Nothing = {
+   Predef.???
+}
+
 extension[Value](this1: Resolvable[Value] )
 {
    

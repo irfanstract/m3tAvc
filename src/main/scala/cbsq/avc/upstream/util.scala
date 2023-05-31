@@ -17,19 +17,6 @@ package cbsq.avc.upstream
 
 
 
-// @annotation.experimental
-protected 
-def notImplemented: Nothing = {
-   Predef.???
-}
-
-
-
-
-
-
-
-
 export cbsq.avc.LateBoundValue
 
 
