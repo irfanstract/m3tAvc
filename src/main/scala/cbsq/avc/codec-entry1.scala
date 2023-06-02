@@ -46,31 +46,8 @@ trait MediaDeviceArgsAndInstancing1
 object MediaDeviceOverview
 {
 
-   summon[MediaDeviceOverview <:< MediaDeviceProperties]
+   // summon[MediaDeviceOverview <:< MediaDeviceProperties]
    
-}
-trait MediaDeviceOverview 
-extends
-AnyRef
-with MediaDeviceProperties
-with MediaDeviceBeingAtSpecificInstancingLevel
-with mdoParamBuilders.ArgsAndTheirBuildability
-with MediaDeviceArgsAndInstancing1
-with TPossiblySupportsEvents
-{
-
-   /**
-    * 
-    * may optionally emit events
-    * 
-    * impl :
-    * by default, no event would be generated.
-    * 
-    */
-   override
-   lazy val events : EventIterator[EventInfo] =
-      newEventEmitter[Nothing]()._2
- 
 }
 
 
@@ -79,34 +56,50 @@ object   MediaCodecOverview {
 
    export MediaCodecProperties.IsUnspecified
 
-   summon[MediaCodecOverview <:< MediaDeviceOverview]
+   // summon[MediaCodecOverview <:< MediaDeviceOverview]
 
 }
-trait    MediaCodecOverview 
+
+
+
+/**
+ * 
+ * defines
+ * the inner-types `MediaDeviceOverview` and `MediaCodecOverview`.
+ * 
+ * in `libavformat`
+ * "devices" and "formats" share interface
+ * 
+ */
+trait McdcTyper
 extends
-AnyRef
-with MediaDeviceOverview
-with MediaCodecPropertiesMixin
-with MediaDeviceBeingAtSpecificInstancingLevel
-with mcdcParamBuilders.ArgsAndTheirBuildability
-with MediaDeviceArgsAndInstancing1
-with TPossiblySupportsEvents
+   AnyRef
 {
 
-   /**
-    * 
-    * may optionally emit events
-    * 
-    * impl :
-    * [[MediaCodecOverview]]s should be stateless.
-    * unless this `val` is overridden, would not emit anything.
-    * 
-    */
-   override
-   lazy val events : EventIterator[EventInfo] =
-      newEventEmitter[Nothing]()._2
- 
-}
+   type MediaDeviceOverview <: (
+   
+      AnyRef
+      with MediaDeviceProperties
+      with MediaDeviceBeingAtSpecificInstancingLevel
+      with mdoParamBuilders.ArgsAndTheirBuildability
+      with MediaDeviceArgsAndInstancing1
+      with TPossiblySupportsEvents
+      
+   )
+   
+   type MediaCodecOverview <: (
+      
+      AnyRef
+      with MediaDeviceOverview
+      with MediaCodecPropertiesMixin
+      with MediaDeviceBeingAtSpecificInstancingLevel
+      with mcdcParamBuilders.ArgsAndTheirBuildability
+      with MediaDeviceArgsAndInstancing1
+      with TPossiblySupportsEvents
+      
+   )
+   
+} /* `McdcTyper` */
 
 
 
@@ -226,7 +219,10 @@ object mcdcParamBuilders
 
 
 private
-def mediaDvcArgsBuildersDemo(c: MediaDeviceOverview): Unit = {
+def mediaDvcArgsBuildersDemo[
+   MediaDeviceOverview <: McdcTyper#MediaDeviceOverview ,
+   
+](c: MediaDeviceOverview): Unit = {
    ()
    def randomStringArg(): c.SpecString =
       ???
