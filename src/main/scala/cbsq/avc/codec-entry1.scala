@@ -114,7 +114,7 @@ extends
  * extra utils for [[MediaDeviceProperties]]
  * 
  */
-protected 
+// protected 
 object mdoParamBuilders {
 
    // sealed 
@@ -156,7 +156,7 @@ object mdoParamBuilders {
  * extra utils for [[MediaCodecProperties]]
  * 
  */
-protected 
+// protected 
 object mcdcParamBuilders
 {
 
