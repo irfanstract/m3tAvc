@@ -188,8 +188,8 @@ object BbsdAvFrameIterator
    )
 
    type IterativeContinuity
-      >: Either[Unit, Unit]
-      <: Either[Unit, Unit]
+      >: Either[Unit | Throwable, Unit]
+      <: Either[Unit | Throwable, Unit]
 
 }
 
