@@ -182,10 +182,14 @@ object BbsdAvFrameIterator
    ] = (
       AnyRef
       with BbsdAvFrameIterator 
-      with SupportsSwitchingToNextFrame[Unit]
+      with SupportsSwitchingToNextFrame[IterativeContinuity ]
       with SupportsCurrentlyPointedFrameTRangeQuery1
       with SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[B]
    )
+
+   type IterativeContinuity
+      >: Either[Unit, Unit]
+      <: Either[Unit, Unit]
 
 }
 
