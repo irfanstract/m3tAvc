@@ -172,6 +172,8 @@ object ewfi {
 
    trait WithFrameIterator[+R] { val frameIterator : R }  
 
+   trait WithStreams[+R] { val streams : R }  
+
 }
 
 

@@ -22,8 +22,26 @@ abstract class InDemuxStreamMap
 {
    thisStreamMap =>
 
+   import InDemuxStreamMap.Matchable
+
    type StreamIdent
       <: Matchable
+
+   def withAddedItem(addend: (StreamIdent, InDemuxStreamMap.MediaKind, InMuxStream ) ) = {
+      fold(c => {
+         c.toIndexedSeq
+         .appended(addend )
+      })
+   }
+
+   // transparent inline
+   def withAddedItem1(
+      streamId: StreamIdent,
+      mediaKind: InDemuxStreamMap.MediaKind ,
+      payload: InMuxStream ,
+   ) = {
+      withAddedItem((streamId, mediaKind, payload) )
+   }
 
    /**
     * 
@@ -73,6 +91,10 @@ abstract class InDemuxStreamMap
 object InDemuxStreamMap
 {
 
+   type Matchable
+      >: Any
+      <: Any
+
    export cbsq.avc.MediaKind
 
    protected
@@ -107,6 +129,14 @@ object InDemuxStreamMap
          cpy
       }
 
+   }
+
+   def empty[
+      EStreamId <: Matchable : Ordering ,
+   ] = {
+      enlist[
+         EStreamId ,
+      ](allStreams0 = Seq() )
    }
 
    def enlist[

@@ -70,6 +70,68 @@ lazy val codecListing = {
 
    }
 
+   trait XDemuxingProcHandleOpsBase extends
+                        AnyRef
+                        with java.io.Closeable
+                        with WithStreams[InDemuxStreamMap { type StreamIdent <: Int } ]
+   {
+
+      //
+
+   }
+
+   /**
+    * 
+    * syntactic convenience for 
+    * implementing `optionalDecodeFnc` .
+    * it's ur responsibility to ensure `mediaKind` matches
+    * 
+    */
+   def newDemuxingProc1(
+      src : java.io.InputStream ,
+   )(
+
+      mediaKind : MediaKind ,
+
+      submitDecod : java.io.InputStream => BbsdAvFrameIterator ,
+      
+   ) = {
+      ([C <: (
+         XDemuxingProcHandleOpsBase
+         
+      )] => (a : C ) => (a : a.type ) )({
+         
+                        ;
+
+                        val frameIterator = {
+                           submitDecod(src )
+                        }
+
+                        new
+                        AnyRef
+                        with XDemuxingProcHandleOpsBase
+                        {
+                           
+                           val streams = {
+                              // TODO
+                              InDemuxStreamMap.empty[Int]
+                              .withAddedItem1(
+                                 streamId = 1,
+                                 mediaKind = mediaKind ,
+                                 payload = frameIterator.asInstanceOf[InMuxStream] ,
+                              )
+                           }
+
+                           override
+                           def close(): Unit = {
+                              src.close()
+                           }
+                           
+                        }
+                        
+      })
+   }
+
    val allCodecs = (
       Seq()
 
@@ -84,25 +146,41 @@ lazy val codecListing = {
                   identity[XTraversiveDecoder]({
                      
                      case (src : java.io.InputStream, muxProperties) =>
-                        new AnyRef with java.io.Closeable with WithFrameIterator[BbsdAvFrameIterator]
-                        {
-                           
-                           val frameIterator = {
-                              src decodeAsMpJpeg(delimiterCPre = muxProperties.getMultipartDelimitingPhr() )
-                           }
-
-                           override
-                           def close(): Unit = {
-                              src.close()
-                           }
-                           
-                        }
+                        
+                        newDemuxingProc1(src)(
+                           mediaKind = MediaKind.Video,
+                           submitDecod = src => { src decodeAsMpJpeg(delimiterCPre = muxProperties.getMultipartDelimitingPhr() ) } ,
+                        )
+                        
                   })
                })
             } ,
             optionalEncodingFnc = None ,
          )
       }
+      
+      :+ {
+         getCodecOverviewImpl(
+            //
+            canonicalNames = Seq("ignorecodec") ,
+            encodedFormMimeType = "application/x-scalavfmt-discardallfrominputanddecodenothing" ,
+            mediaKind = MediaKind.Video ,
+            optionalDecodeFnc = {
+               Some({
+                  identity[XTraversiveDecoder]({
+                     
+                     case (src : java.io.InputStream, muxProperties) =>
+                        
+                        // TODO
+                        Predef.???
+                        
+                  })
+               })
+            } ,
+            optionalEncodingFnc = None ,
+         )
+      }
+      
    )
 
    // TODO

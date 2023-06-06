@@ -27,17 +27,28 @@ object encodedFormsECdl
    import ewfi.*
 
    type XDecoderInstance 
-      >: java.io.Closeable & WithFrameIterator[BbsdAvFrameIterator]
-      <: java.io.Closeable & WithFrameIterator[BbsdAvFrameIterator]
+      >: java.io.Closeable & WithStreams[InDemuxStreamMap]
+      <: java.io.Closeable & WithStreams[InDemuxStreamMap]
 
    trait XEncoderInstanceOps extends
    AnyRef
    with java.io.Closeable
    {
 
-      def encodend_=(s : BbsdAvFrameIterator ) : Unit
+      def encodend_=(s : XEncodend ) : Unit
       
    }
+
+   /**
+    * 
+    * the repr of the AV-stream to be encoded -
+    * the argument to the `encodend_=` method invoc
+    * 
+    */
+   // TODO
+   type XEncodend
+      // >: BbsdAvInterleavedFrameIterator
+      <: BbsdAvInterleavedFrameIterator
 
    type XR1[
       Dir <: "r" | "w",
@@ -169,7 +180,7 @@ object encodedFormsEDcei
    }
 
    type XLefSupertrait = (
-      EwfTranscodFnc.OfTraversiveInputAndTraversiveOutput[BbsdAvFrameIterator, XedfMuuxProperties, XRRW["r"] ]
+      EwfTranscodFnc.OfTraversiveInputAndTraversiveOutput[XEncodend, XedfMuuxProperties, XRRW["r"] ]
    )
 
    extension (originalFnc : XLefSupertrait ) {
@@ -204,7 +215,7 @@ object encodedFormsEDcei
    abstract
    class XSynchronousPipingEncoder 
    extends
-   EwfTranscodFnc.OfSynchronousPiping[BbsdAvFrameIterator, XedfMuuxProperties, XRRW["w"], Unit ]
+   EwfTranscodFnc.OfSynchronousPiping[XEncodend, XedfMuuxProperties, XRRW["w"], Unit ]
 
    object XSynchronousPipingEncoder
    {
@@ -536,7 +547,7 @@ class EwfiEmdo()
                new java.io.Closeable with XEncoderInstanceOps {
 
                   val decodedFormQuestion = {
-                     LateBoundValue.newInstance[BbsdAvFrameIterator]
+                     LateBoundValue.newInstance[XEncodend]
                   }
 
                   // export decodedFormQuestion.{value as decodedForm }
@@ -552,7 +563,7 @@ class EwfiEmdo()
                      .close()
                   }
 
-                  def encodend_=(value : BbsdAvFrameIterator ) = {
+                  def encodend_=(value : XEncodend ) = {
                      decodedFormQuestion success value
                   }
 
