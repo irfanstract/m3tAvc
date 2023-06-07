@@ -22,6 +22,7 @@ trait BbsdAvInterleavedFrameIterator extends
 BbsdAvFrameIterator
 with SupportsSwitchingToNextFrame[BbsdAvFrameIterator.IterativeContinuity ]
 with SupportsCurrentlyPointedFrameTRangeQuery1
+with BbsdAvFrameIterator.IOfWhichMediaKind[MediaKind]
 {
 
    val streams : (
@@ -99,15 +100,41 @@ object BbsdAvInterleavedFrameIterator
       }
 
       new BbsdAvInterleavedFrameIterator
-      with Ws(streams = {
-         streamsInitially
-         .mapValues(c => {
-            new XPerStreamOps {
-               export c.currentFrameTRange
-            }
-         } ) 
+      with BbsdAvFrameIterator.IOfWhichMediaKind[MediaKind.Mix.type ](mediaKind = MediaKind.Mix)
+      with Ws(
 
-      } match { case e : cbsq.avc.upstream.InDemuxStreamMap.OfBody[s] => { e } } )
+         streams = {
+            {
+               
+               streamsInitially
+               
+               .mapValues(channelOps => {
+
+                  new
+                  BbsdAvFrameIterator
+                  with XPerStreamOpsBase
+                  with SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[AnyRef]
+                  with IOfWhichMediaKind(mediaKind = channelOps.mediaKind )
+                  {
+
+                     export channelOps.currentFrameTRange
+                     
+                     val channelOpsCopybleAny = {
+                        channelOps
+                        match { case c : SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[AnyRef] => c }
+                     }
+
+                     export channelOpsCopybleAny.renderCurrentFrameData
+
+                  }
+
+               } ) 
+
+            }
+            match { case e : cbsq.avc.upstream.InDemuxStreamMap.OfBody[s] => { e } }
+         } ,
+
+      )
       {
 
          override
@@ -159,6 +186,7 @@ object BbsdAvInterleavedFrameIterator
             cbsq.avc.BbsdAvFrameIterator
             & SupportsSwitchingToNextFrame[BbsdAvFrameIterator.IterativeContinuity ]
             & SupportsCurrentlyPointedFrameTRangeQuery1
+            & IOfWhichMediaKind[MediaKind]
          )
 
          def test1[P, Q] = {
@@ -270,13 +298,16 @@ object BbsdAvInterleavedFrameIterator
          
    }
 
-   trait XPerStreamOps
+   type XPerStreamOps
+      >: XPerStreamOpsBase & SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[AnyRef]
+      <: XPerStreamOpsBase & SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[AnyRef]
+      
+   trait XPerStreamOpsBase
    extends
    AnyRef
    with SupportsCurrentlyPointedFrameTRangeQuery1
+   with IOfWhichMediaKind[MediaKind]
    {
-
-      // val mediaKind : MediaKind
 
    }
 
@@ -286,6 +317,8 @@ object BbsdAvInterleavedFrameIterator
 
    ](val streams : C ) extends BbsdAvInterleavedFrameIterator
 
+   export BbsdAvFrameIterator.IOfWhichMediaKind
+
    @deprecated
    object demo {
 
@@ -294,16 +327,20 @@ object BbsdAvInterleavedFrameIterator
       }
 
       def newTPeriodItr(tPeriod : Double ) = {
+
          val tsIterator = {
             Iterator.iterate[BigDecimal](0 )(v => (v + tPeriod ) )
             .map(_.toDouble )
             .sliding(size = 2, step = 1)
             .map({ case Seq(t0, t1) => (t0, t1) })
          }
+         
          new
          BbsdAvFrameIterator
          with SupportsSwitchingToNextFrame[BbsdAvFrameIterator.IterativeContinuity ]
          with SupportsCurrentlyPointedFrameTRangeQuery1
+         with IOfWhichMediaKind(mediaKind = MediaKind.SideData )
+         with SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[AnyRef]
          {
 
             var v : (Double, Double) = compiletime.uninitialized
@@ -321,7 +358,13 @@ object BbsdAvInterleavedFrameIterator
                }
             }
 
+            override
+            def renderCurrentFrameData(dest: AnyRef): Unit = {
+               /* ignorable unsupported op */
+            }
+
          }
+
       }
 
    }

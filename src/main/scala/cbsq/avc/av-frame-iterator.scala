@@ -154,10 +154,30 @@ object BbsdAvFrameHandler
 
 
 // sealed 
-abstract 
-class  BbsdAvFrameIterator
+trait BbsdAvFrameIterator
+extends
+AnyRef
+with BbsdAvFrameIterator.IOfWhichMediaKind[MediaKind]
+{
+   this : (
+      BbsdAvFrameIterator
+      & BbsdAvFrameIterator.IOfWhichMediaKind[MediaKind]
+   ) =>
+
+   //
+
+}
+
 object BbsdAvFrameIterator
 {
+
+   abstract 
+   class  EBaseOps
+   extends
+   AnyRef
+   {
+      
+   }
 
    trait OfRegOfHandler[
       H <: BbsdAvFrameHandler ,
@@ -165,6 +185,11 @@ object BbsdAvFrameIterator
       BbsdAvFrameIterator 
    {
       
+      this : (
+         BbsdAvFrameIterator
+         & BbsdAvFrameIterator.IOfWhichMediaKind[MediaKind]
+      ) =>
+
       def apply(r: H ): java.io.Closeable
 
    }
@@ -190,6 +215,8 @@ object BbsdAvFrameIterator
    type IterativeContinuity
       >: Either[Unit | Throwable, Unit]
       <: Either[Unit | Throwable, Unit]
+
+   trait IOfWhichMediaKind[+K](val mediaKind : K )
 
 }
 

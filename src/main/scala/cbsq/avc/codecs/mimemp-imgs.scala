@@ -143,7 +143,7 @@ class asFrameItrImpl(
          mediaType match {
          //
 
-         case (cbsq.avc.MediaKind.Video) =>
+         case mediaKind @ (_ : cbsq.avc.MediaKind.Video.type) =>
             
             type Dest
                >: java.awt.image.BufferedImage
@@ -159,6 +159,7 @@ class asFrameItrImpl(
             BbsdAvFrameIterator 
             with CrossTypeCommonOps1
             with SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[Dest]
+            with BbsdAvFrameIterator.IOfWhichMediaKind(mediaKind = mediaKind )
             with V_#@@%
             {
 
@@ -517,6 +518,7 @@ trait V_#@@%
 extends
 cbsq.avc.BbsdAvFrameIterator 
 with cbsq.avc.SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[java.awt.image.BufferedImage ]
+with cbsq.avc.BbsdAvFrameIterator.IOfWhichMediaKind[cbsq.avc.MediaKind.Video.type ]
 { 
    this : cbsq.avc.BbsdAvFrameIterator =>
 
