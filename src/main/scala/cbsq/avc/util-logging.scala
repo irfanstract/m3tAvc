@@ -123,7 +123,7 @@ object PhrStagedLogging
          ) : EnstagedInterface = {
             ;
             
-            emitLine(s"[$term]")
+            emitLine(s"$term")
             
             whichLogsTo(emitLine = (clientLine: String) => emitLine(s"[$term] $clientLine") )
 

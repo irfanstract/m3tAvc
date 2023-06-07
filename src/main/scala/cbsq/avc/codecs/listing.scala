@@ -189,6 +189,9 @@ lazy val codecListing = {
                            override
                            val frameIterator = {
                               // TODO
+                              implicit val logger = {
+                                 cbsq.avc.PhrStagedLogging.whichLogsTo(emitLine = l => { println(s"[NDP frameIterator] $l") ; Right {} } )
+                              }
                               // InDemuxStreamMap.empty[Int, InMuxStream]
                               // .withAddedItem1(
                               //    streamId = 1,
