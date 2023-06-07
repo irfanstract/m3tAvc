@@ -41,13 +41,15 @@ object BbsdAvInterleavedFrameIterator
 
       shortestStreamsExtensionalMode : SupportedShortestStreamsExtensionalModeInt ,
       
-   ) = {
+   )(using cbsq.avc.PhrStagedLogging.ByDName["BbsdAvInterleavedFrameIterator$.multiplexing"] ) = {
+
       multiplexing(
          streamsInitially = {
             cbsq.avc.upstream.InDemuxStreamMap.enlistSeq(streamsInitially )
          } ,
          shortestStreamsExtensionalMode = shortestStreamsExtensionalMode ,
       )
+
    }
 
    type SupportedShortestStreamsExtensionalModeInt = (
@@ -62,7 +64,15 @@ object BbsdAvInterleavedFrameIterator
 
       shortestStreamsExtensionalMode : SupportedShortestStreamsExtensionalModeInt ,
       
-   ) = {
+   )(using logger : cbsq.avc.PhrStagedLogging.ByDName["BbsdAvInterleavedFrameIterator$.multiplexing"] ) = {
+
+      logger.enstage(term = s"initial streams : $streamsInitially" )
+
+      logger.enstage(term = s"child stream lengths behv : $shortestStreamsExtensionalMode" )
+
+      def propagateDiscontinuationalEvent() : Unit = {
+         logger.enstage(term = "discontinuing" )
+      }
 
       import MultiplexedImpl.internal.@@!
 
@@ -102,6 +112,10 @@ object BbsdAvInterleavedFrameIterator
                
          })
 
+         .tapEach({ case (e, () ) => {
+            logger.enstage(term = s"frame emitted: ${e }" )
+         } })
+
          .map(_._1 )
          
          .takeWhile(s => {
@@ -111,6 +125,11 @@ object BbsdAvInterleavedFrameIterator
                case 1 =>
                   s.nonExhaustedStreams.nonEmpty
             }
+         })
+
+         .concat({
+            propagateDiscontinuationalEvent()
+            Iterator()
          })
 
       }
@@ -166,12 +185,20 @@ object BbsdAvInterleavedFrameIterator
          override
          def switchToNextFrame(): cbsq.avc.BbsdAvFrameIterator.IterativeContinuity = {
             ;
+            
+            val lsnfLogger = logger enstage(term = s"switchToNextFrame()" )
+            
             vsii.nextOption() match {
+
                case None =>
+                  lsnfLogger enstage(term = s"vsii.isEmpty" )
+                  lsnfLogger enstage(term = s"no more frames - returning Left {} " )
                   Left {}
 
                case Some(streams) =>
+                  lsnfLogger enstage(term = s"streams: $streams " )
                   r = streams
+                  lsnfLogger enstage(term = s"got a frame - returning Right {} to indicate remainder " )
                   Right {}
                   
             }
@@ -410,6 +437,9 @@ def runBbsdAvInterleavedFrameIterativeDemo() : Unit = {
    import BbsdAvInterleavedFrameIterator.demo.newTPeriodItr
    import BbsdAvInterleavedFrameIterator.multiplexingAllInSeq
    import BbsdAvInterleavedFrameIterator.multiplexing
+   implicit val logger = {
+      cbsq.avc.PhrStagedLogging.whichLogsTo(emitLine = l => { println(s"[main] $l") ; Right {} } )
+   }
    val itr = {
       multiplexingAllInSeq(
          streamsInitially = {
