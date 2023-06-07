@@ -28,6 +28,72 @@ def runCodecListingDemo() : Unit = {
    .foreach(println(_) )
 }
 
+@main
+def runCodecListingAndMpJpegTrialDemo() : Unit = {
+
+   import cbsq.avc.quick.smjg.startBasicMpJpegGener1
+
+   val allRegisteredDevices = {
+      ;
+      codecListing
+      .getAllRegisteredDevices()
+      
+   } : collection.immutable.Iterable[cbsq.avc.MediaDeviceProperties ]
+
+   val mpJpegCodecOvw = {
+      allRegisteredDevices
+      .toSeq
+      .collectFirst({
+         case c : (cbsq.avc.McdcTyper#MediaCodecOverview ) if (
+            (c.encodedFormMimeType == "application/x-libavformat-mpjpeg" )
+         ) =>
+            c
+      })
+      .getOrElse(throw new java.util.NoSuchElementException(s"no mpjpeg-codec") )
+   }
+   
+   println(s"codec: ${mpJpegCodecOvw }")
+
+   val s = {
+      startBasicMpJpegGener1()
+   }
+
+   util.Using.resource(s.pAsInputStream )(_ => {
+      try {
+         ;
+         ;
+         
+         import s.pAsInputStream
+
+         val started = {
+            mpJpegCodecOvw.argsInitially
+            .forOpenedStream(pAsInputStream.asInstanceOf[mpJpegCodecOvw.CharacteristicFd] )
+            .spawnNow()
+            match { case s : encodedFormsECdl.XDecoderInstance => s }
+         }
+
+         println(s"started ")
+
+         started.getClass()
+
+         println(s"${started }")
+
+         cbsq.avc.quick.openInteractiveFrameIterativeUiImpl(src = started.frameIterator )
+         .join()
+         
+      }
+      finally {
+         println(s"ending the codec stream in two secs ")
+         Thread.sleep(3 * 1000 )
+      }
+   })
+
+   // application/x-libavformat-mpjpeg
+
+   // Predef.???
+
+}
+
 // TODO
 lazy val codecListing = {
 

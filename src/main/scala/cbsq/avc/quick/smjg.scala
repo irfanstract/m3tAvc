@@ -80,6 +80,7 @@ object smjg
                Seq()
                :+ "-f" :+ "mpjpeg"
                :+ "-flush_packets" :+ "1"
+               :+ "-rtbufsize" :+ "8000"
                :+ "pipe:"
             )
          ) : _* )
