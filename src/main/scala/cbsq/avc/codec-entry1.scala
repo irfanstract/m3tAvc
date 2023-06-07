@@ -28,6 +28,13 @@ trait MediaDeviceArgsAndInstancing1
       Instance
    )
  
+   extension (args: Args) {
+      final
+      def spawnNow() = {
+         spawn(args)
+      }
+   }
+
    type Instance <: (
       AnyRef
       & java.io.Closeable
