@@ -164,6 +164,11 @@ class asFrameItrImpl(
             {
 
                override
+               def toString(): String = {
+                  s"MIMEMP DECODING [state: ${anl1 } ; ]"
+               }
+
+               override
                def switchToNextFrame(): BbsdAvFrameIterator.IterativeContinuity = {
 
                   smpItr1.nextOption()

@@ -289,7 +289,7 @@ object BbsdAvInterleavedFrameIterator
 
             override
             def toString(): String = {
-               s"[@@! ; currentTValueInCtor: ${xCurrentTValue } ; t: ($tStamp00 to $tStamp01) ; streams: ${streams.getAllStreams().map(_._1 ) } ; ]"
+               s"[@@! ; currentTValueInCtor: ${xCurrentTValue } ; t: ($tStamp00 to $tStamp01) ; streams: ${streams.getAllStreams() } ; ]"
             }
             
          }
@@ -334,7 +334,7 @@ object BbsdAvInterleavedFrameIterator
             .sliding(size = 2, step = 1)
             .map({ case Seq(t0, t1) => (t0, t1) })
          }
-         
+
          new
          BbsdAvFrameIterator
          with SupportsSwitchingToNextFrame[BbsdAvFrameIterator.IterativeContinuity ]
@@ -342,6 +342,11 @@ object BbsdAvInterleavedFrameIterator
          with IOfWhichMediaKind(mediaKind = MediaKind.SideData )
          with SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[AnyRef]
          {
+
+            override
+            def toString(): String = {
+               s"[current t-range: ${currentFrameTRange } ; v: $v ]"
+            }
 
             var v : (Double, Double) = compiletime.uninitialized
 
