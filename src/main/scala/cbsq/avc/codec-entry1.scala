@@ -24,9 +24,11 @@ trait MediaDeviceArgsAndInstancing1
 
    type Args
 
-   def spawn(args: Args): (
+   extension (args: Args) {
+   def spawn : (
       Instance
    )
+   }
  
    type Instance <: (
       AnyRef
