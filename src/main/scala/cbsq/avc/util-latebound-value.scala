@@ -108,6 +108,17 @@ object LateBoundValue
          success => completeWith ,
       }
 
+      def tryComplete(v0: util.Try[V]): Boolean = {
+         prmPr
+         .trySuccess({
+            concurrent.Future.fromTry(v0 )
+         })
+      }
+      
+      export prmPrExportible.{
+         trySuccess => tryCompleteWith ,
+      }
+
    }
 
    @deprecatedInheritance("the set of abstract-methods may change")
