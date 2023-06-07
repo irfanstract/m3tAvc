@@ -29,14 +29,32 @@ extends AnyRef with java.io.Closeable
 {
 
    def invokeSrcNext() : Unit = {
-      src.switchToNextFrame()
+      import language.unsafeNulls
+      
+      val e = src.switchToNextFrame()
+      generalImpl.endedNessState.setSelected(e.isLeft )
+      
    }
 
-   impl
+   generalImpl
    private  
-   object impl {
+   object generalImpl {
+
+      val endedNessState = {
+
+         new swing.JCheckBox("selected", false)
+
+      }
+
+   }
+
+   uiImpl
+   private  
+   object uiImpl {
 
       import language.unsafeNulls
+      
+      import generalImpl.endedNessState
 
       val f = new swing.JFrame
       f setDefaultCloseOperation swing.WindowConstants.DO_NOTHING_ON_CLOSE
@@ -54,11 +72,19 @@ extends AnyRef with java.io.Closeable
          new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB )
       }
 
+      val endedNessLabel = {
+
+         val e = new swing.text.PlainDocument
+         endedNessState addChangeListener (_ => {
+            new swing.JTextArea(e).setText({ if endedNessState.isSelected() then "end of file" else "" })
+         })
+         e
+
+      }
+
       val label1 = {
 
-         (identity[swing.AbstractAction](e => {
-            // no-op
-         })) : swing.Action
+         new swing.text.PlainDocument
 
       }
 
@@ -67,12 +93,13 @@ extends AnyRef with java.io.Closeable
          p add {
             val p = new swing.JPanel(new awt.FlowLayout )
             p add {
-               val b = new swing.JButton(label1)
-               b.setEnabled(false)
+               val b = new swing.JTextArea(label1)
+               b.setEditable(false)
                b
             }
             p add {
-               val b = new swing.JButton(label1)
+               val b = new swing.JTextArea(endedNessLabel)
+               b.setEditable(false)
                b
             }
             p add {
@@ -97,14 +124,14 @@ extends AnyRef with java.io.Closeable
       clearInfo()
 
       def clearInfo() : Unit = {
-         label1.putValue(swing.Action.NAME, "(no frame info)")
+         new swing.JTextArea(label1).setText("(no frame info)")
       }
       
       // reinitWithCurrentlyInfo
       def refresh() : Unit = {
          clearInfo()
          println(s"$src ")
-         label1.putValue(swing.Action.NAME, s"frame T : ${src.currentFrameTRange } ")
+         new swing.JTextArea(label1).setText(s"frame T : ${src.currentFrameTRange } " )
       }
       
       def disposeAllWindows() : Unit = {
@@ -126,7 +153,7 @@ extends AnyRef with java.io.Closeable
    }
 
    def runCloseButtonAction() : Unit = {
-      impl.disposeAllWindows()
+      uiImpl.disposeAllWindows()
    }
 
    override
@@ -141,7 +168,7 @@ extends AnyRef with java.io.Closeable
     * 
     */
    def join(): Unit = {
-      impl.wncQ.getValue()
+      uiImpl.wncQ.getValue()
    }
 
 }

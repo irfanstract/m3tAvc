@@ -39,7 +39,7 @@ object BbsdAvInterleavedFrameIterator
          IndexedSeq[MultiplexedImpl.internal.MicbItem ]
       ) ,
 
-      shortestStreamsExtensionalMode : 0 | 1 ,
+      shortestStreamsExtensionalMode : SupportedShortestStreamsExtensionalModeInt ,
       
    ) = {
       multiplexing(
@@ -50,19 +50,30 @@ object BbsdAvInterleavedFrameIterator
       )
    }
 
+   type SupportedShortestStreamsExtensionalModeInt = (
+      0 | 1
+   )
+
    def multiplexing(
 
       streamsInitially : (
          MultiplexedImpl.Micb
       ) ,
 
-      shortestStreamsExtensionalMode : 0 | 1 ,
+      shortestStreamsExtensionalMode : SupportedShortestStreamsExtensionalModeInt ,
       
    ) = {
 
       import MultiplexedImpl.internal.@@!
 
+      val initialChannelsCount = {
+         streamsInitially
+         .getAllStreams()
+         .size
+      }
+
       val vsii = {
+
          Iterator.iterate[(@@!, Unit) ](({
             streamsInitially
             .mapValues(s => {
@@ -79,13 +90,7 @@ object BbsdAvInterleavedFrameIterator
 
                import s.streams
                import s.runOutStreams
-               val nonExhaustedStreams = {
-                  streams.getAllStreams()
-                  .filterNot({
-                     case (_, _, s1) =>
-                        runOutStreams contains s1
-                  })
-               }
+               import s.nonExhaustedStreams
 
                val t1 = s.tStamp01
 
@@ -96,7 +101,18 @@ object BbsdAvInterleavedFrameIterator
                match { case s => (s, {} ) }
                
          })
+
          .map(_._1 )
+         
+         .takeWhile(s => {
+            shortestStreamsExtensionalMode match {
+               case 0 =>
+                  s.nonExhaustedStreams.size < initialChannelsCount
+               case 1 =>
+                  s.nonExhaustedStreams.nonEmpty
+            }
+         })
+
       }
 
       new BbsdAvInterleavedFrameIterator
@@ -284,6 +300,14 @@ object BbsdAvInterleavedFrameIterator
                .collect({
                   case (id, s, _ : Left[e, ?] ) =>
                      s
+               })
+            }
+            
+            val nonExhaustedStreams = {
+               streams.getAllStreams()
+               .filterNot({
+                  case (_, _, s1) =>
+                     runOutStreams contains s1
                })
             }
 
