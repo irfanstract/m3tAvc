@@ -157,21 +157,45 @@ lazy val codecListing = {
             encodedFormMimeType = "application/x-libavformat-mpjpeg" ,
             mediaKind = MediaKind.Video ,
             optionalDecodeFnc = {
-               // Some({
-               //    identity[XTraversiveDecoder]({
+               Some({
+                  identity[XTraversiveDecoder]({
                      
-               //       case (src : java.io.InputStream, muxProperties) =>
+                     case (src : java.io.InputStream, muxProperties) =>
                         
-               //          newDemuxingProc1(src)(
-               //             mediaKind = MediaKind.Video,
-               //             submitDecod = src => { src decodeAsMpJpeg(delimiterCPre = muxProperties.getMultipartDelimitingPhr() ) } ,
-               //          )
+                        newDemuxingProc1(src)(
+                           mediaKind = MediaKind.Video,
+                           submitDecod = src => { src decodeAsMpJpeg(delimiterCPre = muxProperties.getMultipartDelimitingPhr() ) } ,
+                        )
                         
-               //    })
-               // })
-               None 
+                  })
+               })
             } ,
-            optionalEncodingFnc = None ,
+            optionalEncodingFnc = {
+               Some({
+                  identity[XSynchronousPipingEncoder]((
+
+                     (src, muxProperties, dest0) => {
+                        
+                        val dest1 = {
+                           dest0 match {
+                              case dest : java.io.OutputStream =>
+                                 new java.io.OutputStreamWriter(dest, java.nio.charset.StandardCharsets.US_ASCII )
+                              case dest : java.io.Writer =>
+                                 dest
+                           }
+                        } : java.io.Writer
+                        
+                        val destPw = {
+                           new java.io.PrintWriter(dest1, true )
+                        }
+
+                        destPw.encodeMpJpegImpl(src = src )
+
+                     }
+
+                  ))
+               })
+            } ,
          )
       }
       
