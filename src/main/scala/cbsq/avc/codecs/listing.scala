@@ -73,7 +73,8 @@ lazy val codecListing = {
    trait XDemuxingProcHandleOpsBase extends
                         AnyRef
                         with java.io.Closeable
-                        with WithStreams[InDemuxStreamMap { type StreamIdent <: Int } ]
+                        // with WithStreams[InDemuxStreamMap { type ChannelIdent <: Int } ]
+                        with WithFrameIterator[BbsdAvInterleavedFrameIterator]
    {
 
       //
@@ -98,13 +99,20 @@ lazy val codecListing = {
    ) = {
       ([C <: (
          XDemuxingProcHandleOpsBase
-         
+
       )] => (a : C ) => (a : a.type ) )({
          
                         ;
 
-                        val frameIterator = {
+                        type S = (
+                           BbsdAvFrameIterator
+                           & SupportsSwitchingToNextFrame[BbsdAvFrameIterator.IterativeContinuity ]
+                           & SupportsCurrentlyPointedFrameTRangeQuery1
+                        )
+
+                        val chFrameIterator = {
                            submitDecod(src )
+                           match { case s => (s : BbsdAvFrameIterator).asInstanceOf[S] }
                         }
 
                         new
@@ -112,13 +120,20 @@ lazy val codecListing = {
                         with XDemuxingProcHandleOpsBase
                         {
                            
-                           val streams = {
+                           override
+                           val frameIterator = {
                               // TODO
-                              InDemuxStreamMap.empty[Int]
-                              .withAddedItem1(
-                                 streamId = 1,
-                                 mediaKind = mediaKind ,
-                                 payload = frameIterator.asInstanceOf[InMuxStream] ,
+                              // InDemuxStreamMap.empty[Int, InMuxStream]
+                              // .withAddedItem1(
+                              //    streamId = 1,
+                              //    payload = {
+                              //       // chFrameIterator.asInstanceOf[InMuxStream]
+                              //       ({ case value : InMuxStream => value } : (Any => InMuxStream) ).andThen(e => e).apply({})
+                              //    } ,
+                              // )
+                              BbsdAvInterleavedFrameIterator.multiplexingAllInSeq(
+                                 streamsInitially = IndexedSeq(chFrameIterator) ,
+                                 shortestStreamsExtensionalMode = 1 ,
                               )
                            }
 
@@ -142,18 +157,19 @@ lazy val codecListing = {
             encodedFormMimeType = "application/x-libavformat-mpjpeg" ,
             mediaKind = MediaKind.Video ,
             optionalDecodeFnc = {
-               Some({
-                  identity[XTraversiveDecoder]({
+               // Some({
+               //    identity[XTraversiveDecoder]({
                      
-                     case (src : java.io.InputStream, muxProperties) =>
+               //       case (src : java.io.InputStream, muxProperties) =>
                         
-                        newDemuxingProc1(src)(
-                           mediaKind = MediaKind.Video,
-                           submitDecod = src => { src decodeAsMpJpeg(delimiterCPre = muxProperties.getMultipartDelimitingPhr() ) } ,
-                        )
+               //          newDemuxingProc1(src)(
+               //             mediaKind = MediaKind.Video,
+               //             submitDecod = src => { src decodeAsMpJpeg(delimiterCPre = muxProperties.getMultipartDelimitingPhr() ) } ,
+               //          )
                         
-                  })
-               })
+               //    })
+               // })
+               None 
             } ,
             optionalEncodingFnc = None ,
          )

@@ -24,10 +24,31 @@ abstract class InDemuxStreamMap
 
    import InDemuxStreamMap.Matchable
 
-   type StreamIdent
+   type ChannelIdent
       <: Matchable
 
-   def withAddedItem(addend: (StreamIdent, InDemuxStreamMap.MediaKind, InMuxStream ) ) = {
+   type ChannelBody
+
+   import ChannelBody as XInMuxStream
+
+   def mapValues[
+      Id ,
+      ChannelBodyMapped ,
+
+   ](f : ChannelBody => ChannelBodyMapped ) = {
+      fold(c => {
+         c.toIndexedSeq
+         .map(e => (
+            e.copy(_3 = f(e._3) )
+         ) )
+      })
+   }
+
+   def withAddedItem[
+      Id ,
+      EInMuxStream >: thisStreamMap.ChannelBody <: Any ,
+
+   ](addend: (ChannelIdent, InDemuxStreamMap.Emk, EInMuxStream ) ) = {
       fold(c => {
          c.toIndexedSeq
          .appended(addend )
@@ -35,12 +56,16 @@ abstract class InDemuxStreamMap
    }
 
    // transparent inline
-   def withAddedItem1(
-      streamId: StreamIdent,
-      mediaKind: InDemuxStreamMap.MediaKind ,
-      payload: InMuxStream ,
+   def withAddedItem1[
+      Id ,
+      EInMuxStream >: thisStreamMap.ChannelBody ,
+   ](
+      streamId: ChannelIdent,
+      // mediaKind: InDemuxStreamMap.Emk ,
+      payload: EInMuxStream ,
+      
    ) = {
-      withAddedItem((streamId, mediaKind, payload) )
+      withAddedItem((streamId, () , payload) )
    }
 
    /**
@@ -48,18 +73,27 @@ abstract class InDemuxStreamMap
     * all streams each `(streamId, theMediaKind, theFrameItr)`
     * 
     */
-   def getAllStreams() : collection.immutable.Iterable[(StreamIdent, InDemuxStreamMap.MediaKind, InMuxStream )]
+   def getAllStreams() : collection.immutable.Iterable[(ChannelIdent, InDemuxStreamMap.Emk, XInMuxStream )]
 
-   def fold(
-      c : ([C] =>> (C => C) )[collection.immutable.Iterable[(StreamIdent, InDemuxStreamMap.MediaKind, InMuxStream )] ] , 
-   ) : InDemuxStreamMap { type StreamIdent <: thisStreamMap.StreamIdent }
+   def fold[
+      Id ,
+      EInMuxStream ,
+   ](
+      c : (
+         collection.immutable.Iterable[(ChannelIdent, InDemuxStreamMap.Emk, ChannelBody )]
+         =>
+         collection.immutable.Iterable[(ChannelIdent, InDemuxStreamMap.Emk, EInMuxStream )]
+      ) , 
+   ) : (
+      InDemuxStreamMap.OfIdentAndBody[thisStreamMap.ChannelIdent , EInMuxStream ]
+   )
 
    def nonEmpty : Boolean = {
       getAllStreams()
       .nonEmpty
    }
 
-   def getAllStreamsForMediaKind(m: InDemuxStreamMap.MediaKind ): IndexedSeq[InMuxStream] = {
+   def getAllStreamsForMediaKind(m: InDemuxStreamMap.Emk ): IndexedSeq[XInMuxStream] = {
       getAllStreams()
       .toIndexedSeq
       .collect({
@@ -75,7 +109,7 @@ abstract class InDemuxStreamMap
     * 
     */
    @deprecated
-   def getStream(m: InDemuxStreamMap.MediaKind ): InMuxStream = {
+   def getStream(m: InDemuxStreamMap.Emk ): XInMuxStream = {
       getAllStreamsForMediaKind(m) match {
 
          case seq @ (Seq() | Seq(_) ) =>
@@ -97,54 +131,82 @@ object InDemuxStreamMap
 
    export cbsq.avc.MediaKind
 
-   protected
-   case class Impl[
-      StreamId <: Matchable ,
+   type Emk
+      >: Any
+      <: Any
       
-   ](
-      allStreams : IndexedSeq[(StreamId, InDemuxStreamMap.MediaKind, InMuxStream )] ,
-
-      streamIdOrd : Ordering[StreamId] ,
-
+   type OfBody[
+      +EInMuxStream ,
+   ] = (
+         InDemuxStreamMap {
+            
+            type ChannelBody
+               <: EInMuxStream 
+               
+         }
    )
-   extends InDemuxStreamMap
-   {
 
-      given streamIdOrd1 : streamIdOrd.type = streamIdOrd
+   type OfIdent[
+      EStreamId ,
+   ] = (
+         InDemuxStreamMap {
+            
+            type ChannelIdent
+               >: EStreamId
+               <: EStreamId 
+               
+         }
+   )
 
-      type StreamIdent
-         >: StreamId
-         <: StreamId
+   type OfIdentAndBody[
+      EStreamId ,
+      +EInMuxStream ,
+   ] = (
+         OfIdent[EStreamId] & OfBody[EInMuxStream]
+   )
 
-      override
-      def getAllStreams() = allStreams
-      
-      override
-      def fold(
-         c : ([C] =>> (C => C) )[collection.immutable.Iterable[(StreamIdent, InDemuxStreamMap.MediaKind, InMuxStream )] ] , 
-      ) = {
-         val enl = enlist(allStreams0 = c(allStreams) )
-         summon[enl.StreamIdent =:= StreamIdent ]
-         val cpy = copy[enl.StreamIdent ](allStreams = enl.allStreams )
-         cpy
-      }
+   @deprecated
+   def apply[
+      EInMuxStream ,
+   ](
+      allStreams0 : collection.immutable.Iterable[EInMuxStream] ,
 
-   }
+   ) = enlistSeq[EInMuxStream](allStreams0)
 
    def empty[
       EStreamId <: Matchable : Ordering ,
+      EInMuxStream ,
    ] = {
-      enlist[
-         EStreamId ,
-      ](allStreams0 = Seq() )
+      enlistSeq(Seq() )
+   }
+
+   def enlistSeq[
+      EInMuxStream ,
+   ](
+      allStreams0 : collection.immutable.Iterable[EInMuxStream] ,
+
+   ) = {
+
+      enlist[Int, EInMuxStream]({
+         allStreams0.toIndexedSeq
+         .zipWithIndex.map(_.swap)
+         .map({
+            case (ident, s) =>
+               (ident, (), s )
+         })
+      })
+
    }
 
    def enlist[
       EStreamId <: Matchable : Ordering ,
+      EInMuxStream ,
    ](
-      allStreams0 : collection.immutable.Iterable[(EStreamId, InDemuxStreamMap.MediaKind, InMuxStream )] ,
+      allStreams0 : collection.immutable.Iterable[(EStreamId, InDemuxStreamMap.Emk, EInMuxStream )] ,
 
-   ) : Enl { type StreamIdent >: EStreamId <: EStreamId } = {
+   ) : (
+      Enl & OfIdentAndBody[EStreamId, EInMuxStream]
+   ) = {
       
       val allStreams = {
          allStreams0
@@ -158,7 +220,72 @@ object InDemuxStreamMap
 
    opaque type Enl
       <: InDemuxStreamMap
-      = InDemuxStreamMap & Impl[?]
+      = InDemuxStreamMap & Impl[?, ?]
+
+   /**
+    *
+    * 
+    * 
+    */
+   protected
+   case class Impl[
+      StreamId <: Matchable ,
+      XInMuxStream ,
+      
+   ](
+      allStreams : IndexedSeq[(StreamId, InDemuxStreamMap.Emk, XInMuxStream )] ,
+
+      streamIdOrd : Ordering[StreamId] ,
+
+   )
+   extends InDemuxStreamMap
+   {
+
+      given streamIdOrd1 : streamIdOrd.type = streamIdOrd
+
+      override
+      type ChannelIdent
+         >: StreamId
+         <: StreamId
+
+      override
+      type ChannelBody
+         >: XInMuxStream
+         <: XInMuxStream
+
+      override
+      def getAllStreams() = allStreams
+      
+      override
+      def fold[
+         Id ,
+         EInMuxStream ,
+      ](
+         c : (
+            collection.immutable.Iterable[(ChannelIdent, InDemuxStreamMap.Emk, ChannelBody )]
+            =>
+            collection.immutable.Iterable[(ChannelIdent, InDemuxStreamMap.Emk, EInMuxStream )]
+         ) , 
+      ) = {
+         val enl = enlist(allStreams0 = c(allStreams) )
+         // summon[enl.ChannelIdent <:< ChannelIdent ]  
+         // enl.allStreams map(<:<.refl[(enl.ChannelIdent, Any, Any )] ) 
+         // summon[c.type <:< (Seq[Nothing] => IterableOnce[(Any, Any, Any)] )]
+         // summon[c.type <:< (Seq[Nothing] => IterableOnce[(Any, Any, EInMuxStream)] )]
+         // summon[enl.ChannelBody <:< EInMuxStream ]
+         // summon[enl.allStreams.type <:< IterableOnce[(Any, Any, Any)] ]
+         // summon[enl.allStreams.type <:< IterableOnce[(Any, Any, EInMuxStream )] ]
+         // enl.allStreams map(_._3 ) map(e => summon[e.type <:< EInMuxStream ] ) 
+         val cpy = copy(allStreams = enl.allStreams1 )
+         cpy
+      }
+
+      private[Impl] 
+      def allStreams1: IndexedSeq[(ChannelIdent, Emk, ChannelBody)] = {
+         allStreams
+      }
+
+   }
 
 }
 

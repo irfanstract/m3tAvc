@@ -27,8 +27,8 @@ object encodedFormsECdl
    import ewfi.*
 
    type XDecoderInstance 
-      >: java.io.Closeable & WithStreams[InDemuxStreamMap]
-      <: java.io.Closeable & WithStreams[InDemuxStreamMap]
+      >: java.io.Closeable & WithFrameIterator[BbsdAvInterleavedFrameIterator]
+      <: java.io.Closeable & WithFrameIterator[BbsdAvInterleavedFrameIterator]
 
    trait XEncoderInstanceOps extends
    AnyRef
@@ -47,7 +47,7 @@ object encodedFormsECdl
     */
    // TODO
    type XEncodend
-      // >: BbsdAvInterleavedFrameIterator
+      >: BbsdAvInterleavedFrameIterator
       <: BbsdAvInterleavedFrameIterator
 
    type XR1[
