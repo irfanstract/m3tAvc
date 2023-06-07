@@ -133,6 +133,11 @@ object BbsdAvInterleavedFrameIterator
                   with IOfWhichMediaKind(mediaKind = channelOps.mediaKind )
                   {
 
+                     override
+                     def toString(): String = {
+                        s"per-stream op : ${channelOps }"
+                     }
+
                      export channelOps.currentFrameTRange
                      
                      val channelOpsCopybleAny = {

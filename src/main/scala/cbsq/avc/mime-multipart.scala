@@ -390,6 +390,11 @@ object MimeMultipart
          
          override
          def toString(): String = {
+            toShortString()
+         }
+         
+         override
+         def toMultiLineString(): String = {
             val headersString = {
                headers
                .mkString("\r\n")
@@ -417,6 +422,7 @@ object MimeMultipart
 
    }
 
+   sealed 
    trait CtclQueryOps
    extends
    AnyRef
@@ -428,6 +434,8 @@ object MimeMultipart
       val contentTypeHeaderValue : String
 
       def toShortString(): String
+
+      def toMultiLineString(): String
       
    }
 

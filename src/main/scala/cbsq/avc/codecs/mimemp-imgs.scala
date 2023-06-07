@@ -291,6 +291,11 @@ object asFrameItrImplImpl
    )
    {
 
+      override
+      def toString(): String = {
+         s"[explicitMimeType: ${specifiedMimeTypeOptional.orNull } ; data: ${data } ]"
+      }
+
       lazy val specifiedMimeTypeOptional = {
 
          (util.Try { data.contentTypeHeaderValue } )
