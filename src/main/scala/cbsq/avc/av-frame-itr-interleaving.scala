@@ -450,21 +450,22 @@ def runBbsdAvInterleavedFrameIterativeDemo() : Unit = {
          shortestStreamsExtensionalMode = 1 ,
       )
    }
-   while (true) {
+   for ((i, lg) <- Iterator.from(0).map(i => (i, logger.enstage(s"turn $i") ) ) ) {
+      implicit val logger = lg
 
       val e = {
          Thread.sleep(1 * 1000 )
-         println("=================")
+         logger enstage("=================")
          Thread.sleep(1 * 1000 )
          itr.switchToNextFrame()
       }
 
-      println(s"$e ")
+      logger enstage(s"$e ")
       
-      println(s"itr ${itr } ")
-      println(s"itr.currentFrameTRange ${itr.currentFrameTRange } ")
+      logger enstage(s"itr ${itr } ")
+      logger enstage(s"itr.currentFrameTRange ${itr.currentFrameTRange } ")
       for (s <- itr.streams.getAllStreams().map(_._3 ) ) {
-         println(s"- s.currentFrameTRange ${s.currentFrameTRange } ")
+         logger enstage(s"- s.currentFrameTRange ${s.currentFrameTRange } ")
       }
 
       Thread.sleep(2 * 1000 )
