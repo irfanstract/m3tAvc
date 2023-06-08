@@ -249,6 +249,37 @@ object byteManipImplicitsC {
 
    }
 
+   /**
+    * 
+    * read n bytes
+    * 
+    * name has "EbmSc" at-the-end to avoid clash with one in `java.io.InputStream`
+    * 
+    */
+   extension (r: java.io.InputStream | java.io.DataInput) {
+      
+      def readNBytesEbmSc(supposedReadingLength: Int) : IndexedSeq[Byte] = {
+                  ;
+
+                  import language.unsafeNulls
+                  
+                  (r match {
+
+                     case r : java.io.InputStream =>
+                        r readNBytes(supposedReadingLength )
+                        
+                     case r : java.io.DataInput =>
+                        val buf = new Array[Byte](supposedReadingLength )
+                        r readFully(buf )
+                        buf
+
+                  })
+                  match { case s => collection.immutable.ArraySeq.unsafeWrapArray(s) }
+
+      }
+
+   }
+
    extension (r: java.io.DataInput) {
    
       /**
