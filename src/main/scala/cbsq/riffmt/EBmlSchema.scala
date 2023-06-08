@@ -41,37 +41,41 @@ object ebmlSchemesUtilChronography
 {
    
             export  concurrent.duration.{Deadline, Duration, FiniteDuration }
+
             export  concurrent.duration.{DurationDouble, DurationLong, DurationInt }
+
             import  System.currentTimeMillis
+
+            export cbsq.riffmt.epochChronography.forAmtSinceEpoch
+
+            /** 
+             * 
+             * `Deadline(0.seconds)`
+             * 
+             */ 
             val deadlineZero = (
                Deadline(0.second)
             )
-            val forAmtSinceEpoch = ((sp: FiniteDuration) => (
-               // Deadline(Duration())
-               // .`-`(() )
-               // .`+`(sp)
-               Deadline((
-                  (
-                     /** duration from `Deadline(0.seconds)` to `TheEpoch` */ 
-                     { 
-                        val durationSinceDeadlineZero = (
-                           ((Deadline.now - deadlineZero ) : FiniteDuration )
-                        )
-                        val ctmWhenDeadlineZero = (
-                           currentTimeMillis()
-                           + 
-                           -durationSinceDeadlineZero.toMillis
-                        )
-                        Duration((
-                           -ctmWhenDeadlineZero 
-                        ) : Long, java.util.concurrent.TimeUnit.MILLISECONDS)
-                     }  
-                     : FiniteDuration
-                  )
-                  .`+`(sp )
-               ))
-            ))
             
+            /**
+             * 
+             * the EBML RFC/spec 
+             * defines this to be `the 1st of January 2001, 00:00`
+             * 
+             */
+            val globalBaseDate = (
+               {
+                  locally {
+                     // TODO
+                     forAmtSinceEpoch((
+                        ((2001 - 1970 ) * ((365.25 * 86400 ).toDouble + 0.5 ) )
+                        .toLong
+                        .second
+                     ) )
+                  }
+               }
+            ) : concurrent.duration.Deadline
+
 }
 
 // def ***%(e: EBmlByteManipIoReExports) = {
@@ -109,54 +113,9 @@ sealed trait chvl extends
        */
       type S[+T] = Singleton & T
 
-      sealed
-      case class Lze[K, +V](protected val getPresentValue: K => V ) {
+      export cbsq.riffmt.ebmls.Lze
 
-         private
-         val at = {
-            new java.util.concurrent.atomic.AtomicReference[Map[K, util.Try[V]] ](Map() )
-         }
-
-         private
-         def prepareForKey(k: K) = {
-            at
-            .updateAndGet(m0 => {
-               m0
-               /**
-                * load, if-and-only-if left unset
-                */
-               .updatedWith[util.Try[V] ](k)(o => (
-                  o orElse ({
-                     val tr = (
-                        util.Try({
-                           val v = getPresentValue(k)
-                           v
-                        })
-                     )
-                     Some(tr)
-                  })
-               ) )
-            })
-         }
-
-         def get(k: K): V = {
-            prepareForKey(k)
-            .apply(k )
-            .get
-         }
-         
-      }
-      extension [V](r: Lze[Unit, V]) {
-
-         def value: V = {
-            r get()
-         }
-         
-      }
-
-      class Lazy[+V](presentlyValue: => V ) {
-         lazy val value = presentlyValue
-      }
+      export cbsq.riffmt.ebmls.Lazy
  
       /**
        * 
@@ -171,21 +130,11 @@ sealed trait chvl extends
        * defines this to be `the 1st of January 2001, 00:00`
        * 
        */
-      val globalBaseDate = (
-         {
-            import ebmlSchemesUtilChronography.*
-            locally {
-               // TODO
-               forAmtSinceEpoch((
-                  ((2001 - 1970 ) * ((365.25 * 86400 ).toDouble + 0.5 ) )
-                  .toLong
-                  .second
-               ) )
-            }
-         }
-      ) : concurrent.duration.Deadline
+      export ebmlSchemesUtilChronography.globalBaseDate
 
-      extension (r: java.io.InputStream) {
+      export cbsq.riffmt.byteManipImplicits.readNBytesEbmSc
+
+      extension (r: java.io.InputStream | java.io.DataInput) {
 
          /**
           * 
@@ -194,27 +143,34 @@ sealed trait chvl extends
           * @param supposedReadingLength the exact expected number of bytes
           * 
           */
-         def readEbmlDateBytes(supposedReadingLength: Long): concurrent.duration.Deadline = {
+         def readEbmlDateBytes(
+            //
+            
+            supposedReadingLength: Long ,
+            
+         ): concurrent.duration.Deadline = {
+
             import  concurrent.duration.*
+
             val parsedValue = (
                // TODO
                {
-                  val rawBytes = (
-                     r
-                     .readNBytes((
-                        supposedReadingLength
-                        .toInt
-                     ))
-                     .toIndexedSeq
-                  )
+                  
+                  val rawBytes = ({
+                     
+                     r readNBytesEbmSc(supposedReadingLength.toInt )
+                  })
+
                   BigInt(rawBytes.toArray )
                }
             ) : BigInt
+
             globalBaseDate `+` (
                // TODO
                (parsedValue )
                .toLong.nanoseconds
             )
+
          }
          
       }
@@ -265,7 +221,7 @@ trait EBsd extends
 
          val path : String
 
-         def fullScheme : Null | collection.immutable.Iterable[cbsq.riffmt.ebmls.elementDtdAnalyse]
+         def fullScheme : Null | TraversalDiagnostique.FullSchemeInfo
 
          val RecoverableParsingError : PartialFunction[TraversalDiagnostique.EpError, Seq[Any] ]
 
@@ -287,7 +243,13 @@ trait EBsd extends
          // given defaultInstance : TraversalDiagnostique = nullaryInstance
 
          private[CodeSchemeOps] 
-         def ofChildImpl(parent: TraversalDiagnostique, divName: String): TraversalDiagnostique = {
+         def ofChildImpl(
+
+            parent: TraversalDiagnostique,
+            divName: String,
+
+         ): TraversalDiagnostique = {
+
             new TraversalDiagnostique {
 
                val path = {
@@ -301,11 +263,15 @@ trait EBsd extends
                export parent.{path => _, *}
                
             }
+            
          }
+         
          extension (parent: TraversalDiagnostique) {
 
             def ofChild(divName: String) = {
+
                ofChildImpl(parent, divName)
+               
             }
             
          }
@@ -313,22 +279,36 @@ trait EBsd extends
          extension (parent: TraversalDiagnostique) {
 
             def newLexerException(
+               //
+
                msg: String ,
+
                r: Null | java.io.Closeable = null ,
+
             ): Exception = {
-               new java.io.IOException(s"[${parent.path }]: $msg") with EBmlPrimitivesMalformationException {
+
+               new
+               java.io.IOException(s"[${parent.path }]: $msg" )
+               with EBmlPrimitivesMalformationException
+               {
 
                   /* only show up in debuggers */
                   val correlatedRes = r
 
                }
+
             }
             
          }
 
+         type FullSchemeInfo
+            >: collection.immutable.Iterable[cbsq.riffmt.ebmls.elementDtdAnalyse]
+            <: collection.immutable.Iterable[cbsq.riffmt.ebmls.elementDtdAnalyse]
+
          extension (parent: TraversalDiagnostique) {
 
-            def withFullSchemeInfo(s: collection.immutable.Iterable[cbsq.riffmt.ebmls.elementDtdAnalyse]) = {
+            def withFullSchemeInfo(s: FullSchemeInfo ) = {
+
                new TraversalDiagnostique {
 
                   export parent.{fullScheme => _, * }
@@ -336,6 +316,7 @@ trait EBsd extends
                   val fullScheme = s
                   
                }
+               
             } : TraversalDiagnostique
             
          }
@@ -343,9 +324,11 @@ trait EBsd extends
          object PSO {
 
             def unapplySeq(e: EpError)(using TraversalDiagnostique) = {
+
                summon[TraversalDiagnostique]
                .RecoverableParsingError
                .lift.apply(e )
+
             }
 
          }
@@ -356,6 +339,7 @@ trait EBsd extends
          extension (parent: TraversalDiagnostique) {
 
             def withCustomErrorHandler(s: PartialFunction[EpError, Seq[Any] ] ) = {
+
                new TraversalDiagnostique {
 
                   export parent.{RecoverableParsingError => _, * }
@@ -363,6 +347,7 @@ trait EBsd extends
                   val RecoverableParsingError = s
                   
                }
+               
             } : TraversalDiagnostique
             
          }
@@ -375,6 +360,7 @@ trait EBsd extends
          val elementSimpleNames1: PartialFunction[BigInt, String]
 
       }
+
       object XStringifCtx
       {
 
@@ -896,6 +882,15 @@ trait EBsd extends
                def toString(): String = {
                   import language.unsafeNulls /* for this `toString` impl */
 
+                  extension (v: String) {
+
+                     def trimToJustFiveHundred(): String = {
+                        v
+                              .replaceFirst("\\A([\\S\\s]{500,})\\z", "$1...")
+                     }
+                     
+                  }
+
                   (
                      Seq()
                      :+ s"<${classSimpleName } >"
@@ -921,8 +916,24 @@ trait EBsd extends
                                  HexFormat.of()
                                  .formatHex(e.unsafeArray )
                               })
-                              .replaceFirst("\\A([\\S\\s]{500,})\\z", "$1...")
-                              .prependedAll("[raw_bytes]")
+                              .trimToJustFiveHundred()
+                              .replaceFirst("[\\S\\s]+", "<?RAWBYTES: $0 />")
+
+                           case e : (java.net.URI) =>
+                              e.toASCIIString()
+                              match {
+
+                                 case s"data:text/plain,${v0 }" =>
+                                    new java.net.URI(s"txt:$v0").toString()
+                                    match {
+                                       case s"txt:${value}" =>
+                                          value
+                                    }
+
+                                 case _ =>
+                                    s"<?EMB: ${e.toASCIIString().trimToJustFiveHundred() } />"
+
+                              }
 
                            case e =>
                               e.toString()
