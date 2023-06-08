@@ -26,7 +26,7 @@ extends
    with MediaDeviceAttributeTyper1
 {
 
-   def getAllRegisteredDemuxers()(using CodecListDependentCtx) : collection.immutable.Iterable[MediaCodecOverview & cbsq.avc.FfCodecTemplateOps ] = {
+   def getAllRegisteredDemuxers() : collection.immutable.Iterable[MediaCodecOverview & cbsq.avc.FfCodecTemplateOps ] = {
       getAllRegisteredDevices()
       .map({
          case c : MediaCodecOverview =>

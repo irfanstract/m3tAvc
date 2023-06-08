@@ -309,7 +309,7 @@ lazy val codecListing = {
    }
 
    override
-   def getAllRegisteredDemuxers()(using CodecListDependentCtx) = {
+   def getAllRegisteredDemuxers() = {
       getAllRegisteredDevices()
       .collect({
          case e : XMediaCodecOverview =>
