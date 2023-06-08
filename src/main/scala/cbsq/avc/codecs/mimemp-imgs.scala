@@ -135,6 +135,7 @@ class asFrameItrImpl(
          // with cbsq.avc.BbsdAvFrameIterator.OfIterAndBuf[Unit]
          BbsdAvFrameIterator 
          with SupportsSwitchingToNextFrame[BbsdAvFrameIterator.IterativeContinuity ]
+         with SupportsSwitchingToNextFrame.IEnsureAlreadyCalled[Any]
          with SupportsCurrentlyPointedFrameTRangeQuery1
          {
             
@@ -165,7 +166,7 @@ class asFrameItrImpl(
 
                override
                def toString(): String = {
-                  s"MIMEMP DECODING [state: ${anl1 } ; ]"
+                  s"MIMEMP DECODING [state: ${stateVar } ; ]"
                }
 
                override
@@ -185,7 +186,7 @@ class asFrameItrImpl(
                            .tryDecodeInto(currentAlloc1 )
                         }
 
-                        anl1 = (analysis, tRange)
+                        stateVar = (analysis, tRange)
 
                         notifyAllImgConsumers()
 
@@ -198,15 +199,26 @@ class asFrameItrImpl(
 
                }
 
+               def state = {
+                  ensureAlreadyInitialised()
+                  stateVar
+               }
+
                override
                def currentFrameNativeResol = {
                   (currentAlloc1.getWidth(), currentAlloc1.getHeight() )
                }
 
+               def currentFrameTRangeRepr = {
+                  ensureAlreadyInitialised()
+                  stateVar._2
+
+               } : asFrameItrImplImpl.TRange
+
                override
                def currentFrameTRange: (Double, Double) = {
 
-                  (anl1._2 match { case (v1, v2) => (v1, v2) } )
+                  (currentFrameTRangeRepr match { case (v1, v2) => (v1, v2) } )
 
                   .map[
                      [E] =>> (
@@ -241,7 +253,8 @@ class asFrameItrImpl(
                   currentAlloc1
                }
 
-               var anl1 : (asFrameItrImplImpl.byImgData1, asFrameItrImplImpl.TRange ) = compiletime.uninitialized
+               private 
+               var stateVar : (asFrameItrImplImpl.byImgData1, asFrameItrImplImpl.TRange ) = compiletime.uninitialized
 
                //
                
