@@ -12,11 +12,17 @@ import cbsq.w3dom.specialImplicits.*
 
 import cbsq.riffmt.ebmls
 
+lazy val matroskaSpecDocUrl = {
+   matrCd.specDocUrl
+}
+
+@deprecated("this is planned to be internalised.")
 object matrCd {
 
    lazy val specDocUrl = (
       matrCd.getClass().getResource("/matroska-spec.xml")
       // new java.net.URI("https://github.com/ietf-wg-cellar/matroska-specification/raw/master/ebml_matroska.xml").toURL()
+      .nn
    )
 
    val doc = {
@@ -58,16 +64,18 @@ object matrCd {
       getEbmlSchema(doc )
    }
 
+   extension (eStr : String) {
+
+         def withPaddedSegmentUpTo(i: Int, l: Int): String = (
+            (eStr.take(i).padTo(l, ' ') )
+            + (eStr drop i) 
+         )
+
+   }
+
 }
 
-extension (eStr : String) {
-
-      def withPaddedSegmentUpTo(i: Int, l: Int): String = (
-         (eStr.take(i).padTo(l, ' ') )
-         + (eStr drop i) 
-      )
-
-}
+import matrCd.withPaddedSegmentUpTo
 
 import cbsq.riffmt.ebmls.toMarkdown
 
