@@ -103,6 +103,15 @@ object getEbmlSchema
       
    }
 
+   /**
+    * 
+    * traverses the given `org.w3c.dom.Document` to
+    * translate into an `XSc`.
+    * mutating the `Document` `doc` afterwards
+    * will not affect the already-returned `XSc` -
+    * the translation is essentially a "snapshot"
+    * 
+    */
    def apply(doc: org.w3c.dom.Document) = {
 
          import ebmls.{totalDtdAnalyse, elementDtdAnalyse}
