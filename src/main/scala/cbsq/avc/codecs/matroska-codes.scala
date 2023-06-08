@@ -16,6 +16,11 @@ lazy val matroskaSpecDocUrl = {
    matrCd.specDocUrl
 }
 
+lazy val matroskaSegmentElementScheme = {
+   matrCd.scheme
+   .schemeMap.apply(0x18538067 : BigInt )
+}
+
 @deprecated("this is planned to be internalised.")
 object matrCd {
 
