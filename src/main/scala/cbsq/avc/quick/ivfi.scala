@@ -25,6 +25,9 @@ import javax.swing
 class openInteractiveFrameIterativeUiImpl(
    src : cbsq.avc.BbsdAvInterleavedFrameIterator ,
 )
+(using 
+   logger : cbsq.avc.PhrStagedLogging.ByDName["cbsq.avc.quick.openInteractiveFrameIterativeUiImpl$.main"] ,
+)
 extends AnyRef with java.io.Closeable
 {
 
@@ -33,7 +36,7 @@ extends AnyRef with java.io.Closeable
       
       val e = src.switchToNextFrame()
       generalImpl.endedNessState.setSelected(e.isLeft )
-      
+
    }
 
    generalImpl
@@ -130,7 +133,7 @@ extends AnyRef with java.io.Closeable
       // reinitWithCurrentlyInfo
       def refresh() : Unit = {
          clearInfo()
-         println(s"$src ")
+         logger enstage(s"$src ")
          new swing.JTextArea(label1).setText(s"frame T : ${src.currentFrameTRange } " )
       }
       
