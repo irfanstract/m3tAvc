@@ -85,10 +85,7 @@ object BbsdAvInterleavedFrameIterator
       val vsii = {
 
          Iterator.iterate[(@@!, Unit) ](({
-            streamsInitially
-            .mapValues(s => {
-               s.switchToNextFrame()
-            })
+
             @@!(
                streams = streamsInitially,
                xCurrentTValue = 0 ,
