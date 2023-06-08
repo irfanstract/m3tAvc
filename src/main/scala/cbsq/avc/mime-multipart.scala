@@ -430,6 +430,8 @@ object MimeMultipart
 
       val payload : cbsq.ByteBlob
 
+      val headersAsMap: Map[String, String]
+
       @deprecated
       val contentTypeHeaderValue : String
 

@@ -73,6 +73,9 @@ object httpMessageParsing
     * 
     */
    class readHttpHeadersAndAnalyse(src: java.io.BufferedReader)
+   extends
+   AnyRef
+   with HttpHeadersTr
    {
 
          ;
@@ -81,8 +84,8 @@ object httpMessageParsing
 
          /**
           * 
-          * the headers, each as `(key, value)`.
-          * maintains the original ordering.
+          * the headers, each as `(key, value)`,
+          * with the original ordering and duplication
           * 
           */
          val headersAsTuples = {
@@ -91,22 +94,46 @@ object httpMessageParsing
             src
             .readHttpHeadersAll()
             .toVector
+            
+            /**
+             * 
+             * normalise the names
+             * 
+             */
             .map({
                case ValidHeaderRow(key, valueString) =>
-                  ( key.toLowerCase(java.util.Locale.ROOT) , valueString )
+                  ( key.replaceAll("\\s+", "").toLowerCase(java.util.Locale.ROOT) , valueString )
             })
             
          }
 
          /**
           * 
-          * the headers.
+          * the headers, as Map.
+          * 
+          * the spec
+          * enforces different rules for different fields ;
+          * concat for some, and last-set-value for some
           * 
           */
          val headersAsMap = {
 
             headersAsTuples
-            .toMap
+            
+            /**
+             * 
+             * the spec
+             * enforces different rules for different fields ;
+             * concat for some, and last-set-value for some
+             * 
+             */
+            .groupMap(_._1)(_._2)
+            .collect[String, String]({
+
+               case (key, _ :+ lastSetValue) =>
+                  (key, lastSetValue)
+                  
+            })
             
          }
 
@@ -147,7 +174,7 @@ object httpMessageParsing
                   
             })
             .orElse({
-               throw new java.io.IOException(s"no Content-Length header; (presently : ${headers })")
+               throw new java.util.NoSuchElementException(s"no Content-Length header; (presently : ${headers })")
             })
             .filter(v => (0 < v ) )
             .get

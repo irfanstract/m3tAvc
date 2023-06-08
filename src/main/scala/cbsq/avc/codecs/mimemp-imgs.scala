@@ -137,7 +137,7 @@ class asFrameItrImpl(
          with SupportsSwitchingToNextFrame[BbsdAvFrameIterator.IterativeContinuity ]
          with SupportsCurrentlyPointedFrameTRangeQuery1
          {
-
+            
          }
 
          mediaType match {
@@ -198,20 +198,13 @@ class asFrameItrImpl(
 
                }
 
-               var anl1 : (asFrameItrImplImpl.byImgData1, asFrameItrImplImpl.TRange ) = compiletime.uninitialized
-
                override
                def currentFrameNativeResol = {
                   (currentAlloc1.getWidth(), currentAlloc1.getHeight() )
                }
 
                override
-               def backingBufferedImg : java.awt.image.BufferedImage = {
-                  currentAlloc1
-               }
-
-               override
-               def currentFrameTRange = {
+               def currentFrameTRange: (Double, Double) = {
 
                   (anl1._2 match { case (v1, v2) => (v1, v2) } )
 
@@ -242,6 +235,13 @@ class asFrameItrImpl(
                   }
                   
                }
+
+               override
+               def backingBufferedImg : java.awt.image.BufferedImage = {
+                  currentAlloc1
+               }
+
+               var anl1 : (asFrameItrImplImpl.byImgData1, asFrameItrImplImpl.TRange ) = compiletime.uninitialized
 
                //
                
@@ -318,6 +318,8 @@ object asFrameItrImplImpl
       protected 
       def getPreSpecifiedImgReaderOrProbe(
          dataReaderIio : javax.imageio.stream.ImageInputStream ,
+
+         ifExplicitMimeTypeThenAllowFallbackToProbing : Boolean = true ,
          
       ) = {
             
@@ -331,14 +333,29 @@ object asFrameItrImplImpl
 
                specifiedMimeTypeOptional match {
                   
-                  case None =>
-                     ImageIO.getImageReaders(dataReaderIio).nn
-                     .asScala
-
                   case Some(specifiedMimeType) =>
-                     ImageIO.getImageReadersByMIMEType(specifiedMimeType).nn
-                     .asScala
+
+                     Iterator()
+
+                     .concat[imageio.ImageReader]({
+
+                        ImageIO.getImageReadersByMIMEType(specifiedMimeType).nn.asScala
+
+                     })
                      
+                     .concat[imageio.ImageReader]({
+
+                        if ifExplicitMimeTypeThenAllowFallbackToProbing then {
+                           ImageIO.getImageReaders(dataReaderIio).nn.asScala
+                        }
+                        else Iterator()
+                        
+                     })
+                     
+                  case None =>
+                     
+                     ImageIO.getImageReaders(dataReaderIio).nn.asScala
+
                }
                
             })
@@ -437,57 +454,9 @@ object asFrameItrImplImpl
       
    }
 
-   def blitResized(
-      src : java.awt.image.RenderedImage,
-      dest: java.awt.image.BufferedImage ,
-   ): Unit = {
-      ;
+   export cbsq.avc.quick.java2d.ImageCopyOfs.blitResized
 
-      import language.unsafeNulls
-
-      val g = dest.createGraphics()
-      try {
-         g.drawRenderedImage(src, {
-            java.awt.geom.AffineTransform.getScaleInstance(
-               ( dest.getWidth() ).toDouble / ( src.getWidth() ) ,
-               (dest.getHeight() ).toDouble / (src.getHeight() ) ,
-            )
-         } )
-      }
-      finally g.dispose()
-   }
-
-   extension (buffer0 : java.awt.image.RenderedImage ) {
-
-      def newCompatibleBufferedImage1(
-         resol : (Int, Int) ,
-         
-      ) = {
-
-               import language.unsafeNulls
-
-               /**
-                * 
-                */
-               val cm = {
-                  buffer0
-                  .getColorModel()
-               }
-               
-               val raster = {
-                  cm
-                  .createCompatibleWritableRaster(resol._1, resol._2 )
-               }
-
-               new java.awt.image.BufferedImage(cm, raster, {
-                  // TODO
-                  cm.isAlphaPremultiplied()
-
-               }, null )
-
-      }
-
-   }
+   export cbsq.avc.quick.java2d.ImageCopyOfs.newCompatibleBufferedImage1
 
    /**
     * 
@@ -496,12 +465,7 @@ object asFrameItrImplImpl
     * 
     */
    lazy val dummyImgConsumer : java.awt.image.ImageConsumer = {
-      import language.unsafeNulls
-      
-      java.lang.reflect.Proxy.newProxyInstance(new {}.getClass().getClassLoader() , Array(classOf[java.awt.image.ImageConsumer] ), {
-         (_, _, _) => {}
-      } )
-      .asInstanceOf[java.awt.image.ImageConsumer ]
+      cbsq.avc.quick.java2d.dummyImgConsumer
    }
 
 }
@@ -522,6 +486,24 @@ object V_#@@%
       
    }
 
+   /**
+    * 
+    * rather than creating new `java.awt.image.ImageFilter`s everytime,
+    * use this instead since the same `ImageConsumer` will not be added twice
+    * 
+    */
+   lazy val dummyImgConsumer : java.awt.image.ImageConsumer = {
+      cbsq.avc.quick.java2d.dummyImgConsumer
+   }
+
+   /**
+    * 
+    * an `ImageFilter` which
+    * turns every `STATICIMAGEDONE` into `SINGLEFRAMEDONE`
+    * 
+    */
+   export cbsq.avc.quick.java2d.getSustainingImageFilter
+
 }
 
 trait V_#@@% 
@@ -539,7 +521,7 @@ with cbsq.avc.BbsdAvFrameIterator.IOfWhichMediaKind[cbsq.avc.MediaKind.Video.typ
 
    def notifyAllImgConsumers() : Unit = {
       asJImgProducer
-      .startProduction(asFrameItrImplImpl.dummyImgConsumer )
+      .startProduction(V_#@@%.dummyImgConsumer )
    }
 
    @deprecated
@@ -550,39 +532,15 @@ with cbsq.avc.BbsdAvFrameIterator.IOfWhichMediaKind[cbsq.avc.MediaKind.Video.typ
          .getSource().nn
       }
 
-      new AnyRef with java.awt.image.ImageProducer
+      new
+      AnyRef
+      with java.awt.image.ImageProducer
+      with cbsq.avc.quick.java2d.ImageConsumerList
       {
 
-         val cl = {
-            new java.util.concurrent.atomic.AtomicReference[Set[java.awt.image.ImageConsumer] ](Set() )
-         }
-
-         def addConsumerImpl(x$0: java.awt.image.ImageConsumer ): Unit = {
-            import language.unsafeNulls
-            cl
-            .updateAndGet(_ incl x$0 )
-         }
-         
          override
-         def addConsumer(x$0: java.awt.image.ImageConsumer | Null): Unit = {
-            import language.unsafeNulls
-            addConsumerImpl(x$0 )
-         }
-         
-         override
-         def removeConsumer(x$0: java.awt.image.ImageConsumer | Null): Unit = {
-            ;
-            import language.unsafeNulls
-            cl
-            .updateAndGet(_ excl x$0 )
-         }
-
-         override
-         def isConsumer(x$0: java.awt.image.ImageConsumer | Null): Boolean = {
-            ;
-            import language.unsafeNulls
-            cl.get()
-            .contains(x$0 )
+         def toString(): String = {
+            s"asJImgProducer[consumers: ${getAllConsumersSc() } ;]"
          }
 
          override
@@ -600,30 +558,9 @@ with cbsq.avc.BbsdAvFrameIterator.IOfWhichMediaKind[cbsq.avc.MediaKind.Video.typ
             import language.unsafeNulls
 
             {
-                  new java.awt.image.ImageConsumer {
-
-                     export c.{
-                        imageComplete => _,
-                        * ,
-                     }
-
-                     override
-                     def imageComplete(status: Int): Unit = {
-
-                        import java.awt.image.ImageConsumer.*
-
-                        status match {
-                           case status @ STATICIMAGEDONE =>
-                              c imageComplete(SINGLEFRAMEDONE)
-                           case status @ SINGLEFRAMEDONE =>
-                              // no-op
-                           case status =>
-                              c imageComplete(status)
-                        }
-
-                     }
-
-                  }
+                  V_#@@%.getSustainingImageFilter()
+                  /** otherwise we'd be left with the NPE-ing impl */
+                  .getFilterInstance(c )
             }
             
          }
@@ -635,7 +572,7 @@ with cbsq.avc.BbsdAvFrameIterator.IOfWhichMediaKind[cbsq.avc.MediaKind.Video.typ
             addConsumerImpl(x$0)
 
             val s = newOriginalProducer()
-            for (c <- cl.get() ) {
+            for (c <- getAllConsumersSc() ) {
 
                s addConsumer {
                   asSfdImageConsumer(c)
