@@ -175,11 +175,12 @@ object BbsdAvInterleavedFrameIterator
          } ,
 
       )
+      with SupportsSwitchingToNextFrame.IEnsureAlreadyCalled[Any]
       {
 
          override
          def toString(): String = {
-            s"AvInterleavedFrameIterator @ ${r : @@! }"
+            s"AvInterleavedFrameIterator @ ${state : @@! }"
          }
 
          override
@@ -197,20 +198,26 @@ object BbsdAvInterleavedFrameIterator
 
                case Some(streams) =>
                   lsnfLogger enstage(term = s"streams: $streams " )
-                  r = streams
+                  stateVar = streams
                   lsnfLogger enstage(term = s"got a frame - returning Right {} to indicate remainder " )
                   Right {}
                   
             }
          }
 
-         var r : @@! = compiletime.uninitialized
+         def state = {
+            ensureAlreadyInitialised()
+            stateVar.nn
+            stateVar
+         }
 
          override
          def currentFrameTRange: (Double, Double) = {
-            /* may throw NPE */
-            (r.tStamp00, r.tStamp10)
+            (state.tStamp00, state.tStamp10)
          }
+
+         private 
+         var stateVar : @@! = compiletime.uninitialized
 
       }
       match { case e => e }
@@ -394,6 +401,7 @@ object BbsdAvInterleavedFrameIterator
          new
          BbsdAvFrameIterator
          with SupportsSwitchingToNextFrame[BbsdAvFrameIterator.IterativeContinuity ]
+         with SupportsSwitchingToNextFrame.IEnsureAlreadyCalled[Any]
          with SupportsCurrentlyPointedFrameTRangeQuery1
          with IOfWhichMediaKind(mediaKind = MediaKind.SideData )
          with SupportsBlittingOfCurrentlyFrameDataOntoPassedDest[AnyRef]
@@ -404,9 +412,13 @@ object BbsdAvInterleavedFrameIterator
                s"[current t-range: ${currentFrameTRange } ; v: $v ]"
             }
 
-            var v : (Double, Double) = compiletime.uninitialized
+            protected 
+            def state = {
+               ensureAlreadyInitialised()
+               v
+            }
 
-            override def currentFrameTRange: (Double, Double) = v
+            override def currentFrameTRange: (Double, Double) = state
 
             override
             def switchToNextFrame(): BbsdAvFrameIterator.IterativeContinuity = {
@@ -423,6 +435,9 @@ object BbsdAvInterleavedFrameIterator
             def renderCurrentFrameData(dest: AnyRef): Unit = {
                /* ignorable unsupported op */
             }
+
+            private 
+            var v : (Double, Double) = compiletime.uninitialized
 
          }
 
