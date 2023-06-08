@@ -107,11 +107,11 @@ extends
       /**
        * corresponds to `libavfmt`'s `AVFMT_NOFILE`
        */
-      def isMuxFnf(using CodecListDependentCtx): Boolean = {
+      def isMuxFnf: Boolean = {
          false
       }
 
-      def fileExtensions1Optional(using CodecListDependentCtx) : Option[collection.immutable.Iterable[String] ] = {
+      def fileExtensions1Optional : Option[collection.immutable.Iterable[String] ] = {
          None
       }
       
