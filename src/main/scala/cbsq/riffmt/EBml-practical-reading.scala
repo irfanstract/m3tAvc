@@ -69,8 +69,9 @@ def ebmlPracticalTest1(): Unit = {
             ((r: UnpickleInputStream) => {
                println("CONTENTS" )
                import cbsq.avc.codecs.matrCd.{scheme => s, entries => sE}
+               import cbsq.avc.codecs.matroskaSegmentElementScheme
                val e = (
-                  s.schemeMap(0x18538067)
+                  matroskaSegmentElementScheme
                   .readAndParse(r)(using {
                      EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance
                      .withFullSchemeInfo( sE)
