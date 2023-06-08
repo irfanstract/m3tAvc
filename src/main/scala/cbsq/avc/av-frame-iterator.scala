@@ -229,6 +229,55 @@ trait SupportsSwitchingToNextFrame[+R]
 
 }
 
+object SupportsSwitchingToNextFrame
+{
+
+   /**
+    * 
+    * most `SupportsSwitchingToNextFrame` impl(s)
+    * builds on
+    * maintaining a (private) `var` and making its `switchToNextFrame` method shift its value ;
+    * at the same time,
+    * it's rather easy
+    * to invoke a neighbouring methods like `currentFrameTRange` and `renderCurrentFrameData` 
+    * without having called `switchToNextFrame` first.
+    * sadly
+    * if `switchToNextFrame` has not been called,
+    * other methods like `currentFrameTRange` and `renderCurrentFrameData`
+    * would break, and `throw`s
+    * 
+    * this `trait`
+    * (pre)defines
+    * the internal `ensureAlreadyInitialised` method
+    * which
+    * subclasses can simply use to ensure `switchToNextFrame` has been called at-least once
+    * 
+    */
+   transparent trait IEnsureAlreadyCalled[+R]
+   {
+            //
+            this : SupportsSwitchingToNextFrame[R] =>
+      
+            /**
+             * 
+             * shall have called this,
+             * otherwise they'll fail with eg NPE(s) or CCE(s) or etc
+             * 
+             */
+            protected
+            def ensureAlreadyInitialised() : Unit = {
+               elss
+            }
+
+            private
+            lazy val elss : R = {
+               switchToNextFrame()
+            }
+            
+   }
+
+}
+
 trait SupportsCurrentlyPointedFrameTRangeQuery[+R <: Matchable]
 {
 
