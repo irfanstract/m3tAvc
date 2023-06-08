@@ -66,31 +66,11 @@ def ebmlPracticalTest1(): Unit = {
             } )
          }
          try {
-            ((r: UnpickleInputStream) => {
+            {
                println("CONTENTS" )
-               import cbsq.avc.codecs.matrCd.{scheme => s, entries => sE}
-               import cbsq.avc.codecs.matroskaSegmentElementScheme
-               val e = (
-                  matroskaSegmentElementScheme
-                  .readAndParse(r)(using {
-                     EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance
-                     .withFullSchemeInfo( sE)
-                     .withCustomErrorHandler({
-                        
-                        case _ =>
-                           Seq()
-
-                     })
-                  } )
-               )
+               val e = cbsq.avc.codecs.fullyDemuuxMatroskaFile(r )
                println(e.toString() replaceAll ({ import scala.util.matching.Regex.quote ; s"(\\w{64})\\w{3,}(?:${quote("...") })?" }, "$1...") take (10 * 1024 ) )
-            })({
-               // import EBmlPrimitivesIo.asMarkableStream
-               r
-               // .newTimedInputStream()
-               .newCountingBufferedStream()
-               .asMarkableStream()
-            } )
+            }
          }
          catch {
             case z =>
