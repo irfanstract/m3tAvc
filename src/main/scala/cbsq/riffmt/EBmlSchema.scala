@@ -61,11 +61,18 @@ trait EBsd extends
       def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
 
       protected[EBsd] 
+      opaque
       type ReadingParsingImplArg
          >: AnyRef & RnpSource
          // <: AnyRef & RnpSource
          // <: AnyRef
-         <: AnyRef & RnpSource
+         <: AnyRef
+         = RnpSource
+      
+      protected[EBsd] 
+      given Conversion[ReadingParsingImplArg, RnpSource] = {
+         e => e
+      }
 
       type RnpSource
         <: java.io.InputStream | java.io.DataInput
