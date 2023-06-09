@@ -84,7 +84,7 @@ trait EBsd extends
 
          // transparent inline
          def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique) = {
-            this1.readAndParseImpl(r = r )(using td )
+            this1.readAndParseImpl(r = CodeSchemeOps.RpiaImpl(src = r ) )(using td )
          }
          
       }
@@ -131,7 +131,9 @@ trait EBsd extends
       private[EBsd]
       // implicit
       def getRnpSourceRpiaImpl(ctx : CodeSchemeOps )(s: ctx.ReadingParsingImplArg ): ctx.RnpSource = {
-         s
+         (s : RpiaImpl)
+         .src
+         .asInstanceOf[ctx.RnpSource]
       }
 
       private[EBsd]
@@ -145,13 +147,9 @@ trait EBsd extends
          ) =>
 
          protected[EBsd] 
-         opaque
          type ReadingParsingImplArg
-            >: AnyRef & RnpSource
-            // <: AnyRef & RnpSource
-            // <: AnyRef
-            <: AnyRef
-            = RnpSource
+            >: RpiaImpl
+            <: RpiaImpl
          
          protected[EBsd] 
          given Conversion[ReadingParsingImplArg, RnpSource] = {
@@ -159,6 +157,11 @@ trait EBsd extends
          }
          
       }
+
+      private[EBsd]
+      case class RpiaImpl(
+         src : CodeSchemeOps#RnpSource ,
+      )
 
    }
 
@@ -888,10 +891,10 @@ trait EBsd extends
                               (appropriateSchemeDef match {
 
                                  case scheme : VariadicImpl[?, ?] =>
-                                    scheme.readAndParseImpl(r)
+                                    scheme.readAndParse(r)
 
                                  case scheme =>
-                                    Seq(scheme.readAndParseImpl(r) )
+                                    Seq(scheme.readAndParse(r) )
                                     
                               }): Seq[FramePayloadScheme#Instance]
 
@@ -1297,7 +1300,7 @@ trait EBsd extends
    extension (r: UnpickleInputStream) {
       
       def readEbmlByScheme(s: FramePayloadScheme)(using CodeSchemeOps.TraversalDiagnostique) = {
-         s readAndParseImpl(r)
+         s readAndParse(r)
       }
 
    }
@@ -1467,7 +1470,7 @@ trait EBsd extends
                   ))(emr => {
                      (try {
                         ((
-                           c readAndParseImpl(r)
+                           c readAndParse(r)
                         ), {
                            import reflect.Selectable.reflectiveSelectable
                            /**
