@@ -203,16 +203,14 @@ def runEbmlDemonstrativeTransversal(
 
                         case c : collection.immutable.ArraySeq.ofByte =>
                            import cbsq.ByteBlob.boxingImplicits.*
-                           logging enstage(s"is a Byte-Blob: ${c.toBlob.toStringBetter() }" )
+                           logging enstage(s"Bytes: ${c.toBlob.toStringBetter() }" )
 
                         case c : cbsq.riffmt.EBml.FramePayloadScheme.`elements_@&%!`.Element =>
-                           val lgItem = logging enstage(s"is an Element: ${c.toStringBetter() }" )
+                           val lgItem = logging enstage(s"Elem: ${c.toStringBetter() }" )
                            runEbmlDemonstrativeTransversal(c.children, logging = lgItem )
 
                         case c : Seq[cItem] =>
-                           if false then {
-                              logging enstage(s"is a Seq: ${c.toStringBetter() }" )
-                           }
+                           logging enstage(s"Seq" )
                            for ((child, i) <- c.map(_.asInstanceOf[cbsq.riffmt.EBml.FramePayloadScheme#Instance] ).zipWithIndex ) {
                               val lgItem = logging enstage(s"$i: ")
                               runEbmlDemonstrativeTransversal(child, logging = lgItem  )
