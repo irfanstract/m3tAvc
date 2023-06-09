@@ -84,7 +84,16 @@ trait EBsd extends
 
          // transparent inline
          def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique) = {
-            this1.readAndParseImpl(r = CodeSchemeOps.RpiaImpl(src = r ) )(using td )
+            
+            this1.readAndParseImpl(r = {
+
+               CodeSchemeOps.RpiaImpl(
+                  src = r ,
+                  eagerness = ebmsGenericUtils.Eagerness.toBeEager ,
+               )
+
+            } )(using td )
+
          }
          
       }
@@ -161,6 +170,7 @@ trait EBsd extends
       private[EBsd]
       case class RpiaImpl(
          src : CodeSchemeOps#RnpSource ,
+         eagerness : ebmsGenericUtils.Eagerness ,
       )
 
    }
