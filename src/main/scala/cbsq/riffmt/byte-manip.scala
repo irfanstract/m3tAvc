@@ -305,6 +305,57 @@ object byteManipImplicitsC {
 
    }
 
+   extension (bytesLlIterator: Iterator[IArray[Byte]] ) {
+
+      def newChunkedByteIteratorInputStream(): java.io.InputStream = {
+         ;
+         
+         new java.io.InputStream {
+
+            import language.unsafeNulls
+
+            var r : IArray[Byte] = {
+               IArray.emptyByteIArray
+            }
+
+            override
+            def read(): Int = ???
+
+            override
+            def read(b: Array[Byte], off: Int, len: Int): Int = {
+
+               if (r.length <= 0 ) {
+
+                  for (newArray <- {
+
+                     bytesLlIterator
+                     .filter(chars => (0 < chars.length ) )
+                     .nextOption()
+
+                  } ) {
+                     r = newArray
+                  }
+                  
+               }
+
+               if (0 < r.length ) {
+                  val (rTake, rRemaning) = r.splitAt(len)
+                  r = rRemaning
+                  rTake.copyToArray(b, off )
+                  rTake.length
+               }
+               else {
+                  -1
+               }
+
+            }
+            
+         }
+         match { case s => new java.io.BufferedInputStream(s, 0x100 ) } // TODO
+      }
+
+   }
+
    extension (r: java.io.DataInput) {
    
       /**
