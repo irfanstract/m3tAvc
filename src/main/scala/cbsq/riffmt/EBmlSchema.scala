@@ -852,7 +852,7 @@ trait EBsd extends
          }
 
          def getXElementEfprSimpleName(using currentPath : CodeSchemeOps.TraversalDiagnostique)(
-            efpr: EbmRawFrameElement[String] ,
+            efpr: Rbeiop ,
          ): String = {
 
                            Option(currentPath.fullScheme).map(_.nn)
@@ -890,7 +890,7 @@ trait EBsd extends
           */
          private 
          def ernp(using CodeSchemeOps.TraversalDiagnostique)(
-            efpr: EbmRawFrameElement[String] ,
+            efpr: Rbeiop ,
             rpia : ReadingParsingImplArg ,
          ) = {
                ;
