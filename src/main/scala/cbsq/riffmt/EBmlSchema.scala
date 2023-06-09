@@ -595,77 +595,11 @@ trait EBsd extends
       // private[FramePayloadScheme ]
       export EBml.`elements_@&%!`
 
-      extension (className: BigInt) {
-
-         def ebmlClassNameFmatted: String = {
-            "!e:" + className.toString(0x10)
-         }
-      }
+      export EBml.ebmlClassNameFmatted
       
-      import `elements_@&%!` as @!
+      import EBml.`elements_@&%!` as @!
       
-      private
-      abstract class `E S` 
-      extends
-      AnyRef 
-      with `elements_@&%!`.Element
-      {
-         
-               lazy val classSimpleName: String = {
-                  className.ebmlClassNameFmatted
-               }
-
-               override
-               def toString(): String = {
-                  import language.unsafeNulls /* for this `toString` impl */
-
-                  (
-                     Seq()
-                     :+ s"<${classSimpleName } >"
-                     :++ (
-                        children
-                        .map[String]({
-                           
-                           case e: collection.immutable.ArraySeq.ofByte if (2 <= e.length) =>
-                              
-                              ({
-                                 import java.util.HexFormat
-                                 HexFormat.of()
-                                 .formatHex(e.unsafeArray )
-                              })
-                              
-                              .trimToJustFiveHundred()
-                              .replaceFirst("[\\S\\s]+", "<?RAWBYTES: $0 />")
-
-                           case e : (java.net.URI) =>
-
-                              e.toASCIIString()
-                              
-                              match {
-
-                                 case s"data:text/plain,${v0 }" =>
-                                    new java.net.URI(s"txt:$v0").toString()
-                                    match {
-                                       case s"txt:${value}" =>
-                                          value
-                                    }
-
-                                 case _ =>
-                                    s"<?EMB: ${e.toASCIIString().trimToJustFiveHundred() } />"
-
-                              }
-
-                           case e =>
-                              e.toString()
-
-                        })
-                        .map(s => s.indent(0x2 ) )
-                     )
-                     :+ "</>"
-                  ).mkString("\r\n")
-               }
-
-      }
+      import EBml.`E S`
 
       // @annotation.experimental
       opaque type OfFrame
@@ -957,7 +891,7 @@ trait EBsd extends
 
                trait CrossReprCommonOpsTrait
                extends
-               `E S` with `elements_@&%!`.Element
+               `E S` with @!.Element
                {
 
                   /* these will each be typed as `path.to.value.type` */
@@ -1010,7 +944,7 @@ trait EBsd extends
 
                   }
 
-               }) : `elements_@&%!`.Element
+               }) : @!.Element
                // {
                //    // TODO
                //    r.readEbmlElements11(validator = null)
@@ -1347,9 +1281,17 @@ trait EBsd extends
 
    }
 
+   extension (className: BigInt) {
+
+      private[EBsd ]
+      def ebmlClassNameFmatted: String = {
+         "!e:" + className.toString(0x10)
+      }
+   }
+   
    /* ad-hoc */
    @deprecated("experimental")
-   // private[FramePayloadScheme ]
+   private[EBsd ]
    object `elements_@&%!` {
 
       // sealed 
@@ -1360,6 +1302,72 @@ trait EBsd extends
       //    val className: BigInt ,
       //    val children: Seq[Element] ,
       // )
+
+   }
+
+   private[EBsd]
+   abstract class `E S` 
+   extends
+   AnyRef 
+   with `elements_@&%!`.Element
+   {
+            ;
+
+            // import FramePayloadScheme.*
+
+            lazy val classSimpleName: String = {
+               className.ebmlClassNameFmatted
+            }
+
+            override
+            def toString(): String = {
+               import language.unsafeNulls /* for this `toString` impl */
+
+               (
+                  Seq()
+                  :+ s"<${classSimpleName } >"
+                  :++ (
+                     children
+                     .map[String]({
+                        
+                        case e: collection.immutable.ArraySeq.ofByte if (2 <= e.length) =>
+                           
+                           ({
+                              import java.util.HexFormat
+                              HexFormat.of()
+                              .formatHex(e.unsafeArray )
+                           })
+                           
+                           .trimToJustFiveHundred()
+                           .replaceFirst("[\\S\\s]+", "<?RAWBYTES: $0 />")
+
+                        case e : (java.net.URI) =>
+
+                           e.toASCIIString()
+                           
+                           match {
+
+                              case s"data:text/plain,${v0 }" =>
+                                 new java.net.URI(s"txt:$v0").toString()
+                                 match {
+                                    case s"txt:${value}" =>
+                                       value
+                                 }
+
+                              case _ =>
+                                 s"<?EMB: ${e.toASCIIString().trimToJustFiveHundred() } />"
+
+                           }
+
+                        case e =>
+                           e.toString()
+
+                     })
+                     .map(s => s.indent(0x2 ) )
+                  )
+                  :+ "</>"
+               ).mkString("\r\n")
+            }
 
    }
 
