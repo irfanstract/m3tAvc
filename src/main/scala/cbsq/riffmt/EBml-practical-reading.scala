@@ -12,6 +12,42 @@ package cbsq.riffmt
 @main
 protected 
 def ebmlPracticalTest1(): Unit = {
+
+   ebmlPracticalTest1Impl(
+      //
+      eagerness = {
+         epr.Eagerness.toBeEager
+      } ,
+      
+   )
+}
+
+@annotation.experimental
+@main
+protected 
+def ebmlPracticalTest1Lazy(): Unit = {
+
+   ebmlPracticalTest1Impl(
+      //
+      eagerness = {
+         epr.Eagerness.toBeLazy
+      } ,
+      
+   )
+}
+
+object epr {
+
+   export cbsq.riffmt.ebmsGenericUtils.Eagerness
+
+}
+
+def ebmlPracticalTest1Impl(
+   //
+
+   eagerness : epr.Eagerness ,
+
+): Unit = {
    import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
 
    val path = (
@@ -26,33 +62,6 @@ def ebmlPracticalTest1(): Unit = {
       )
       (2 : Int) match {
          
-      case 1 =>
-         for (_ <- () :: Nil) {
-            val e = (
-               r.readEbmlFrameOfPayloadRaw()
-            )
-            println(e.toString() )
-            println({
-               import java.nio.charset.{StandardCharsets, Charset }
-               new String((e.payload.byteValues.map((_.toChar)) ).toArray )
-            } )
-            println({
-               import java.nio.charset.{StandardCharsets, Charset }
-               new String((e.payload ).toArray, StandardCharsets.UTF_8 )
-            } )
-         }
-         try {
-            while (true) {
-               val e = (
-                  r.readEbmlFrameOfPayloadRaw()
-               )
-               println((e.typeInt.toString(0x10), e.payloadLength))
-            }
-         } catch {
-            case z : (java.io.EOFException | EBmlPrimitivesMalformationException) =>
-               println(z)
-         }
-
       case 2 =>
          locally {
             println("DOCTYPE" )
@@ -68,15 +77,11 @@ def ebmlPracticalTest1(): Unit = {
          try {
             {
                println("CONTENTS" )
-               val e = {
-                  cbsq.avc.codecs.iterativelyDemuuxMatroskaFile(r)
-                  match {
-
-                  case c =>
-                     runEbmlDemonstrativeTransversal(c, logging = { cbsq.avc.PhrStagedLogging.whichLogsTo(e => { println(s"[itr] $e") ; Right {} } ) } )
-                     c
-
-                  }
+               val e = cbsq.avc.codecs.demuuxMatroskaFile(r )(eagerness = eagerness )
+               if { 
+                  eagerness == epr.Eagerness.toBeLazy
+               } then {
+                  runEbmlDemonstrativeTransversal(e, logging = { cbsq.avc.PhrStagedLogging.whichLogsTo(e => { println(s"[itr] $e") ; Right {} } ) } )
                }
                println(e.toString() replaceAll ({ import scala.util.matching.Regex.quote ; s"(\\w{64})\\w{3,}(?:${quote("...") })?" }, "$1...") take (10 * 1024 ) )
             }

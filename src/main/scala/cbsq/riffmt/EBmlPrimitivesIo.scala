@@ -175,6 +175,7 @@ object EBmlBigintsIoDefs {
 trait EBmlRawFramesReadingIoDefs extends 
    AnyRef
    with EBmlRbeiops
+   with EBmlRawFramesReadingIoDefsImpl
 {
    this : (
       AnyRef
@@ -185,9 +186,15 @@ trait EBmlRawFramesReadingIoDefs extends
    ) =>
    
    
+   opaque type EbmRawFrameElementReading[+C <: String] 
+      <: Rbeiop
+      = Rbeiop
+   
    opaque type EbmRawFrameElement[+C <: String] 
       // <: (C, cbsq.FileSize, cbsq.ByteBlob)
-      <: readEbmlFrameImpl
+      // <: readEbmlFrameImpl
+      // <: EbmRawFrameElementReading[C]
+      <: EbmRawFrameElementReading[C] & Rbeiop
       // = (C, cbsq.FileSize, cbsq.ByteBlob)
       = readEbmlFrameImpl
    
@@ -197,6 +204,55 @@ trait EBmlRawFramesReadingIoDefs extends
 
    }
 
+   extension (r: java.io.DataInput) {
+
+      /**
+       * 
+       * read an EBML "element" (i'd call them "frames" instead), the raw payload simply returned.
+       * consists of the three - 
+       * `class : BigInt` then `payloadLength : BigInt` then `payload : RawOctetString` .
+       * 
+       * https://github.com/Matroska-Org/jebml 
+       * 
+       */
+      def readEbmlFrameOfPayloadRaw() : EbmRawFrameElement[String] = {
+         val analysis1 = (
+            readEbmlFrameImpl(r)
+         )
+         import analysis1.{typeAsUtf }
+         import analysis1.{payloadLength, payload }
+         // (typeAsUtf, payloadLength, cbsq.ByteBlob.copyOfByteArray(payload.toArray ) )
+         analysis1
+      }
+
+      def lazilyReadEbmlFrameOfPayloadRaw(): Rbeiop = {
+
+         val analysis1 = (
+            tryReadEbmlFrameImpl(r)
+         )
+         
+         analysis1
+      }
+
+   }
+   
+}
+
+protected
+sealed
+trait EBmlRawFramesReadingIoDefsImpl extends 
+   AnyRef
+   // with EBmlRbeiops
+{
+   this : (
+      AnyRef
+      with EBmlBigintsUtilDefs
+      with EBmlPrimitivesIoUtilDefs
+      with EBmlBigintsIoDefs
+      with EBmlRbeiops
+   ) =>
+   
+   
    /**
     * 
     * https://datatracker.ietf.org/doc/rfc8794/ 
@@ -211,7 +267,8 @@ trait EBmlRawFramesReadingIoDefs extends
     * 
     */
    // protected 
-   class readEbmlFrameImpl(r: java.io.DataInput) 
+   private[riffmt]
+   class tryReadEbmlFrameImpl(r: java.io.DataInput) 
    extends 
    AnyRef
    with Rbeiop
@@ -245,6 +302,7 @@ trait EBmlRawFramesReadingIoDefs extends
       )
 
       @deprecated("ill-defined")
+      private
       val typeAsUtf = {
          "!e:" + (BigInt(0x1, typeAsBytes.toArray).toString(0x10 ) )
       }
@@ -264,31 +322,142 @@ trait EBmlRawFramesReadingIoDefs extends
          }
       }
       
-      val payload = (
-         try
-            (r readNBytesSc(payloadLength.inBytes.toInt ) )
-            .asBlob
-         catch {
-            case z : java.io.EOFException =>
-               throw (
-                  new
-                  java.io.IOException(s"malformed - <!$typeAsUtf (expectedLength)=$payloadLength> - EOF during 'payload'", z)
-                  with EBmlPrimitivesMalformationException
-               )
+      /* technically a `def`, but treated as stable-path */
+      export pl.{payloadImpl as payload}
+
+      override
+      def getPaystringItr(): java.io.InputStream = {
+
+         val bytesLlIterator = {
+            
+            bytesLazyL
+            .iterator
+            .map(chars => IArray.from(chars) )
          }
-      ) match {
-         case e =>
-            val (actualLength, expectedLength) = {
-               (e.length, payloadLength)
+         
+         new java.io.InputStream {
+
+            import language.unsafeNulls
+
+            var r : IArray[Byte] = IArray.emptyByteIArray
+
+            override
+            def read(): Int = ???
+
+            override
+            def read(b: Array[Byte], off: Int, len: Int): Int = {
+
+               if (r.length <= 0 ) {
+
+                  for (newArray <- {
+
+                     bytesLlIterator
+                     .filter(chars => (0 < chars.length ) )
+                     .nextOption()
+
+                  } ) {
+                     r = newArray
+                  }
+                  
+               }
+
+               if (0 < r.length ) {
+                  val (rTake, rRemaning) = r.splitAt(len)
+                  r = rRemaning
+                  rTake.copyToArray(b, off )
+                  rTake.length
+               }
+               else {
+                  -1
+               }
+
             }
-            if (actualLength.inBytes < expectedLength.inBytes ) {
-               throw (
-                  new
-                  java.io.IOException(s"malformed - 'payload' had less size, $actualLength vs $expectedLength " )
-                  with EBmlPrimitivesMalformationException
-               )
+            
+         }
+         match { case s => new java.io.BufferedInputStream(s, 0x100 ) } // TODO
+      }
+
+      private
+      val bytesLazyL = {
+         r readNBytesScIncremLl(payloadLength.inBytes.toInt, chunkSize = 1024 )
+      }
+
+      private[tryReadEbmlFrameImpl]
+      object pl {
+         
+         val payloadImpl = (
+            try
+               IArray.concat(bytesLazyL.map(s => IArray.from(s) ) : _* ).toIndexedSeq
+               .asBlob
+            catch {
+               case z : java.io.EOFException =>
+                  throw (
+                     new
+                     java.io.IOException(s"malformed - <!$typeAsUtf (expectedLength)=$payloadLength> - EOF during 'payload'", z)
+                     with EBmlPrimitivesMalformationException
+                  )
             }
-            e
+         ) match {
+            case e =>
+               val (actualLength, expectedLength) = {
+                  (e.length, payloadLength)
+               }
+               if (actualLength.inBytes < expectedLength.inBytes ) {
+                  throw (
+                     new
+                     java.io.IOException(s"malformed - 'payload' had less size, $actualLength vs $expectedLength " )
+                     with EBmlPrimitivesMalformationException
+                  )
+               }
+               e
+         }
+         
+      }
+
+   }
+
+   /**
+    * 
+    * https://datatracker.ietf.org/doc/rfc8794/ 
+    * https://github.com/Matroska-Org/jebml 
+    * 
+    * an EBML "element" (i'd call them "frames" instead).
+    * consists of the three - 
+    * `class : BigInt` then `payloadLength : BigInt` then `payload : RawOctetString` .
+    * 
+    * does not parse the *payload* at all ;
+    * a responsibility for caller to do that
+    * 
+    */
+   // protected 
+   class readEbmlFrameImpl(r: java.io.DataInput) 
+   extends 
+   AnyRef
+   with Rbeiop
+   {
+
+      private[readEbmlFrameImpl] 
+      val reading1 = {
+         tryReadEbmlFrameImpl(r)
+      }
+
+      export reading1.typeInt
+      
+      val typeAsBytes = (
+         (typeInt )
+         .bytes
+      )
+
+      @deprecated("ill-defined")
+      val typeAsUtf = {
+         "!e:" + (BigInt(0x1, typeAsBytes.toArray).toString(0x10 ) )
+      }
+      
+      export reading1.payloadLength
+      
+      val payload = {
+         /* force actual reading */
+         reading1.payload
       }
 
       def payloadNaiveStr = {
@@ -308,28 +477,20 @@ trait EBmlRawFramesReadingIoDefs extends
       }
       
    }
-   extension (r: java.io.DataInput) {
+   
+}
 
-      /**
-       * 
-       * read an EBML "element" (i'd call them "frames" instead), the raw payload simply returned.
-       * consists of the three - 
-       * `class : BigInt` then `payloadLength : BigInt` then `payload : RawOctetString` .
-       * 
-       * https://github.com/Matroska-Org/jebml 
-       * 
-       */
-      def readEbmlFrameOfPayloadRaw() : EbmRawFrameElement[String] = {
-         val analysis1 = (
-            readEbmlFrameImpl(r)
-         )
-         import analysis1.{typeAsUtf }
-         import analysis1.{payloadLength, payload }
-         // (typeAsUtf, payloadLength, cbsq.ByteBlob.copyOfByteArray(payload.toArray ) )
-         analysis1
-      }
+trait EBmlRawFramesReadingIoDefsSelfTest
+{
 
-   }
+   this : (
+      AnyRef
+      with EBmlBigintsUtilDefs
+      with EBmlPrimitivesIoUtilDefs
+      with EBmlBigintsIoDefs
+      with EBmlRbeiops
+      with EBmlRawFramesReadingIoDefs
+   ) =>
 
    {
       Void.TYPE
@@ -369,6 +530,7 @@ trait EBmlRawFramesIoDefs extends
    AnyRef
    with EBmlRbeiops
    with EBmlRawFramesReadingIoDefs
+   with EBmlRawFramesReadingIoDefsSelfTest
 {
    this : (
       AnyRef
@@ -428,6 +590,12 @@ trait EBmlRbeiops
       val typeInt : BigInt
 
       val payload : cbsq.ByteBlob
+
+      def getPaystringItr(): java.io.InputStream = {
+         payload
+         .newGrossReader()
+      }
+
       val payloadLength : cbsq.FileSize
       
    }
