@@ -1399,7 +1399,7 @@ trait EBsd extends
    
    /* ad-hoc */
    @deprecated("experimental")
-   private[EBsd ]
+   // private[EBsd ]
    object `elements_@&%!` {
 
       // sealed 
