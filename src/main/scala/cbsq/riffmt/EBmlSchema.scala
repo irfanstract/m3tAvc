@@ -1469,35 +1469,9 @@ trait EBsd extends
 
    export ebmsGenericUtils.checkNotAtEof
 
-   extension (v: String) {
-      def utfEncodedAsUrl: java.net.URI = {
-         // new java.net.URI("data:text/plain," + v)
-         new java.net.URI("data", s"text/plain,${v}", null )
-      }
-   }
+   export ebmsGenericUtils.utfEncodedAsUrl
    
-   extension (b: cbsq.ByteBlob) {
-      
-      def encodedAs(enc: EBmlCharset): cbsq.ByteBlob | java.net.URI = {
-            enc match {
-               
-               case EBmlCharset.EBmlBigInt => 
-                  // TODO
-                  // BigInt(b.byteValues.toArray )
-                  // .toString()
-                  b
-               
-               case EBmlCharset.RawOctetString => 
-                  b
-               case EBmlCharset.Utf8 => 
-                  new String(b.byteValues.toArray, java.nio.charset.StandardCharsets.UTF_8 ).utfEncodedAsUrl
-               case EBmlCharset.AsciiString => 
-                  new String(b.byteValues.toArray, java.nio.charset.StandardCharsets.US_ASCII ).utfEncodedAsUrl
-                  
-            }
-      }
-
-   }
+   export ebmsGenericUtils.encodedAs
 
    extension (v: String) {
 
@@ -1672,6 +1646,50 @@ object ebmsGenericUtils extends
 
       export cbsq.riffmt.ebmls.Lazy
  
+      extension (v: String) {
+
+         // TODO
+         def utfEncodedAsUrl: java.net.URI = {
+
+            import language.unsafeNulls
+
+            // new java.net.URI("data:text/plain," + v)
+
+            new java.net.URI("data", s"text/plain,${v}", null )
+
+         }
+         
+      }
+      
+      extension (b: cbsq.ByteBlob) {
+         
+         def encodedAs(enc: EBmlCharset): cbsq.ByteBlob | java.net.URI = {
+               ;
+               
+               import language.unsafeNulls
+
+               enc match {
+                  
+                  case EBmlCharset.EBmlBigInt => 
+                     // TODO
+                     // BigInt(b.byteValues.toArray )
+                     // .toString()
+                     b
+                  
+                  case EBmlCharset.RawOctetString => 
+                     b
+                     
+                  case EBmlCharset.Utf8 => 
+                     new String(b.byteValues.toArray, java.nio.charset.StandardCharsets.UTF_8 ).utfEncodedAsUrl
+                  case EBmlCharset.AsciiString => 
+                     new String(b.byteValues.toArray, java.nio.charset.StandardCharsets.US_ASCII ).utfEncodedAsUrl
+                     
+               }
+               
+         }
+
+      }
+
       export cbsq.riffmt.byteManipImplicits.readNBytesEbmSc
 
       import byteManipImplicits.newMarkResetTurn
