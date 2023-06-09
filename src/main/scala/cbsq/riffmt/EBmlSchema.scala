@@ -54,25 +54,14 @@ trait EBsd extends
     * this `trait` is to define the common interfaces for both.
     * 
     */
-   sealed trait CodeSchemeOps {
+   sealed trait CodeSchemeOps extends 
+   AnyRef
+   with CodeSchemeOps.Rpia
+   {
       
       type Instance
 
       def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
-
-      protected[EBsd] 
-      opaque
-      type ReadingParsingImplArg
-         >: AnyRef & RnpSource
-         // <: AnyRef & RnpSource
-         // <: AnyRef
-         <: AnyRef
-         = RnpSource
-      
-      protected[EBsd] 
-      given Conversion[ReadingParsingImplArg, RnpSource] = {
-         e => e
-      }
 
       type RnpSource
         <: java.io.InputStream | java.io.DataInput
@@ -137,6 +126,38 @@ trait EBsd extends
 
          val encodedLength: cHasVariableLength.type | cbsq.FileSize
 
+      }
+
+      private[EBsd]
+      // implicit
+      def getRnpSourceRpiaImpl(ctx : CodeSchemeOps )(s: ctx.ReadingParsingImplArg ): ctx.RnpSource = {
+         s
+      }
+
+      private[EBsd]
+      sealed
+      trait Rpia extends 
+      AnyRef
+      {
+         this : (
+            AnyRef
+            with CodeSchemeOps
+         ) =>
+
+         protected[EBsd] 
+         opaque
+         type ReadingParsingImplArg
+            >: AnyRef & RnpSource
+            // <: AnyRef & RnpSource
+            // <: AnyRef
+            <: AnyRef
+            = RnpSource
+         
+         protected[EBsd] 
+         given Conversion[ReadingParsingImplArg, RnpSource] = {
+            getRnpSourceRpiaImpl(this) _
+         }
+         
       }
 
    }
