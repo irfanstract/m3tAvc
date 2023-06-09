@@ -280,6 +280,31 @@ object byteManipImplicitsC {
 
    }
 
+   extension (r: java.io.InputStream | java.io.DataInput ) {
+
+      /**
+       * 
+       * 
+       * 
+       */
+      def readNBytesScIncremLl(
+         n: Int ,
+         chunkSize : Int = 1024 ,
+
+      ) : LazyList[IndexedSeq[Byte] ] = {
+
+         Range(0, n, 1)
+         .grouped(chunkSize )
+         .map(_.length )
+         .map((len : Int ) => {
+            r.readNBytesEbmSc(len )
+         })
+         .to(LazyList)
+         
+      }
+
+   }
+
    extension (r: java.io.DataInput) {
    
       /**
