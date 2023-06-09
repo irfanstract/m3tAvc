@@ -198,7 +198,12 @@ trait EBsd extends
       
       type Instance
 
-      def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique): Instance
+      def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
+
+      protected[EBsd] 
+      type ReadingParsingImplArg
+         >: RnpSource
+         <: RnpSource
 
       type RnpSource
         <: java.io.InputStream | java.io.DataInput
@@ -216,6 +221,15 @@ trait EBsd extends
    AnyRef
    with chvl
    {
+
+      extension (this1 : CodeSchemeOps) {
+
+         // transparent inline
+         def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique) = {
+            this1.readAndParseImpl(r = r )(using td )
+         }
+         
+      }
 
       export `% % & @`.TraversalDiagnostique
       
@@ -298,7 +312,7 @@ trait EBsd extends
    {
       
       override
-      def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique): Instance
+      def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
 
       override
       type RnpSource
@@ -315,7 +329,7 @@ trait EBsd extends
          new CodeUnitScheme
          {
             
-            def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
+            def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
                throw summon[CodeSchemeOps.TraversalDiagnostique].newLexerException(msg = h() )
             }
 
@@ -394,7 +408,7 @@ trait EBsd extends
             >: UnpickleInputStream
             <: UnpickleInputStream
 
-         def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
+         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
             schemeAlternativeImpl.demarsh[
                Instance1 ,
                ChildScheme ,
@@ -445,7 +459,7 @@ trait EBsd extends
             ) : Long
          )
 
-         def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique) = {
+         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
             r.readEbmlDateBytes(supposedReadingLength = supposedReadingLength )
          }
          
@@ -493,7 +507,7 @@ trait EBsd extends
 
          val defaultValue: Null | C
          
-         def readAndParse(src: RnpSource)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
+         def readAndParseImpl(src: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
             (summon[OctetReadingOp[C] ] )((
                new java.io.DataInputStream(src)
             ))
@@ -586,7 +600,7 @@ trait EBsd extends
             >: cbsq.ByteBlob | java.net.URI
             <: cbsq.ByteBlob | java.net.URI
 
-         def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique) = {
+         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
             import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
             
             encodedLength match {
@@ -659,7 +673,7 @@ trait EBsd extends
 
       type Instance
 
-      def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique): Instance
+      def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
 
       /**
        * 
@@ -859,7 +873,7 @@ trait EBsd extends
             >: UnpickleInputStream
             <: UnpickleInputStream
 
-         def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
+         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
                // TODO
                val efpr = {
                   import trvdFramesIoExcs.*
@@ -1016,7 +1030,7 @@ trait EBsd extends
                      val cp = ({
                         /**
                          * 
-                         * new `LazyList` running `readAndParse`
+                         * new `LazyList` running `readAndParseImpl`
                          * 
                          */
                         LazyList() lazyAppendedAll {
@@ -1052,9 +1066,9 @@ trait EBsd extends
                               (scheme match {
 
                                  case scheme : VariadicImpl[?, ?] =>
-                                    scheme.readAndParse(r)
+                                    scheme.readAndParseImpl(r)
                                  case scheme =>
-                                    Seq(scheme.readAndParse(r) )
+                                    Seq(scheme.readAndParseImpl(r) )
                                     
                               }): Seq[FramePayloadScheme#Instance]
                            })(using (
@@ -1148,7 +1162,7 @@ trait EBsd extends
             >: UnpickleInputStream
             <: UnpickleInputStream
 
-         def readAndParse(r: RnpSource)(using CodeSchemeOps.TraversalDiagnostique) = {
+         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
                   val scheme = (
                      (
                         childSchemeM1()
@@ -1158,7 +1172,7 @@ trait EBsd extends
                   def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = (
                         ({
                            scheme
-                           .readAndParse(r )
+                           .readAndParseImpl(r )
                         } , c += 1 )._1
                   )
                   lazy val childrenLl : LazyList[FramePayloadScheme#Instance] = {
@@ -1395,7 +1409,7 @@ trait EBsd extends
    extension (r: UnpickleInputStream) {
       
       def readEbmlByScheme(s: FramePayloadScheme)(using CodeSchemeOps.TraversalDiagnostique) = {
-         s readAndParse(r)
+         s readAndParseImpl(r)
       }
 
    }
@@ -1475,7 +1489,7 @@ trait EBsd extends
                   ))(emr => {
                      (try {
                         ((
-                           c readAndParse(r)
+                           c readAndParseImpl(r)
                         ), {
                            import reflect.Selectable.reflectiveSelectable
                            /**
