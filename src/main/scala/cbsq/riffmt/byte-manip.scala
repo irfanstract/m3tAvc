@@ -305,6 +305,45 @@ object byteManipImplicitsC {
 
    }
 
+   extension (r: java.io.InputStream ) {
+
+      /**
+       * 
+       * 
+       * 
+       */
+      def readAllBytesScIncremLl(
+         //
+         
+         param1 : Unit = {} ,
+
+         chunkSize : Int = 1024 ,
+
+      ) : LazyList[IndexedSeq[Byte] ] = {
+
+         require(0 < chunkSize, s"chunkSize: $chunkSize")
+
+         import language.unsafeNulls
+
+         Iterator.continually(() )
+
+         .map((_ : Unit ) => {
+            /**
+             * 
+             * `readNBytesEbmSc` would `throw` on premature EOF ;
+             * use the native method `readNBytes` instead
+             * 
+             */
+            r.readNBytes(chunkSize ).toIndexedSeq
+         })
+         .takeWhile(_.nonEmpty )
+         
+         .to(LazyList)
+         
+      }
+
+   }
+
    extension (bytesLlIterator: Iterator[IArray[Byte]] ) {
 
       def newChunkedByteIteratorInputStream(): java.io.InputStream = {
