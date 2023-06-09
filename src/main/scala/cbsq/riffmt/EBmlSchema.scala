@@ -721,21 +721,20 @@ trait EBsd extends
                val efpr = {
                   import trvdFramesIoExcs.*
                   try ({
-                     util.Using.resource((
-                        newMarkResetTurn(r, 0x100)
-                     ))(_ => {
-                        try {
-                           new java.io.DataInputStream(r)
-                           .readInt()
-                        } catch {
-                           
-                           case z : (java.io.EOFException ) =>
-                              throw (
-                                 newFirstPlaceEofException(z = z, r = r)
-                              )
+                     
+                     try {
+                        r.checkNotAtEof()
 
-                        }
-                     })
+                     } catch {
+                        
+                        case z : (java.io.EOFException ) =>
+                           
+                           throw (
+                              newFirstPlaceEofException(z = z, r = r)
+                           )
+
+                     }
+
                      //
                      /**
                       * 
@@ -745,34 +744,59 @@ trait EBsd extends
                       */
                      (new java.io.DataInputStream(r) )
                      .readEbmlFrameOfPayloadRaw()
+
                   })
                   catch {
 
                      case z : (java.io.EOFException ) =>
+
                         throw (
                            summon[CodeSchemeOps.TraversalDiagnostique]
-                           .newLexerException(msg = (
-                              s"EOF while pulling the raw, unprocessed $notEBml frame repr."
-                              + " " + z.getMessage()
-                           ), r = r )
+                           
+                           .newLexerException(
+                              msg = (
+                                 s"EOF while pulling the raw, unprocessed $notEBml frame repr."
+                                 + " " + z.getMessage()
+                              ),
+
+                              r = r,
+                              
+                           )
+                           
                         )
 
                      case z : ( EBmlPrimitivesMalformationException) =>
+
                         throw (
                            summon[CodeSchemeOps.TraversalDiagnostique]
-                           .newLexerException(msg = (
-                              s"malformed raw, unprocessed $notEBml frame repr."
-                              + " " + (z.getMessage())
-                           ), r = r )
+
+                           .newLexerException(
+                              msg = (
+                                 s"malformed raw, unprocessed $notEBml frame repr."
+                                 + " " + (z.getMessage())
+                              ),
+
+                              r = r ,
+
+                           )
+
                         )
                         
                      case z : (java.io.IOException ) =>
+                        
                         throw (
                            summon[CodeSchemeOps.TraversalDiagnostique]
-                           .newLexerException(msg = (
-                              s"IOException rwhile pulling the raw, unprocessed $notEBml frame repr."
-                              + " " + (z match { case z : java.io.EOFException => s"EOF: $z" ; case _ => z.getLocalizedMessage() })
-                           ), r = r )
+
+                           .newLexerException(
+                              msg = (
+                                 s"IOException rwhile pulling the raw, unprocessed $notEBml frame repr."
+                                 + " " + (z match { case z : java.io.EOFException => s"EOF: $z" ; case _ => z.getLocalizedMessage() })
+                              ),
+
+                              r = r ,
+
+                           )
+
                         )
 
                   }
@@ -808,7 +832,9 @@ trait EBsd extends
                            Option(currentPath.fullScheme).map(_.nn)
                            
                            .flatMap(s => {
+                              
                               s
+                              
                               .collectFirst({
                                  case e if (e.clsId == efpr.typeInt ) =>
                                     e.mName
@@ -816,7 +842,9 @@ trait EBsd extends
                               
                            })
                            .fold[String]({
+
                               efpr.typeInt
+
                               .toString(0x10).prependedAll("0x")
                               
                            } )(s => s )
@@ -838,6 +866,8 @@ trait EBsd extends
          def ernp(using CodeSchemeOps.TraversalDiagnostique)(
             efpr: EbmRawFrameElement[String] ,
          ) = {
+               ;
+               
                (new `E S` with `elements_@&%!`.Element {
 
                   override
@@ -850,19 +880,52 @@ trait EBsd extends
                      
                   }
 
+                  override
                   val className = {
                      efpr.typeInt
                   }
 
+                  val scheme = (
+
+                     classPayloadsTable
+                     .applyOrElse(className : BigInt, className => {
+                        throw (
+                           summon[CodeSchemeOps.TraversalDiagnostique]
+                           .newLexerException(msg = (
+                              s"no scheme for cls ${className.ebmlClassNameFmatted } "
+                           ))
+                        )
+                     } )
+                     
+                     match {
+                        
+                        /**
+                         * 
+                         * some schemes like `OfNumber` and `OfString`
+                         * does not itself contraint/dictate the length in-advance, and
+                         * instead leave it to the enclosing frame's *payload-size*, so
+                         * here 
+                         * this needs to explicitly switch to a derived instance as specified
+                         * 
+                         */
+                        case scheme =>
+                           scheme withSpecificLength(efpr.payloadLength )
+
+                     }
+                  )
+                  
                   override
                   def toString(): String = {
+                     
                      import language.unsafeNulls /* for this `toString` impl */
                      
                      super.toString()
                      .replaceFirst("\\s*(?=\\>)", s" (length)=${efpr.payloadLength }")
                   }
 
+                  override
                   val children = {
+
                      val r = (
                         ((
                            new MarkableInputStreamImpl((
@@ -870,6 +933,7 @@ trait EBsd extends
                            ))
                         ))
                      )
+
                      val cp = ({
                         /**
                          * 
@@ -878,42 +942,17 @@ trait EBsd extends
                          */
                         LazyList() lazyAppendedAll {
                            ((using : CodeSchemeOps.TraversalDiagnostique) ?=> {
-                              val scheme = (
 
-                                 classPayloadsTable
-                                 .applyOrElse(className : BigInt, className => {
-                                    throw (
-                                       summon[CodeSchemeOps.TraversalDiagnostique]
-                                       .newLexerException(msg = (
-                                          s"no scheme for cls ${className.ebmlClassNameFmatted } "
-                                       ))
-                                    )
-                                 } )
-                                 
-                                 match {
-                                    
-                                    /**
-                                     * 
-                                     * some schemes like `OfNumber` and `OfString`
-                                     * does not itself contraint/dictate the length in-advance, and
-                                     * instead leave it to the enclosing frame's *payload-size*, so
-                                     * here 
-                                     * this needs to explicitly switch to a derived instance as specified
-                                     * 
-                                     */
-                                    case scheme =>
-                                       scheme withSpecificLength(efpr.payloadLength )
-
-                                 }
-                              )
                               (scheme match {
 
                                  case scheme : VariadicImpl[?, ?] =>
                                     scheme.readAndParseImpl(r)
+
                                  case scheme =>
                                     Seq(scheme.readAndParseImpl(r) )
                                     
                               }): Seq[FramePayloadScheme#Instance]
+
                            })(using (
                               
                               summon[CodeSchemeOps.TraversalDiagnostique ]
@@ -921,7 +960,9 @@ trait EBsd extends
 
                            ))
                         }
+
                      })
+
                      /**
                       * 
                       * instruct for eager eval of the `LazyList`
@@ -931,12 +972,16 @@ trait EBsd extends
                         cp
                         .to(IndexedSeq)
                         .toSeq
+                        
                      } catch {
+
                         case z : Exception =>
                            sys.process.stderr.println(s"failed parsing ${efpr.toString() }")
                            sys.process.stderr.println(s"failing with ($z) ; payload-length: ${efpr.payloadLength } ; parsed children LL: $cp")
                            throw z
+
                      }
+
                   }
 
                }) : `elements_@&%!`.Element
@@ -1005,56 +1050,74 @@ trait EBsd extends
             >: UnpickleInputStream
             <: UnpickleInputStream
 
+         override
          def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
+
                   val scheme = (
                      (
                         childSchemeM1()
                      )
                   ) : FramePayloadScheme
+
                   var c : Int = 0
                   def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = (
                         ({
                            scheme
                            .readAndParseImpl(r )
+                           
                         } , c += 1 )._1
                   )
+
                   lazy val childrenLl : LazyList[FramePayloadScheme#Instance] = {
+
                      //
                      LazyList.unfold[FramePayloadScheme#Instance, Unit](() )((_) => {
+
                         val noMore = {
                            r.isAtEofRelevantly
                         } : Boolean
+                        
                         if (noMore) {
+                           
                            sys.process.stderr.println((
                               summon[CodeSchemeOps.TraversalDiagnostique]
                               .newLexerException(msg = "no more child to parse, ceasing", r = r )
                               .getMessage()
+                              
                            ))
+
                            None
-                        } else { 
+                        }
+                        else { 
                            try 
                               val i = c
+
                               val s1 = (
                                  readNextChild()(using (
                                     summon[CodeSchemeOps.TraversalDiagnostique]
                                     .ofChild(divName = s"$i")
                                  ))
                               )
+                              
                               Some(s1 , ())
 
                            catch {
                               
                               case z @ CodeSchemeOps.TraversalDiagnostique.PSO(v @ _*) =>
+
                                  sys.process.stderr.println((
                                     summon[CodeSchemeOps.TraversalDiagnostique]
                                     .newLexerException(msg = s"tolerated exception, ($z) $v ", r = r )
                                     .getMessage()
                                  ))
+
                                  None
 
                               case z : java.io.EOFException =>
+
                                  // sys.process.stderr.println(z)
                                  // None
+                                 
                                  java.lang.ref.Reference.reachabilityFence(BigInt )
                                  throw (
                                     summon[CodeSchemeOps.TraversalDiagnostique]
@@ -1065,6 +1128,7 @@ trait EBsd extends
                         }
                      })
                   }
+                  
                   /**
                    * 
                    * instruct for eager eval of the `LazyList`, and
@@ -1366,6 +1430,8 @@ trait EBsd extends
 
    }
 
+   export ebmsGenericUtils.checkNotAtEof
+
    extension (v: String) {
       def utfEncodedAsUrl: java.net.URI = {
          // new java.net.URI("data:text/plain," + v)
@@ -1493,9 +1559,9 @@ sealed trait chvl extends
        */
       type S[+T] = Singleton & T
 
-      export cbsq.riffmt.ebmls.Lze
+      export ebmsGenericUtils.Lze
 
-      export cbsq.riffmt.ebmls.Lazy
+      export ebmsGenericUtils.Lazy
  
       /**
        * 
@@ -1512,7 +1578,7 @@ sealed trait chvl extends
        */
       export ebmlSchemesUtilChronography.globalBaseDate
 
-      export cbsq.riffmt.byteManipImplicits.readNBytesEbmSc
+      export ebmsGenericUtils.readNBytesEbmSc
 
       extension (r: java.io.InputStream | java.io.DataInput) {
 
@@ -1553,6 +1619,44 @@ sealed trait chvl extends
 
          }
          
+      }
+
+}
+
+// protected 
+object ebmsGenericUtils extends 
+   AnyRef 
+   // with EBmlByteManipIoReExports
+   // with EBmlPrimitivesIoReExports
+{
+      ;
+      
+      export cbsq.riffmt.ebmls.Lze
+
+      export cbsq.riffmt.ebmls.Lazy
+ 
+      export cbsq.riffmt.byteManipImplicits.readNBytesEbmSc
+
+      import byteManipImplicits.newMarkResetTurn
+
+      import byteManipImplicits.MarkableInputStreamImpl
+
+      extension [Input <: java.io.InputStream ](r : Input ) {
+
+         @throws[java.io.EOFException]
+         def checkNotAtEof()(using Input <:< MarkableInputStreamImpl ) : Unit = {
+            
+               util.Using.resource((
+                  newMarkResetTurn(r, 0x10 )
+                  
+               ))(_ => (
+                  
+                  new java.io.DataInputStream(r)
+                  .readInt()
+                  
+               ) )
+         }
+
       }
 
 }
