@@ -62,8 +62,10 @@ trait EBsd extends
 
       protected[EBsd] 
       type ReadingParsingImplArg
-         >: RnpSource
-         <: RnpSource
+         >: AnyRef & RnpSource
+         // <: AnyRef & RnpSource
+         // <: AnyRef
+         <: AnyRef & RnpSource
 
       type RnpSource
         <: java.io.InputStream | java.io.DataInput
@@ -867,10 +869,10 @@ trait EBsd extends
             efpr: EbmRawFrameElement[String] ,
          ) = {
                ;
-               
-               (new `E S` with `elements_@&%!`.Element {
 
-                  override
+               object inferred {
+                  
+                  final
                   lazy val classSimpleName: String = {
 
                      getXElementEfprSimpleName(using {
@@ -880,19 +882,18 @@ trait EBsd extends
                      
                   }
 
-                  override
-                  val className = {
+                  val classIntName = {
                      efpr.typeInt
                   }
 
-                  val scheme = (
+                  val appropriateSchemeDef = (
 
                      classPayloadsTable
-                     .applyOrElse(className : BigInt, className => {
+                     .applyOrElse(classIntName : BigInt, classIntName => {
                         throw (
                            summon[CodeSchemeOps.TraversalDiagnostique]
                            .newLexerException(msg = (
-                              s"no scheme for cls ${className.ebmlClassNameFmatted } "
+                              s"no scheme for cls ${classIntName.ebmlClassNameFmatted } "
                            ))
                         )
                      } )
@@ -913,19 +914,9 @@ trait EBsd extends
 
                      }
                   )
-                  
-                  override
-                  def toString(): String = {
-                     
-                     import language.unsafeNulls /* for this `toString` impl */
-                     
-                     super.toString()
-                     .replaceFirst("\\s*(?=\\>)", s" (length)=${efpr.payloadLength }")
-                  }
 
-                  override
-                  val children = {
-
+                  val childrenAsLazyList = {
+                     
                      val r = (
                         ((
                            new MarkableInputStreamImpl((
@@ -943,7 +934,7 @@ trait EBsd extends
                         LazyList() lazyAppendedAll {
                            ((using : CodeSchemeOps.TraversalDiagnostique) ?=> {
 
-                              (scheme match {
+                              (appropriateSchemeDef match {
 
                                  case scheme : VariadicImpl[?, ?] =>
                                     scheme.readAndParseImpl(r)
@@ -962,6 +953,45 @@ trait EBsd extends
                         }
 
                      })
+
+                     cp
+                  }
+                  
+               }
+
+               trait CrossReprCommonOpsTrait
+               extends
+               `E S` with `elements_@&%!`.Element
+               {
+
+                  /* these will each be typed as `path.to.value.type` */
+
+                  override
+                  lazy val classSimpleName: inferred.classSimpleName.type = {
+                     inferred.classSimpleName
+                  }
+
+                  export inferred.{classIntName as className }
+
+               }
+               
+               (new CrossReprCommonOpsTrait {
+
+                  import inferred.appropriateSchemeDef
+
+                  override
+                  def toString(): String = {
+                     
+                     import language.unsafeNulls /* for this `toString` impl */
+                     
+                     super.toString()
+                     .replaceFirst("\\s*(?=\\>)", s" (length)=${efpr.payloadLength }")
+                  }
+
+                  override
+                  val children = {
+
+                     import inferred.{childrenAsLazyList => cp }
 
                      /**
                       * 
