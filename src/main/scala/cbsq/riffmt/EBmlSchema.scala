@@ -37,146 +37,6 @@ trait EBsdOpsDefs extends
    // with EBmlPrimitivesIoReExports
 {}
 
-object ebmlSchemesUtilChronography
-{
-   
-            export  concurrent.duration.{Deadline, Duration, FiniteDuration }
-
-            export  concurrent.duration.{DurationDouble, DurationLong, DurationInt }
-
-            import  System.currentTimeMillis
-
-            export cbsq.riffmt.epochChronography.forAmtSinceEpoch
-
-            /** 
-             * 
-             * `Deadline(0.seconds)`
-             * 
-             */ 
-            val deadlineZero = (
-               Deadline(0.second)
-            )
-            
-            /**
-             * 
-             * the EBML RFC/spec 
-             * defines this to be `the 1st of January 2001, 00:00`
-             * 
-             */
-            val globalBaseDate = (
-               {
-                  locally {
-                     // TODO
-                     forAmtSinceEpoch((
-                        ((2001 - 1970 ) * ((365.25 * 86400 ).toDouble + 0.5 ) )
-                        .toLong
-                        .second
-                     ) )
-                  }
-               }
-            ) : concurrent.duration.Deadline
-
-}
-
-// def ***%(e: EBmlByteManipIoReExports) = {
-//    e.isAtEof()
-//    object eio {
-//       export byteManipImplicits.isAtEof
-//    }
-//    eio.isAtEof()
-//    byteManipImplicits.isAtEof()
-// }
-// def ***%@(e: EBmlPrimitivesIoReExports) = {
-//    e.isAtEof()
-// }
-
-/**
- * 
- * `EBml.CodeSchemeOps` shall `extends` this `trait`
- * 
- */
-sealed trait chvl extends 
-   AnyRef 
-{
-   
-      import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
-      
-      /**
-       * 
-       * extending `Singleton` is necessary,
-       * so that the inferred types become the exact argument value types
-       * 
-       * ```
-       * applyRelevantMod(mode = 3)
-       * ```
-       * 
-       */
-      type S[+T] = Singleton & T
-
-      export cbsq.riffmt.ebmls.Lze
-
-      export cbsq.riffmt.ebmls.Lazy
- 
-      /**
-       * 
-       * a specia-value denoting "can be any length"
-       * 
-       */
-      case object cHasVariableLength
-
-      /**
-       * 
-       * the EBML RFC/spec 
-       * defines this to be `the 1st of January 2001, 00:00`
-       * 
-       */
-      export ebmlSchemesUtilChronography.globalBaseDate
-
-      export cbsq.riffmt.byteManipImplicits.readNBytesEbmSc
-
-      extension (r: java.io.InputStream | java.io.DataInput) {
-
-         /**
-          * 
-          * reads and interprets EBml Date Fmt as specified
-          *
-          * @param supposedReadingLength the exact expected number of bytes
-          * 
-          */
-         def readEbmlDateBytes(
-            //
-            
-            supposedReadingLength: Long ,
-            
-         ): concurrent.duration.Deadline = {
-
-            import  concurrent.duration.*
-
-            val parsedValue = (
-               // TODO
-               {
-                  
-                  val rawBytes = ({
-                     
-                     r readNBytesEbmSc(supposedReadingLength.toInt )
-                  })
-
-                  BigInt(rawBytes.toArray )
-               }
-            ) : BigInt
-
-            globalBaseDate `+` (
-               // TODO
-               (parsedValue )
-               .toLong.nanoseconds
-            )
-
-         }
-         
-      }
-
-}
-
 trait EBsd extends 
    AnyRef 
    // with EBmlByteManipIoReExports
@@ -761,45 +621,28 @@ trait EBsd extends
                def toString(): String = {
                   import language.unsafeNulls /* for this `toString` impl */
 
-                  extension (v: String) {
-
-                     def trimToJustFiveHundred(): String = {
-                        v
-                              .replaceFirst("\\A([\\S\\s]{500,})\\z", "$1...")
-                     }
-                     
-                  }
-
                   (
                      Seq()
                      :+ s"<${classSimpleName } >"
                      :++ (
                         children
-                        // .tapEach({
-                        //    case e: collection.immutable.ArraySeq.ofByte if (500 <= e.length) =>
-                        //       throw java.io.IOException(s"too many bytes: ${e.length }")
-                        //    case _ =>
-                        // })
                         .map[String]({
                            
                            case e: collection.immutable.ArraySeq.ofByte if (2 <= e.length) =>
-                              // BigInt(0x1, (
-                              //    e
-                              //    .prepended[Byte](1.toByte)
-                              //    .toArray
-                              // ))
-                              // .toString(0x10 )
-                              // .drop(0x1 ) /* to remove the leading `1` char */
+                              
                               ({
                                  import java.util.HexFormat
                                  HexFormat.of()
                                  .formatHex(e.unsafeArray )
                               })
+                              
                               .trimToJustFiveHundred()
                               .replaceFirst("[\\S\\s]+", "<?RAWBYTES: $0 />")
 
                            case e : (java.net.URI) =>
+
                               e.toASCIIString()
+                              
                               match {
 
                                  case s"data:text/plain,${v0 }" =>
@@ -1470,7 +1313,7 @@ trait EBsd extends
              * on the successful case leaving the reader at its current position,
              * 
              */
-            util.control.NonLocalReturns.returning(resolve ?=> {
+            ebsr.breakablyGet[Instance1](resolve => {
                for (c <- s) {
                   util.Using.resource((
                      /**
@@ -1511,7 +1354,7 @@ trait EBsd extends
                             * short-circuit the whole loop
                             * 
                             */
-                           resolve.throwReturn(v)
+                           resolve(v)
                      }
                   })
                }
@@ -1524,7 +1367,7 @@ trait EBsd extends
    }
 
    extension (v: String) {
-      def encodedAsUrl: java.net.URI = {
+      def utfEncodedAsUrl: java.net.URI = {
          // new java.net.URI("data:text/plain," + v)
          new java.net.URI("data", s"text/plain,${v}", null )
       }
@@ -1544,14 +1387,26 @@ trait EBsd extends
                case EBmlCharset.RawOctetString => 
                   b
                case EBmlCharset.Utf8 => 
-                  new String(b.byteValues.toArray, java.nio.charset.StandardCharsets.UTF_8 ).encodedAsUrl
+                  new String(b.byteValues.toArray, java.nio.charset.StandardCharsets.UTF_8 ).utfEncodedAsUrl
                case EBmlCharset.AsciiString => 
-                  new String(b.byteValues.toArray, java.nio.charset.StandardCharsets.US_ASCII ).encodedAsUrl
+                  new String(b.byteValues.toArray, java.nio.charset.StandardCharsets.US_ASCII ).utfEncodedAsUrl
                   
             }
       }
 
    }
+
+   extension (v: String) {
+
+      def trimToJustFiveHundred(): String = {
+         
+         import language.unsafeNulls /* for this `toString` impl */
+
+         v
+               .replaceFirst("\\A([\\S\\s]{500,})\\z", "$1...")
+      }
+      
+   } /* trimToJustFiveHundred */
 
    private 
    class PF extends Throwable
@@ -1560,6 +1415,177 @@ trait EBsd extends
    protected 
    def ?? = ???
    
+}
+
+object ebmlSchemesUtilChronography
+{
+   
+            export  concurrent.duration.{Deadline, Duration, FiniteDuration }
+
+            export  concurrent.duration.{DurationDouble, DurationLong, DurationInt }
+
+            import  System.currentTimeMillis
+
+            export cbsq.riffmt.epochChronography.forAmtSinceEpoch
+
+            /** 
+             * 
+             * `Deadline(0.seconds)`
+             * 
+             */ 
+            val deadlineZero = (
+               Deadline(0.second)
+            )
+            
+            /**
+             * 
+             * the EBML RFC/spec 
+             * defines this to be `the 1st of January 2001, 00:00`
+             * 
+             */
+            val globalBaseDate = (
+               {
+                  locally {
+                     // TODO
+                     forAmtSinceEpoch((
+                        ((2001 - 1970 ) * ((365.25 * 86400 ).toDouble + 0.5 ) )
+                        .toLong
+                        .second
+                     ) )
+                  }
+               }
+            ) : concurrent.duration.Deadline
+
+}
+
+// def ***%(e: EBmlByteManipIoReExports) = {
+//    e.isAtEof()
+//    object eio {
+//       export byteManipImplicits.isAtEof
+//    }
+//    eio.isAtEof()
+//    byteManipImplicits.isAtEof()
+// }
+// def ***%@(e: EBmlPrimitivesIoReExports) = {
+//    e.isAtEof()
+// }
+
+/**
+ * 
+ * `EBml.CodeSchemeOps` shall `extends` this `trait`
+ * 
+ */
+sealed trait chvl extends 
+   AnyRef 
+{
+   
+      import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+      
+      /**
+       * 
+       * extending `Singleton` is necessary,
+       * so that the inferred types become the exact argument value types
+       * 
+       * ```
+       * applyRelevantMod(mode = 3)
+       * ```
+       * 
+       */
+      type S[+T] = Singleton & T
+
+      export cbsq.riffmt.ebmls.Lze
+
+      export cbsq.riffmt.ebmls.Lazy
+ 
+      /**
+       * 
+       * a specia-value denoting "can be any length"
+       * 
+       */
+      case object cHasVariableLength
+
+      /**
+       * 
+       * the EBML RFC/spec 
+       * defines this to be `the 1st of January 2001, 00:00`
+       * 
+       */
+      export ebmlSchemesUtilChronography.globalBaseDate
+
+      export cbsq.riffmt.byteManipImplicits.readNBytesEbmSc
+
+      extension (r: java.io.InputStream | java.io.DataInput) {
+
+         /**
+          * 
+          * reads and interprets EBml Date Fmt as specified
+          *
+          * @param supposedReadingLength the exact expected number of bytes
+          * 
+          */
+         def readEbmlDateBytes(
+            //
+            
+            supposedReadingLength: Long ,
+            
+         ): concurrent.duration.Deadline = {
+
+            import  concurrent.duration.*
+
+            val parsedValue = (
+               // TODO
+               {
+                  
+                  val rawBytes = ({
+                     
+                     r readNBytesEbmSc(supposedReadingLength.toInt )
+                  })
+
+                  BigInt(rawBytes.toArray )
+               }
+            ) : BigInt
+
+            globalBaseDate `+` (
+               // TODO
+               (parsedValue )
+               .toLong.nanoseconds
+            )
+
+         }
+         
+      }
+
+}
+
+protected 
+object ebsr
+{
+
+   def breakablyGet[R](
+      main : (resolve : R => Nothing ) => R ,
+
+   ): R = {
+
+      util.control.NonLocalReturns.returning[R](op ?=> {
+         
+         main((r : R ) => (op throwReturn r ) )
+      } )
+
+   }
+
+   def breakably[R](
+      main : (break1 : DummyImplicit ?=> Nothing ) => Unit ,
+
+   ) = {
+
+      breakablyGet[Unit ](resolve => (
+         
+         main(_ ?=> (resolve {} ) )
+
+      ) )
+
+   }
+
 }
 
 
