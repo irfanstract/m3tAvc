@@ -68,7 +68,16 @@ def ebmlPracticalTest1(): Unit = {
          try {
             {
                println("CONTENTS" )
-               val e = cbsq.avc.codecs.fullyDemuuxMatroskaFile(r )
+               val e = {
+                  cbsq.avc.codecs.iterativelyDemuuxMatroskaFile(r)
+                  match {
+
+                  case c =>
+                     runEbmlDemonstrativeTransversal(c, logging = { cbsq.avc.PhrStagedLogging.whichLogsTo(e => { println(s"[itr] $e") ; Right {} } ) } )
+                     c
+
+                  }
+               }
                println(e.toString() replaceAll ({ import scala.util.matching.Regex.quote ; s"(\\w{64})\\w{3,}(?:${quote("...") })?" }, "$1...") take (10 * 1024 ) )
             }
          }
@@ -154,6 +163,60 @@ def newCountingBufferedStream( ) = {
          }
 }
 
+}
+
+def runEbmlDemonstrativeTransversal(
+   c: (
+      // cbsq.riffmt.EBml.FramePayloadScheme.FScOps#Instance
+      (cbsq.riffmt.EBml.FramePayloadScheme#Instance | Seq[cbsq.riffmt.EBml.FramePayloadScheme#Instance] )
+   ) ,
+   
+   logging : cbsq.avc.PhrStagedLoggingOps = {
+      cbsq.avc.PhrStagedLogging.noOpInstance
+   } ,
+   
+) : Unit = {
+                     ;
+                     
+                     identity {}
+
+                     extension (c: AnyRef) {
+
+                        def toStringBetter() : String = {
+                           
+                           import language.unsafeNulls
+                           
+                           c.toString()
+                           .linesIterator.toIndexedSeq.headOption.getOrElse("")
+                           .take(144)
+                        }
+
+                     }
+                     
+                     c
+                     match {
+
+                        case c : collection.immutable.ArraySeq.ofByte =>
+                           import cbsq.ByteBlob.boxingImplicits.*
+                           logging enstage(s"is a Byte-Blob: ${c.toBlob.toStringBetter() }" )
+
+                        case c : cbsq.riffmt.EBml.FramePayloadScheme.`elements_@&%!`.Element =>
+                           val lgItem = logging enstage(s"is an Element: ${c.toStringBetter() }" )
+                           runEbmlDemonstrativeTransversal(c.children, logging = lgItem )
+
+                        case c : Seq[cItem] =>
+                           if false then {
+                              logging enstage(s"is a Seq: ${c.toStringBetter() }" )
+                           }
+                           for ((child, i) <- c.map(_.asInstanceOf[cbsq.riffmt.EBml.FramePayloadScheme#Instance] ).zipWithIndex ) {
+                              val lgItem = logging enstage(s"$i: ")
+                              runEbmlDemonstrativeTransversal(child, logging = lgItem  )
+                           }
+
+                        case _ =>
+                           // no-op
+
+                     }
 }
 
 
