@@ -292,6 +292,7 @@ object MimeMultipart
             .readNBytes(contentLength.inBytes.toInt ).nn
             .toIndexedSeq
             .toBlob
+            match { case e => e }
          }
 
          if (payload.length < contentLength ) {

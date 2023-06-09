@@ -22,195 +22,211 @@ opaque type ByteBlob
    <: AnyRef & Matchable
    = collection.immutable.ArraySeq.ofByte
 
-object ByteBlob {
+object ByteBlob
+extends
+AnyRef
+with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfAaob[ByteBlob, Byte]
+{
    //
 
-   extension (buf: ByteBlob) {
+   // extension (buf: ByteBlob) {
 
-      private
-      def lengthImpl = {
-         import cbsq.FileSize.boxingImplicits.*
-         (buf : IndexedSeq[?]).length
-            .toLong
-            .B
-      }
+   //    private
+   //    def lengthImpl = {
+   //       import cbsq.bytemanip.FileSize.boxingImplicits.*
+   //       buf.characters.length
+   //          .toLong
+   //          .B
+   //    }
 
-      def length = {
-         buf.lengthImpl
-      }
+   //    def length = {
+   //       buf.lengthImpl
+   //    }
 
-      def lengthInBytes = {
-         buf.lengthImpl
-         .inBytes
-      }
+   //    // def lengthInBytes: Long = {
+   //    //    buf.lengthImpl
+   //    //    .inBytes
+   //    // }
 
-   }
+   // }
 
-   extension (buf: ByteBlob) {
+   // extension (buf: ByteBlob) {
 
-      def byteValues: IndexedSeq[Byte] = {
-         buf
-      }
+   //    def byteValues: IndexedSeq[Byte] = {
+   //       buf
+   //    }
 
-   }
+   // }
 
-   extension (buf: ByteBlob) {
+   // extension (buf: ByteBlob) /* `characters` */ {
 
-      def slice(start: Int, end: Int) = {
-         buf.byteValues
-         .slice(start, `end`)
-         .toBlob
-      }
+   //    def characters: IndexedSeq[Byte] = {
+   //       buf
+   //    }
 
-      def splitAt(i: Int) = {
-         (
-            buf.byteValues.take(i).toBlob ,
-            buf.byteValues.drop(i).toBlob ,
-         )
-      }
-   }
+   // }
 
-   extension (buf: ByteBlob) {
+   // // extension (buf: ByteBlob) {
+   // // 
+   // //    def slice(start: Int, end: Int) = {
+   // //       buf.characters
+   // //       .slice(start, `end`)
+   // //       .toBlob
+   // //    }
+   // // 
+   // //    def splitAt(i: Int) = {
+   // //       (
+   // //          buf.characters.take(i).toBlob ,
+   // //          buf.characters.drop(i).toBlob ,
+   // //       )
+   // //    }
+   // // }
 
-      def toArray: Array[Byte] = {
-         buf.unsafeArray
-         .clone()
-      }
+   // extension (buf: ByteBlob) {
 
-   }
+   //    def toArray: Array[Byte] = {
+   //       buf.unsafeArray
+   //       .clone()
+   //    }
 
-   export boxingImplicits.*
+   // }
 
-   object boxingImplicits {
+   // // export boxingImplicits.*
 
-      extension (buf: IndexedSeq[Byte]) {
+   // object boxingImplicits
+   // extends
+   // AnyRef
+   // with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.Bxi[ByteBlob, Byte]
+   // {
 
-         def asBlob: Bytes = {
-            Bytes(buf)
-         }
+   //    extension (buf: IndexedSeq[Byte]) {
+
+   //       def asBlob: Bytes = {
+   //          Bytes(buf)
+   //       }
          
-         def toBlob: Bytes = {
-            buf.asBlob
-         }
+   //       // def toBlob: Bytes = {
+   //       //    asBlob
+   //       // }
          
-      }
+   //    }
 
-   }
+   // }
 
-   /**
-    * 
-    * exact
-    * 
-    */
-   def apply(data: IndexedSeq[Byte]): ByteBlob = {
-      from(data = data )
-   }
+   // /**
+   //  * 
+   //  * exact
+   //  * 
+   //  */
+   // def apply(data: IndexedSeq[Byte]): ByteBlob = {
+   //    from(data = data )
+   // }
 
-   /**
-    * 
-    * exact
-    * 
-    */
-   def from(data: IndexedSeq[Byte]): ByteBlob = {
-      data match
-         case data : collection.immutable.ArraySeq.ofByte =>
-            data
-         case _ =>
-            unsafeWrapArray(data.toArray[Byte] )
+   // /**
+   //  * 
+   //  * exact
+   //  * 
+   //  */
+   // def from(data: IndexedSeq[Byte]): ByteBlob = {
+   //    data match
+   //       case data : collection.immutable.ArraySeq.ofByte =>
+   //          data
+   //       case _ =>
+   //          unsafeWrapArray(data.toArray[Byte] )
       
-   }
+   // }
 
-   /**
-    * 
-    * exact copy
-    * 
-    */
-   inline def copyOf(srcBuf: collection.Iterable[Byte]): ByteBlob = {
-      unsafeWrapArray((
-         srcBuf
-         .toArray[Byte]
-      ))
-   }
+   // /**
+   //  * 
+   //  * exact copy
+   //  * 
+   //  */
+   // def copyOf(srcBuf: collection.Iterable[Byte]): ByteBlob = {
+   //    unsafeWrapArray((
+   //       srcBuf
+   //       .toArray[Byte]
+   //    ))
+   // }
 
-   /**
-    * 
-    * exact copy
-    * 
-    */
-   def copyOfByteArrayRange(b: Array[Byte], off: Int, len: Int): ByteBlob = {
-      unsafeWrapArray((
-         b
-         .view
-         .slice(off, off + len)
-         .toArray[Byte] /* guaranteed to be different Array ref */
-      ))
-   }
+   // /**
+   //  * 
+   //  * exact copy
+   //  * 
+   //  */
+   // def copyOfByteArrayRange(b: Array[Byte], off: Int, len: Int): ByteBlob = {
+   //    unsafeWrapArray((
+   //       b
+   //       .view
+   //       .slice(off, off + len)
+   //       .toArray[Byte] /* guaranteed to be different Array ref */
+   //    ))
+   // }
 
-   /**
-    * 
-    * exact copy
-    * 
-    */
-   def copyOfByteArray(srcBuf: Array[Byte]): ByteBlob = {
-      unsafeWrapArray(srcBuf.clone() )
-   }
+   // /**
+   //  * 
+   //  * exact copy
+   //  * 
+   //  */
+   // def copyOfByteArray(srcBuf: Array[Byte]): ByteBlob = {
+   //    unsafeWrapArray(srcBuf.clone() )
+   // }
 
-   /**
-    * 
-    * exact copy
-    * 
-    */
-   inline def copyOf(srcBuf: Array[Byte]): ByteBlob = {
-      copyOfByteArray(srcBuf = srcBuf )
-   }
+   // /**
+   //  * 
+   //  * exact copy
+   //  * 
+   //  */
+   // inline def copyOf(srcBuf: Array[Byte]): ByteBlob = {
+   //    copyOfByteArray(srcBuf = srcBuf )
+   // }
 
-   /**
-    * 
-    * `unsafeWrapArray`
-    * 
-    */
-   @deprecated("unsafe")
-   // protected 
-   def unsafeWrapArray(buf: Array[Byte]): ByteBlob = {
-      import collection.immutable.ArraySeq
-      ArraySeq.ofByte(buf)
-   }
+   // /**
+   //  * 
+   //  * `unsafeWrapArray`
+   //  * 
+   //  */
+   // @deprecated("unsafe")
+   // // protected 
+   // def unsafeWrapArray(buf: Array[Byte]): ByteBlob = {
+   //    import collection.immutable.ArraySeq
+   //    ArraySeq.ofByte(buf)
+   // }
 
-   extension (buf: ByteBlob) {
+   // extension (buf: ByteBlob) {
 
-      /**
-       * 
-       * `unsafeWrapArray`
-       * 
-       */
-      @deprecated("experimental")
-      def backingByteArray: Array[Byte] = {
-         buf.unsafeArray
-      }
+   //    /**
+   //     * 
+   //     * `unsafeWrapArray`
+   //     * 
+   //     */
+   //    @deprecated("experimental")
+   //    def backingByteArray: Array[Byte] = {
+   //       buf.unsafeArray
+   //    }
 
-   }
+   // }
 
-   extension (buf : ByteBlob) {
+   // extension (buf : ByteBlob) {
 
-      @deprecated("experimental")
-      inline
-      def newDirectReader() = {
-         new java.io.ByteArrayInputStream((
-            buf.unsafeArray
-         ))
-      }
+   //    @deprecated("experimental")
+   //    inline
+   //    def newDirectReader() = {
+   //       new java.io.ByteArrayInputStream((
+   //          buf.unsafeArray
+   //       ))
+   //    }
 
-      def newByteWiseReader(): java.io.InputStream & java.io.DataInput = {
-         new java.io.DataInputStream((
-            newDirectReader()
-         ))
-      }
+   //    def newByteWiseReader(): java.io.InputStream & java.io.DataInput = {
+   //       new java.io.DataInputStream((
+   //          newDirectReader()
+   //       ))
+   //    }
 
-      def newGrossReader() : java.io.InputStream = {
-         newDirectReader()
-      }
+   //    def newGrossReader() : java.io.InputStream = {
+   //       newDirectReader()
+   //    }
 
-   }
+   // }
 
    /**
     * 
