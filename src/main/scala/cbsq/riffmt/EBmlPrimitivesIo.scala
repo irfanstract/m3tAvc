@@ -543,8 +543,12 @@ trait EBmlRawFramesIoDefs extends
 trait EBmlRbeiops
 {
 
+   // @deprecated("experimental")
+   type EbmRawFrameElementReading[+C <: String]
+   
    @deprecated("experimental")
    type EbmRawFrameElement[+C <: String]
+      <: EbmRawFrameElementReading[C]
    
    trait Rbeiop {
 
