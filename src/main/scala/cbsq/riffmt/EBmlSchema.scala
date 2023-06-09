@@ -591,20 +591,9 @@ trait EBsd extends
       // export CodeUnitScheme.OfStr
 
       /* ad-hoc */
-      @deprecated("experimental")
+      // @deprecated("experimental")
       // private[FramePayloadScheme ]
-      object `elements_@&%!` {
-
-         // sealed 
-         trait Element { val className: BigInt ; val children: Seq[FramePayloadScheme#Instance] } 
-
-         // sealed 
-         // case class Element1(
-         //    val className: BigInt ,
-         //    val children: Seq[Element] ,
-         // )
-
-      }
+      export EBml.`elements_@&%!`
 
       extension (className: BigInt) {
 
@@ -1355,6 +1344,22 @@ trait EBsd extends
       def readEbmlByScheme(s: FramePayloadScheme)(using CodeSchemeOps.TraversalDiagnostique) = {
          s readAndParseImpl(r)
       }
+
+   }
+
+   /* ad-hoc */
+   @deprecated("experimental")
+   // private[FramePayloadScheme ]
+   object `elements_@&%!` {
+
+      // sealed 
+      trait Element { val className: BigInt ; val children: Seq[FramePayloadScheme#Instance] } 
+
+      // sealed 
+      // case class Element1(
+      //    val className: BigInt ,
+      //    val children: Seq[Element] ,
+      // )
 
    }
 
