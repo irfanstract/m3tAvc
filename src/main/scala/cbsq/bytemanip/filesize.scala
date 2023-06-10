@@ -65,6 +65,8 @@ object FileSize {
    with MExactly[BN] 
    {
 
+      require(0 <= inBytes, s"inBytes: $inBytes " )
+
       val int32s = {
          inBytes
          .toDouble
@@ -97,6 +99,7 @@ object FileSize {
    }
 
    def fromByteCount[BN <: Singleton & Long](v: BN): FileSize & MExactly[BN] =
+      require(0 <= v, s"value: $v " )
       Fsz1(inBytes = v)
 
    export boxingImplicits.*

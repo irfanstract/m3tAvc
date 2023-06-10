@@ -12,6 +12,42 @@ package cbsq.riffmt
 @main
 protected 
 def ebmlPracticalTest1(): Unit = {
+
+   ebmlPracticalTest1Impl(
+      //
+      eagerness = {
+         epr.Eagerness.toBeEager
+      } ,
+      
+   )
+}
+
+@annotation.experimental
+@main
+protected 
+def ebmlPracticalTest1Lazy(): Unit = {
+
+   ebmlPracticalTest1Impl(
+      //
+      eagerness = {
+         epr.Eagerness.toBeLazy
+      } ,
+      
+   )
+}
+
+object epr {
+
+   export cbsq.riffmt.ebmsGenericUtils.Eagerness
+
+}
+
+def ebmlPracticalTest1Impl(
+   //
+
+   eagerness : epr.Eagerness ,
+
+): Unit = {
    import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
 
    val path = (
@@ -26,33 +62,6 @@ def ebmlPracticalTest1(): Unit = {
       )
       (2 : Int) match {
          
-      case 1 =>
-         for (_ <- () :: Nil) {
-            val e = (
-               r.readEbmlFrameOfPayloadRaw()
-            )
-            println(e.toString() )
-            println({
-               import java.nio.charset.{StandardCharsets, Charset }
-               new String((e.payload.byteValues.map((_.toChar)) ).toArray )
-            } )
-            println({
-               import java.nio.charset.{StandardCharsets, Charset }
-               new String((e.payload ).toArray, StandardCharsets.UTF_8 )
-            } )
-         }
-         try {
-            while (true) {
-               val e = (
-                  r.readEbmlFrameOfPayloadRaw()
-               )
-               println((e.typeInt.toString(0x10), e.payloadLength))
-            }
-         } catch {
-            case z : (java.io.EOFException | EBmlPrimitivesMalformationException) =>
-               println(z)
-         }
-
       case 2 =>
          locally {
             println("DOCTYPE" )
@@ -68,7 +77,24 @@ def ebmlPracticalTest1(): Unit = {
          try {
             {
                println("CONTENTS" )
-               val e = cbsq.avc.codecs.fullyDemuuxMatroskaFile(r )
+               val e = cbsq.avc.codecs.demuuxMatroskaFile(r )(eagerness = eagerness )
+               if { 
+                  // eagerness == epr.Eagerness.toBeLazy
+                  // false
+                  eagerness == epr.Eagerness.toBeLazy
+               } then {
+                  println("traversing with logging")
+                  runEbmlDemonstrativeTransversal(e, logging = { cbsq.avc.PhrStagedLogging.whichLogsTo(e => { println(s"[itr] $e") ; Right {} } ) } )
+               }
+               if { 
+                  eagerness == epr.Eagerness.toBeLazy
+               } then {
+                  // println("traversing, without lonngin")
+                  println(s"traversing, without logging")
+                  var lc = new java.util.concurrent.atomic.AtomicLong
+                  runEbmlDemonstrativeTransversal(e , logging = cbsq.avc.PhrStagedLogging.whichLogsTo({ case _ => { lc.incrementAndGet() ; Right {} } }) )
+                  println(s"log linecount: ${lc.get() } ")
+               }
                println(e.toString() replaceAll ({ import scala.util.matching.Regex.quote ; s"(\\w{64})\\w{3,}(?:${quote("...") })?" }, "$1...") take (10 * 1024 ) )
             }
          }
@@ -154,6 +180,58 @@ def newCountingBufferedStream( ) = {
          }
 }
 
+}
+
+def runEbmlDemonstrativeTransversal(
+   c: (
+      // cbsq.riffmt.EBml.FramePayloadScheme.FScOps#Instance
+      (cbsq.riffmt.EBml.FramePayloadScheme#Instance | Seq[cbsq.riffmt.EBml.FramePayloadScheme#Instance] )
+   ) ,
+   
+   logging : cbsq.avc.PhrStagedLoggingOps = {
+      cbsq.avc.PhrStagedLogging.noOpInstance
+   } ,
+   
+) : Unit = {
+                     ;
+                     
+                     identity {}
+
+                     extension (c: AnyRef) {
+
+                        def toStringBetter() : String = {
+                           
+                           import language.unsafeNulls
+                           
+                           c.toString()
+                           .linesIterator.toIndexedSeq.headOption.getOrElse("")
+                           .take(144)
+                        }
+
+                     }
+                     
+                     c
+                     match {
+
+                        case c : collection.immutable.ArraySeq.ofByte =>
+                           import cbsq.ByteBlob.boxingImplicits.*
+                           logging enstage(s"Bytes: ${c.toBlob.toStringBetter() }" )
+
+                        case c : cbsq.riffmt.EBml.FramePayloadScheme.`elements_@&%!`.Element =>
+                           val lgItem = logging enstage(s"Elem: ${c.toStringBetter() }" )
+                           runEbmlDemonstrativeTransversal(c.children, logging = lgItem )
+
+                        case c : Seq[cItem] =>
+                           logging enstage(s"Seq" )
+                           for ((child, i) <- c.map(_.asInstanceOf[cbsq.riffmt.EBml.FramePayloadScheme#Instance] ).zipWithIndex ) {
+                              val lgItem = logging enstage(s"$i: ")
+                              runEbmlDemonstrativeTransversal(child, logging = lgItem  )
+                           }
+
+                        case _ =>
+                           // no-op
+
+                     }
 }
 
 

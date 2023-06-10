@@ -24,6 +24,37 @@ package cbsq.avc.codecs
  * 
  */
 def fullyDemuuxMatroskaFile(r : java.io.InputStream ) = {
+
+   demuuxMatroskaFile(r)(
+      //
+
+      eagerness = {
+         cbsq.riffmt.ebmsGenericUtils.Eagerness.toBeEager
+      } ,
+
+   )
+
+}
+
+def iterativelyDemuuxMatroskaFile(r : java.io.InputStream ) = {
+
+   demuuxMatroskaFile(r)(
+      //
+
+      eagerness = {
+         cbsq.riffmt.ebmsGenericUtils.Eagerness.toBeLazy
+      } ,
+
+   )
+   
+}
+
+def demuuxMatroskaFile(r : java.io.InputStream )(
+   // 
+
+   eagerness : cbsq.riffmt.ebmsGenericUtils.Eagerness ,   
+
+) = {
    ;
 
    import cbsq.riffmt.*
@@ -43,7 +74,14 @@ def fullyDemuuxMatroskaFile(r : java.io.InputStream ) = {
                (
                   matroskaSegmentElementScheme
 
-                  .readAndParse(r)(using {
+                  .readAndParseAlt(
+                     //
+
+                     src = r ,
+
+                     eagerness = eagerness ,
+
+                  )(using {
 
                      EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance
 
@@ -51,7 +89,27 @@ def fullyDemuuxMatroskaFile(r : java.io.InputStream ) = {
 
                      .withCustomErrorHandler({
                         
-                        case _ =>
+                        case z : (java.io.IOException) if {
+
+                           {
+                              def get(): Boolean = {
+
+                                 import language.unsafeNulls
+
+                                 if z.isInstanceOf[java.io.EOFException] then {
+                                    return true
+                                 }
+                                 
+                                 if z.getMessage() contains "no scheme for" then {
+                                    return false
+                                 }
+                                 
+                                 return true
+
+                              }
+                              get()
+                           }
+                        } =>
                            Seq()
 
                      })
