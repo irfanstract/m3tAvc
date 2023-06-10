@@ -57,6 +57,8 @@ def demuuxMatroskaFile(r : java.io.InputStream )(
 ) = {
    ;
 
+   import cbsq.riffmt.ebsr
+
    import cbsq.riffmt.*
    
    import byteManipImplicits.*
@@ -89,7 +91,27 @@ def demuuxMatroskaFile(r : java.io.InputStream )(
 
                      .withCustomErrorHandler({
                         
-                        case z : (java.io.IOException) =>
+                        case z : (java.io.IOException) if {
+
+                           {
+                              def get(): Boolean = {
+
+                                 import language.unsafeNulls
+
+                                 if z.isInstanceOf[java.io.EOFException] then {
+                                    return true
+                                 }
+                                 
+                                 if z.getMessage() contains "no scheme for" then {
+                                    return false
+                                 }
+                                 
+                                 return true
+
+                              }
+                              get()
+                           }
+                        } =>
                            Seq()
 
                      })

@@ -556,6 +556,14 @@ trait EBsd extends
       with XLengthOverrideable
       {
          
+         if true then {
+            ;
+            for (l <- Some(encodedLength).collect({ case l : cbsq.FileSize => l }) ) {
+               (l.inBytes : BigDecimal)
+               .toIntExact
+            }
+         }
+         
          type Instance 
             >: cbsq.ByteBlob | java.net.URI
             <: cbsq.ByteBlob | java.net.URI
@@ -766,7 +774,30 @@ trait EBsd extends
                       * 
                       */
                      (new java.io.DataInputStream(r) )
-                     .readEbmlFrameOfPayloadRaw()
+                     .lazilyReadEbmlFrameOfPayloadRaw()
+                     // .readEbmlFrameOfPayloadRaw()
+                     match {
+
+                        case rbe =>
+                           
+                           // rbe.payloadLength
+
+                           val l = {
+                              identity[BigDecimal](rbe.payloadLength.inBytes )
+                              .toIntExact
+                           }
+
+                           if false then {
+                              util.Using.resource({
+                                 newMarkResetTurn(r : RnpSource, l )
+                              })(_ => {
+                                 rbe.payload
+                              })
+                           }
+
+                           rbe
+
+                     }
 
                   })
                   catch {
@@ -895,6 +926,12 @@ trait EBsd extends
          ) = {
                ;
 
+               efpr.payloadLength.inBytes
+               match { case v if (v.toInt.toLong == v ) => }
+
+               // efpr.payload
+
+               inferred
                object inferred {
                   
                   final
@@ -944,8 +981,13 @@ trait EBsd extends
                      
                      val r = (
                         ((
+                           // new MarkableInputStreamImpl((
+                           //    efpr.getPaystringItr()
+                           // ))
+                           // efpr.getPaystringItr()
+                           // .asMarkableStream()
                            new MarkableInputStreamImpl((
-                              efpr.payload.newGrossReader()
+                              efpr.getPaystringItr()
                            ))
                         ))
                      )
@@ -1436,6 +1478,7 @@ trait EBsd extends
                   :+ s"<${classSimpleName } >"
                   :++ (
                      children
+                     .to(Vector) /* not essential, but may be necessary to avoid stack-overflowing and improve perfmce, especially as laziness is of no use here (this is for `toString`) */
                      .map[String]({
                         
                         case e: collection.immutable.ArraySeq.ofByte if (2 <= e.length) =>

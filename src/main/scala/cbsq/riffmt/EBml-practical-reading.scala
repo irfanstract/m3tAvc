@@ -79,9 +79,21 @@ def ebmlPracticalTest1Impl(
                println("CONTENTS" )
                val e = cbsq.avc.codecs.demuuxMatroskaFile(r )(eagerness = eagerness )
                if { 
+                  // eagerness == epr.Eagerness.toBeLazy
+                  // false
                   eagerness == epr.Eagerness.toBeLazy
                } then {
+                  println("traversing with logging")
                   runEbmlDemonstrativeTransversal(e, logging = { cbsq.avc.PhrStagedLogging.whichLogsTo(e => { println(s"[itr] $e") ; Right {} } ) } )
+               }
+               if { 
+                  eagerness == epr.Eagerness.toBeLazy
+               } then {
+                  // println("traversing, without lonngin")
+                  println(s"traversing, without logging")
+                  var lc = new java.util.concurrent.atomic.AtomicLong
+                  runEbmlDemonstrativeTransversal(e , logging = cbsq.avc.PhrStagedLogging.whichLogsTo({ case _ => { lc.incrementAndGet() ; Right {} } }) )
+                  println(s"log linecount: ${lc.get() } ")
                }
                println(e.toString() replaceAll ({ import scala.util.matching.Regex.quote ; s"(\\w{64})\\w{3,}(?:${quote("...") })?" }, "$1...") take (10 * 1024 ) )
             }

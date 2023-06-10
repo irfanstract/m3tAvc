@@ -334,6 +334,8 @@ trait EBmlRawFramesReadingIoDefsImpl extends
       /* technically a `def`, but treated as stable-path */
       export pl.{payloadImpl as payload}
 
+      import ll.bytesLazyL
+
       override
       def getPaystringItr(): java.io.InputStream = {
 
@@ -347,11 +349,21 @@ trait EBmlRawFramesReadingIoDefsImpl extends
          bytesLlIterator.newChunkedByteIteratorInputStream()
       }
 
-      private
-      val bytesLazyL = {
-         r readNBytesScIncremLl(payloadLength.inBytes.toInt, chunkSize = 1024 )
+      ll
+      private[tryReadEbmlFrameImpl]
+      object ll {
+
+         val bytesLazyLlSrcStream : java.io.DataInput | java.io.InputStream = {
+            rBoundedIfNecessary
+         }
+
+         val bytesLazyL = {
+            rBoundedIfNecessary readNBytesScIncremLl(payloadLength.inBytes.toInt, chunkSize = 1024 )
+         }
+
       }
 
+      pl
       private[tryReadEbmlFrameImpl]
       object pl {
          
@@ -360,12 +372,17 @@ trait EBmlRawFramesReadingIoDefsImpl extends
                IArray.concat(bytesLazyL.map(s => IArray.from(s) ) : _* ).toIndexedSeq
                .asBlob
             catch {
-               case z : java.io.EOFException =>
+               
+               case z : java.io.EOFException if false =>
                   throw (
                      new
                      java.io.IOException(s"malformed - <!$typeAsUtf (expectedLength)=$payloadLength> - EOF during 'payload'", z)
                      with EBmlPrimitivesMalformationException
                   )
+
+               case z : java.io.EOFException =>
+                  throw new java.io.IOException(s"corruptive InputStream implementation", z )
+
             }
          ) match {
             case e =>
@@ -382,6 +399,27 @@ trait EBmlRawFramesReadingIoDefsImpl extends
                e
          }
          
+      }
+
+      private[tryReadEbmlFrameImpl]
+      lazy
+      val rBoundedIfNecessary: java.io.DataInput | java.io.InputStream = {
+         if shallRbinAvoidPreBuffering() then {
+            r
+         }
+         else {
+            import cbsq.ByteBlob
+            import ByteBlob.boxingImplicits.*
+            import language.unsafeNulls
+            r.readNBytesSc((payloadLength.inBytes : BigDecimal).toIntExact )
+            .asBlob
+            .newGrossReader()
+         }
+      }
+
+      private[riffmt]
+      def shallRbinAvoidPreBuffering() : Boolean = {
+         true
       }
 
    }
@@ -481,6 +519,8 @@ trait EBmlRawFramesReadingIoDefsSelfTest
       .failed
       .collect({ 
          case z : EBmlPrimitivesMalformationException => 
+            println(z) 
+         case z : java.io.EOFException => 
             println(z) 
       }).get
       println((
