@@ -1900,29 +1900,20 @@ protected
 object ebsr
 {
 
-   def breakablyGet[R](
-      main : (resolve : R => Nothing ) => R ,
+   export avcframewrk.util.controlFlow.breakablyGet
 
-   ): R = {
+   {
 
-      util.control.NonLocalReturns.returning[R](op ?=> {
-         
-         main((r : R ) => (op throwReturn r ) )
-      } )
+      //
 
    }
 
-   def breakably[R](
-      main : (break1 : DummyImplicit ?=> Nothing ) => Unit ,
+   export avcframewrk.util.controlFlow.breakably
 
-   ) = {
+   {
 
-      breakablyGet[Unit ](resolve => (
-         
-         main(_ ?=> (resolve {} ) )
-
-      ) )
-
+      //
+      
    }
 
 }
