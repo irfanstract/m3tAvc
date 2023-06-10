@@ -556,6 +556,14 @@ trait EBsd extends
       with XLengthOverrideable
       {
          
+         if true then {
+            ;
+            for (l <- Some(encodedLength).collect({ case l : cbsq.FileSize => l }) ) {
+               (l.inBytes : BigDecimal)
+               .toIntExact
+            }
+         }
+         
          type Instance 
             >: cbsq.ByteBlob | java.net.URI
             <: cbsq.ByteBlob | java.net.URI
@@ -766,7 +774,8 @@ trait EBsd extends
                       * 
                       */
                      (new java.io.DataInputStream(r) )
-                     .readEbmlFrameOfPayloadRaw()
+                     .lazilyReadEbmlFrameOfPayloadRaw()
+                     // .readEbmlFrameOfPayloadRaw()
 
                   })
                   catch {
@@ -895,6 +904,10 @@ trait EBsd extends
          ) = {
                ;
 
+               efpr.payloadLength.inBytes
+               match { case v if (v.toInt.toLong == v ) => }
+
+               inferred
                object inferred {
                   
                   final
@@ -945,7 +958,7 @@ trait EBsd extends
                      val r = (
                         ((
                            new MarkableInputStreamImpl((
-                              efpr.payload.newGrossReader()
+                              efpr.getPaystringItr()
                            ))
                         ))
                      )
