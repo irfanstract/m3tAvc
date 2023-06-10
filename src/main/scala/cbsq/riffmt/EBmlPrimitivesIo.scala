@@ -230,8 +230,8 @@ trait EBmlRawFramesReadingIoDefs extends
        * INVALID/TODO
        * 
        */
-      @annotation.experimental
-      private[riffmt]
+      // @annotation.experimental
+      // private[riffmt]
       def lazilyReadEbmlFrameOfPayloadRaw(): Rbeiop = {
 
          val analysis1 = (
