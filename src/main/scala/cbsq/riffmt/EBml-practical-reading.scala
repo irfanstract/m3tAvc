@@ -8,9 +8,9 @@ package cbsq.riffmt
 
 
 
-@annotation.experimental
+// @annotation.experimental
 @main
-protected 
+// protected 
 def ebmlPracticalTest1(): Unit = {
 
    ebmlPracticalTest1Impl(
@@ -22,9 +22,9 @@ def ebmlPracticalTest1(): Unit = {
    )
 }
 
-@annotation.experimental
+// @annotation.experimental
 @main
-protected 
+// protected 
 def ebmlPracticalTest1Lazy(): Unit = {
 
    ebmlPracticalTest1Impl(
