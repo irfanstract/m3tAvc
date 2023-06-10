@@ -1601,7 +1601,7 @@ trait EBsd extends
          import language.unsafeNulls /* for this `toString` impl */
 
          v
-               .replaceFirst("\\A([\\S\\s]{500,})\\z", "$1...")
+               .replaceFirst("\\A([\\S\\s]{500})[\\S\\s]{87,}\\z", "$1...")
       }
       
    } /* trimToJustFiveHundred */
