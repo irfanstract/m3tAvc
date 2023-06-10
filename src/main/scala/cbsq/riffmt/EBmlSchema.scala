@@ -556,6 +556,14 @@ trait EBsd extends
       with XLengthOverrideable
       {
          
+         if true then {
+            ;
+            for (l <- Some(encodedLength).collect({ case l : cbsq.FileSize => l }) ) {
+               (l.inBytes : BigDecimal)
+               .toIntExact
+            }
+         }
+         
          type Instance 
             >: cbsq.ByteBlob | java.net.URI
             <: cbsq.ByteBlob | java.net.URI
@@ -895,6 +903,12 @@ trait EBsd extends
          ) = {
                ;
 
+               efpr.payloadLength.inBytes
+               match { case v if (v.toInt.toLong == v ) => }
+
+               // efpr.payload
+
+               inferred
                object inferred {
                   
                   final
