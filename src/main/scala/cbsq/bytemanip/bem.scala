@@ -52,6 +52,11 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
 
    }
 
+   /**
+    * 
+    * defines these three members
+    * 
+    */
    trait WithBxi[
       XCharacterBlob <: IndexedSeq[XCharacter] ,
       XCharacter ,
@@ -74,6 +79,11 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
       WithCharClassTag1[ItsCharacter]
    )
 
+   /**
+    * 
+    * defines `given` `reflect.ClassTag[ItsCharacter]`
+    * 
+    */
    protected 
    trait WithCharClassTag1[
       ItsCharacter ,
@@ -85,6 +95,11 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
 
    }
 
+   /**
+    * 
+    * defines `asBlob` and `toBlob`
+    * 
+    */
    trait Bxi[
       XCharacterBlob <: IndexedSeq[XCharacter] ,
       XCharacter ,
@@ -155,6 +170,13 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
          unsafeWrapArray(data.toArray[XCharacter] )
 
       }
+
+      /**
+       * 
+       * exact
+       * 
+       */
+      def wrapIArray(buf: IArray[XCharacter]): XCharacterBlob
 
       /**
        * 
@@ -305,9 +327,10 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
                Bytes(buf)
             }
             
-            // def toBlob: Bytes = {
-            //    asBlob
-            // }
+            override
+            def toBlob: Bytes = {
+               asBlob
+            }
             
          }
 
@@ -335,6 +358,17 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
             case _ =>
                unsafeWrapArray(data.toArray[Byte] )
          
+      }
+
+      /**
+       * 
+       * exact
+       * 
+       */
+      override
+      def wrapIArray(buf: IArray[Byte]): XCharacterBlob = {
+
+         unsafeWrapArray(buf.unsafeArray : Array[Byte] )
       }
 
       // /**
