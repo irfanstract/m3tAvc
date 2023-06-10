@@ -318,12 +318,9 @@ object byteManipImplicitsC {
                IArray.emptyByteIArray
             }
 
-            override
-            def read(): Int = ???
-
-            override
-            def read(b: Array[Byte], off: Int, len: Int): Int = {
-
+            private
+            def refillIfEmpty() : Unit = {
+               
                if (r.length <= 0 ) {
 
                   for (newArray <- {
@@ -337,12 +334,34 @@ object byteManipImplicitsC {
                   }
                   
                }
+               
+            }
+
+            override
+            def read(): Int = {
+
+               readNBytes(1).toIndexedSeq match {
+
+                  case Seq(v) => 
+                     0xFF & v.toInt
+
+                  case Seq() =>
+                     -1
+
+               }
+               
+            }
+
+            override
+            def read(b: Array[Byte], off: Int, len: Int): Int = {
+
+               refillIfEmpty()
 
                if (0 < r.length ) {
                   val (rTake, rRemaning) = r.splitAt(len)
                   r = rRemaning
                   rTake.copyToArray(b, off )
-                  rTake.length
+                  // rTake.length
                }
                else {
                   -1
@@ -351,7 +370,6 @@ object byteManipImplicitsC {
             }
             
          }
-         match { case s => new java.io.BufferedInputStream(s, 0x100 ) } // TODO
       }
 
    }
