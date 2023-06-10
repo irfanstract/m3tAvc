@@ -79,7 +79,7 @@ def ebmlPracticalTest1Impl(
                println("CONTENTS" )
                val e = cbsq.avc.codecs.demuuxMatroskaFile(r )(eagerness = eagerness )
                if { 
-                  eagerness == epr.Eagerness.toBeLazy
+                  false
                } then {
                   runEbmlDemonstrativeTransversal(e, logging = { cbsq.avc.PhrStagedLogging.whichLogsTo(e => { println(s"[itr] $e") ; Right {} } ) } )
                }
