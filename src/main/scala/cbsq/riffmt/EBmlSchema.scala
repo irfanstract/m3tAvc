@@ -774,30 +774,7 @@ trait EBsd extends
                       * 
                       */
                      (new java.io.DataInputStream(r) )
-                     .lazilyReadEbmlFrameOfPayloadRaw()
-                     // .readEbmlFrameOfPayloadRaw()
-                     match {
-
-                        case rbe =>
-                           
-                           // rbe.payloadLength
-
-                           val l = {
-                              identity[BigDecimal](rbe.payloadLength.inBytes )
-                              .toIntExact
-                           }
-
-                           if true then {
-                              util.Using.resource({
-                                 newMarkResetTurn(r : RnpSource, l )
-                              })(_ => {
-                                 rbe.payload
-                              })
-                           }
-
-                           rbe
-
-                     }
+                     .readEbmlFrameOfPayloadRaw()
 
                   })
                   catch {
