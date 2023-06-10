@@ -83,47 +83,13 @@ trait EBsd extends
       extension (this1 : CodeSchemeOps) {
 
          // transparent inline
-         def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
+         def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique) = {
             
             this1.readAndParseImpl(r = {
 
                CodeSchemeOps.RpiaImpl(
                   src = r ,
                   eagerness = ebmsGenericUtils.Eagerness.toBeEager ,
-               )
-
-            } )(using td )
-
-         }
-         
-         // transparent inline
-         def readAndParseIteratively(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
-            
-            this1.readAndParseImpl(r = {
-
-               CodeSchemeOps.RpiaImpl(
-                  src = r ,
-                  eagerness = ebmsGenericUtils.Eagerness.toBeLazy ,
-               )
-
-            } )(using td )
-
-         }
-         
-         def readAndParseAlt(
-            //
-
-            src: this1.RnpSource,
-
-            eagerness : ebmsGenericUtils.Eagerness ,
-
-         )(using td : CodeSchemeOps.TraversalDiagnostique) = {
-            
-            this1.readAndParseImpl(r = {
-
-               CodeSchemeOps.RpiaImpl(
-                  src = src ,
-                  eagerness = eagerness ,
                )
 
             } )(using td )
@@ -199,19 +165,6 @@ trait EBsd extends
             getRnpSourceRpiaImpl(this) _
          }
          
-         /**
-          * 
-          * there are multiple variants of `readAndParse` ;
-          * implementations of `readAndParseImpl`
-          * shall only call `readAndParseAlt`, not the other ones
-          * 
-          */
-         private[EBsd]
-         implicit
-         lazy val enct: Enct = {
-            new Enct
-         }
-         
       }
 
       private[EBsd]
@@ -219,16 +172,6 @@ trait EBsd extends
          src : CodeSchemeOps#RnpSource ,
          eagerness : ebmsGenericUtils.Eagerness ,
       )
-
-      /**
-       * 
-       * there are multiple variants of `readAndParse` ;
-       * implementations of `readAndParseImpl`
-       * shall only call `readAndParseAlt`, not the other ones
-       * 
-       */
-      private[EBsd]
-      class Enct private[EBsd]()
 
    }
 
@@ -556,14 +499,6 @@ trait EBsd extends
       with XLengthOverrideable
       {
          
-         if true then {
-            ;
-            for (l <- Some(encodedLength).collect({ case l : cbsq.FileSize => l }) ) {
-               (l.inBytes : BigDecimal)
-               .toIntExact
-            }
-         }
-         
          type Instance 
             >: cbsq.ByteBlob | java.net.URI
             <: cbsq.ByteBlob | java.net.URI
@@ -853,14 +788,11 @@ trait EBsd extends
 
                      })
                   }
-               ) )(
-                  efpr = efpr, 
-                  rpia = r ,
-               )
+               ) )(efpr = efpr )
          }
 
          def getXElementEfprSimpleName(using currentPath : CodeSchemeOps.TraversalDiagnostique)(
-            efpr: Rbeiop ,
+            efpr: EbmRawFrameElement[String] ,
          ): String = {
 
                            Option(currentPath.fullScheme).map(_.nn)
@@ -898,17 +830,10 @@ trait EBsd extends
           */
          private 
          def ernp(using CodeSchemeOps.TraversalDiagnostique)(
-            efpr: Rbeiop ,
-            rpia : ReadingParsingImplArg ,
+            efpr: EbmRawFrameElement[String] ,
          ) = {
                ;
 
-               efpr.payloadLength.inBytes
-               match { case v if (v.toInt.toLong == v ) => }
-
-               // efpr.payload
-
-               inferred
                object inferred {
                   
                   final
@@ -973,24 +898,13 @@ trait EBsd extends
                         LazyList() lazyAppendedAll {
                            ((using : CodeSchemeOps.TraversalDiagnostique) ?=> {
 
-                              extension (scheme : FramePayloadScheme ) {
-                              
-                                 // transparent inline
-                                 def sub1 = {
-                                    ;
-                                    scheme
-                                    .readAndParseAlt(src = r, eagerness = rpia.eagerness )
-                                 }
-                                 
-                              }
-                              
                               (appropriateSchemeDef match {
 
                                  case scheme : VariadicImpl[?, ?] =>
-                                    scheme.sub1
+                                    scheme.readAndParse(r)
 
                                  case scheme =>
-                                    Seq(scheme.sub1 )
+                                    Seq(scheme.readAndParse(r) )
                                     
                               }): Seq[FramePayloadScheme#Instance]
 
@@ -1045,13 +959,12 @@ trait EBsd extends
 
                      /**
                       * 
-                      * if appropriate,
                       * instruct for eager eval of the `LazyList`
                       * 
                       */
                      try {
                         cp
-                        .to(rpia.eagerness.characteristicSeqFactory )
+                        .to(IndexedSeq)
                         .toSeq
                         
                      } catch {
@@ -1212,13 +1125,12 @@ trait EBsd extends
                   
                   /**
                    * 
-                   * if appropriate ,
                    * instruct for eager eval of the `LazyList`, and
                    * return the resulting Seq
                    * 
                    */
                   childrenLl
-                  .to(r.eagerness.characteristicSeqFactory )
+                  .toIndexedSeq
          }
 
          extension (r: RnpSource) {
@@ -1413,7 +1325,7 @@ trait EBsd extends
    
    /* ad-hoc */
    @deprecated("experimental")
-   // private[EBsd ]
+   private[EBsd ]
    object `elements_@&%!` {
 
       // sealed 
@@ -1615,7 +1527,7 @@ trait EBsd extends
          import language.unsafeNulls /* for this `toString` impl */
 
          v
-               .replaceFirst("\\A([\\S\\s]{500})[\\S\\s]{87,}\\z", "$1...")
+               .replaceFirst("\\A([\\S\\s]{500,})\\z", "$1...")
       }
       
    } /* trimToJustFiveHundred */
