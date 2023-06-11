@@ -128,6 +128,17 @@ trait LavProbeOps[AvProbeCtx]
       // <: cbsq.avc.McdcTyper#MediaCodecOverview & cbsq.avc.FfCodecTemplateOps
       <: cbsq.avc.McdcTyper#MediaDeviceOverview
    
+   /**
+    * 
+    * `isFileNameEndingWithExt`
+    * 
+    */
+   extension [A <: AvProbeCtx ](lpd: A ) {
+
+      def isFileNameEndingWithExt(ext: String) : Boolean
+
+   }
+
 }
 
 
