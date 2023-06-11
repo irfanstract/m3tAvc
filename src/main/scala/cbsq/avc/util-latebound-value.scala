@@ -29,7 +29,7 @@ object LateBoundValue
       newHolderWithConstraints1[V]()
    }
 
-   def forValue[V](value: V) : (
+   def ofAlreadyResolvedWithValue[V](value: V) : (
       AnyRef
       with NhwGetValue[value.type ]
    
@@ -37,6 +37,21 @@ object LateBoundValue
       val p = newInstance[value.type]
       p success value
       p
+   }
+
+   /**
+    * 
+    * `ofAlreadyResolvedWithValue(value )`
+    * 
+    */
+   @deprecated("this name made confusion.")
+   def forValue[V](value: V) : (
+      AnyRef
+      with NhwGetValue[value.type ]
+   
+   ) = {
+      
+      ofAlreadyResolvedWithValue[value.type ](value = value )
    }
 
    if false then {
@@ -70,44 +85,70 @@ object LateBoundValue
       forValue(true )
    }
 
-   trait NhwCompleteWith[V]
-   extends 
+   /**
+    * 
+    * defines a single `val` in-turn referencing some `Promise[Future[V ] ]`.
+    * 
+    */
+   @deprecated("experimental")
+   trait NhwPrm[V]
+   extends   
       AnyRef
    {
 
-      private[LateBoundValue]
-      lazy val prmPr : concurrent.Promise[concurrent.Future[V] ] 
+      val prmPr : concurrent.Promise[concurrent.Future[V] ] 
+
+   }
+
+   trait NhwCompleteWith[-V]
+   extends 
+      AnyRef
+   {
+      this : (
+         AnyRef
+         & NhwPrm[? >: V]
+         
+      ) =>
 
       /**
        * 
-       * the compiler refused to proceed when the prefix were `nonfinal lazy val`.
-       * we can't make `prm` `final` as that'd defeat the purpose of this separation.
-       * after all,
-       * there's no need to precise the `export`s' typing
+       * equivalent to `Future.instance.success`.
        * 
        */
-      private[NhwCompleteWith]
-      final
-      lazy val prmPrExportible = prmPr
-
-      def success(v: V) : concurrent.Promise[?] = {
+      def success(v: V) : Unit = {
          prmPr
          .success({
             concurrent.Future.successful(v : v.type )
          })
       }
       
-      def complete(v0: util.Try[V]) : concurrent.Promise[?] = {
+      /**
+       * 
+       * equivalent to `Future.instance.complete`.
+       * 
+       */
+      def complete(v0: util.Try[V]) : Unit = {
          prmPr
          .success({
             concurrent.Future.fromTry(v0 )
          })
       }
       
-      export prmPrExportible.{
+      /**
+       * 
+       * sets the final `Future`;
+       * only can be called once, unlike `Future.instance.completeWith`.
+       * 
+       */
+      export prmPr.{
          success => completeWith ,
       }
 
+      /**
+       * 
+       * equivalent to `Future.instance.tryComplete`.
+       * 
+       */
       def tryComplete(v0: util.Try[V]): Boolean = {
          prmPr
          .trySuccess({
@@ -115,9 +156,24 @@ object LateBoundValue
          })
       }
       
-      export prmPrExportible.{
+      /**
+       * 
+       * sets the final `Future`;
+       * only can happen once, unlike `Future.instance.tryCompleteWith`.
+       * 
+       */
+      export prmPr.{
          trySuccess => tryCompleteWith ,
       }
+
+   }
+
+   trait NhwAsFuture[+V]
+   extends   
+      AnyRef
+   {
+
+      val asFuture: concurrent.Future[V]
 
    }
 
@@ -125,11 +181,33 @@ object LateBoundValue
    trait Nhw[V]
    extends 
       AnyRef
+      with NhwAsFuture[V]
       with NhwCompleteWith[V]
       with NhwGetValue[V]
    {
+      this : (
+         AnyRef
+         & NhwPrm[V]
+         & NhwAsFuture[V]
 
-      override
+      ) =>
+
+      /**
+       * 
+       * `asFuture`.
+       * supposed to be `asPromise.future`.
+       * 
+       */
+      export asFuturesValImpls.asFuture
+
+      /**
+       * 
+       * `lazy val`s can't override `non-lazy val`s
+       * 
+       */
+      private[Nhw]
+      object asFuturesValImpls {
+         
       final      
       lazy val asFuture = {
          prmPr
@@ -137,13 +215,22 @@ object LateBoundValue
          .flatten
       }
 
+      }
+
    }
 
-   trait NhwGetValue[+V]
+   trait NhwGetValue[+V]  
+   extends 
+      AnyRef
+      with NhwAsFuture[V]
    {
+      this : (
+         AnyRef
+         & NhwAsFuture[V]
 
-      lazy val asFuture: concurrent.Future[V]
+      ) =>
 
+      /* TODO hide this */
       opaque type Gv <: V = V
 
       /** 
@@ -196,11 +283,11 @@ object LateBoundValue
    extends
       AnyRef
       with Nhw[V]
+      with NhwPrm[V]
    {
 
-      private[LateBoundValue]
       override
-      lazy val prmPr = {
+      val prmPr = {
          concurrent.Promise()
       }
 
