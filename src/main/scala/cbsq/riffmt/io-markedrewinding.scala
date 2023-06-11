@@ -13,81 +13,123 @@ package cbsq.riffmt
 
 
 
-import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+// import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
 
 
 
 
-extension (inp: java.io.InputStream) {
-   
-   /**
-    * 
-    * a view of the `InputStream` as a lazily-evaluated *byte-chunks* list
-    * 
-    */
-   @deprecated("experimental")
-   // protected 
-   def asLazyChunksList(
+private 
+object impl
+{
 
-      chunkSize: => cbsq.FileSize = {
-         import byteManipImplicitsC.*
-         (0x2000).B
-      } ,
+   import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+
+   extension (inp: java.io.InputStream) {
       
-   ) = ({
-      import byteManipImplicitsC.*
-      import byteManipImplicitsC.asBlob
-      LazyList.unfold[EBR, cbsq.FileSize](0.B)({
-
-         case pos0 =>
-            val justRead = {
-               /**
-                * take bytes, as specified
-                */
-               inp.readNBytes(chunkSize.inBytes.toInt )
-               .toIndexedSeq.asBlob
-            }
-            /**
-             * 
-             * ensure that the Seq ends when an 'l:0' item comes -
-             * zero-length items indicate EOF
-             * 
-             */
-            if (0.B < justRead.length) {
-               //
-               val pos1 = (
-                  pos0 + justRead.length
-               )
-               Some((
-                  (Range(pos0.inBytes.toInt, pos1.inBytes.toInt, 1 ) , justRead ) : EBR , 
-                  pos1 ,
-               ))
-            } else {
-               // EOF
-               None
-            }
-            
-      })
       /**
        * 
-       * ensure that the Seq ends when an 'l:0' item comes -
-       * as mentioned,
-       * zero-length items indicate EOF
+       * a view of the `InputStream` as a lazily-evaluated *byte-chunks* list
        * 
        */
-      .takeWhile((e, b) => (
-         0 < e.length
-      ) )
-   })
+      @deprecated("experimental")
+      // protected 
+      def asLazyChunksList(
+
+         chunkSize: => cbsq.FileSize = {
+            import cbsq.bytemanip.FileSize.boxingImplicits.*
+            (0x2000).B
+         } ,
+         
+      ) = ({
+         import byteManipImplicitsC.*
+         import byteManipImplicitsC.asBlob
+         LazyList.unfold[EbrImpl, cbsq.FileSize](0.B)({
+
+            case pos0 =>
+               val justRead = {
+                  /**
+                   * take bytes, as specified
+                   */
+                  inp.readNBytes(chunkSize.inBytes.toInt )
+                  .toIndexedSeq.asBlob
+               }
+               /**
+                * 
+                * ensure that the Seq ends when an 'l:0' item comes -
+                * zero-length items indicate EOF
+                * 
+                */
+               if (0.B < justRead.length) {
+                  //
+                  val pos1 = (
+                     pos0 + justRead.length
+                  )
+                  Some((
+                     (Range(pos0.inBytes.toInt, pos1.inBytes.toInt, 1 ) , justRead ) : EbrImpl , 
+                     pos1 ,
+                  ))
+               } else {
+                  // EOF
+                  None
+               }
+               
+         })
+         .map(identity[EbrImpl <:< EByteOffsetRangeAndContents ](ebrImplConv ) )
+         /**
+          * 
+          * ensure that the Seq ends when an 'l:0' item comes -
+          * as mentioned,
+          * zero-length items indicate EOF
+          * 
+          */
+         .takeWhile({ case (e, b) => (
+            0 < e.length
+         ) })
+      })
+
+   }
+
+   type EbrImpl
+      >: (Range, cbsq.ByteBlob)
+      <: (Range, cbsq.ByteBlob)
+
+   class ERdl(inp: java.io.InputStream) {
+      
+      val loadedSize = {
+         new java.util.concurrent.atomic.AtomicLong(0)
+      }
+
+      val payloadChunks = (
+         inp.asLazyChunksList()
+         .map[(Range, cbsq.ByteBlob)](<:<.refl)
+         .tapEach((e, b) => {
+            loadedSize set(e.`end` )
+         })
+      )
+
+   }
+
+   extension (src : Seq[Byte]) {
+
+      // @deprecated("experimental")
+      def toNewFd() = {
+         new java.io.DataInputStream((
+            new java.io.ByteArrayInputStream((
+               src.toArray
+            ))
+         ))
+      }
+
+   }
 
 }
 
-protected 
-opaque type EBR
-   <: (Range, cbsq.ByteBlob)
-   = (Range, cbsq.ByteBlob)
-// extension (r: EBR ) {
-// }
+import impl.*
+
+
+
+
+;
 
 
 
@@ -111,18 +153,7 @@ with IOMR1
 
 
 
-   extension (src : Seq[Byte]) {
-
-      @deprecated("experimental")
-      def toNewFd() = {
-         new java.io.DataInputStream((
-            new java.io.ByteArrayInputStream((
-               src.toArray
-            ))
-         ))
-      }
-
-   }
+   export impl.toNewFd
 
 
 
@@ -163,25 +194,81 @@ with IOMR1
       r.enmark()
    }
 
-   /* INTERNAL */
-   private
-   class ERdl(inp: java.io.InputStream) {
-      
-      val loadedSize = {
-         new java.util.concurrent.atomic.AtomicLong(0)
-      }
+   // @deprecated
+   export IOMR1.MarkableInputStreamImpl
 
-      val payloadChunks = (
-         inp.asLazyChunksList()
-         .map[(Range, cbsq.ByteBlob)](<:<.refl)
-         .tapEach((e, b) => {
-            loadedSize set(e.`end` )
-         })
-      )
+   extension (r: MarkableInputStreamImpl) {
+      
+   def isAtEof(
+      tipSize: cbsq.FileSize  = 0x2.B,
+      
+   ) : Boolean = {
+      require(0.B < tipSize, "'tipSize' can't be zero " )
+      import cbsq.FileSize.*:
+      try
+         util.Using.resource((
+            newMarkResetTurn(r, 4 * tipSize.inBytes.toInt )
+
+         ))(_ => {
+            /**
+             * 
+             * `DataInputStream.prototype.readByte()` can `throw` `EOFException`s, while
+             * the base `InputStream` methods never do so
+             * 
+             */
+            new java.io.DataInputStream(r)
+               .readByte()
+            false 
+         } : false )
+
+      catch {
+         
+         case z : java.io.EOFException  =>
+            true
+
+      }
+   } : Boolean
 
    }
+   
 
-   class MarkableInputStreamImpl(private val inp: java.io.InputStream) extends java.io.InputStream
+
+
+   //
+
+}
+
+trait IOMR1
+{
+
+   //
+
+}
+
+object IOMR1
+{
+
+   import byteManipImplicitsC.*
+
+   import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+
+   @deprecated("experimental")
+   trait GcpAndEnmark extends AnyRef
+   {
+
+      import cbsq.bytemanip.FileSize
+      
+      def getCurrentPos() : FileSize
+
+      def rewindToPos(expectedPos: FileSize): Unit
+      
+   }
+   
+   @deprecated
+   class MarkableInputStreamImpl(private val inp: java.io.InputStream)
+   extends
+   java.io.InputStream
+   with IOMR1.GcpAndEnmark
    {
 
       private[MarkableInputStreamImpl]
@@ -358,7 +445,7 @@ with IOMR1
           * *pos* when this ctx was created
           * 
           */
-         private 
+         private[riffmt] 
          val initTimeBufPos = (
             getCurrentPos()
          )
@@ -381,60 +468,24 @@ with IOMR1
 
    }
 
-   extension (r: MarkableInputStreamImpl) {
-      
-   def isAtEof(
-      tipSize: cbsq.FileSize  = 0x2.B,
-      
-   ) : Boolean = {
-      require(0.B < tipSize, "'tipSize' can't be zero " )
-      import cbsq.FileSize.*:
-      try
-         util.Using.resource((
-            newMarkResetTurn(r, 4 * tipSize.inBytes.toInt )
-
-         ))(_ => {
-            /**
-             * 
-             * `DataInputStream.prototype.readByte()` can `throw` `EOFException`s, while
-             * the base `InputStream` methods never do so
-             * 
-             */
-            new java.io.DataInputStream(r)
-               .readByte()
-            false 
-         } : false )
-
-      catch {
-         
-         case z : java.io.EOFException  =>
-            true
-
-      }
-   } : Boolean
-
-   }
-   
-
-
-
-   //
-
 }
 
-trait IOMR1
-{
 
-   //
 
+
+protected 
+opaque type EByteOffsetRangeAndContents
+   <: EbrImpl
+   = EbrImpl
+// extension (r: EByteOffsetRangeAndContents ) {
+// }
+
+private
+val ebrImplConv : EbrImpl <:< EByteOffsetRangeAndContents = {
+   summon[EbrImpl <:< EByteOffsetRangeAndContents]
 }
 
-object IOMR1
-{
-
-   //
-   
-}
+;
 
 
 
