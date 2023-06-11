@@ -20,6 +20,8 @@ package cbsq.avc.upstream
 trait LavProbeOps[AvProbeCtx]
 {
 
+   def newInstance() : AvProbeCtx
+
    extension [A <: AvProbeCtx ](this1: A ) {
 
       /**
