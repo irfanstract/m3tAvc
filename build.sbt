@@ -14,8 +14,6 @@
 
 scalaVersion := "3.2.2"
 
-scalacOptions += "-Yprint-typer"
-
 scalacOptions += "-Yexplicit-nulls"
 
 libraryDependencies ++= Seq(
