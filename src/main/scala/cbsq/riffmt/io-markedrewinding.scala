@@ -92,7 +92,11 @@ opaque type EBR
 
 
 @deprecatedInheritance("experimental")
-trait IOMR {
+trait IOMR
+extends
+AnyRef
+with IOMR1
+{
 
 
    // import Ordering.Implicits.*
@@ -416,6 +420,20 @@ trait IOMR {
 
    //
 
+}
+
+trait IOMR1
+{
+
+   //
+
+}
+
+object IOMR1
+{
+
+   //
+   
 }
 
 
