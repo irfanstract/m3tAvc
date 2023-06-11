@@ -1,4 +1,16 @@
-package cbsq
+package avcframewrk.util
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19,6 +31,8 @@ object SlfOnEveryValue
           * 
           * adds compile-time inheritance from `Singleton` 
           * 
+          * alternative: `&lt;expr>.nn`
+          * 
           */
          // transparent 
          // inline 
@@ -29,6 +43,20 @@ object SlfOnEveryValue
    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
