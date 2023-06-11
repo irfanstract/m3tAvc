@@ -217,7 +217,7 @@ with LavProbeOps[AvProbeCtx ]
                   if ({
                      fmt1.fileExtensions1Optional
                      .fold[Boolean](false)(fileExtensions1 => {
-                        fileExtensions1 exists (lpd.isNameOfFileExtension _ )
+                        fileExtensions1 exists (lpd.isFileNameEndingWithExt _ )
                      })
                   }) {
                      nodat match
@@ -243,7 +243,7 @@ with LavProbeOps[AvProbeCtx ]
                   fmt1.fileExtensions1Optional
                }) {
                   // TODO
-                  if fileExtensions1 exists (lpd.isNameOfFileExtension _ ) then {
+                  if fileExtensions1 exists (lpd.isFileNameEndingWithExt _ ) then {
                      score = {
                         AVPROBE_SCORE.ofFileNameExtensions
                      }
@@ -293,7 +293,7 @@ with LavProbeOps[AvProbeCtx ]
 
    extension [A <: AvProbeCtx ](lpd: A ) {
 
-      def isNameOfFileExtension(ext: String) : Boolean = {
+      def isFileNameEndingWithExt(ext: String) : Boolean = {
          lpd.fileName endsWith ext
       }
 
