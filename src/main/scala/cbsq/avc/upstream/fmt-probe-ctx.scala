@@ -77,6 +77,8 @@ object AvProbeCtx
 }
 
 trait AvProbeCtxExtras
+extends
+AnyRef
 {
 
    val cexo : CodecExtraOpsProvider1
