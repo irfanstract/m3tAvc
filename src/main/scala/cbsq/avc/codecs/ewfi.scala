@@ -575,6 +575,128 @@ class EwfiEmdo()
 
    }
 
+   /**
+    * 
+    * all inferred based on `XMediaAttribShape` and (...)
+    * 
+    */
+   trait XmasEpcd extends
+   AnyRef
+   with MediaDeviceAttributeTyper1
+   // with McdcTyper
+   {
+      this : (
+         AnyRef
+         with MediaDeviceAttributeTyper1
+         // with McdcTyper
+
+      ) =>
+
+      override
+      type MediaDeviceAttribute
+         >: XMediaAttribShape
+         <: XMediaAttribShape
+            
+      extension [P <: MediaDeviceAttribute ](prop : P ) {
+
+         /**
+          * 
+          * whether
+          * it's a obliged/required field in encoded forms
+          * (eg typically mux fmts oblige/require video streams to specify framerate)
+          * 
+          */
+         def isRequiredPropertyInEncodedForms() : Boolean = {
+            prop.guaranteedExistInEncodedFormImpl
+         }
+
+         /**
+          * 
+          * whether
+          * programmes can explicitly specify it when decoding
+          * 
+          */
+         def isCustomisableWhenDecoding() : Boolean = {
+            (prop.necessityWhenDecodingImpl.unapply _).unlift
+            .isDefinedAt(Some(()) )
+         }
+
+         /**
+          * 
+          * whether
+          * programmes can explicitly specify it when encoding
+          * 
+          */
+         def isCustomisableWhenEncoding() : Boolean = {
+            (prop.necessityWhenEncodingImpl.unapply _).unlift
+            .isDefinedAt(Some(()) )
+         }
+
+      }
+      
+   }
+   
+   /**
+    * 
+    * all inferred based on `XMediaDeviceOverview` and (...)
+    * 
+    */
+   trait XdmasCdv extends
+   AnyRef
+   // with MediaDeviceAttributeTyper1
+   with McdcTyper
+   with CodecExtraOpsProvider1
+   {
+      this : (
+         AnyRef
+         with MediaDeviceAttributeTyper1
+         with McdcTyper
+         with XmasEpcd
+
+      ) =>
+
+      type MediaDeviceOverview
+         >: XMediaDeviceOverview
+         <: XMediaDeviceOverview
+         
+      override
+      type MediaCodecOverview
+         >: XMediaCodecOverview
+         <: XMediaCodecOverview
+    
+      extension (fmt1 : MediaDeviceOverview ) {
+
+         /**
+          * 
+          * you'll need to use one of these names
+          * to refer to the codec.
+          * 
+          */
+         override
+         def getCanonicalNames() : collection.immutable.Iterable[String] = {
+            fmt1.canonicalNamesImpl
+         }
+
+      }
+
+      extension (fmt1 : MediaCodecOverview ) {
+
+         override
+         def getCodecRws(): fmt1.rwModes.type = fmt1.rwModes
+
+      }
+
+      extension (fmt1 : MediaDeviceOverview ) {
+
+         override
+         def getCodeAttributesMap() : Map[String, MediaDeviceAttribute ] = {
+            fmt1.codeAttribsMap
+         }
+
+      }
+
+   }
+
 }
 
 

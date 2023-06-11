@@ -213,16 +213,15 @@ lazy val codecListing = {
    )
 
    // TODO
-   new AnyRef with MediaDeviceAttributeTyper1 with CodecExtraOpsProvider1
+   new AnyRef
+   with MediaDeviceAttributeTyper1
+   with CodecExtraOpsProvider1
+   with XmasEpcd
+   with XdmasCdv
    {
    
    mce =>
 
-   override
-   type MediaDeviceAttribute
-      >: XMediaAttribShape
-      <: XMediaAttribShape
-   
    override
    def getAllRegisteredDevices() = {
       allCodecs
@@ -237,82 +236,6 @@ lazy val codecListing = {
       })
    }
 
-   type MediaDeviceOverview
-      >: XMediaDeviceOverview
-      <: XMediaDeviceOverview
-      
-   type MediaCodecOverview
-      >: XMediaCodecOverview
-      <: XMediaCodecOverview
-   
-   extension (fmt1 : MediaDeviceOverview ) {
-
-      /**
-       * 
-       * you'll need to use one of these names
-       * to refer to the codec.
-       * 
-       */
-      override
-      def getCanonicalNames() : collection.immutable.Iterable[String] = {
-         fmt1.canonicalNamesImpl
-      }
-
-   }
-
-   extension (fmt1 : MediaCodecOverview ) {
-
-      override
-      def getCodecRws(): fmt1.rwModes.type = fmt1.rwModes
-
-   }
-
-   extension (fmt1 : MediaDeviceOverview ) {
-
-      override
-      def getCodeAttributesMap() : Map[String, MediaDeviceAttribute ] = {
-         fmt1.codeAttribsMap
-      }
-
-   }
-
-   extension [P <: MediaDeviceAttribute ](prop : P ) {
-
-      /**
-       * 
-       * whether
-       * it's a obliged/required field in encoded forms
-       * (eg typically mux fmts oblige/require video streams to specify framerate)
-       * 
-       */
-      def isRequiredPropertyInEncodedForms() : Boolean = {
-         prop.guaranteedExistInEncodedFormImpl
-      }
-
-      /**
-       * 
-       * whether
-       * programmes can explicitly specify it when decoding
-       * 
-       */
-      def isCustomisableWhenDecoding() : Boolean = {
-         (prop.necessityWhenDecodingImpl.unapply _).unlift
-         .isDefinedAt(Some(()) )
-      }
-
-      /**
-       * 
-       * whether
-       * programmes can explicitly specify it when encoding
-       * 
-       */
-      def isCustomisableWhenEncoding() : Boolean = {
-         (prop.necessityWhenEncodingImpl.unapply _).unlift
-         .isDefinedAt(Some(()) )
-      }
-
-   }
-   
    }
 }
 
