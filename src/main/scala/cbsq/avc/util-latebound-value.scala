@@ -211,6 +211,7 @@ object LateBoundValue
       
    }
 
+   private[LateBoundValue]
    def startTimingOutIterator(
       timeout : concurrent.duration.Duration ,
       
