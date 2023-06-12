@@ -114,7 +114,7 @@ with Aig1
    given main :
    AnyRef
    with OmiAll[MainR]
-   with XWithNjp
+   with XWithNjp[MainR]
    with {
 
       /* name imports */
@@ -219,6 +219,13 @@ with Aig1
 
       export allInterfacesGivens.spawnNewJFrame
 
+      /**
+       * 
+       * new `JPanel`
+       * 
+       * `layout` shall never reuse instances
+       * 
+       */
       def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): Njp[SpecificLayoutMgr] = {
 
          newJPanelImpl(layout = layout )
@@ -346,20 +353,8 @@ with Aig1
 
    }
 
-   trait XWithNjp
+   /* trait XWithNjp was here */
    {
-
-      import java.awt
-      import javax.swing
-
-      // def newFourSidebarHolyGrailLayout
-      def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
-
-      def newInlineSequencePanel() : Njp[awt.LayoutManager ]
-
-      def newThumbnailsLayout() : Njp[awt.LayoutManager ]
-
-      type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
 
    }
 
@@ -421,10 +416,25 @@ with Aig1
          
       }
       
+      /**
+       * 
+       * for whatever Component(s) Swing calls "lightweight components"
+       * 
+       */
       def mainRImplLw[R <: java.awt.Component ](newInstance : => R ) : MainR = mainRImplEither { newInstance }
 
+      /**
+       * 
+       * for whatever Component(s) Swing calls "heavyweight components" like `Window`, `JFrame`
+       * 
+       */
       def mainRImplHeavywW[R <: java.awt.Window](newInstance : => R ) : MainR = mainRImplEither { newInstance }
 
+      /**
+       * 
+       * when it's unclear whether it needs to be `ImplLw` or `ImplLHeavywW`
+       * 
+       */
       def mainRImplEither[R <: java.awt.Component ](newInstance : => R ) : MainR = mainRImplCircular {
 
          val instance = newInstance
@@ -441,6 +451,14 @@ with Aig1
          }
       }
 
+      /**
+       * 
+       * this is
+       * for by given expr returning a `MainRImpl[R ]`.
+       * the previously-mentioned alternatives
+       * does not expose enough interface to access the resulting `?{ def close(): Unit }`
+       * 
+       */
       def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRImpl[R ] ) : MainR = identity[XNewInstance[MainRSpawned ] ] (() => {
 
          val instance = newInstance
@@ -448,6 +466,11 @@ with Aig1
          instance
       })
 
+      /**
+       * 
+       * utility
+       * 
+       */
       def tryCloseAsIfCloseable[C <: java.awt.Component ](instance : C ) : Unit = {
          
          for (c <- Some(instance).collect({ case c : java.awt.Window => c }) ) {
@@ -466,15 +489,47 @@ AnyRef
 trait OmiAll[R] extends 
 AnyRef
 with ButtonFactory1[javax.swing.Action, R ]
+with XWithNjp[R ]
 {
 
    export abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
 
-   def newThumbnailsLayout() : R
+   def newThumbnailsLayout() : Njp[java.awt.LayoutManager]
 
    //
 
+   /**
+    * 
+    * render a "button" wrapping the given `Action`
+    * 
+    */
+   override
+   def renderButton(l: javax.swing.Action): R
+
 }
+
+trait XWithNjp[+R]
+{
+
+   import java.awt
+   import javax.swing
+
+   /**
+    * 
+    * a `JPanel` with one main content and four asides
+    * 
+    */
+   // def newFourSidebarHolyGrailLayout
+   def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
+
+   def newInlineSequencePanel() : Njp[awt.LayoutManager ]
+
+   def newThumbnailsLayout() : Njp[awt.LayoutManager ]
+
+   type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+      <: R
+
+} /* XWithNjp */
 
 private
 val _ @ _ = {
