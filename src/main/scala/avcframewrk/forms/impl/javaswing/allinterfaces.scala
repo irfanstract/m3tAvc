@@ -114,6 +114,7 @@ with Aig1
    given main :
    AnyRef
    with OmiAll[MainR]
+   with XWithNjp
    with {
 
       /* name imports */
@@ -156,6 +157,41 @@ with Aig1
          })
       }
 
+      override
+      // def newFourSidebarHolyGrailLayout
+      def newFourAsidesContentPanel() = {
+
+         newJPanel({
+
+            new awt.BorderLayout(gapSize, gapSize ) 
+         })
+      }
+
+      override
+      def newInlineSequencePanel() = {
+
+         newJPanel({
+
+            new awt.FlowLayout(awt.FlowLayout.LEADING ) 
+         })
+      }
+
+      override
+      final
+      def newThumbnailsLayout() = {
+
+         newJPanel({
+
+            new awt.GridLayout(0, 2)
+         })
+      }
+
+      private 
+      def gapSize = {
+
+         3
+      }
+
       export impl.{mainRImplEither as getCustomComponent1 }
 
       // def getJFrameCompByTitleAndContentPane1(title: String, contentPane: MainR) : MainR = mainRImplCircular {
@@ -183,10 +219,15 @@ with Aig1
 
       export allInterfacesGivens.spawnNewJFrame
 
-      def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): MainR & newJPanelImpl[SpecificLayoutMgr ] = {
+      def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): Njp[SpecificLayoutMgr] = {
 
          newJPanelImpl(layout = layout )
       }
+
+      override
+      opaque type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+         <: MainR & newJPanelImpl[SpecificLayoutMgr ]
+         =  MainR & newJPanelImpl[SpecificLayoutMgr ]
 
       object newJPanelImpl {
 
@@ -305,6 +346,23 @@ with Aig1
 
    }
 
+   trait XWithNjp
+   {
+
+      import java.awt
+      import javax.swing
+
+      // def newFourSidebarHolyGrailLayout
+      def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
+
+      def newInlineSequencePanel() : Njp[awt.LayoutManager ]
+
+      def newThumbnailsLayout() : Njp[awt.LayoutManager ]
+
+      type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+
+   }
+
    opaque type MainR
       <: AnyRef
       = XNewInstance[MainRSpawned ]
@@ -411,6 +469,8 @@ with ButtonFactory1[javax.swing.Action, R ]
 {
 
    export abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
+
+   def newThumbnailsLayout() : R
 
    //
 

@@ -70,7 +70,7 @@ extends AnyRef with java.io.Closeable
          })
       }
 
-      val c = xSwing.newJPanel(new awt.BorderLayout )
+      val c = xSwing.newFourAsidesContentPanel()
 
       c add xSwing.renderDynamicPoster(l)
 
