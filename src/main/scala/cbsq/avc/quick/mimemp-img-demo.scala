@@ -36,6 +36,11 @@ extends AnyRef with java.io.Closeable
    import java.awt
    import javax.swing
 
+   private 
+   val xSwing = {
+      summon[avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ]
+   }
+
    import concurrent.ExecutionContext.Implicits.global
 
    //
@@ -68,20 +73,22 @@ extends AnyRef with java.io.Closeable
    f setTitle "video frames"
    f setContentPane {
       
-      val c = new swing.JPanel(new awt.BorderLayout )
-
       val l = {
          identity[swing.AbstractAction ](_ => {
             System.err println("display/label clicked")
          })
       }
-      c add {
+
+      val c = xSwing.newJPanelImpl(new awt.BorderLayout )
+
+      c add (xSwing.getCustomComponent1 {
+         
          val lbl1 = new swing.JButton(l)
          lbl1.setUI({
             cbsq.avc.quick.javaswing.buttonIconFullSizeUi
          })
          lbl1
-      }
+      } )
 
       def runUpdateBtnAction() : Unit = {
 
@@ -112,13 +119,9 @@ extends AnyRef with java.io.Closeable
             }
       }
 
-      c add({
-         new swing.JButton({
-            updateBtnAction
-         })
-      }, awt.BorderLayout.PAGE_END )
+      c addOne(xSwing renderButton(updateBtnAction ) , awt.BorderLayout.PAGE_END )
       
-      c
+      xSwing.spawnContentPaneAndGetNative(c)
    }
    f setIconImage {
       import awt.image.*
