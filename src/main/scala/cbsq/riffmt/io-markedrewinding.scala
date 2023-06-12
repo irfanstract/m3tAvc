@@ -93,22 +93,6 @@ object impl
       >: (Range, cbsq.ByteBlob)
       <: (Range, cbsq.ByteBlob)
 
-   class ERdl(inp: java.io.InputStream) {
-      
-      val loadedSize = {
-         new java.util.concurrent.atomic.AtomicLong(0)
-      }
-
-      val payloadChunks = (
-         inp.asLazyChunksList()
-         .map[(Range, cbsq.ByteBlob)](<:<.refl)
-         .tapEach((e, b) => {
-            loadedSize set(e.`end` )
-         })
-      )
-
-   }
-
    extension (src : Seq[Byte]) {
 
       // @deprecated("experimental")
@@ -262,6 +246,22 @@ object IOMR1
 
       def rewindToPos(expectedPos: FileSize): Unit
       
+   }
+   
+   class ERdl(inp: java.io.InputStream) {
+      
+      val loadedSize = {
+         new java.util.concurrent.atomic.AtomicLong(0)
+      }
+
+      val payloadChunks = (
+         inp.asLazyChunksList()
+         .map[(Range, cbsq.ByteBlob)](<:<.refl)
+         .tapEach((e, b) => {
+            loadedSize set(e.`end` )
+         })
+      )
+
    }
    
    @deprecated
