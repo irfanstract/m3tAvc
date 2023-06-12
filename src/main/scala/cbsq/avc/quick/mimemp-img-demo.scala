@@ -36,9 +36,16 @@ extends AnyRef with java.io.Closeable
    import java.awt
    import javax.swing
 
+   private 
+   val xSwing = {
+      summon[avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ]
+   }
+
    import concurrent.ExecutionContext.Implicits.global
 
    //
+
+   import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
    import language.unsafeNulls
 
@@ -53,29 +60,26 @@ extends AnyRef with java.io.Closeable
    }
 
    private[startMimempImgDemo] 
-   val f = new swing.JFrame
-   f setDefaultCloseOperation swing.WindowConstants.DO_NOTHING_ON_CLOSE
-   f addWindowListener {
-      new awt.event.WindowAdapter {
-         import awt.event.WindowEvent
-         override def windowClosing(e: WindowEvent | Null): Unit = {
-            runCloseButtonAction()
-         }
-      }
-   }
-   f setTitle "video frames"
-   f setContentPane {
+   val fE = {
+   ;
+   new xSwing.spawnNewJFrame(title = "video frames", contentPane = {
       
-      val c = new swing.JPanel(new awt.BorderLayout )
-
       val l = {
-         val lbl1 = new swing.JLabel
+         identity[swing.AbstractAction ](_ => {
+            System.err println("display/label clicked")
+         })
+      }
+
+      val c = xSwing.newJPanelImpl(new awt.BorderLayout )
+
+      c add (xSwing.getCustomComponent1 {
+         
+         val lbl1 = new swing.JButton(l)
          lbl1.setUI({
-            cbsq.avc.quick.javaswing.labelIconFullSizeUi
+            cbsq.avc.quick.javaswing.buttonIconFullSizeUi
          })
          lbl1
-      }
-      c add l
+      } )
 
       def runUpdateBtnAction() : Unit = {
 
@@ -106,23 +110,16 @@ extends AnyRef with java.io.Closeable
             }
       }
 
-      c add({
-         new swing.JButton({
-            updateBtnAction
-         })
-      }, awt.BorderLayout.PAGE_END )
+      c addOne(xSwing renderButton(updateBtnAction ) , awt.BorderLayout.PAGE_END )
       
-      c
+      // c
+      ???
+   } )
    }
-   f setIconImage {
-      import awt.image.*
-      new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB )
-   }
-   awt.EventQueue.invokeLater(() => { f.setSize(800, 400 ) ; f.setVisible(true) } )
 
    protected
    def disposeAllWindows() : Unit = {
-      f.dispose()
+      fE.close()
    }
 
    protected
