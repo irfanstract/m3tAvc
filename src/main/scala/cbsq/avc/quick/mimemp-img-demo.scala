@@ -40,6 +40,8 @@ extends AnyRef with java.io.Closeable
 
    //
 
+   import avcframewrk.forms.javaswing.actionObjUtil.setIcon
+
    import language.unsafeNulls
 
    protected 
@@ -69,13 +71,17 @@ extends AnyRef with java.io.Closeable
       val c = new swing.JPanel(new awt.BorderLayout )
 
       val l = {
-         val lbl1 = new swing.JLabel
+         identity[swing.AbstractAction ](_ => {
+            System.err println("display/label clicked")
+         })
+      }
+      c add {
+         val lbl1 = new swing.JButton(l)
          lbl1.setUI({
-            cbsq.avc.quick.javaswing.labelIconFullSizeUi
+            cbsq.avc.quick.javaswing.buttonIconFullSizeUi
          })
          lbl1
       }
-      c add l
 
       def runUpdateBtnAction() : Unit = {
 
