@@ -32,16 +32,148 @@ def labelIconFullSizeUi: javax.swing.plaf.LabelUI = {
 
             import language.unsafeNulls
 
-            new swing.plaf.LabelUI {
+            val impl = {
+               new %%!()
+               {
+                  ;
+                  
+                  type SupportedComponent
+                     >: swing.JLabel
+                     <: swing.JLabel
+
+                  override
+                  def getIconFromSupportedComponent(c: SupportedComponent ) = {
+                     
+                     val icon = {
+                        Option(c.getIcon() )
+                        .orNull
+                     }
+
+                     icon
+                  }
+
+               }
+            }
+
+            new
+            swing.plaf.LabelUI
+            with impl.Main
+            {
+               
+            }
+            
+}
+
+/**
+ * 
+ * Swing's built-in `LabelUI`
+ * did not make the rendering full-size .
+ * this alternative `LabelUI`
+ * exclusively deals with `ImageIcon`s and
+ * make its `paint` method directly invoke `drawImage` with its `getImage()`
+ * 
+ */
+def buttonIconFullSizeUi: javax.swing.plaf.ButtonUI = {
+   
+            import java.awt
+            import javax.swing
+
+            import language.unsafeNulls
+
+            val impl = {
+               new %%!()
+               {
+                  ;
+                  
+                  type SupportedComponent
+                     >: swing.AbstractButton
+                     <: swing.AbstractButton
+
+                  override
+                  def getIconFromSupportedComponent(c: SupportedComponent ) = {
+                     
+                     /**
+                      * 
+                      * the right code/expr
+                      * would be `getAction() match { case v => v.getLargeIcon() || v.getSmallIcon() } ` .
+                      * however,
+                      * `setAction(a: swing.Action )` appears to internally invoke `setIcon(a.getIcon() )`
+                      * 
+                      * will be `null` IOIF there's none.
+                      * 
+                      */
+                     c.getIcon()
+                  }
+
+               }
+            }
+
+            new
+            swing.plaf.ButtonUI
+            with impl.Main
+            {
+
+               if false then {
+                  
+                     paint( ???, ??? )
+
+               }
+
+            }
+            
+}
+
+// 
+private
+abstract
+class %%!
+{
+            ;
+            
+            import java.awt
+            import javax.swing
+
+            import language.unsafeNulls
+
+            type SupportedComponent
+               <: swing.JComponent
+
+            @throws[ClassCastException]
+            @throws[MatchException]
+            @throws[MatchError]
+            def getIconFromSupportedComponent(c: SupportedComponent ): swing.Icon | Null
+
+            trait Main
+            extends
+            javax.swing.plaf.ComponentUI
+            {
+               ;
 
                import awt.Graphics
 
+               /**
+                * 
+                * implements `ComponentUI.instance.paint(....)`. 
+                * expects the Icon, if any, to be `ImageIcon`, and then
+                * make `draw*Image` call on `g`;
+                * render black-or-fallback screen for any other non-null Icon.
+                * nothing to render if `null`.
+                * 
+                * to ensure precedence over the overridden method,
+                * needs to make the return-type something "more specific than Unit" .
+                * the only instance of Unit is `()`, but
+                * it's possible to use an opaque type declared `? <: Unit`
+                * 
+                */
                override
-               def paint(g: Graphics, c: swing.JComponent) = {
+               // final
+               def paint(g: Graphics, c: swing.JComponent): EpUnit = identity[Unit] {
 
                   val icon = {
-                     Option(c.asInstanceOf[swing.JLabel].getIcon() )
-                     .orNull
+                     getIconFromSupportedComponent {
+                        (c: swing.JComponent)
+                        .asInstanceOf[SupportedComponent ]
+                     }
                   }
 
                   for (g <- Some(g).collect({ case g : awt.Graphics2D => g }) ) {
@@ -85,6 +217,11 @@ def labelIconFullSizeUi: javax.swing.plaf.LabelUI = {
 
             }
             
+            protected
+            opaque type EpUnit
+               <: Unit
+               = Unit
+
 }
 
 
