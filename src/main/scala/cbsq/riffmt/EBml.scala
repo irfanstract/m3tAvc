@@ -65,21 +65,24 @@ def ebmlSchemalImplTest(): Unit =
          println((
             s1.readAndParse((
                IndexedSeq[Int](-1, -1, -1, -1, -1, -1, -1, -1).map(_.toByte)
-               .toNewFd()
+               .asBlob
+               .newGrossReader()
                .asMarkableStream()
             ))
          ))
          println((
             s1.readAndParse((
                IndexedSeq[Int](-1, -1, -1, -1, -1, -2, -1, -1).map(_.toByte)
-               .toNewFd()
+               .asBlob
+               .newGrossReader()
                .asMarkableStream()
             ))
          ))
          println((
             s1.readAndParse((
                IndexedSeq[Int](-1, -1, -1, -2, -1, -1, -1, -1).map(_.toByte)
-               .toNewFd()
+               .asBlob
+               .newGrossReader()
                .asMarkableStream()
             ))
          ))
@@ -88,7 +91,8 @@ def ebmlSchemalImplTest(): Unit =
          EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
          .readAndParse((
             IndexedSeq[Int](-1, -1, -1, -2, -1, -2, -1, -1).map(_.toByte)
-            .toNewFd()
+            .asBlob
+            .newGrossReader()
             .asMarkableStream()
          ))
       ))
@@ -96,7 +100,8 @@ def ebmlSchemalImplTest(): Unit =
          EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
          .readAndParse((
             IndexedSeq[Int](-1, -25, -1, -2, -1, -2, -1, -1).map(_.toByte)
-            .toNewFd()
+            .asBlob
+            .newGrossReader()
             .asMarkableStream()
          ))
       ))
@@ -112,7 +117,8 @@ def ebmlSchemalImplTest(): Unit =
             EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
             .readAndParse((
                IndexedSeq[Int](-1, -25, -1, -2, -1 ).map(_.toByte)
-               .toNewFd()
+               .asBlob
+               .newGrossReader()
                .asMarkableStream()
             ))
          ))
