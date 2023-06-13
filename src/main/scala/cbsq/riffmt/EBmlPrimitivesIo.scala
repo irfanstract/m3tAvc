@@ -128,7 +128,9 @@ object EBmlBigintsIoDefs {
 
             case (sbs, expectedValue) =>
                val r = (
-                  sbs.toNewFd()
+                  sbs
+                  .toBlob
+                  .newByteWiseReader()
                )
 
                val actualValue = (
@@ -153,7 +155,7 @@ object EBmlBigintsIoDefs {
          )
          .map(sbs => {
             try {
-               sbs.toNewFd()
+               sbs.toBlob.newByteWiseReader()
                .readEbmlInteger(unsigned = false, invalidateAllSameBitExamples = true)
                throw new PF
             } catch {
@@ -503,16 +505,16 @@ trait EBmlRawFramesReadingIoDefsSelfTest
    {
       Void.TYPE
       println((
-         (IndexedSeq[Int](0x40,0x3, 0x80 ).map(_.toByte) ).toNewFd()
+         (IndexedSeq[Int](0x40,0x3, 0x80 ).map(_.toByte) ).toBlob.newByteWiseReader()
          .readEbmlFrameOfPayloadRaw()
       ))
       println((
-         (IndexedSeq[Int](0x40,0x3, 0x82, 2, 3 ).map(_.toByte) ).toNewFd()
+         (IndexedSeq[Int](0x40,0x3, 0x82, 2, 3 ).map(_.toByte) ).toBlob.newByteWiseReader()
          .readEbmlFrameOfPayloadRaw()
       ))
       util.Try({
          println((
-            (IndexedSeq[Int](0x40,0x3, 0x82, 2 ).map(_.toByte) ).toNewFd()
+            (IndexedSeq[Int](0x40,0x3, 0x82, 2 ).map(_.toByte) ).toBlob.newByteWiseReader()
             .readEbmlFrameOfPayloadRaw()
          ))
       })
@@ -524,11 +526,11 @@ trait EBmlRawFramesReadingIoDefsSelfTest
             println(z) 
       }).get
       println((
-         (IndexedSeq[Int](0x80,0x82, 0x3, 2 ).map(_.toByte) ).toNewFd()
+         (IndexedSeq[Int](0x80,0x82, 0x3, 2 ).map(_.toByte) ).toBlob.newByteWiseReader()
          .readEbmlFrameOfPayloadRaw()
       ))
       println((
-         (IndexedSeq[Int](0x80,0x82, 0x3, 2, 3 ).map(_.toByte) ).toNewFd()
+         (IndexedSeq[Int](0x80,0x82, 0x3, 2, 3 ).map(_.toByte) ).toBlob.newByteWiseReader()
          .readEbmlFrameOfPayloadRaw()
       ))
    }
@@ -648,7 +650,7 @@ def ebmlIoImplTest(): Unit = {
       import EBmlPrimitivesIo.* 
       ({
          toEbmlBytesSc(-3)
-      } : IndexedSeq[Byte]).toNewFd().readEbmlInteger(unsigned = false, invalidateAllSameBitExamples = false)
+      } : IndexedSeq[Byte]).toBlob.newByteWiseReader().readEbmlInteger(unsigned = false, invalidateAllSameBitExamples = false)
    })
 }
 
