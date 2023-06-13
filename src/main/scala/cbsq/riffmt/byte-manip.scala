@@ -202,6 +202,40 @@ object byteManipImplicitsC {
    
    export CStdPrimitiveTypeMarshalling.{OctetReadingOp, OctetWritedownOp }
 
+   extension (r: java.io.DataInput | java.io.InputStream) {
+
+      def asDataInput() : java.io.DataInput = {
+
+         r match {
+
+            case r : (java.io.DataInput ) =>
+               r
+               
+            case r : java.io.InputStream =>
+               new java.io.DataInputStream(r)
+               
+         }
+      }
+      
+   }
+
+   extension (r: java.io.InputStream) {
+
+      def asDataInputStream() : java.io.InputStream & java.io.DataInput = {
+
+         r match {
+
+            case r : (java.io.DataInput ) =>
+               r
+               
+            case r : java.io.InputStream =>
+               new java.io.DataInputStream(r)
+               
+         }
+      }
+      
+   }
+
    extension (r: java.io.DataInput) {
 
       /**
