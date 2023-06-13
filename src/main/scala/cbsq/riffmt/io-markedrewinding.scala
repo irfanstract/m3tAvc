@@ -181,6 +181,24 @@ with IOMR1
    // @deprecated
    export IOMR1.MarkableInputStreamImpl
 
+   extension [Input <: java.io.InputStream ](r : Input ) {
+
+      @throws[java.io.EOFException]
+      def checkNotAtEof()(using Input <:< MarkableInputStreamImpl ) : Unit = {
+         
+            util.Using.resource((
+               newMarkResetTurn(r, 0x10 )
+               
+            ))(_ => (
+               
+               new java.io.DataInputStream(r)
+               .readInt()
+               
+            ) )
+      }
+
+   }
+
    extension (r: MarkableInputStreamImpl) {
       
    def isAtEof(

@@ -809,7 +809,7 @@ trait EBsd extends
                               getCurrentPosInBytes()
                            }
 
-                           if true then {
+                           if false then {
                            ;
                            
                            /**
@@ -1769,7 +1769,7 @@ trait EBsd extends
 
    }
 
-   export ebmsGenericUtils.checkNotAtEof
+   // export ebmsGenericUtils.checkNotAtEof
 
    export ebmsGenericUtils.utfEncodedAsUrl
    
@@ -2004,6 +2004,28 @@ object ebmsGenericUtils extends
          
       }
 
+      extension [CC[A] <: collection.IterableOps[A, CC, CC[A] ], E ](src: CC[E] ) {
+
+         def mapToTrials()(using CC[E] <:< (collection.View[?] | LazyList[?] ) ) = {
+
+            val ICC = src.iterableFactory
+            ICC.unfold[util.Try[E], LazyList[E] ](src.to(LazyList ) )(seq => {
+               util.Try({
+                  seq match {
+                     case v +: seqTail =>
+                        Some((util.Success(v) , seqTail))
+                     case Seq() =>
+                        None
+                  }
+               })
+               .fold(z => Some((util.Failure(z) , seq.drop(1) ) ) , identity _ )
+               .nn
+            })
+            match { case e => e : CC[util.Try[E] ] }
+         }
+
+      }
+
       extension (v: String) {
 
          // TODO
@@ -2054,20 +2076,13 @@ object ebmsGenericUtils extends
 
       import byteManipImplicits.MarkableInputStreamImpl
 
-      extension [Input <: java.io.InputStream ](r : Input ) {
+      export byteManipImplicits.checkNotAtEof
+
+      {
 
          @throws[java.io.EOFException]
-         def checkNotAtEof()(using Input <:< MarkableInputStreamImpl ) : Unit = {
+         def checkNotAtEof(): Unit = {
             
-               util.Using.resource((
-                  newMarkResetTurn(r, 0x10 )
-                  
-               ))(_ => (
-                  
-                  new java.io.DataInputStream(r)
-                  .readInt()
-                  
-               ) )
          }
 
       }
