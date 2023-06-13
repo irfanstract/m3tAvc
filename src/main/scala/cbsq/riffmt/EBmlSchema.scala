@@ -774,7 +774,30 @@ trait EBsd extends
                       * 
                       */
                      (new java.io.DataInputStream(r) )
-                     .readEbmlFrameOfPayloadRaw()
+                     .lazilyReadEbmlFrameOfPayloadRaw()
+                     // .readEbmlFrameOfPayloadRaw()
+                     match {
+
+                        case rbe =>
+                           
+                           // rbe.payloadLength
+
+                           val l = {
+                              identity[BigDecimal](rbe.payloadLength.inBytes )
+                              .toIntExact
+                           }
+
+                           // if true then {
+                           //    util.Using.resource({
+                           //       newMarkResetTurn(r : RnpSource, l )
+                           //    })(_ => {
+                           //       rbe.payload
+                           //    })
+                           // }
+
+                           rbe
+
+                     }
 
                   })
                   catch {
@@ -925,6 +948,10 @@ trait EBsd extends
                      efpr.typeInt
                   }
 
+                  if false then {
+                     appropriateSchemeDef
+                  }
+                  lazy
                   val appropriateSchemeDef = (
 
                      classPayloadsTable

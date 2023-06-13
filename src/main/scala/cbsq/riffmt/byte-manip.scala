@@ -298,14 +298,27 @@ object byteManipImplicitsC {
                   import language.unsafeNulls
                   
                   (r match {
+                  //
 
-                     case r : java.io.InputStream =>
-                        r readNBytes(supposedReadingLength )
-                        
-                     case r : java.io.DataInput =>
+                  /**
+                   * 
+                   * we
+                   * need the `DataInputStream`'s behaviour which `throw`s on premature EOF ;
+                   * ensure that EOF does not occur
+                   * 
+                   */
+                  case r0 =>
+                     
+                     val r = {
+                        r0.asDataInput()
+                     } : java.io.DataInput
+
+                     locally {
+                        ;
                         val buf = new Array[Byte](supposedReadingLength )
                         r readFully(buf )
                         buf
+                     }
 
                   })
                   match { case s => collection.immutable.ArraySeq.unsafeWrapArray(s) }

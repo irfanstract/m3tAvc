@@ -375,7 +375,7 @@ trait EBmlRawFramesReadingIoDefsImpl extends
                .asBlob
             catch {
                
-               case z : java.io.EOFException if false =>
+               case z : java.io.EOFException if true =>
                   throw (
                      new
                      java.io.IOException(s"malformed - <!$typeAsUtf (expectedLength)=$payloadLength> - EOF during 'payload'", z)
@@ -524,6 +524,8 @@ trait EBmlRawFramesReadingIoDefsSelfTest
             println(z) 
          case z : java.io.EOFException => 
             println(z) 
+         case z => 
+            throw new RuntimeException(z)
       }).get
       println((
          (IndexedSeq[Int](0x80,0x82, 0x3, 2 ).map(_.toByte) ).toBlob.newByteWiseReader()
