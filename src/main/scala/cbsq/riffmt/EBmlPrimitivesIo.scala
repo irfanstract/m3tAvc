@@ -56,8 +56,87 @@ object EBmlPrimitivesIo extends
 
 }
 
-trait EBmlPrimitivesMalformationException 
+// trait EBmlPrimitivesMalformationException 
+// extends java.io.IOException
+
+// type EBmlPrimitivesMalformationException = EBmlPrimitivesMalformationException.Main
+
+sealed trait EBmlPrimitivesMalformationException 
 extends java.io.IOException
+
+object EBmlPrimitivesMalformationException
+{
+
+   type Main = EBmlPrimitivesMalformationException
+
+   @deprecated("this trait was put in here as 'EBmlPrimitivesMalformationException' became sealed.")
+   trait %%! extends Main
+
+   sealed 
+   trait IDueToEofException extends Main
+   { this : (Throwable & Main) => }
+
+   /**
+    * 
+    * for EOF without any byte read yet ;
+    * unavoidable for lookahead-based parsers
+    * 
+    */
+   trait IDueToZeroByteEofException extends IDueToEofException
+   { this : (Throwable & Main) => }
+
+   /**
+    * 
+    * for EOF with at-least some byte(s) already read, while parsing the frame-header, ;
+    * callers shall ensure that the InputStream does not corrupt!!!
+    * 
+    */
+   trait IDueToHeaderialEofException extends IDueToEofException
+   { this : (Throwable & Main) => }
+
+   /**
+    * 
+    * for EOF with at-least some byte(s) already read, while parsing the payload, ;
+    * the case for abrupted writes
+    * 
+    */
+   trait IDueToPayloadEofException extends IDueToEofException
+   { this : (Throwable & Main) => }
+
+   trait IOfSchemeLookupFailure extends Main
+   { this : (Throwable & Main) => }
+
+   extension (cause: java.io.IOException & Main ) {
+
+      @deprecated
+      def rewrapped1(msg: => String) : java.io.IOException & Main = {
+         
+                                 ;
+
+                                 val z = cause
+                                 
+                                 z match {
+
+                                    case z : EBmlPrimitivesMalformationException.IDueToZeroByteEofException =>
+                                       new java.io.IOException(msg, z) with EBmlPrimitivesMalformationException.IDueToZeroByteEofException
+                                    case z : EBmlPrimitivesMalformationException.IDueToHeaderialEofException =>
+                                       new java.io.IOException(msg, z) with EBmlPrimitivesMalformationException.IDueToHeaderialEofException
+                                    case z : EBmlPrimitivesMalformationException.IDueToPayloadEofException =>
+                                       new java.io.IOException(msg, z) with EBmlPrimitivesMalformationException.IDueToPayloadEofException
+                                       
+                                    case z : EBmlPrimitivesMalformationException.IOfSchemeLookupFailure =>
+                                       new java.io.IOException(msg, z) with EBmlPrimitivesMalformationException.IOfSchemeLookupFailure
+                                       
+                                    case _ =>
+                                       new java.io.IOException(msg, z) with EBmlPrimitivesMalformationException.%%!
+                                       
+                                 }
+                                 
+      }
+
+   }
+
+}
 
 import deprecatedInheritance as EBmlPrimitivesDefsDeprecatedInheritance
 
@@ -319,18 +398,41 @@ trait EBmlRawFramesReadingIoDefsImpl extends
       }
       
       val payloadLength = {
+
+         ({
+         ;
          try (
             r.asDataInput().readEbmlInteger(unsigned = true, invalidateAllSameBitExamples = false)
-            .toLong.B
          )
          catch {
             case z : java.io.EOFException =>
                throw (
                   new
                   java.io.IOException(s"malformed - <$typeAsUtf  > - EOF during 'payloadLength'" /* discarding the cause */ )
-                  with EBmlPrimitivesMalformationException
+                  with EBmlPrimitivesMalformationException.IDueToHeaderialEofException
                )
          }
+         })
+         
+         match {
+         case specifiedValue =>
+            ;
+
+            try {
+               specifiedValue
+               .toLong.B
+            }
+            catch {
+               case z : java.lang.IllegalArgumentException =>
+                  throw (
+                     new
+                     java.io.IOException(s"malformed - <$typeAsUtf  > - ($specifiedValue).B not a valid FileSize ; check that the stream not corrupted !! -- $z ", z )
+                     with EBmlPrimitivesMalformationException.%%!
+                  )
+            }
+            
+         }
+
       }
       
       /* technically a `def`, but treated as stable-path */
@@ -379,7 +481,7 @@ trait EBmlRawFramesReadingIoDefsImpl extends
                   throw (
                      new
                      java.io.IOException(s"malformed - <!$typeAsUtf (expectedLength)=$payloadLength> - EOF during 'payload'", z)
-                     with EBmlPrimitivesMalformationException
+                     with EBmlPrimitivesMalformationException.IDueToPayloadEofException
                   )
 
                case z : java.io.EOFException =>
@@ -395,7 +497,7 @@ trait EBmlRawFramesReadingIoDefsImpl extends
                   throw (
                      new
                      java.io.IOException(s"malformed - 'payload' had less size, $actualLength vs $expectedLength " )
-                     with EBmlPrimitivesMalformationException
+                     with EBmlPrimitivesMalformationException.IDueToPayloadEofException
                   )
                }
                e

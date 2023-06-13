@@ -88,30 +88,23 @@ def demuuxMatroskaFile(r : java.io.InputStream )(
                      .withFullSchemeInfo( sE)
 
                      .withCustomErrorHandler({
+                     //
+
+                     type XEvt >: Any <: Any
+
+                     val XTolerableExc = identity[PartialFunction[XEvt, Unit ] ] {
                         
-                        case z : (java.io.IOException) if {
+                        case z : (EBmlPrimitivesMalformationException.IDueToPayloadEofException) =>
 
-                           {
-                              def get(): Boolean = {
+                     }
 
-                                 import language.unsafeNulls
-
-                                 if z.isInstanceOf[java.io.EOFException] then {
-                                    return true
-                                 }
-                                 
-                                 if z.getMessage() contains "no scheme for" then {
-                                    return false
-                                 }
-                                 
-                                 return true
-
-                              }
-                              get()
-                           }
-                        } =>
+                     identity[PartialFunction[XEvt, Seq[Any] ] ] {
+                        
+                        case z @ XTolerableExc(_) =>
                            Seq()
 
+                     }
+                     
                      })
 
                   } )

@@ -381,6 +381,7 @@ object IOMR1
                {
                   payloadByteValues
                   .drop(currentPos.inBytes.toInt )
+                  .take(len ).toArray[Byte] // optional LOC
                   .copyToArray(buf, bufOff, len)
                } match {
                   case intActually =>

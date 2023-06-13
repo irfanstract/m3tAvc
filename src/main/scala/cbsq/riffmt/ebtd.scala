@@ -95,7 +95,7 @@ object `% % & @` {
 
                new
                java.io.IOException(s"[${parent.path }]: $msg" )
-               with EBmlPrimitivesMalformationException
+               with EBmlPrimitivesMalformationException.%%!
                {
 
                   /* only show up in debuggers */

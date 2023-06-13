@@ -773,7 +773,15 @@ trait EBsd extends
                       * get the raw/as-is payload
                       * 
                       */
-                     (new java.io.DataInputStream(r) )
+                     locally({
+                     ;
+                     def getCurrentPosInBytes() = {
+                        r.getCurrentPos().inBytes
+                        .toInt
+                     }
+                     val r1 = r
+                     (new java.io.DataInputStream(r1) )
+                     // .lazilyReadEbmlFrameOfPayloadRaw()
                      .lazilyReadEbmlFrameOfPayloadRaw()
                      // .readEbmlFrameOfPayloadRaw()
                      match {
@@ -786,7 +794,7 @@ trait EBsd extends
                               identity[BigDecimal](rbe.payloadLength.inBytes )
                               .toIntExact
                            }
-
+                           
                            // if true then {
                            //    util.Using.resource({
                            //       newMarkResetTurn(r : RnpSource, l )
@@ -794,10 +802,46 @@ trait EBsd extends
                            //       rbe.payload
                            //    })
                            // }
+                           
+                           locally { rbe.payloadLength }
+                           
+                           val prePayloadReadingPos = {
+                              getCurrentPosInBytes()
+                           }
+
+                           if true then {
+                           ;
+                           
+                           /**
+                            * 
+                            * ensure evaluated
+                            * 
+                            */
+                           locally { rbe.payload }
+
+                           val finalPos = {
+                              getCurrentPosInBytes()
+                           }
+
+                           /**
+                            * 
+                            * if it took away more bytes than necessary,
+                            * this would `throw` `IOException : resetting to invalid frame`
+                            * 
+                            */
+                           locally {
+                              if prePayloadReadingPos + l == finalPos then {}
+                              else {
+                                 throw new java.io.IOException(s"corruption. (pprp: $prePayloadReadingPos ; pl: $l ; finalPos: $finalPos ) ")
+                              }
+                           }
+
+                           }
 
                            rbe
 
                      }
+                     })
 
                   })
                   catch {
@@ -821,7 +865,7 @@ trait EBsd extends
 
                      case z : ( EBmlPrimitivesMalformationException) =>
 
-                        throw (
+                        val msg = (
                            summon[CodeSchemeOps.TraversalDiagnostique]
 
                            .newLexerException(
@@ -834,7 +878,11 @@ trait EBsd extends
 
                            )
 
+                           .getMessage().nn
+
                         )
+
+                        throw z.rewrapped1(msg)
                         
                      case z : (java.io.IOException ) =>
                         
@@ -956,11 +1004,20 @@ trait EBsd extends
 
                      classPayloadsTable
                      .applyOrElse(classIntName : BigInt, classIntName => {
-                        throw (
+                        val oe = (
                            summon[CodeSchemeOps.TraversalDiagnostique]
+                           // .newLexerException(msg = (
+                           //    s"no scheme for cls ${classIntName.ebmlClassNameFmatted } "
+                           // ))
                            .newLexerException(msg = (
-                              s"no scheme for cls ${classIntName.ebmlClassNameFmatted } "
+                              s"no scheme for cls ${classIntName.ebmlClassNameFmatted } . (<${classIntName.ebmlClassNameFmatted } (length)=${efpr.payloadLength } >) "
                            ))
+                        )
+                        throw (
+                           new
+                           java.io.IOException(oe.getMessage().nn )
+                           with EBmlPrimitivesMalformationException.%%!
+                           with FramePayloadScheme.trvdFramesIoExcs.IOfSchemeLookupFailure
                         )
                      } )
                      
@@ -980,6 +1037,10 @@ trait EBsd extends
 
                      }
                   )
+
+                  if true then {
+                     efpr.payload
+                  }
 
                   val childrenAsLazyList = {
                      
@@ -1089,8 +1150,11 @@ trait EBsd extends
                      } catch {
 
                         case z : Exception =>
+                           if false then {
+                           ;
                            sys.process.stderr.println(s"failed parsing ${efpr.toString() }")
                            sys.process.stderr.println(s"failing with ($z) ; payload-length: ${efpr.payloadLength } ; parsed children LL: $cp")
+                           }
                            throw z
 
                      }
@@ -1173,7 +1237,9 @@ trait EBsd extends
                   ) : FramePayloadScheme
 
                   var c : Int = 0
-                  def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = (
+                  val synch = new AnyRef
+                  import synch.{synchronized => synchronizedIfNecessary }
+                  def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = synchronizedIfNecessary (
                         ({
                            scheme
                            .readAndParseImpl(r )
@@ -1202,6 +1268,57 @@ trait EBsd extends
                            None
                         }
                         else { 
+                           def forThrownEofException(z: java.io.EOFException ) = {
+                              
+                                 // sys.process.stderr.println(z)
+                                 // None
+                                 
+                                 java.lang.ref.Reference.reachabilityFence(BigInt )
+                                 throw (
+                                    summon[CodeSchemeOps.TraversalDiagnostique]
+                                    .newLexerException(msg = s"encountering EOF during (rather than right-before) parsing of a child. (collected: ${childrenLl })" , r = r )
+                                 )
+
+                           }
+                           def forThrownChildMalformednessException(z: java.io.IOException & EBmlPrimitivesMalformationException ) = {
+                              
+                                 import language.unsafeNulls
+
+                                 // sys.process.stderr.println(z)
+                                 // None
+
+                                 val presentlyIndex = c
+
+                                 val priorChildContent = {
+                                    // TODO
+                                    childrenLl
+                                    .applyOrElse(presentlyIndex + -1, _ => null )
+                                 }
+                                 
+                                 val priorChildToString = {
+                                    priorChildContent
+                                    .tryConvertToString()
+                                 }
+                                 
+                                 java.lang.ref.Reference.reachabilityFence(BigInt )
+                                 val msg = (
+                                    summon[CodeSchemeOps.TraversalDiagnostique]
+                                    .newLexerException(msg = s"encountered EBmlPrimitivesMalformationException during child #$presentlyIndex -- (prior child: $priorChildToString ) -- $z " , r = r )
+                                    .getMessage().nn
+
+                                 )
+                                 z match {
+
+                                    case z : EBmlPrimitivesMalformationException.IDueToZeroByteEofException =>
+                                       /** very normal, meaning that we're supposed to stop and return */
+                                       None
+                                       
+                                    case _ =>
+                                       throw z.rewrapped1(msg)
+
+                                 }
+                              
+                           }
                            try 
                               val i = c
 
@@ -1227,16 +1344,13 @@ trait EBsd extends
                                  None
 
                               case z : java.io.EOFException =>
-
-                                 // sys.process.stderr.println(z)
-                                 // None
                                  
-                                 java.lang.ref.Reference.reachabilityFence(BigInt )
-                                 throw (
-                                    summon[CodeSchemeOps.TraversalDiagnostique]
-                                    .newLexerException(msg = s"encountering EOF during (rather than right-before) parsing of a child. (collected: ${childrenLl })" , r = r )
-                                 )
+                                 forThrownEofException(z)
 
+                              case z : EBmlPrimitivesMalformationException =>
+                                 
+                                 forThrownChildMalformednessException(z)
+ 
                            }
                         }
                      })
@@ -1398,14 +1512,33 @@ trait EBsd extends
          )
          
          def newFirstPlaceEofException(using CodeSchemeOps.TraversalDiagnostique)(z: java.io.EOFException, r: java.io.Closeable) = {
-            (
+            
+            import language.unsafeNulls
+            
+            val msg = (
                summon[CodeSchemeOps.TraversalDiagnostique]
                .newLexerException(msg = (
                   s"EOF in the first place - wanted to pull unprocessed EBML frame."
                   + " " + z.getMessage()
                ), r = r )
+               .getMessage()
+            )
+
+            (
+               new
+               java.io.IOException(msg, z)
+               with EBmlPrimitivesMalformationException.IDueToZeroByteEofException
+               with EBmlPrimitivesMalformationException.%%!
             )
          }
+
+         // type M = ({ val main1 : EBsd ; type Main <: main1.FramePayloadScheme.trvdFramesIoExcs.IOfSchemeLookupFailure })#Main
+
+         // summon[IOfSchemeLookupFailure <:< M ]
+
+         export EBmlPrimitivesMalformationException.IDueToEofException
+
+         export EBmlPrimitivesMalformationException.IOfSchemeLookupFailure
 
       }
    
@@ -1629,7 +1762,7 @@ trait EBsd extends
                   })
                }
                // TODO
-               // throw new java.io.IOException(s"none match. ${s }") with EBmlPrimitivesMalformationException
+               // throw new java.io.IOException(s"none match. ${s }") with EBmlPrimitivesMalformationException.%%!
                throw summon[CodeSchemeOps.TraversalDiagnostique].newLexerException(msg = s"none match. ${s }")
             })
       }
@@ -1641,6 +1774,23 @@ trait EBsd extends
    export ebmsGenericUtils.utfEncodedAsUrl
    
    export ebmsGenericUtils.encodedAs
+
+   extension [C](priorChildContent: C) {
+
+      def tryConvertToString(): String = {
+         
+         import language.unsafeNulls /* for this `toString` impl */
+
+         {
+            
+                                    util.Try({ s"$priorChildContent" })
+                                    .recover(z => s"[cannot stringify: $z ]" )
+                                    .get
+                                    
+         }
+      }
+      
+   } /* trimToJustFiveHundred */
 
    extension (v: String) {
 
