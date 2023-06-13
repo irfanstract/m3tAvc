@@ -206,7 +206,7 @@ trait EBmlRawFramesReadingIoDefs extends
 
    }
 
-   extension (r: java.io.DataInput) {
+   extension (r: java.io.InputStream | java.io.DataInput) {
 
       /**
        * 
@@ -279,7 +279,7 @@ trait EBmlRawFramesReadingIoDefsImpl extends
     */
    // protected 
    private[riffmt]
-   class tryReadEbmlFrameImpl(r: java.io.DataInput) 
+   class tryReadEbmlFrameImpl(r: java.io.InputStream | java.io.DataInput) 
    extends 
    AnyRef
    with Rbeiop
@@ -295,7 +295,7 @@ trait EBmlRawFramesReadingIoDefsImpl extends
           */
          ({
             try {
-               r.readEbmlIdInteger(invalidateAllSameBitExamples = false)
+               r.asDataInput().readEbmlIdInteger(invalidateAllSameBitExamples = false)
             } catch {
                case z : java.io.EOFException =>
                   /* we haven't got anything yet */
@@ -320,7 +320,7 @@ trait EBmlRawFramesReadingIoDefsImpl extends
       
       val payloadLength = {
          try (
-            r.readEbmlInteger(unsigned = true, invalidateAllSameBitExamples = false)
+            r.asDataInput().readEbmlInteger(unsigned = true, invalidateAllSameBitExamples = false)
             .toLong.B
          )
          catch {
@@ -413,7 +413,7 @@ trait EBmlRawFramesReadingIoDefsImpl extends
             import cbsq.ByteBlob
             import ByteBlob.boxingImplicits.*
             import language.unsafeNulls
-            r.readNBytesSc((payloadLength.inBytes : BigDecimal).toIntExact )
+            r.readNBytesEbmSc((payloadLength.inBytes : BigDecimal).toIntExact )
             .asBlob
             .newGrossReader()
          }
@@ -440,7 +440,7 @@ trait EBmlRawFramesReadingIoDefsImpl extends
     * 
     */
    // protected 
-   class readEbmlFrameImpl(r: java.io.DataInput) 
+   class readEbmlFrameImpl(r: java.io.InputStream | java.io.DataInput) 
    extends 
    AnyRef
    with Rbeiop
