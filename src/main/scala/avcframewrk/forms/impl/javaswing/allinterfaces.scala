@@ -68,8 +68,34 @@ with Aig1
    with OmiAll[MainR]
    with XWithNjp[MainR]
    with ^&%%^
+   with XJPanelsImpl
    with ComponentSpwReExports
    with {
+
+      /* name imports */
+
+      import java.awt
+      import javax.swing
+
+      import avcframewrk.forms.javaswing.actionObjUtil.setIcon
+
+      /* exports */
+
+   }
+
+   private[javaswing] 
+   trait XJPanelsImpl extends
+   AnyRef
+   with XWithNjp[MainR]
+   {
+      this : (
+         AnyRef
+         with OmiAll[MainR]
+         with XWithNjp[MainR]
+         with ^&%%^
+         with ComponentSpwReExports
+         //
+      ) =>
 
       /* name imports */
 
