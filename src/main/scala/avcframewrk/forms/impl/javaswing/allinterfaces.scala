@@ -353,7 +353,13 @@ with Aig1
           * DO NOT USE!!!
           * 
           */
-         protected final lazy val etp : Etp[? <: SpecificLayoutMgr ] = ???
+         protected
+         final
+         lazy
+         val etp : Etp[? <: SpecificLayoutMgr ] = {
+            object etpImpl extends Etp[? <: SpecificLayoutMgr ]
+            etpImpl
+         }
          
          /**
           * 
