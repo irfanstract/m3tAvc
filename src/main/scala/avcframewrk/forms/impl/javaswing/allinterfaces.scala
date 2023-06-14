@@ -17,7 +17,7 @@ import abstractActionFactory.{XLabel, XF}
 
 object allInterfacesGivens extends 
 AnyRef
-with Aig1
+with Aig1More
 {
 
    import avcframewrk.forms.javaswing.util.enClosure
@@ -94,6 +94,26 @@ with Aig1
       export allInterfacesGivens.spawnNewJFrame
 
    } /* XWithCDoSpawnNewJFrame */
+
+}
+
+protected 
+// sealed
+trait Aig1More extends 
+AnyRef
+with Aig1
+{
+
+   import avcframewrk.forms.javaswing.util.enClosure
+
+   import impl.*
+   
+   /* givens and UnsafeNulls */
+
+   import concurrent.ExecutionContext.Implicits.global
+   import language.unsafeNulls
+
+   /* main exports */
 
    private[javaswing] 
    trait XJPanelsImpl extends
