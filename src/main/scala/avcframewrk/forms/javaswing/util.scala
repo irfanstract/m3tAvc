@@ -42,6 +42,57 @@ extension (s: java.awt.Shape) {
 
 
 
+object swingTextDocUtils
+{
+
+   import javax.swing
+   
+   import language.unsafeNulls
+   
+   extension (doc: swing.text.Document) {
+
+      /**
+       * 
+       * treat `doc` as *plain text doc* and
+       * set the full content to given plain text 
+       * 
+       */
+      def setText1(newValue: String): Unit = {
+         
+         new swing.JTextArea(doc)
+         .setText(newValue)
+         
+      }
+
+   }
+
+   extension (doc: swing.text.Document) {
+
+      // TODO
+      private
+      def setDocumentCodeTo(newValue: String): Unit = {
+         
+         val edp = new swing.JEditorPane()
+         edp setDocument doc
+
+         edp setText(newValue )
+
+         /**
+          * ensure GC
+          */
+         edp setDocument null
+         
+      }
+
+   }
+
+}
+
+
+
+
+
+
 
 
 
