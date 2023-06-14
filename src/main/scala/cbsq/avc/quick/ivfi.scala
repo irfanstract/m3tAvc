@@ -49,7 +49,7 @@ extends AnyRef with java.io.Closeable
 
       val endedNessState = {
 
-         new swing.JCheckBox("selected", false)
+         xSwing newCheckBoxState(initiallySelected = false )
 
       }
 
@@ -81,9 +81,9 @@ extends AnyRef with java.io.Closeable
 
       val endedNessLabel = {
 
-         val e = new swing.text.PlainDocument
+         val e = xSwing.newPlainTextDocument()
          endedNessState addChangeListener (_ => {
-            new swing.JTextArea(e).setText({ if endedNessState.isSelected() then "end of file" else "" })
+            e setText1 { if endedNessState.isSelected() then "end of file" else "" }
          })
          e
 
@@ -91,7 +91,7 @@ extends AnyRef with java.io.Closeable
 
       val label1 = {
 
-         new swing.text.PlainDocument
+         xSwing.newPlainTextDocument()
 
       }
 
@@ -131,14 +131,14 @@ extends AnyRef with java.io.Closeable
       clearInfo()
 
       def clearInfo() : Unit = {
-         new swing.JTextArea(label1).setText("(no frame info)")
+         label1 setText1 "(no frame info)"
       }
       
       // reinitWithCurrentlyInfo
       def refresh() : Unit = {
          clearInfo()
          logger enstage(s"$src ")
-         new swing.JTextArea(label1).setText(s"frame T : ${src.currentFrameTRange } " )
+         label1 setText1 { s"frame T : ${src.currentFrameTRange } " }
       }
       
       def disposeAllWindows() : Unit = {
