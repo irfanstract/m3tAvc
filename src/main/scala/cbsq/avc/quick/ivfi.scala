@@ -13,6 +13,9 @@ import jc.atomic
 import java.awt
 import javax.swing
 
+import avcframewrk.forms.javaswing.swingTextDocUtils
+import swingTextDocUtils.setText1
+
 
 
 
