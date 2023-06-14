@@ -155,6 +155,19 @@ with Aig1
 
       import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
+      override
+      def newCheckBoxState(
+         //
+
+         initiallySelected : Boolean ,
+
+      ) : javax.swing.ButtonModel = {
+
+         val jcb = new swing.JCheckBox
+         jcb setSelected initiallySelected
+         jcb.getModel()
+      }
+
       /* exports */
 
       def renderButton(l: swing.Action) = mainRImplLw {
@@ -524,6 +537,13 @@ with XWithNjp[R ]
 {
 
    export abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
+
+   def newCheckBoxState(
+      //
+
+      initiallySelected : Boolean ,
+
+   ) : javax.swing.ButtonModel
 
    def newThumbnailsLayout() : Njp[java.awt.LayoutManager]
 
