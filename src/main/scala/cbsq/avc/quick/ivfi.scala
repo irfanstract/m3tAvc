@@ -27,6 +27,7 @@ class openInteractiveFrameIterativeUiImpl(
 )
 (using 
    logger : cbsq.avc.PhrStagedLogging.ByDName["cbsq.avc.quick.openInteractiveFrameIterativeUiImpl$.main"] ,
+   xSwing : avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ,
 )
 extends AnyRef with java.io.Closeable
 {

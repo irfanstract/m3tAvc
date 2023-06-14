@@ -23,7 +23,17 @@ def runMimempImgDemo() : Unit = {
 
 }
 
-class startMimempImgDemo()
+class startMimempImgDemo(
+   // args
+
+)
+(using 
+   // givens
+
+   private
+   val xSwing : avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ,
+
+)
 extends AnyRef with java.io.Closeable
 {
 
@@ -35,11 +45,6 @@ extends AnyRef with java.io.Closeable
 
    import java.awt
    import javax.swing
-
-   private 
-   val xSwing = {
-      summon[avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ]
-   }
 
    import concurrent.ExecutionContext.Implicits.global
 
