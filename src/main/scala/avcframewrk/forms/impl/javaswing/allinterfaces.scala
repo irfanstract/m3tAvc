@@ -251,10 +251,6 @@ with Aig1
          
       }
       
-      extension [C <: MainRSpawned](c : C ) @deprecated def spawnedNativeComponent = {
-         spw.getSpawnedNativeComponent(c )
-      }
-
    }
 
    sealed
@@ -370,6 +366,10 @@ AnyRef
       def spawnContentPaneAndGetNative[C <: MainR](c : C ) = {
          spawnAndGetNative(c )
          match { case c: java.awt.Container => c }
+      }
+
+      extension [C <: MainRSpawned](c : C ) @deprecated def spawnedNativeComponent = {
+         spw.getSpawnedNativeComponent(c )
       }
 
    }
