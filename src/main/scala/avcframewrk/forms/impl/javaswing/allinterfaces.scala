@@ -240,6 +240,7 @@ AnyRef
       def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): Njp[SpecificLayoutMgr] = {
 
          newJPanelImpl(layout = layout )
+         match { case c => fromXNewInstance(c) }
       }
 
       override
@@ -290,6 +291,7 @@ AnyRef
                .apply(p )
                p
             })
+            .toXNewInstance
          }
 
          /**
