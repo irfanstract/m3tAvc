@@ -70,6 +70,7 @@ with Aig1
    with ^&%%^
    with XJPanelsImpl
    with ComponentSpwReExports
+   with XWithCDoSpawnNewJFrame
    with {
 
       /* name imports */
@@ -82,6 +83,17 @@ with Aig1
       /* exports */
 
    }
+
+   private[javaswing] 
+   trait XWithCDoSpawnNewJFrame extends
+   AnyRef
+   {
+
+      //
+      
+      export allInterfacesGivens.spawnNewJFrame
+
+   } /* XWithCDoSpawnNewJFrame */
 
    private[javaswing] 
    trait XJPanelsImpl extends
@@ -343,8 +355,6 @@ with Aig1
       }
 
       export impl.{mainRImplEither as getCustomComponent1 }
-
-      export allInterfacesGivens.spawnNewJFrame
 
    } /* ^&%%^ */
 
