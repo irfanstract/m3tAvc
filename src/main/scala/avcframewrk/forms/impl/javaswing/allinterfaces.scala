@@ -17,7 +17,7 @@ import abstractActionFactory.{XLabel, XF}
 
 object allInterfacesGivens extends 
 AnyRef
-with Aig1
+// with Aig1
 // {
 // 
 //    import avcframewrk.forms.javaswing.util.enClosure
@@ -532,9 +532,6 @@ with Aig1
    }
 
 }
-
-trait Aig1 extends 
-AnyRef
 
 trait OmiAll[R] extends 
 AnyRef
