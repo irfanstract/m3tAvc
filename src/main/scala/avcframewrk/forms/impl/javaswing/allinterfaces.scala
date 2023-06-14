@@ -115,11 +115,6 @@ with Aig1
          3
       }
 
-      // def getJFrameCompByTitleAndContentPane1(title: String, contentPane: MainR) : MainR = mainRImplCircular {
-      //    //
-      //    ???
-      // }
-
       /**
        * 
        * new `JPanel`
