@@ -59,7 +59,16 @@ AnyRef
    // abstract 
    open class spawnNewJFrame(title: String, contentPane: MainR )
    extends
-   AnyRef
+   // AnyRef
+   ImplSpawnNewJFrame(
+      //
+
+      title = title ,
+      newContentPane = () => { main.spawnContentPaneAndGetNative(contentPane ) } ,
+      
+      iconImage = defaultFrameIconImg ,
+
+   )
    with java.io.Closeable
    {
       
@@ -68,61 +77,6 @@ AnyRef
 
       import main.spawnContentPaneAndGetNative
 
-      val f = new swing.JFrame
-      
-      f setDefaultCloseOperation swing.WindowConstants.DO_NOTHING_ON_CLOSE
-      f addWindowListener {
-         new awt.event.WindowAdapter {
-            import awt.event.WindowEvent
-            override def windowClosing(e: WindowEvent | Null): Unit = {
-               runCloseButtonAction()
-            }
-         }
-      }
-
-      f setTitle title
-
-      f setContentPane { spawnContentPaneAndGetNative(contentPane ) }
-
-      f setIconImage {
-         defaultFrameIconImg
-      }
-      
-      awt.EventQueue.invokeLater(() => { f.setSize(800, 400 ) ; f.setVisible(true) } )
-
-      /**
-       * 
-       * unconditionally
-       * make all the opened windows disappear
-       * 
-       */
-      protected
-      def disposeAllWindows() : Unit = {
-         awt.EventQueue.invokeLater(() => { f.dispose() } )
-      }
-
-      /**
-       * 
-       * run
-       * what's supposed to run whenever the "close" button gets clicked
-       * 
-       */
-      def runCloseButtonAction() : Unit = {
-         disposeAllWindows()
-      }
-
-      /**
-       * 
-       * `close()`.
-       * 
-       */
-      override
-      def close(): Unit = closed1
-
-      /* ensure not running more than once */
-      private 
-      lazy val closed1 = runCloseButtonAction()
-      
    }
 
    given main :
