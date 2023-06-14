@@ -1010,7 +1010,7 @@ trait EBsd extends
                            //    s"no scheme for cls ${classIntName.ebmlClassNameFmatted } "
                            // ))
                            .newLexerException(msg = (
-                              s"no scheme for cls ${classIntName.ebmlClassNameFmatted } . (<${classIntName.ebmlClassNameFmatted } (length)=${efpr.payloadLength } >) "
+                              s"no scheme for cls ${classIntName.ebmlClassNameFmatted } (it's possible the stream has been corrupted!!!) . (<${classIntName.ebmlClassNameFmatted } (length)=${efpr.payloadLength } >) "
                            ))
                         )
                         throw (
@@ -1609,6 +1609,18 @@ trait EBsd extends
 
             override
             def toString(): String = {
+
+               try {
+                  toStringImpl()
+               }
+               catch {
+                  case z: Exception =>
+                     s"[failed stringify: $z ]"
+               }
+            }
+
+            private
+            def toStringImpl(): String = {
                import language.unsafeNulls /* for this `toString` impl */
 
                (
@@ -1965,77 +1977,20 @@ object ebmsGenericUtils extends
 
       export cbsq.riffmt.ebmls.Lazy
  
-      sealed
-      abstract class Eagerness
-      {
+      export avcframewrk.util.Eagerness
 
-         /**
-          * either `0` when lazy, or `1` when eager
-          */
-         val floatValue : Double
-
-         val characteristicSeqFactory : collection.SeqFactory[Seq]
-
-      }
-      object Eagerness
-      {
-
-         case object toBeLazy extends Eagerness
-         {
-
-            final val floatValue = 0
-
-            final val characteristicSeqFactory = {
-               LazyList
-            }
-
-         }
-         
-         case object toBeEager extends Eagerness
-         {
-
-            final val floatValue = 1
-
-            val characteristicSeqFactory = {
-               IndexedSeq
-            }
-
-         }
-         
-      }
-
-      extension [CC[A] <: collection.IterableOps[A, CC, CC[A] ], E ](src: CC[E] ) {
-
-         def mapToTrials()(using CC[E] <:< (collection.View[?] | LazyList[?] ) ) = {
-
-            val ICC = src.iterableFactory
-            ICC.unfold[util.Try[E], LazyList[E] ](src.to(LazyList ) )(seq => {
-               util.Try({
-                  seq match {
-                     case v +: seqTail =>
-                        Some((util.Success(v) , seqTail))
-                     case Seq() =>
-                        None
-                  }
-               })
-               .fold(z => Some((util.Failure(z) , seq.drop(1) ) ) , identity _ )
-               .nn
-            })
-            match { case e => e : CC[util.Try[E] ] }
-         }
-
-      }
+      export avcframewrk.util.lazylists.mapToTrials
 
       extension (v: String) {
 
          // TODO
          def utfEncodedAsUrl: java.net.URI = {
 
+            import avcframewrk.util.encodedAsUrl
+
             import language.unsafeNulls
 
-            // new java.net.URI("data:text/plain," + v)
-
-            new java.net.URI("data", s"text/plain,${v}", null )
+            v.encodedAsUrl
 
          }
          
@@ -2082,7 +2037,7 @@ object ebmsGenericUtils extends
 
          @throws[java.io.EOFException]
          def checkNotAtEof(): Unit = {
-            
+
          }
 
       }
