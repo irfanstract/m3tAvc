@@ -83,6 +83,8 @@ AnyRef
    AnyRef
    with OmiAll[MainR]
    with XWithNjp[MainR]
+   with ^&%%^
+   with ComponentSpwReExports
    with {
 
       /* name imports */
@@ -92,51 +94,7 @@ AnyRef
 
       import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
-      override
-      def newCheckBoxState(
-         //
-
-         initiallySelected : Boolean ,
-
-      ) : javax.swing.ButtonModel = {
-
-         val jcb = new swing.JCheckBox
-         jcb setSelected initiallySelected
-         jcb.getModel()
-      }
-
       /* exports */
-
-      def renderButton(l: swing.Action) = mainRImplLw {
-         new swing.JButton(l)
-      }
-
-      /**
-       * 
-       * display the Action's Icon dynamically
-       * 
-       */
-      def renderDynamicPoster(l: swing.Action) = mainRImplLw {
-         
-         val lbl1 = new swing.JButton(l)
-         lbl1.setUI({
-            cbsq.avc.quick.javaswing.buttonIconFullSizeUi
-         })
-         lbl1
-      }
-
-      /**
-       * 
-       * display the Icon
-       * 
-       */
-      def renderPoster(l: swing.Icon ) = {
-
-         renderDynamicPoster({
-            
-            renderAbstractAction(label = l , callback = { case _ => } )
-         })
-      }
 
       override
       // def newFourSidebarHolyGrailLayout
@@ -173,16 +131,10 @@ AnyRef
          3
       }
 
-      export impl.{mainRImplEither as getCustomComponent1 }
-
       // def getJFrameCompByTitleAndContentPane1(title: String, contentPane: MainR) : MainR = mainRImplCircular {
       //    //
       //    ???
       // }
-      
-      export componentSpw.*
-
-      export allInterfacesGivens.spawnNewJFrame
 
       /**
        * 
@@ -325,6 +277,82 @@ AnyRef
       }
 
    }
+
+   sealed
+   trait ^&%%^ extends
+   AnyRef
+   with OmiAll[MainR]
+   with XWithNjp[MainR]
+   {
+      this : (
+         AnyRef
+      ) =>
+
+      /* name imports */
+
+      import java.awt
+      import javax.swing
+
+      import avcframewrk.forms.javaswing.actionObjUtil.setIcon
+
+      /* exports */
+
+      override
+      def newCheckBoxState(
+         //
+
+         initiallySelected : Boolean ,
+
+      ) : javax.swing.ButtonModel = {
+
+         val jcb = new swing.JCheckBox
+         jcb setSelected initiallySelected
+         jcb.getModel()
+      }
+
+      def renderButton(l: swing.Action) = mainRImplLw {
+         new swing.JButton(l)
+      }
+
+      /**
+       * 
+       * display the Action's Icon dynamically
+       * 
+       */
+      def renderDynamicPoster(l: swing.Action) = mainRImplLw {
+         
+         val lbl1 = new swing.JButton(l)
+         lbl1.setUI({
+            cbsq.avc.quick.javaswing.buttonIconFullSizeUi
+         })
+         lbl1
+      }
+
+      /**
+       * 
+       * display the Icon
+       * 
+       */
+      def renderPoster(l: swing.Icon ) = {
+
+         renderDynamicPoster({
+            
+            renderAbstractAction(label = l , callback = { case _ => } )
+         })
+      }
+
+      export impl.{mainRImplEither as getCustomComponent1 }
+
+      export allInterfacesGivens.spawnNewJFrame
+
+   } /* ^&%%^ */
+
+   protected
+   trait ComponentSpwReExports {
+
+      export componentSpw.*
+
+   } /* ComponentSpwReExports */
 
    private[javaswing] 
    object componentSpw {
