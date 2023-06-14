@@ -1382,16 +1382,31 @@ trait EBsd extends
       
       export CodeUnitScheme.ofAnyOf
 
+      /**
+       * 
+       * *one-or-more items, each satisfying any of the listed schemae *,
+       * 
+       */
       // @annotation.experimental
       def ofOneOrMoreOfAnyOf[ChildSchema <: FScOps](c: Set[? <: ChildSchema]): (
          FramePayloadScheme & FramePayloadScheme.OfFixedLengthStrv
       ) = {
          ofOneOrMoreOfAnyOf1(c = c)
       }
+      /**
+       * 
+       * *one-or-more items, each satisfying any of the listed schemae *,
+       * 
+       */
       // @annotation.experimental
       def ofOneOrMoreOfAnyOf1[ChildSchema <: FScOps](c: Set[? <: ChildSchema]) = {
          ofOneOrMoreOfAnyOf1A(c = Lazy(c) )
       }
+      /**
+       * 
+       * *one-or-more items, each satisfying any of the listed schemaë *,
+       * 
+       */
       // @annotation.experimental
       def ofOneOrMoreOfAnyOf1A[ChildSchema <: FScOps](c: Lazy[Set[? <: ChildSchema] ]) = {
          lazy val cCached = c.value
@@ -1399,6 +1414,11 @@ trait EBsd extends
                ofAnyOf(c = cCached )
          } )
       }
+      /**
+       * 
+       * *one-or-more items, each satisfying any of the listed schemaë *,
+       * 
+       */
       // @annotation.experimental
       def ofOneOrMoreOfAnyOf1C[
          ChildSchema <: (
@@ -1434,6 +1454,11 @@ trait EBsd extends
          >: FramePayloadScheme & CodeUnitScheme.XLengthOverrideable
          <: FramePayloadScheme & CodeUnitScheme.XLengthOverrideable
 
+      /**
+       * 
+       * matches *a single node, which must be a frame*
+       * 
+       */
       // @annotation.experimental
       // @deprecated("experimental")
       def ofFrame(scheme : (
@@ -1452,8 +1477,9 @@ trait EBsd extends
       /**
        * 
        * *frame*
-       * of exactly one child
-       * in-turn conforming to any of these schemes
+       * containing exactly one child
+       * in-turn
+       * conforming to any of these schemes
        * 
        */
       // @annotation.experimental
@@ -1480,8 +1506,9 @@ trait EBsd extends
       /**
        * 
        * *frame* 
-       * of one-or-more children
-       * each in-turn conforming to any of these schemes
+       * containing one-or-more child
+       * each in-turn
+       * conforming to any of these schemes
        * 
        */
       // @annotation.experimental
