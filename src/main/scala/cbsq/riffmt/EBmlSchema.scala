@@ -199,20 +199,9 @@ trait EBsd extends
             getRnpSourceRpiaImpl(this) _
          }
          
-         /**
-          * 
-          * there are multiple variants of `readAndParse` ;
-          * implementations of `readAndParseImpl`
-          * shall only call `readAndParseAlt`, not the other ones
-          * 
-          */
-         private[EBsd]
-         implicit
-         lazy val enct: Enct = {
-            new Enct
-         }
-         
       }
+
+      // was here
 
       private[EBsd]
       case class RpiaImpl(
@@ -220,17 +209,31 @@ trait EBsd extends
          eagerness : ebmsGenericUtils.Eagerness ,
       )
 
-      /**
-       * 
-       * there are multiple variants of `readAndParse` ;
-       * implementations of `readAndParseImpl`
-       * shall only call `readAndParseAlt`, not the other ones
-       * 
-       */
-      private[EBsd]
-      class Enct private[EBsd]()
-
    }
+
+   /**
+    * 
+    * there are multiple variants of `readAndParse` ;
+    * implementations of `readAndParseImpl`
+    * shall only call `readAndParseAlt`, not the other ones
+    * 
+    */
+   // private[EBsd]
+   protected 
+   implicit
+   lazy val enct: Enct = {
+      new Enct
+   }
+   
+   /**
+    * 
+    * there are multiple variants of `readAndParse` ;
+    * implementations of `readAndParseImpl`
+    * shall only call `readAndParseAlt`, not the other ones
+    * 
+    */
+   private[EBsd]
+   class Enct private[EBsd]()
 
    import `! EBmlSch iCommon1` as common1
    object `! EBmlSch iCommon1` {
@@ -372,7 +375,7 @@ trait EBsd extends
             schemeAlternativeImpl.demarsh[
                Instance1 ,
                ChildScheme ,
-            ](s)(using summon[CodeSchemeOps.TraversalDiagnostique].ofChild(divName = "alts"))(r)
+            ](s)(using summon[CodeSchemeOps.TraversalDiagnostique].ofChild(divName = "alts"))(ec = r , r = r )
          }
 
          // TODO
@@ -1591,7 +1594,7 @@ trait EBsd extends
    extension (r: UnpickleInputStream) {
       
       def readEbmlByScheme(s: FramePayloadScheme)(using CodeSchemeOps.TraversalDiagnostique) = {
-         s readAndParse(r)
+         s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
       }
 
    }
@@ -1742,7 +1745,7 @@ trait EBsd extends
          ChildScheme <: (FramePayloadScheme) { type Instance <: Instance1 } ,
       ](
          s: ([I] =>> (Set[? <: I] | Seq[I] ) )[ChildScheme ] ,
-      )(using CodeSchemeOps.TraversalDiagnostique)(r: UnpickleInputStream): Instance1 = {
+      )(using CodeSchemeOps.TraversalDiagnostique)(ec: CodeUnitScheme#ReadingParsingImplArg, r: UnpickleInputStream ): Instance1 = {
             type Instance = Instance1
             /**
              * 
@@ -1774,7 +1777,8 @@ trait EBsd extends
                   ))(emr => {
                      (try {
                         ((
-                           c readAndParse(r)
+                           // s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
+                           c readAndParseAlt(src = r, eagerness = ec.eagerness )
                         ), {
                            import reflect.Selectable.reflectiveSelectable
                            /**
