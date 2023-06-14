@@ -226,23 +226,7 @@ AnyRef
       //    ???
       // }
       
-      extension (c : MainR ) def spawnNow() = spawn(c )
-
-      export spw.spawn
-
-      export spw.getSpawnedNativeComponent
-
-      def spawnAndGetNative[C <: MainR](c : C )  = {
-         c
-         match { case c => spawn(c) }
-         match { case c => getSpawnedNativeComponent(c) }
-      }
-
-      @deprecated
-      def spawnContentPaneAndGetNative[C <: MainR](c : C ) = {
-         spawnAndGetNative(c )
-         match { case c: java.awt.Container => c }
-      }
+      export componentSpw.*
 
       export allInterfacesGivens.spawnNewJFrame
 
@@ -382,6 +366,29 @@ AnyRef
       
       extension [C <: MainRSpawned](c : C ) @deprecated def spawnedNativeComponent = {
          spw.getSpawnedNativeComponent(c )
+      }
+
+   }
+
+   private[javaswing] 
+   object componentSpw {
+      
+      extension (c : MainR ) def spawnNow() = spawn(c )
+
+      export spw.spawn
+
+      export spw.getSpawnedNativeComponent
+
+      def spawnAndGetNative[C <: MainR](c : C )  = {
+         c
+         match { case c => spawn(c) }
+         match { case c => getSpawnedNativeComponent(c) }
+      }
+
+      @deprecated
+      def spawnContentPaneAndGetNative[C <: MainR](c : C ) = {
+         spawnAndGetNative(c )
+         match { case c: java.awt.Container => c }
       }
 
    }
