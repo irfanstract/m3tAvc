@@ -29,6 +29,8 @@ with Aig1
    import concurrent.ExecutionContext.Implicits.global
    import language.unsafeNulls
 
+   /* main exports */
+
    private 
    lazy val defaultFrameIconImg = {
       ;
@@ -344,6 +346,8 @@ AnyRef
 
    import concurrent.ExecutionContext.Implicits.global
    import language.unsafeNulls
+
+   /* main exports */
 
    protected
    trait ComponentSpwReExports {
