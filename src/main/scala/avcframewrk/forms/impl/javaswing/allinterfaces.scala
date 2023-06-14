@@ -17,25 +17,7 @@ import abstractActionFactory.{XLabel, XF}
 
 object allInterfacesGivens extends 
 AnyRef
-// with Aig1
-// {
-// 
-//    import avcframewrk.forms.javaswing.util.enClosure
-// 
-//    import impl.*
-//    
-//    /* givens and UnsafeNulls */
-// 
-//    import concurrent.ExecutionContext.Implicits.global
-//    import language.unsafeNulls
-// 
-//    //
-//    
-// }
-// 
-// protected 
-// trait Aig1 extends 
-// AnyRef
+with Aig1
 {
 
    import avcframewrk.forms.javaswing.util.enClosure
@@ -346,6 +328,22 @@ AnyRef
       export allInterfacesGivens.spawnNewJFrame
 
    } /* ^&%%^ */
+
+}
+
+protected 
+trait Aig1 extends 
+AnyRef
+{ allInterfacesGivens =>
+
+   import avcframewrk.forms.javaswing.util.enClosure
+
+   import impl.*
+   
+   /* givens and UnsafeNulls */
+
+   import concurrent.ExecutionContext.Implicits.global
+   import language.unsafeNulls
 
    protected
    trait ComponentSpwReExports {
