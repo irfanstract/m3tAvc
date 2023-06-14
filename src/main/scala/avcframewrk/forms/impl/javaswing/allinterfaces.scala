@@ -413,7 +413,10 @@ AnyRef
 
       }
 
-      def fromXNewInstance(c : XNewInstance[MainRSpawned ] ): MainR = {
+      def fromXNewInstance[
+         C <: XNewInstance[MainRSpawned ] ,
+
+      ](c : C ): C & MainR = {
          c
       }
 
