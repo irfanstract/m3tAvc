@@ -35,11 +35,15 @@ class openInteractiveFrameIterativeUiImpl(
 extends AnyRef with java.io.Closeable
 {
 
+   import generalImpl.itrHelper
+   
+   import generalImpl.refresh
+
    def invokeSrcNext() : Unit = {
       import language.unsafeNulls
       
-      val e = src.switchToNextFrame()
-      generalImpl.endedNessState.setSelected(e.isLeft )
+      itrHelper.invokeSrcNext()
+      refresh()
 
    }
 
@@ -47,13 +51,46 @@ extends AnyRef with java.io.Closeable
    private  
    object generalImpl {
 
-      val endedNessState = {
+      val itrHelper: Eitrn = {
 
-         xSwing newCheckBoxState(initiallySelected = false )
+         Eitrn(src = src )
+      }
 
+      export itrHelper.eofEdNessState
+
+      clearInfo()
+
+      protected 
+      def clearInfo() : Unit = {
+
+         tStampInfoDoc setText1 "(no frame info)"
+         
+      }
+      
+      // reinitWithCurrentlyInfo
+      def refresh() : Unit = {
+
+         clearInfo()
+
+         logger enstage(s"$src ")
+
+         locally {
+            tStampInfoDoc setText1 { s"frame T : ${src.currentFrameTRange } " }
+         }
+         
+      }
+      
+      export itrHelper.eofEdNessLabel
+
+      val tStampInfoDoc = {
+
+         xSwing.newPlainTextDocument()
+         
       }
 
    }
+
+   import generalImpl.*
 
    uiImpl
    private  
@@ -61,7 +98,7 @@ extends AnyRef with java.io.Closeable
 
       import language.unsafeNulls
       
-      import generalImpl.endedNessState
+      import generalImpl.eofEdNessState
 
       val f = new swing.JFrame
       f setDefaultCloseOperation swing.WindowConstants.DO_NOTHING_ON_CLOSE
@@ -79,33 +116,17 @@ extends AnyRef with java.io.Closeable
          new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB )
       }
 
-      val endedNessLabel = {
-
-         val e = xSwing.newPlainTextDocument()
-         endedNessState addChangeListener (_ => {
-            e setText1 { if endedNessState.isSelected() then "end of file" else "" }
-         })
-         e
-
-      }
-
-      val label1 = {
-
-         xSwing.newPlainTextDocument()
-
-      }
-
       f setContentPane {
          val p = new swing.JPanel(new awt.GridLayout )
          p add {
             val p = new swing.JPanel(new awt.FlowLayout )
             p add {
-               val b = new swing.JTextArea(label1)
+               val b = new swing.JTextArea(tStampInfoDoc)
                b.setEditable(false)
                b
             }
             p add {
-               val b = new swing.JTextArea(endedNessLabel)
+               val b = new swing.JTextArea(eofEdNessLabel)
                b.setEditable(false)
                b
             }
@@ -128,18 +149,9 @@ extends AnyRef with java.io.Closeable
 
       awt.EventQueue.invokeLater(() => { f.setSize(800, 400 ) ; f.setVisible(true) } )
 
-      clearInfo()
-
-      def clearInfo() : Unit = {
-         label1 setText1 "(no frame info)"
-      }
+      //
       
-      // reinitWithCurrentlyInfo
-      def refresh() : Unit = {
-         clearInfo()
-         logger enstage(s"$src ")
-         label1 setText1 { s"frame T : ${src.currentFrameTRange } " }
-      }
+      //
       
       def disposeAllWindows() : Unit = {
          f.dispose()
@@ -179,6 +191,61 @@ extends AnyRef with java.io.Closeable
    }
 
 }
+
+private
+class Eitrn(
+   // 
+   src : cbsq.avc.BbsdAvInterleavedFrameIterator ,
+)
+(using 
+   logger : cbsq.avc.PhrStagedLogging.ByDName["cbsq.avc.quick.openInteractiveFrameIterativeUiImpl$.Eitrn"] ,
+   xSwing : avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ,
+)
+{
+      ;
+      
+      def invokeSrcNext() : Unit = {
+
+         import language.unsafeNulls
+         
+         val e = src.switchToNextFrame()
+         eofEdNessState.setSelected(e.isLeft )
+
+         refresh()
+
+      }
+
+      protected 
+      def clearInfo() : Unit = {
+
+      }
+      
+      // reinitWithCurrentlyInfo
+      def refresh() : Unit = {
+
+         clearInfo()
+
+         logger enstage(s"$src ")
+         
+      }
+      
+      val eofEdNessState = {
+
+         xSwing newCheckBoxState(initiallySelected = false )
+
+      }
+
+      val eofEdNessLabel = {
+
+         val e = xSwing.newPlainTextDocument()
+         eofEdNessState addChangeListener (_ => {
+            e setText1 { if eofEdNessState.isSelected() then "end of file" else "" }
+         })
+         e
+
+      }
+
+} /* Eitrn */
 
 // def oivfiUi = {
 
