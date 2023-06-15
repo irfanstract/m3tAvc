@@ -50,6 +50,21 @@ with java.io.Closeable
       }
    }
 
+   export windowClosedownReturnQuestion.{asFuture => whenClosed }
+
+   private
+   val windowClosedownReturnQuestion = {
+      avcframewrk.util.LateBoundValue.newInstance[Unit]
+   }
+   f addWindowListener {
+      new awt.event.WindowAdapter {
+         import awt.event.WindowEvent
+         override def windowClosed(e: WindowEvent | Null): Unit = {
+            windowClosedownReturnQuestion.tryComplete(util.Success {} )
+         }
+      }
+   }
+
    f setTitle title
 
    f setContentPane { newContentPane() }
@@ -69,6 +84,16 @@ with java.io.Closeable
    protected
    def disposeAllWindows() : Unit = {
       awt.EventQueue.invokeLater(() => { f.dispose() } )
+   }
+
+   /**
+    * 
+    * synchronously await until the window gets actually closed
+    * 
+    */
+   def join() : Unit = {
+      windowClosedownReturnQuestion
+      .value
    }
 
    /**
