@@ -22,13 +22,26 @@ package avcframewrk.util
 
 opaque type StringOfBytes
    <: AnyRef & Matchable
-   = collection.immutable.ArraySeq.ofByte
+   = SbbImpl
+
+protected
+sealed case class SbbImpl(val implContents : IArray[Byte] ) extends AnyRef
+{
+
+   override def toString(): String = {
+      import language.unsafeNulls
+      val f = java.util.HexFormat.of()
+      val icString = s"0x${f.formatHex(implContents.toIndexedSeq.toArray ) }"
+      s"Bytes($icString)"
+   }
+
+}
 
 object
 StringOfBytes
 extends
 AnyRef
-with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfAaob[StringOfBytes, Byte]
+with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseAndApplyOfBytes[StringOfBytes, Byte]
 {
    //
 
@@ -63,13 +76,13 @@ with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfA
 
    // }
 
-   // extension (buf: ByteBlob) /* `characters` */ {
+   extension (s: ByteBlob) /* `characters` */ {
 
-   //    def characters: IndexedSeq[Byte] = {
-   //       buf
-   //    }
+      def characters: IndexedSeq[Byte] = {
+         (s : SbbImpl).implContents
+      }
 
-   // }
+   }
 
    // // extension (buf: ByteBlob) {
    // // 
@@ -117,6 +130,24 @@ with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfA
    //    }
 
    // }
+
+   private 
+   def wrapIArrayImpl(buf: IArray[Byte]): ByteBlob = {
+      SbbImpl(implContents = buf )
+   }
+
+   extension (buf: ByteBlob) {
+
+      def asArray : IArray[Byte] = {
+         (buf : SbbImpl ).implContents
+      }
+
+   }
+
+   override
+   def wrapIArray(buf: IArray[Byte]): ByteBlob = {
+      wrapIArrayImpl(buf)
+   }
 
    // /**
    //  * 
@@ -185,17 +216,16 @@ with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfA
    //    copyOfByteArray(srcBuf = srcBuf )
    // }
 
-   // /**
-   //  * 
-   //  * `unsafeWrapArray`
-   //  * 
-   //  */
-   // @deprecated("unsafe")
-   // // protected 
-   // def unsafeWrapArray(buf: Array[Byte]): ByteBlob = {
-   //    import collection.immutable.ArraySeq
-   //    ArraySeq.ofByte(buf)
-   // }
+   /**
+    * 
+    * `unsafeWrapArray`
+    * 
+    */
+   @deprecated("unsafe")
+   // protected 
+   def unsafeWrapArray(buf: Array[Byte]): ByteBlob = {
+      wrapIArrayImpl(IArray.unsafeFromArray(buf) )
+   }
 
    // extension (buf: ByteBlob) {
 
