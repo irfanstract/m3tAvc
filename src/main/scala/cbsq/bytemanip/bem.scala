@@ -19,7 +19,7 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
 {
 
    trait Efse[
-      XCharacterBlob <: IndexedSeq[XCharacter] ,
+      XCharacterBlob <: AnyRef ,
       XCharacter ,
       
    ]
@@ -33,6 +33,12 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
          def characters: IndexedSeq[XCharacter]
 
       }
+
+      extension (buf: XCharacterBlob) /* `asArray` */ {
+
+         def asArray: IArray[XCharacter]
+
+      } /* `asArray` */
 
       extension (buf: XCharacterBlob) {
 
@@ -58,7 +64,7 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
     * 
     */
    trait WithBxi[
-      XCharacterBlob <: IndexedSeq[XCharacter] ,
+      XCharacterBlob <: AnyRef ,
       XCharacter ,
       
    ]
@@ -101,7 +107,7 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
     * 
     */
    trait Bxi[
-      XCharacterBlob <: IndexedSeq[XCharacter] ,
+      XCharacterBlob <: AnyRef ,
       XCharacter ,
       
    ]
@@ -243,6 +249,7 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
    AnyRef
    with Efse[XCharacterBlob, XCharacter]
    with EfseAndApply[XCharacterBlob, XCharacter]
+   with ByteEfseReadersImpl[XCharacterBlob]
    {
       this1 =>
       
@@ -442,7 +449,23 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
             buf.unsafeArray
          }
 
+         def asArray : IArray[Byte] = {
+            IArray.unsafeFromArray(buf.unsafeArray )
+         }
+
       }
+
+   }
+
+   trait ByteEfseReadersImpl[ByteBlob <: AnyRef]
+   extends
+   AnyRef
+   {
+      this : (
+         AnyRef
+         & Efse[ByteBlob, Byte]
+         //
+      ) =>
 
       extension (buf : ByteBlob) {
 
@@ -450,7 +473,8 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
          inline
          def newDirectReader() = {
             new java.io.ByteArrayInputStream((
-               buf.unsafeArray
+               buf.asArray
+               match { case e => (e : IArray[Byte] ).asInstanceOf[Array[Byte] ] }
             ))
          }
 
