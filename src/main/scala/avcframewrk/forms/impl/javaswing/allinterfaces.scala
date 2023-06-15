@@ -444,11 +444,7 @@ AnyRef
 
       /*   */
 
-      trait XNewInstance[+R] {
-
-         def newInstance() : R
-
-      }
+      export util_%^**#%.{SupportsGetNewInstanceNoArg => XNewInstance }
 
       def fromXNewInstance[
          C <: XNewInstance[MainRSpawned ] ,
@@ -682,6 +678,18 @@ val _ @ _ = {
 
    )]
    
+}
+
+// private[]
+protected 
+object util_%^**#% {
+   
+      trait SupportsGetNewInstanceNoArg[+R] {
+
+         def newInstance() : R
+
+      }
+
 }
 
 
