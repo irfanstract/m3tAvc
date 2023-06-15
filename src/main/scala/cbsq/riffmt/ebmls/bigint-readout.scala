@@ -40,13 +40,25 @@ object rbei {
       
       /**
        * 
-       * the return-value of `r.newLazyList()`
+       * equivalent to `r.newLazyList()`, except that
+       * EOF past receiving at-least a byte will be translated into a non-`EOFException` `IOException`
        * 
        */
       private[readEbmlIntegerImpl]
-      val s1 = (
-         r.newByteSeq()
-      ): LazyList[Byte]
+      val s1 = ({
+         val c = new java.util.concurrent.atomic.AtomicInteger
+         LazyList.continually[Byte]({
+            try {
+               r.readByte() 
+               match { case b => c.incrementAndGet() ; b }
+            }
+            catch {
+               case z : java.io.EOFException =>
+                  if c.get() <= 0 then { throw z }
+                  else throw new java.io.IOException(s"half-course EOF ; c=${c.get() }", z )
+            }
+         })
+      }): LazyList[Byte]
 
       /**
        * 

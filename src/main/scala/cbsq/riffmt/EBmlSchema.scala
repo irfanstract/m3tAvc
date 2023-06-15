@@ -1122,7 +1122,7 @@ trait EBsd extends
                          * new `LazyList` running `readAndParseImpl`
                          * 
                          */
-                        LazyList() lazyAppendedAll {
+                        LazyList().lazyAppendedAll({
                            ((using : CodeSchemeOps.TraversalDiagnostique) ?=> {
 
                               extension (scheme : FramePayloadScheme ) {
@@ -1152,6 +1152,11 @@ trait EBsd extends
                               .ofChild(divName = s"contents")
 
                            ))
+                        })
+                        match {
+                           case s =>
+                              import avcframewrk.util.lazylists.asTerminatingCollOnException
+                              s.asTerminatingCollOnException()
                         }
 
                      })
@@ -1308,6 +1313,8 @@ trait EBsd extends
 
                   lazy val childrenLl : LazyList[FramePayloadScheme#Instance] = {
 
+                     import avcframewrk.util.lazylists.asTerminatingCollOnException
+
                      //
                      LazyList.unfold[FramePayloadScheme#Instance, Unit](() )((_) => {
 
@@ -1413,6 +1420,7 @@ trait EBsd extends
                            }
                         }
                      })
+                     .asTerminatingCollOnException()
                   }
                   
                   /**

@@ -380,7 +380,9 @@ trait EBmlRawFramesReadingIoDefsImpl extends
                   /* we haven't got anything yet */
                   throw (
                      // z : java.io.EOFException
-                     new java.io.EOFException(s"while computing 'typeInt'")
+                     new
+                     java.io.EOFException(s"while computing 'typeInt'")
+                     with EBmlPrimitivesMalformationException.IDueToZeroByteEofException
                   )
             }
          }) 
