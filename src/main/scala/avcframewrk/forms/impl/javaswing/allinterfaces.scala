@@ -440,7 +440,18 @@ AnyRef
       = XNewInstance[MainRSpawned ]
    
    private[javaswing] 
-   object impl {
+   object typingAndFactoryImpl extends 
+   AnyRef
+   {
+
+      /*   */
+      
+   }
+   
+   private[javaswing] 
+   object impl extends 
+   AnyRef
+   {
 
       /*   */
 
@@ -494,6 +505,21 @@ AnyRef
       
       /**
        * 
+       * this is
+       * for by given expr returning a `MainRImpl[R ]`.
+       * the previously-mentioned alternatives
+       * does not expose enough interface to access the resulting `?{ def close(): Unit }`
+       * 
+       */
+      def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRImpl[R ] ) : MainR = identity[XNewInstance[MainRSpawned ] ] (() => {
+
+         val instance = newInstance
+
+         instance
+      })
+
+      /**
+       * 
        * for whatever Component(s) Swing calls "lightweight components"
        * 
        */
@@ -529,21 +555,6 @@ AnyRef
 
       /**
        * 
-       * this is
-       * for by given expr returning a `MainRImpl[R ]`.
-       * the previously-mentioned alternatives
-       * does not expose enough interface to access the resulting `?{ def close(): Unit }`
-       * 
-       */
-      def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRImpl[R ] ) : MainR = identity[XNewInstance[MainRSpawned ] ] (() => {
-
-         val instance = newInstance
-
-         instance
-      })
-
-      /**
-       * 
        * utility
        * 
        */
@@ -558,6 +569,15 @@ AnyRef
    }
 
 }
+
+protected
+trait EmTypingImpl extends 
+AnyRef
+{
+
+   //
+
+} /* EmTypingImpl */
 
 trait OmiAll[R] extends 
 AnyRef
