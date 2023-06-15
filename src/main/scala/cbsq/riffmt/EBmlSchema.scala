@@ -576,7 +576,54 @@ trait EBsd extends
             
             encodedLength match {
                case encodedLength : cbsq.FileSize =>
-                  val b = cbsq.ByteBlob.copyOf(r readNBytes(encodedLength.inBytes.toInt ) )
+
+                  val l = {
+                     encodedLength.inBytes.toInt
+                  }
+
+                  val byteSeq = {
+
+                     import EBml.readNBytesEbmSc
+                     
+                     ({
+
+                        try { r readNBytesEbmSc(1) }
+
+                        catch {
+
+                           case z : java.io.IOException => 
+                              
+                              val oe = (
+                                 summon[CodeSchemeOps.TraversalDiagnostique ]
+                                 .newLexerException(msg = s"zero-byte EOF exception" )
+                              )
+                              throw (
+                                 new java.io.IOException(oe.getMessage() , z ) with EBmlPrimitivesMalformationException.IDueToZeroByteEofException
+                              )
+                        } 
+                     })
+                     .++({
+
+                        try { r readNBytesEbmSc(-1 + l ) }
+                        
+                        catch {
+                           
+                           case z : java.io.IOException => 
+                              val oe = (
+                                 summon[CodeSchemeOps.TraversalDiagnostique ]
+                                 .newLexerException(msg = s"half-payload EOF exception" )
+                              )
+                              throw (
+                                 new java.io.IOException(oe.getMessage() , z ) with EBmlPrimitivesMalformationException.IDueToPayloadEofException
+                              )
+                        } 
+                     }) 
+                  }
+
+                  val b = {
+                     cbsq.ByteBlob.from(byteSeq )
+                  }
+
                   b encodedAs(enc = enc )
                   
                case _ =>
