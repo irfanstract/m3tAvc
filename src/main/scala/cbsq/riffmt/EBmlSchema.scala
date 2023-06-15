@@ -2066,8 +2066,6 @@ object ebmsGenericUtils extends
  
       export avcframewrk.util.Eagerness
 
-      export avcframewrk.util.lazylists.mapToTrials
-
       extension (v: String) {
 
          // TODO
