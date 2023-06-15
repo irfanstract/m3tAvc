@@ -580,7 +580,8 @@ trait EBsd extends
                   b encodedAs(enc = enc )
                   
                case _ =>
-                  throw summon[CodeSchemeOps.TraversalDiagnostique].newLexerException(msg = "'encodedLength' not specified")
+                  val oe = summon[CodeSchemeOps.TraversalDiagnostique].newLexerException(msg = "'encodedLength' not specified")
+                  throw new java.io.IOException(oe.getMessage() )
             }
          }
 
