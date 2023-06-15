@@ -435,9 +435,7 @@ AnyRef
 
    }
 
-   opaque type MainR
-      <: AnyRef
-      = XNewInstance[MainRSpawned ]
+   export impl.MainR
    
    private[javaswing] 
    object typingAndFactoryImpl extends 
@@ -454,6 +452,10 @@ AnyRef
    {
 
       /*   */
+
+      opaque type MainR
+         <: AnyRef
+         = XNewInstance[MainRSpawned ]
 
       export util_%^**#%.{SupportsGetNewInstanceNoArg => XNewInstance }
 
