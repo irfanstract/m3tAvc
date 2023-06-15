@@ -556,7 +556,7 @@ trait EBsd extends
       CodeUnitScheme 
       with OfFixedLengthStrv0
       with FramePayloadScheme.OfFixedLengthStrv
-      with XLengthOverrideable
+      with XLengthOverrideableAs[OfStr[?, ActualCharset, DEcv] ]
       {
          
          if true then {
@@ -590,11 +590,15 @@ trait EBsd extends
 
          // TODO
          override
-         def withSpecificLength(l: cbsq.FileSize) = {
+         def withSpecificLength(l: cbsq.FileSize): OfStr[l.type, ActualCharset, DEcv] = {
             copy(encodedLength = l)
          }
          
       }
+
+      type XLengthOverrideable = (
+         XLengthOverrideableAs[FramePayloadScheme ]
+      )
 
       /**
        * 
@@ -605,10 +609,14 @@ trait EBsd extends
        * (and the length-variability is specific to some types anyway ),
        * it becomes necessary to defer it to a separate deriving method like this
        * 
+       * @tparam DerivedInstanceBaseOps
+       *    in Scala 3, type inference of `override`ing methods will widen it to the overriden method's, so
+       *    this definition (en)forces the return-type to conform to this `type`
+       * 
        */
-      trait XLengthOverrideable extends 
+      trait XLengthOverrideableAs[+DerivedInstanceBaseOps <: FramePayloadScheme] extends 
       AnyRef 
-      { thisScheme : FramePayloadScheme =>
+      { thisScheme : FramePayloadScheme & DerivedInstanceBaseOps =>
 
          /**
           * 
@@ -626,7 +634,7 @@ trait EBsd extends
                   >: thisScheme.Instance
                   <: thisScheme.Instance
             }
-         )
+         ) & DerivedInstanceBaseOps
 
       }
 
@@ -1212,7 +1220,7 @@ trait EBsd extends
       extends 
       FramePayloadScheme
       with (FramePayloadScheme.OfFixedLengthStrv)
-      with (CodeUnitScheme.XLengthOverrideable)
+      with (CodeUnitScheme.XLengthOverrideableAs[VariadicImpl[?, ChildrenLsPattern ] ] )
       {
 
          type Instance 
