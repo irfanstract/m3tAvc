@@ -183,7 +183,7 @@ with Aig1
       def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): Njp[SpecificLayoutMgr] = {
 
          newJPanelImpl(layout = layout )
-         match { case c => fromXNewInstance(c) }
+         match { case c => fromHasGetNewInstanceNoArg(c) }
       }
 
       override
@@ -234,7 +234,7 @@ with Aig1
                .apply(p )
                p
             })
-            .toXNewInstance
+            .toHasGetNewInstanceNoArg
          }
 
          /**
@@ -446,14 +446,14 @@ AnyRef
 
       export util_%^**#%.{SupportsGetNewInstanceNoArg => XNewInstance }
 
-      def fromXNewInstance[
+      def fromHasGetNewInstanceNoArg[
          C <: XNewInstance[MainRSpawned ] ,
 
       ](c : C ): C & MainR = {
          c
       }
 
-      extension (c : MainR ) def toXNewInstance: XNewInstance[MainRSpawned ] = {
+      extension (c : MainR ) def toHasGetNewInstanceNoArg: XNewInstance[MainRSpawned ] = {
          c
       }
 
