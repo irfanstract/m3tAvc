@@ -205,7 +205,9 @@ def runEbmlDemonstrativeTransversal(
                            
                            c.toString()
                            .linesIterator.toIndexedSeq.headOption.getOrElse("")
-                           .take(144)
+                           .grouped(80).toSeq
+                           .zipWithIndex.map({ case (line, i) => (if 0 < i then "  " else "") + line })
+                           .mkString("\r\n")
                         }
 
                      }
