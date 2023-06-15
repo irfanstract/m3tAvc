@@ -292,6 +292,14 @@ object byteManipImplicitsC {
     */
    extension (r: java.io.InputStream | java.io.DataInput) {
       
+      /**
+       * 
+       * attempts (and insists) to read exactly n bytes,
+       * `throw`ing an `java.io.EOFException` (per `DataInputStream.readFully` ) on premature EOF(s) .
+       * 
+       * name has "EbmSc" at-the-end to avoid clash with one in `java.io.InputStream`
+       * 
+       */
       def readNBytesEbmSc(supposedReadingLength: Int) : IndexedSeq[Byte] = {
                   ;
 
