@@ -437,20 +437,108 @@ AnyRef
 
    export impl.MainR
    
+   // private[javaswing] 
+   // object typingAndFactoryImpl extends 
+   // AnyRef
+   // {
+   //
+   //    /*   */
+   //   
+   // }
+   // final lazy
+   // val typingAndFactoryImpl = {
+   //    emviTypingImpl
+   // }
+   
    private[javaswing] 
-   object typingAndFactoryImpl extends 
-   AnyRef
+   object impl extends 
+   AnyRef with
+   EmviTypingAndAllocImpl
    {
 
       /*   */
       
    }
    
-   private[javaswing] 
-   object impl extends 
-   AnyRef
-   with EmTypingImpl
-   {
+}
+
+protected
+trait EmTypingImpl extends 
+AnyRef
+{
+
+      //
+
+      ;
+
+      type MainR
+         <: AnyRef
+
+      type MainRSpawned
+         <: AnyRef with java.io.Closeable
+
+      def fromHasGetNewInstanceNoArg[
+         C <: XNewInstance[MainRSpawned ] ,
+
+      ](c : C ): C & MainR
+      
+      type XNewInstance[+R]
+         >: util_%^**#%.SupportsGetNewInstanceNoArg[R]
+         <: util_%^**#%.SupportsGetNewInstanceNoArg[R]
+      
+      @deprecated
+      abstract class MainRSpawnedImpl[+R](val main : R )
+      extends
+      AnyRef with java.io.Closeable
+      {
+
+         override
+         def toString(): String = {
+            s"MainR Instantiated (value: ${main } ; )"
+         }
+
+         //
+         
+      }
+
+      /**
+       * 
+       * this is
+       * for by given expr returning a `MainRSpawnedImpl[R ]`.
+       * the previously-mentioned alternatives
+       * does not expose enough interface to access the resulting `?{ def close(): Unit }`
+       * 
+       */
+      def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRSpawnedImpl[R ] ) : MainR
+
+      /**
+       * 
+       * for whatever Component(s) Swing calls "lightweight components"
+       * 
+       */
+      def mainRImplLw[R <: java.awt.Component ](newInstance : => R ) : MainR = mainRImplEither { newInstance }
+
+      /**
+       * 
+       * for whatever Component(s) Swing calls "heavyweight components" like `Window`, `JFrame`
+       * 
+       */
+      def mainRImplHeavywW[R <: java.awt.Window](newInstance : => R ) : MainR = mainRImplEither { newInstance }
+
+      /**
+       * 
+       * when it's unclear whether it needs to be `ImplLw` or `ImplLHeavywW`
+       * 
+       */
+      def mainRImplEither[R <: java.awt.Component ](newInstance : => R ) : MainR
+
+} /* EmTypingImpl */
+
+protected 
+trait EmviTypingAndAllocImpl extends 
+AnyRef
+with EmTypingImpl
+{
 
       /*   */
 
@@ -542,81 +630,8 @@ AnyRef
 
       }
 
-   }
 
 }
-
-protected
-trait EmTypingImpl extends 
-AnyRef
-{
-
-      //
-
-      ;
-
-      type MainR
-         <: AnyRef
-
-      type MainRSpawned
-         <: AnyRef with java.io.Closeable
-
-      def fromHasGetNewInstanceNoArg[
-         C <: XNewInstance[MainRSpawned ] ,
-
-      ](c : C ): C & MainR
-      
-      type XNewInstance[+R]
-         >: util_%^**#%.SupportsGetNewInstanceNoArg[R]
-         <: util_%^**#%.SupportsGetNewInstanceNoArg[R]
-      
-      @deprecated
-      abstract class MainRSpawnedImpl[+R](val main : R )
-      extends
-      AnyRef with java.io.Closeable
-      {
-
-         override
-         def toString(): String = {
-            s"MainR Instantiated (value: ${main } ; )"
-         }
-
-         //
-         
-      }
-
-      /**
-       * 
-       * this is
-       * for by given expr returning a `MainRSpawnedImpl[R ]`.
-       * the previously-mentioned alternatives
-       * does not expose enough interface to access the resulting `?{ def close(): Unit }`
-       * 
-       */
-      def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRSpawnedImpl[R ] ) : MainR
-
-      /**
-       * 
-       * for whatever Component(s) Swing calls "lightweight components"
-       * 
-       */
-      def mainRImplLw[R <: java.awt.Component ](newInstance : => R ) : MainR = mainRImplEither { newInstance }
-
-      /**
-       * 
-       * for whatever Component(s) Swing calls "heavyweight components" like `Window`, `JFrame`
-       * 
-       */
-      def mainRImplHeavywW[R <: java.awt.Window](newInstance : => R ) : MainR = mainRImplEither { newInstance }
-
-      /**
-       * 
-       * when it's unclear whether it needs to be `ImplLw` or `ImplLHeavywW`
-       * 
-       */
-      def mainRImplEither[R <: java.awt.Component ](newInstance : => R ) : MainR
-
-} /* EmTypingImpl */
 
 trait OmiAll[R] extends 
 AnyRef
