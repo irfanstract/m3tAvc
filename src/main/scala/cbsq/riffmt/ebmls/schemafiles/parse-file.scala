@@ -171,6 +171,14 @@ object getEbmlSchema
                      rawBytesScheme
 
                }
+               match {
+                  case e @ (_ : CodeUnitScheme.OfStr[?, ?, ?]) =>
+                     import cbsq.bytemanip.FileSize.boxingImplicits.*
+                     elementDtd1.mLengthInBytesOption
+                     .fold(e)(mLengthInBytes => { e withSpecificLength { mLengthInBytes.B } } )
+                  case e =>
+                     e
+               } /* mLengthInBytesOption */
             }
 
             new FramePayloadScheme.XSc {
