@@ -473,7 +473,7 @@ AnyRef
 
       opaque type MainRSpawned
          <: AnyRef with java.io.Closeable
-         = MainRImpl[java.awt.Component ]
+         = MainRSpawnedImpl[java.awt.Component ]
       
       object spw {
          
@@ -493,7 +493,7 @@ AnyRef
 
       }
 
-      // abstract class MainRImpl[+R](val main : R ) extends
+      // abstract class MainRSpawnedImpl[+R](val main : R ) extends
       {
 
          //
@@ -501,7 +501,7 @@ AnyRef
       }
       
       override
-      def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRImpl[R ] ) : MainR = identity[XNewInstance[MainRSpawned ] ] (() => {
+      def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRSpawnedImpl[R ] ) : MainR = identity[XNewInstance[MainRSpawned ] ] (() => {
 
          val instance = newInstance
 
@@ -517,7 +517,7 @@ AnyRef
 
          val instance = newInstance
 
-         new MainRImpl(main = instance) {
+         new MainRSpawnedImpl(main = instance) {
 
             override
             def close(): Unit = {
@@ -571,7 +571,7 @@ AnyRef
          <: util_%^**#%.SupportsGetNewInstanceNoArg[R]
       
       @deprecated
-      abstract class MainRImpl[+R](val main : R )
+      abstract class MainRSpawnedImpl[+R](val main : R )
       extends
       AnyRef with java.io.Closeable
       {
@@ -588,12 +588,12 @@ AnyRef
       /**
        * 
        * this is
-       * for by given expr returning a `MainRImpl[R ]`.
+       * for by given expr returning a `MainRSpawnedImpl[R ]`.
        * the previously-mentioned alternatives
        * does not expose enough interface to access the resulting `?{ def close(): Unit }`
        * 
        */
-      def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRImpl[R ] ) : MainR
+      def mainRImplCircular[R <: java.awt.Component ](newInstance : => MainRSpawnedImpl[R ] ) : MainR
 
       /**
        * 
