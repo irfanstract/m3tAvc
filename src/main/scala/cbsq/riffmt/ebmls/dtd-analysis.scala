@@ -102,7 +102,6 @@ class elementDtdAnalyse(e: org.w3c.dom.Element) {
                e.getAttribute("type")
             )
 
-            @annotation.experimental
             lazy val mValueType = {
                mValueTypeSimpleName match
 
@@ -119,6 +118,18 @@ class elementDtdAnalyse(e: org.w3c.dom.Element) {
                      reflect.classTag[String]
                
             } : reflect.ClassTag[?]
+
+            lazy val mLengthInBytesOption = {
+               Option(e.getAttribute("length") ).filter(s => !(s matches "\\s*") )
+               .map(v => BigInt(v).toLong.toInt )
+               
+            }
+
+            lazy val mLengthInBytes = {
+               mLengthInBytesOption
+               .getOrElse({ throw java.util.NoSuchElementException(s"it did not specify 'length' ") })
+               
+            } : Int
 
             /**
              * 
