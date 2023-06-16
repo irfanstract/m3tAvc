@@ -41,6 +41,7 @@ trait EBsd extends
    AnyRef 
    // with EBmlByteManipIoReExports
    // with EBmlPrimitivesIoReExports
+   with EBsdSpecificUtilDefs
 { EBml: (
    AnyRef 
    with EBmlByteManipIoReExports
@@ -1819,7 +1820,7 @@ trait EBsd extends
    }
 
    // def getLengthOfDataType[C](c: reflect.ClassTag[C]): cHasVariableLength.type | cbsq.FileSize
-   private 
+   private[riffmt] 
    final
    lazy val cStdDataTypeSizingUtil = {
       CodeSchemeOps.cStdDataTypeSizingUtil
@@ -1902,6 +1903,26 @@ trait EBsd extends
 
    // export ebmsGenericUtils.checkNotAtEof
 
+   private 
+   class PF extends Throwable
+
+   @annotation.experimental
+   protected 
+   def ?? = ???
+   
+}
+
+trait EBsdSpecificUtilDefs extends 
+   AnyRef 
+   // with EBmlByteManipIoReExports
+   // with EBmlPrimitivesIoReExports
+{ EBml: (
+   AnyRef 
+   with EBmlByteManipIoReExports
+   with EBmlPrimitivesIoReExports
+) =>
+   //
+   
    export ebmsGenericUtils.utfEncodedAsUrl
    
    export ebmsGenericUtils.encodedAs
@@ -1935,13 +1956,6 @@ trait EBsd extends
       
    } /* trimToJustFiveHundred */
 
-   private 
-   class PF extends Throwable
-
-   @annotation.experimental
-   protected 
-   def ?? = ???
-   
 }
 
 object ebmlSchemesUtilChronography
