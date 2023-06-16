@@ -2074,7 +2074,7 @@ object ebmlSchemesPrimitivesIo
  * `EBml.CodeSchemeOps` shall `extends` this `trait`
  * 
  */
-sealed trait chvl extends 
+protected trait chvl extends 
    AnyRef 
 {
    
