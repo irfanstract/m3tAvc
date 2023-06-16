@@ -212,15 +212,29 @@ def runEbmlDemonstrativeTransversal(
 
                      }
                      
+                     val xCanUseToString : Boolean = {
+                        /**
+                         * 
+                         * momentarily
+                         * we needed to skip toe `toString` calls as
+                         * (for unidentified reasons) it caused race-conditions
+                         * 
+                         */
+                        true
+                     }
+                     
                      c
                      match {
 
                         case c : collection.immutable.ArraySeq.ofByte =>
                            import cbsq.ByteBlob.boxingImplicits.*
-                           logging enstage(s"Bytes: ${c.toBlob.toStringBetter() }" )
+                           if xCanUseToString then logging enstage(s"Bytes: ${c.toBlob.toStringBetter() }" )
 
                         case c : cbsq.riffmt.EBml.FramePayloadScheme.`elements_@&%!`.Element =>
-                           val lgItem = logging enstage(s"Elem: ${c.toStringBetter() }" )
+                           val lgItem = {
+                              if xCanUseToString then logging enstage(s"Elem: ${c.toStringBetter() }" )
+                              else logging enstage(s"Elem: <${c.classSimpleName } ...>" )
+                           }
                            runEbmlDemonstrativeTransversal(c.children, logging = lgItem )
 
                         case c : Seq[cItem] =>
