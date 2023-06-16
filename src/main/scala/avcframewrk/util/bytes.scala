@@ -22,13 +22,63 @@ package avcframewrk.util
 
 opaque type StringOfBytes
    <: AnyRef & Matchable
-   = collection.immutable.ArraySeq.ofByte
+   = SbbImpl
+
+protected  
+sealed
+case class SbbImpl(private[util] val implContents : collection.immutable.ArraySeq.ofByte )
+extends
+AnyRef
+{
+
+   override
+   def toString(): String = {
+
+      import language.unsafeNulls
+      
+      val contentsHexString = {
+         toUntaggedContentsHexString()
+      }
+
+      s"Bytes($contentsHexString)"
+   }
+
+   def toUntaggedContentsHexString(): String = {
+
+      import language.unsafeNulls
+      
+      val hexFmt = {
+         java.util.HexFormat.of()
+         .withUpperCase()
+         .withDelimiter("_")
+      }
+      
+      val contentsHexString = {
+         s"${hexFmt.formatHex(implContents.toIndexedSeq.toArray ) }"
+      }
+
+      contentsHexString
+   }
+
+   /**
+    * 
+    * impl for the `asIArray` method ;
+    * no copying is necessary since due to the expected type being `IArray`
+    * 
+    */
+   private[util]
+   def toIArrayImpl() : IArray[Byte] = {
+
+      IArray.unsafeFromArray(implContents.unsafeArray )
+   }
+
+}
 
 object
 StringOfBytes
 extends
 AnyRef
-with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfAaob[StringOfBytes, Byte]
+with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseAndApplyOfBytes[StringOfBytes, Byte]
 {
    //
 
@@ -63,13 +113,14 @@ with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfA
 
    // }
 
-   // extension (buf: ByteBlob) /* `characters` */ {
+   extension (s: ByteBlob) /* `characters` */ {
 
-   //    def characters: IndexedSeq[Byte] = {
-   //       buf
-   //    }
+      def characters: IndexedSeq[Byte] = {
+         (s : SbbImpl)
+         .implContents
+      }
 
-   // }
+   }
 
    // // extension (buf: ByteBlob) {
    // // 
@@ -117,6 +168,24 @@ with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfA
    //    }
 
    // }
+
+   extension (buf: ByteBlob) {
+
+      def asArray : IArray[Byte] = {
+         (buf : SbbImpl ).toIArrayImpl()
+      }
+
+   }
+
+   private 
+   def wrapIArrayImpl(buf: IArray[Byte]): ByteBlob = {
+      SbbImpl(buf )
+   }
+
+   override
+   def wrapIArray(buf: IArray[Byte]): ByteBlob = {
+      wrapIArrayImpl(buf)
+   }
 
    // /**
    //  * 
@@ -185,17 +254,16 @@ with cbsq.bytemanip.OpaquelyTypedCharacterStringExtensionMethodsDefTrait.EfseOfA
    //    copyOfByteArray(srcBuf = srcBuf )
    // }
 
-   // /**
-   //  * 
-   //  * `unsafeWrapArray`
-   //  * 
-   //  */
-   // @deprecated("unsafe")
-   // // protected 
-   // def unsafeWrapArray(buf: Array[Byte]): ByteBlob = {
-   //    import collection.immutable.ArraySeq
-   //    ArraySeq.ofByte(buf)
-   // }
+   /**
+    * 
+    * `unsafeWrapArray`
+    * 
+    */
+   @deprecated("unsafe")
+   // protected 
+   def unsafeWrapArray(buf: Array[Byte]): ByteBlob = {
+      wrapIArrayImpl(IArray.unsafeFromArray(buf) )
+   }
 
    // extension (buf: ByteBlob) {
 
