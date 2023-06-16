@@ -126,7 +126,7 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
    }
 
    trait EfseAndApply[
-      XCharacterBlob <: IndexedSeq[XCharacter] ,
+      XCharacterBlob <: AnyRef ,
       XCharacter ,
       
    ]
@@ -139,10 +139,20 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
 
       //
       
+      extension (buf: XCharacterBlob) {
+
+         def toArray: Array[XCharacter] = {
+            buf
+            .characters
+            .toArray[XCharacter]
+         }
+
+      }
+
    }
    
    trait Apply[
-      XCharacterBlob <: IndexedSeq[XCharacter] ,
+      XCharacterBlob <: AnyRef ,
       XCharacter ,
       
    ]
@@ -227,7 +237,10 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
        * exact copy
        * 
        */
-      def copyOf(srcBuf: Array[XCharacter]): XCharacterBlob 
+      def copyOf(srcBuf: Array[XCharacter]): XCharacterBlob = {
+
+         copyOfByteArray(srcBuf )
+      }
 
       /**
        * 
@@ -240,37 +253,20 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
 
    }
    
-   trait EfseOfAaob[
-      XCharacterBlob >: collection.immutable.ArraySeq.ofByte <: collection.immutable.ArraySeq.ofByte ,
+   trait EfseOfBytes[
+      ByteBlob <: AnyRef ,
       XCharacter >: Byte <: Byte ,
       
    ]
    extends
    AnyRef
-   with Efse[XCharacterBlob, XCharacter]
-   with EfseAndApply[XCharacterBlob, XCharacter]
-   with ByteEfseReadersImpl[XCharacterBlob]
+   with Efse[ByteBlob, XCharacter]
+   with EfseAndApply[ByteBlob, XCharacter]
+   with ByteEfseReadersImpl[ByteBlob]
    {
       this1 =>
-      
-      private[EfseOfAaob] 
-      object `@#%% Impl` {
-      
-         final lazy val ByteBlob : this1.type = this1
-         type ByteBlob = XCharacterBlob
-         
-         final lazy val Bytes : this1.type = this1
-         type Bytes = XCharacterBlob
 
-      }
-
-      import `@#%% Impl`.*
-
-      override
-      implicit
-      val characterClassTag = {
-         reflect.ClassTag.Byte
-      }
+      //
 
       extension (buf: ByteBlob) {
 
@@ -296,27 +292,43 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
       extension (buf: ByteBlob) {
 
          def byteValues: IndexedSeq[Byte] = {
-            buf
+            buf.characters
          }
 
       }
 
-      extension (buf: ByteBlob) /* `characters` */ {
+   }
 
-         override
-         def characters: IndexedSeq[Byte] = {
-            buf
-         }
+   trait EfseAndApplyOfBytes[
+      XCharacterBlob <: AnyRef ,
+      XCharacter >: Byte <: Byte ,
+      
+   ]
+   extends
+   AnyRef
+   with EfseOfBytes[XCharacterBlob, XCharacter]
+   with EfseAndApply[XCharacterBlob, XCharacter]
+   {
+
+      this1 =>
+      
+      private[OpaquelyTypedCharacterStringExtensionMethodsDefTrait] 
+      object `@#%% Impl` {
+      
+         final lazy val ByteBlob : this1.type = this1
+         type ByteBlob = XCharacterBlob
+         
+         final lazy val Bytes : this1.type = this1
+         type Bytes = XCharacterBlob
 
       }
 
-      extension (buf: ByteBlob) {
+      import `@#%% Impl`.*
 
-         def toArray: Array[Byte] = {
-            buf.unsafeArray
-            .clone()
-         }
-
+      override
+      implicit
+      val characterClassTag = {
+         reflect.ClassTag.Byte
       }
 
       // export boxingImplicits.*
@@ -339,6 +351,46 @@ object  OpaquelyTypedCharacterStringExtensionMethodsDefTrait
                asBlob
             }
             
+         }
+
+      }
+
+      //
+
+   }
+   
+   trait EfseOfAaob[
+      XCharacterBlob >: collection.immutable.ArraySeq.ofByte <: collection.immutable.ArraySeq.ofByte ,
+      XCharacter >: Byte <: Byte ,
+      
+   ]
+   extends
+   AnyRef
+   with Efse[XCharacterBlob, XCharacter]
+   with EfseOfBytes[XCharacterBlob, XCharacter]
+   with EfseAndApply[XCharacterBlob, XCharacter]
+   with EfseAndApplyOfBytes[XCharacterBlob, XCharacter]
+   with ByteEfseReadersImpl[XCharacterBlob]
+   {
+      this1 =>
+      
+      import `@#%% Impl`.*
+
+      extension (buf: ByteBlob) /* `characters` */ {
+
+         override
+         def characters: IndexedSeq[Byte] = {
+            buf
+         }
+
+      }
+
+      extension (buf: ByteBlob) {
+
+         override
+         def toArray: Array[Byte] = {
+            buf.unsafeArray
+            .clone()
          }
 
       }
