@@ -40,13 +40,32 @@ object rbei {
       
       /**
        * 
-       * the return-value of `r.newLazyList()`
+       * equivalent to `r.newLazyList()`, except that
+       * EOF past receiving at-least a byte will be translated into a non-`EOFException` `IOException`
        * 
        */
       private[readEbmlIntegerImpl]
-      val s1 = (
-         r.newByteSeq()
-      ): LazyList[Byte]
+      val s1 = ({
+
+         val c = new java.util.concurrent.atomic.AtomicInteger
+
+         (
+            Iterator()
+            concat Iterator(r.readByte() ) 
+            concat {
+               Iterator.continually({
+                  try r.readByte()
+                  catch {
+                     case z : java.io.EOFException =>
+                        throw new java.io.IOException(s"malformed EBML Int -- half-course EOF ; c=${c.get() }", z )
+                  }
+               })
+            }
+         )
+         .tapEach(_ => c.incrementAndGet() )
+         .to(LazyList)
+         
+      }): LazyList[Byte]
 
       /**
        * 
