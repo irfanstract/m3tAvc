@@ -846,12 +846,35 @@ trait EBsd extends
                      match {
 
                         case rbe =>
+                           //
+
+                           if (rbe.typeInt == (0x387B27 : BigInt ) ) then {
+                              val msg = (
+                                 summon[CodeSchemeOps.TraversalDiagnostique]
+                                 .newLexerException(msg = s"apparent stream corruption ; <${rbe.typeInt } l=??? /> " )
+                                 .getMessage().nn
+                              )
+                              throw new java.io.IOException(msg )
+                           }
                            
                            // rbe.payloadLength
 
                            val l = {
-                              identity[BigDecimal](rbe.payloadLength.inBytes )
-                              .toIntExact
+                              util.Try({
+                                 ;
+                                 identity[BigDecimal](rbe.payloadLength.inBytes )
+                                 .toIntExact
+                              })
+                              .recover({
+                                 case z : RuntimeException =>
+                                    val msg = (
+                                       summon[CodeSchemeOps.TraversalDiagnostique]
+                                       .newLexerException(msg = s"($z) ; check the stream not corrupted!!! ; <${rbe.typeInt } l=??? /> " )
+                                       .getMessage().nn
+                                    )
+                                    throw new java.io.IOException(msg )
+                              })
+                              .get
                            }
                            
                            // if true then {
@@ -1122,7 +1145,7 @@ trait EBsd extends
                          * new `LazyList` running `readAndParseImpl`
                          * 
                          */
-                        LazyList() lazyAppendedAll {
+                        LazyList().lazyAppendedAll({
                            ((using : CodeSchemeOps.TraversalDiagnostique) ?=> {
 
                               extension (scheme : FramePayloadScheme ) {
@@ -1152,6 +1175,11 @@ trait EBsd extends
                               .ofChild(divName = s"contents")
 
                            ))
+                        })
+                        match {
+                           case s =>
+                              import avcframewrk.util.lazylists.asTerminatingCollOnException
+                              s.asTerminatingCollOnException()
                         }
 
                      })
@@ -1239,6 +1267,20 @@ trait EBsd extends
 
       }
 
+      protected[FramePayloadScheme]
+      def xEnsureFullyEvaluated(e : @!.Element ): Unit = {
+
+         {
+                                 e.children
+                                 .to(ebmsGenericUtils.Eagerness.toBeEager.characteristicSeqFactory )
+                                 .map({
+                                    case e : @!.Element =>
+                                       xEnsureFullyEvaluated(e)
+                                    case _ =>
+                                 })
+         }
+      }
+
       // @annotation.experimental
       opaque type OfMulti
          <: (
@@ -1307,6 +1349,8 @@ trait EBsd extends
                   )
 
                   lazy val childrenLl : LazyList[FramePayloadScheme#Instance] = {
+
+                     import avcframewrk.util.lazylists.asTerminatingCollOnException
 
                      //
                      LazyList.unfold[FramePayloadScheme#Instance, Unit](() )((_) => {
@@ -1413,6 +1457,22 @@ trait EBsd extends
                            }
                         }
                      })
+                     .asTerminatingCollOnException()
+                     .match { case ll => {
+                        ll
+                        .zipWithIndex
+                        .tapEach({ case (_, i) => {
+                           ll.take(i ).lastOption match {
+                        
+                              case Some(e : @!.Element) =>
+                                 xEnsureFullyEvaluated(e )
+                        
+                              case _ =>
+                        
+                           }
+                        } })
+                        .map(_._1) 
+                     } }
                   }
                   
                   /**
