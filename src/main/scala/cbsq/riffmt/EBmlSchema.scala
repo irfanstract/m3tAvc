@@ -572,6 +572,31 @@ trait EBsd extends
             >: cbsq.ByteBlob | java.net.URI
             <: cbsq.ByteBlob | java.net.URI
 
+         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
+            import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+            
+            encodedLength match {
+               case _ =>
+
+                  val byteSeq = {
+
+                     implReadBytes1(r)
+                  }
+
+                  val l = {
+                     import cbsq.bytemanip.FileSize.boxingImplicits.*
+                     byteSeq.length
+                  }
+
+                  val b = {
+                     cbsq.ByteBlob.from(byteSeq )
+                  }
+
+                  b encodedAs(enc = enc )
+                  
+            }
+         }
+
          private
          def implReadBytes1(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) : IndexedSeq[Byte] = {
             import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
@@ -632,31 +657,6 @@ trait EBsd extends
 
             }
 
-         }
-
-         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
-            import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
-            
-            encodedLength match {
-               case _ =>
-
-                  val byteSeq = {
-
-                     implReadBytes1(r)
-                  }
-
-                  val l = {
-                     import cbsq.bytemanip.FileSize.boxingImplicits.*
-                     byteSeq.length
-                  }
-
-                  val b = {
-                     cbsq.ByteBlob.from(byteSeq )
-                  }
-
-                  b encodedAs(enc = enc )
-                  
-            }
          }
 
          @annotation.experimental
