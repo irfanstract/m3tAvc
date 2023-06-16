@@ -1267,6 +1267,20 @@ trait EBsd extends
 
       }
 
+      protected[FramePayloadScheme]
+      def xEnsureFullyEvaluated(e : @!.Element ): Unit = {
+
+         {
+                                 e.children
+                                 .to(ebmsGenericUtils.Eagerness.toBeEager.characteristicSeqFactory )
+                                 .map({
+                                    case e : @!.Element =>
+                                       xEnsureFullyEvaluated(e)
+                                    case _ =>
+                                 })
+         }
+      }
+
       // @annotation.experimental
       opaque type OfMulti
          <: (
@@ -1444,6 +1458,21 @@ trait EBsd extends
                         }
                      })
                      .asTerminatingCollOnException()
+                     .match { case ll => {
+                        ll
+                        .zipWithIndex
+                        .tapEach({ case (_, i) => {
+                           ll.take(i ).lastOption match {
+                        
+                              case Some(e : @!.Element) =>
+                                 xEnsureFullyEvaluated(e )
+                        
+                              case _ =>
+                        
+                           }
+                        } })
+                        .map(_._1) 
+                     } }
                   }
                   
                   /**
