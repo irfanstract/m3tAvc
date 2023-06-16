@@ -1,5 +1,7 @@
 package cbsq.riffmt
 
+import cbsq.avc.LateBoundValue
+
 
 
 
@@ -84,13 +86,23 @@ trait EBsd extends
       extension (this1 : CodeSchemeOps) {
 
          // transparent inline
-         def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
+         def readAndParse(
+            src: this1.RnpSource ,
+
+            eagerness : ebmsGenericUtils.Eagerness = {
+               
+               ebmsGenericUtils.Eagerness.toBeEager
+            } ,
+
+         )(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
             
             this1.readAndParseImpl(r = {
 
                CodeSchemeOps.RpiaImpl(
-                  src = r ,
-                  eagerness = ebmsGenericUtils.Eagerness.toBeEager ,
+                  src = src ,
+                  eagerness = eagerness ,
+
+                  reoc = xNewReoc() ,
                )
 
             } )(using td )
@@ -105,6 +117,8 @@ trait EBsd extends
                CodeSchemeOps.RpiaImpl(
                   src = r ,
                   eagerness = ebmsGenericUtils.Eagerness.toBeLazy ,
+                  
+                  reoc = xNewReoc() ,
                )
 
             } )(using td )
@@ -118,6 +132,8 @@ trait EBsd extends
 
             eagerness : ebmsGenericUtils.Eagerness ,
 
+            reoc : reocImpl.Reoc ,
+
          )(using td : CodeSchemeOps.TraversalDiagnostique) = {
             
             this1.readAndParseImpl(r = {
@@ -125,6 +141,8 @@ trait EBsd extends
                CodeSchemeOps.RpiaImpl(
                   src = src ,
                   eagerness = eagerness ,
+                  
+                  reoc = reoc ,
                )
 
             } )(using td )
@@ -208,7 +226,15 @@ trait EBsd extends
       case class RpiaImpl(
          src : CodeSchemeOps#RnpSource ,
          eagerness : ebmsGenericUtils.Eagerness ,
+
+         reoc : reocImpl.Reoc ,
+         
       )
+
+      def xNewReoc() : reocImpl.Reoc = {
+
+         reocImpl.newReoc()
+      }
 
    }
 
@@ -1181,7 +1207,7 @@ trait EBsd extends
                                  def sub1 = {
                                     ;
                                     scheme
-                                    .readAndParseAlt(src = r, eagerness = rpia.eagerness )
+                                    .readAndParseAlt(src = r, eagerness = rpia.eagerness, reoc = rpia.reoc )
                                  }
                                  
                               }
@@ -1452,12 +1478,20 @@ trait EBsd extends
                            try 
                               val i = c
 
+                              import r.reoc
+
+                              val es = reoc.mark()
+
+                              es._1.checkCompleted()
+
                               val s1 = (
                                  readNextChild()(using (
                                     summon[CodeSchemeOps.TraversalDiagnostique]
                                     .ofChild(divName = s"$i")
                                  ))
                               )
+
+                              es._2.markCompleted()
                               
                               Some(s1 , ())
 
@@ -1737,7 +1771,7 @@ trait EBsd extends
    extension (r: UnpickleInputStream) {
       
       def readEbmlByScheme(s: FramePayloadScheme)(using CodeSchemeOps.TraversalDiagnostique) = {
-         s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
+         s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager, reoc = CodeSchemeOps.xNewReoc() )
       }
 
    }
@@ -1899,7 +1933,7 @@ trait EBsd extends
                      (try {
                         ((
                            // s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
-                           c readAndParseAlt(src = r, eagerness = ec.eagerness )
+                           c readAndParseAlt(src = r, eagerness = ec.eagerness, reoc = ec.reoc )
                         ), {
                            import reflect.Selectable.reflectiveSelectable
                            /**
@@ -1987,6 +2021,158 @@ trait EBsdSpecificUtilDefs extends
       }
       
    } /* trimToJustFiveHundred */
+
+   /**
+    * 
+    * "Reader/InputStream Usage Control"
+    * a toolkit 
+    * for implementing the locking-control before the main InputStream-or-Reader 
+    * 
+    */
+   private[riffmt]
+   object reocImpl
+   {
+
+      trait MarkableNoArg[+R] {
+
+         def mark() : R
+         
+      }
+
+      trait JoinableNoArg[+R] {
+
+         def join() : R
+         
+      }
+
+      trait HasDoMarkCompletedNoArg[+R] {
+
+         def markCompleted() : R
+         
+      }
+
+      trait HasDoCheckCompletedNoArg[+R] {
+
+         def checkCompleted() : R
+         
+      }
+
+      opaque type Reoc
+         <: AnyRef & MarkableNoArg[(JoinableNoArg[Unit] & HasDoCheckCompletedNoArg[Unit] , HasDoMarkCompletedNoArg[Unit] ) ]
+         = AnyRef & MarkableNoArg[([E] =>> (E, E) )[AelGeneric[Any] ] ]
+         
+      // import java.util.concurrent.Semaphore
+      import avcframewrk.util.LateBoundValue
+      type Semaphore = (LateBoundValue.NhwCompleteWith[Unit] & LateBoundValue.NhwGetValue[Unit] )
+
+      def newReoc() : Reoc = {
+
+         object impl extends
+         AnyRef
+         with MarkableNoArg[([E] =>> (E, E) )[AelGeneric[Any] ] ]
+         {
+
+            import language.unsafeNulls
+
+            override
+            def toString(): String = {
+               s"Reoc(iterator: ${waitListItr } ; )"
+            }
+
+            private[impl]  
+            type Ael
+               = AelGeneric[Int]
+
+            // /**
+            //  * shall initially point to `0` 
+            //  */
+            // protected 
+            // val lC = {
+            //    new java.util.concurrent.atomic.AtomicInteger(0)
+            // }
+
+            /**
+             * progressive
+             */
+            protected 
+            val waitList: LazyList[Ael ] = {
+
+               def newSemaphore(resolve : Boolean ) = {
+                  val s = LateBoundValue.newInstance[Unit]
+                  if resolve then s.success({ })
+                  s
+               }
+               
+               LazyList.unfold[Ael, (Int, Semaphore )]((0, newSemaphore(resolve = true ) ) )({
+
+                  case (i, sm0) =>
+                     ;
+
+                     object mainHandle extends Ael(i = i, sm = newSemaphore(resolve = false ) ) {
+
+                        override
+                        def toString(): String = {
+                           s"Reoc.Mark(${this.i }; $sm0 to $sm ; )"
+                        }
+
+                     }
+
+                     Some((mainHandle, (i + 1, mainHandle.sm ) ))
+                     
+               })
+            }
+
+            private 
+            val waitListItr = {
+               waitList
+               .iterator
+               .sliding(size = 2, step = 1)
+               .map({ case Seq(h0, h1) => (h0, h1) })
+            }
+
+            override
+            def mark() = {
+               
+               waitListItr
+               .next()
+            }
+
+         }
+         impl
+      }
+
+      private[reocImpl]  
+      trait AelGeneric[+I](
+         val i : I ,
+         val sm : Semaphore ,
+         
+      ) extends
+      AnyRef
+      with HasDoMarkCompletedNoArg[Unit]
+      with JoinableNoArg[Unit]
+      with HasDoCheckCompletedNoArg[Unit]
+      {
+               ;
+               
+               override
+               def join(): Unit = {
+                  sm.getValue()
+               }
+
+               override
+               def checkCompleted(): Unit = {
+                  sm.asFuture
+                  .value.getOrElse({ throw new IllegalStateException }).get
+               }
+
+               override
+               def markCompleted(): Unit = {
+                  sm.success({ })
+               }
+
+      }
+
+   }
 
 }
 

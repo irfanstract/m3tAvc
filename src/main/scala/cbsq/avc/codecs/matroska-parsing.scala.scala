@@ -74,7 +74,7 @@ def demuuxMatroskaFile(r : java.io.InputStream )(
                (
                   matroskaSegmentElementScheme
 
-                  .readAndParseAlt(
+                  .readAndParse(
                      //
 
                      src = r ,
