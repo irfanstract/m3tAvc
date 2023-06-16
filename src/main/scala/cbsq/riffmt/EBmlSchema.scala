@@ -1756,7 +1756,17 @@ trait EBsd extends
    object `elements_@&%!` {
 
       // sealed 
-      trait Element { val className: BigInt ; val children: Seq[FramePayloadScheme#Instance] } 
+      trait Element {
+         
+         val className: BigInt
+
+         lazy val classSimpleName: String = {
+            className.ebmlClassNameFmatted
+         }
+
+         val children: Seq[FramePayloadScheme#Instance] 
+
+      } 
 
       // sealed 
       // case class Element1(
@@ -1775,10 +1785,6 @@ trait EBsd extends
             ;
 
             // import FramePayloadScheme.*
-
-            lazy val classSimpleName: String = {
-               className.ebmlClassNameFmatted
-            }
 
             override
             def toString(): String = {
