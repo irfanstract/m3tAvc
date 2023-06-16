@@ -572,7 +572,8 @@ trait EBsd extends
             >: cbsq.ByteBlob | java.net.URI
             <: cbsq.ByteBlob | java.net.URI
 
-         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
+         private
+         def implReadBytes1(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) : IndexedSeq[Byte] = {
             import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
             
             encodedLength match {
@@ -621,15 +622,40 @@ trait EBsd extends
                      }) 
                   }
 
+                  byteSeq
+
+               case CodeSchemeOps.cHasVariableLength =>
+                  //
+
+                  r
+                  .readAllBytes().toIndexedSeq
+
+            }
+
+         }
+
+         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
+            import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+            
+            encodedLength match {
+               case _ =>
+
+                  val byteSeq = {
+
+                     implReadBytes1(r)
+                  }
+
+                  val l = {
+                     import cbsq.bytemanip.FileSize.boxingImplicits.*
+                     byteSeq.length
+                  }
+
                   val b = {
                      cbsq.ByteBlob.from(byteSeq )
                   }
 
                   b encodedAs(enc = enc )
                   
-               case _ =>
-                  val oe = summon[CodeSchemeOps.TraversalDiagnostique].newLexerException(msg = "'encodedLength' not specified")
-                  throw new java.io.IOException(oe.getMessage() )
             }
          }
 
