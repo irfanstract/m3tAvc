@@ -1820,37 +1820,9 @@ trait EBsd extends
 
    // def getLengthOfDataType[C](c: reflect.ClassTag[C]): cHasVariableLength.type | cbsq.FileSize
    private 
-   object cStdDataTypeSizingUtil {
-
-      import CodeSchemeOps.cHasVariableLength
-
-      def getLengthOfDataType[C](c: reflect.ClassTag[C]): cHasVariableLength.type | cbsq.FileSize = {
-         import reflect.ClassTag.*
-         val bigIntClassTag = reflect.classTag[BigInt     ]
-         val bigDcmClassTag = reflect.classTag[BigDecimal ]
-         val dcdClassTag = reflect.ClassTag[concurrent.duration.Deadline]
-         c match
-            
-            case Unit  => 0.B
-
-            case Byte  => ( 0x01).B
-            case Char  => ( 0x02).B
-            case Short => ( 0x02).B
-            case Int   => ( 0x04).B
-            case Long  => ( 0x08).B
-
-            case `bigIntClassTag` => cHasVariableLength
-
-            case Float   => ( 0x04).B
-            case Double  => ( 0x08).B
-
-            case `bigDcmClassTag` => cHasVariableLength
-
-            case `dcdClassTag` => (0x08 ).B
-
-         
-      }
-
+   final
+   lazy val cStdDataTypeSizingUtil = {
+      CodeSchemeOps.cStdDataTypeSizingUtil
    }
 
    private 
@@ -2025,40 +1997,11 @@ object ebmlSchemesUtilChronography
 //    e.isAtEof()
 // }
 
-/**
- * 
- * `EBml.CodeSchemeOps` shall `extends` this `trait`
- * 
- */
-sealed trait chvl extends 
-   AnyRef 
+protected 
+object ebmlSchemesPrimitivesIo
 {
+      //
    
-      import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
-      
-      /**
-       * 
-       * extending `Singleton` is necessary,
-       * so that the inferred types become the exact argument value types
-       * 
-       * ```
-       * applyRelevantMod(mode = 3)
-       * ```
-       * 
-       */
-      type S[+T] = Singleton & T
-
-      export ebmsGenericUtils.Lze
-
-      export ebmsGenericUtils.Lazy
- 
-      /**
-       * 
-       * a specia-value denoting "can be any length"
-       * 
-       */
-      case object cHasVariableLength
-
       /**
        * 
        * the EBML RFC/spec 
@@ -2108,6 +2051,87 @@ sealed trait chvl extends
 
          }
          
+      }
+
+}
+
+/**
+ * 
+ * `EBml.CodeSchemeOps` shall `extends` this `trait`
+ * 
+ */
+sealed trait chvl extends 
+   AnyRef 
+{
+   
+      import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+      
+      /**
+       * 
+       * extending `Singleton` is necessary,
+       * so that the inferred types become the exact argument value types
+       * 
+       * ```
+       * applyRelevantMod(mode = 3)
+       * ```
+       * 
+       */
+      type S[+T] = Singleton & T
+
+      export ebmsGenericUtils.Lze
+
+      export ebmsGenericUtils.Lazy
+ 
+      /**
+       * 
+       * the EBML RFC/spec 
+       * defines this to be `the 1st of January 2001, 00:00`
+       * 
+       */
+      export ebmlSchemesUtilChronography.globalBaseDate
+
+      export ebmsGenericUtils.readNBytesEbmSc
+
+      export ebmlSchemesPrimitivesIo.readEbmlDateBytes
+
+      /**
+       * 
+       * a specia-value denoting "can be any length"
+       * 
+       */
+      case object cHasVariableLength
+
+      object cStdDataTypeSizingUtil {
+
+         import byteManipImplicits.*
+
+         def getLengthOfDataType[C](c: reflect.ClassTag[C]): cHasVariableLength.type | cbsq.FileSize = {
+            import reflect.ClassTag.*
+            val bigIntClassTag = reflect.classTag[BigInt     ]
+            val bigDcmClassTag = reflect.classTag[BigDecimal ]
+            val dcdClassTag = reflect.ClassTag[concurrent.duration.Deadline]
+            c match
+               
+               case Unit  => 0.B
+
+               case Byte  => ( 0x01).B
+               case Char  => ( 0x02).B
+               case Short => ( 0x02).B
+               case Int   => ( 0x04).B
+               case Long  => ( 0x08).B
+
+               case `bigIntClassTag` => cHasVariableLength
+
+               case Float   => ( 0x04).B
+               case Double  => ( 0x08).B
+
+               case `bigDcmClassTag` => cHasVariableLength
+
+               case `dcdClassTag` => (0x08 ).B
+
+            
+         }
+
       }
 
 }
