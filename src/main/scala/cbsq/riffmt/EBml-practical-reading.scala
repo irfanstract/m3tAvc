@@ -216,11 +216,11 @@ def runEbmlDemonstrativeTransversal(
                         /**
                          * 
                          * momentarily
-                         * we needed to skip toe `toString` calls as
+                         * we needed to skip the `toString` calls as
                          * (for unidentified reasons) it caused race-conditions
                          * 
                          */
-                        true
+                        false
                      }
                      
                      c
