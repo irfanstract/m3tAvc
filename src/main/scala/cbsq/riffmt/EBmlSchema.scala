@@ -122,6 +122,15 @@ trait EBsd extends
 
       }
 
+      sealed trait WhichIsXmlStreamRnpIble extends 
+      AnyRef 
+      {
+         this : CodeSchemeOps & WhichIsSimplyRnpIble =>
+
+         def readAndParseAsXmlStreamEvts(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) : avcframewrk.xml.XmlCodeStream.XmlStreamReader
+
+      }
+
       sealed trait WhichIsSimplyRnpIble extends 
       AnyRef 
       {
@@ -312,9 +321,21 @@ trait EBsd extends
          new
          CodeUnitScheme
          with CodeSchemeOps.WhichIsSimplyRnpIble
+         with CodeSchemeOps.WhichIsXmlStreamRnpIble
          {
             
-            def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
+            def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Nothing = {
+               
+               implFail()
+            }
+
+            def readAndParseAsXmlStreamEvts(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
+               
+               implFail()
+            }
+
+            def implFail( )(using CodeSchemeOps.TraversalDiagnostique) = {
+
                throw summon[CodeSchemeOps.TraversalDiagnostique].newLexerException(msg = h() )
             }
 
@@ -331,7 +352,8 @@ trait EBsd extends
          }
       }
 
-      type WhichIsSimplyRnpIble = CodeSchemeOps.WhichIsSimplyRnpIble
+      export CodeSchemeOps.WhichIsSimplyRnpIble
+      export CodeSchemeOps.WhichIsXmlStreamRnpIble
 
       sealed trait OfFixedLengthStrv extends 
       CodeUnitScheme 
@@ -390,6 +412,12 @@ trait EBsd extends
          
          type Instance = Instance1
          
+         // override
+         // def readAndParseAsXmlStreamEvts(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) : avcframewrk.xml.XmlCodeStream.XmlStreamReader = {
+            
+         //    throw new java.io.IOException("TODO")
+         // }
+
          override
          type RnpSource
             >: UnpickleInputStream
@@ -429,6 +457,7 @@ trait EBsd extends
       with OfFixedLengthStrv0
       with FramePayloadScheme.OfFixedLengthStrv
       with CodeUnitScheme.WhichIsSimplyRnpIble
+      with CodeUnitScheme.WhichIsXmlStreamRnpIble
       { 
 
          type Instance 
@@ -452,6 +481,15 @@ trait EBsd extends
             r.readEbmlDateBytes(supposedReadingLength = supposedReadingLength )
          }
          
+         def readAndParseAsXmlStreamEvts(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) : avcframewrk.xml.XmlCodeStream.XmlStreamReader = {
+
+            val readedValue = readAndParseImpl(r )
+
+            avcframewrk.xml.XmlCodeStream.newXmlIsing(o => {
+               o println(s"$readedValue")
+            })
+         }
+
          @annotation.experimental
          def writeBnr(d: Instance, dest: RnpDest): WbnrR = {
             util.control.NonLocalReturns.returning[WbnrR](resolve ?=> {
@@ -486,6 +524,7 @@ trait EBsd extends
       with OfFixedLengthStrv0
       with FramePayloadScheme.OfFixedLengthStrv
       with CodeUnitScheme.WhichIsSimplyRnpIble
+      with CodeUnitScheme.WhichIsXmlStreamRnpIble
       { 
 
          type Instance 
@@ -503,6 +542,15 @@ trait EBsd extends
             ))
          }
          
+         def readAndParseAsXmlStreamEvts(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) : avcframewrk.xml.XmlCodeStream.XmlStreamReader = {
+
+            val readedValue = readAndParseImpl(r )
+
+            avcframewrk.xml.XmlCodeStream.newXmlIsing(o => {
+               o println(s"$readedValue")
+            })
+         }
+
          def writeBnr(d: Instance, dest: RnpDest): WbnrR = {
             (summon[OctetWritedownOp[C] ] )(dest, d)
          }
