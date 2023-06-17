@@ -64,6 +64,8 @@ trait EBsd extends
 
       // def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
 
+      // def readAndParseAsXmlStreamEvts(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) : avcframewrk.xml.XmlCodeStream.XmlStreamReader
+
       type RnpSource
         <: java.io.InputStream | java.io.DataInput
 
@@ -121,10 +123,63 @@ trait EBsd extends
       }
 
       sealed trait WhichIsSimplyRnpIble extends 
-      CodeSchemeOps 
+      AnyRef 
       {
+         this : CodeSchemeOps & WhichIsSimplyRnpIble =>
 
          def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
+         
+      }
+
+      extension (this1 : CodeSchemeOps & WhichIsSimplyRnpIble) {
+
+         // transparent inline
+         def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
+            
+            this1.readAndParseImpl(r = {
+
+               CodeSchemeOps.RpiaImpl(
+                  src = r ,
+                  eagerness = ebmsGenericUtils.Eagerness.toBeEager ,
+               )
+
+            } )(using td )
+
+         }
+         
+         // transparent inline
+         def readAndParseIteratively(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
+            
+            this1.readAndParseImpl(r = {
+
+               CodeSchemeOps.RpiaImpl(
+                  src = r ,
+                  eagerness = ebmsGenericUtils.Eagerness.toBeLazy ,
+               )
+
+            } )(using td )
+
+         }
+         
+         def readAndParseAlt(
+            //
+
+            src: this1.RnpSource,
+
+            eagerness : ebmsGenericUtils.Eagerness ,
+
+         )(using td : CodeSchemeOps.TraversalDiagnostique) = {
+            
+            this1.readAndParseImpl(r = {
+
+               CodeSchemeOps.RpiaImpl(
+                  src = src ,
+                  eagerness = eagerness ,
+               )
+
+            } )(using td )
+
+         }
          
       }
 
@@ -162,11 +217,11 @@ trait EBsd extends
 
       private[EBsd]
       case class RpiaImpl(
+         //
+
          src : CodeSchemeOps#RnpSource ,
          eagerness : ebmsGenericUtils.Eagerness ,
 
-         reoc : reocImpl.Reoc ,
-         
       )
 
       def xNewReoc() : reocImpl.Reoc = {
@@ -254,7 +309,9 @@ trait EBsd extends
       import common1.*
 
       def alwaysFailingInstance(h: () => String) = {
-         new CodeUnitScheme
+         new
+         CodeUnitScheme
+         with CodeSchemeOps.WhichIsSimplyRnpIble
          {
             
             def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {

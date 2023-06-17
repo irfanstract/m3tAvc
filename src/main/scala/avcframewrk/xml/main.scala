@@ -19,6 +19,14 @@ object XmlCodeStream {
 
    export xmlCodeStreamFactory.*
 
+   type XmlStreamReader
+      >: javax.xml.stream.XMLEventReader
+      <: javax.xml.stream.XMLEventReader
+
+   type XmlStreamWriter
+      >: javax.xml.stream.XMLStreamWriter
+      <: javax.xml.stream.XMLStreamWriter
+
 }
 
 object xmlCodeStreamFactory {
