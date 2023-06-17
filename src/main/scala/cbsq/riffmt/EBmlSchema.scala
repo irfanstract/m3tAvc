@@ -120,6 +120,14 @@ trait EBsd extends
 
       }
 
+      sealed trait WhichIsSimplyRnpIble extends 
+      CodeSchemeOps 
+      {
+
+         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
+         
+      }
+
       private[EBsd]
       // implicit
       def getRnpSourceRpiaImpl(ctx : CodeSchemeOps )(s: ctx.ReadingParsingImplArg ): ctx.RnpSource = {
@@ -266,6 +274,8 @@ trait EBsd extends
          }
       }
 
+      type WhichIsSimplyRnpIble = CodeSchemeOps.WhichIsSimplyRnpIble
+
       sealed trait OfFixedLengthStrv extends 
       CodeUnitScheme 
       with OfFixedLengthStrv0
@@ -361,6 +371,7 @@ trait EBsd extends
       CodeUnitScheme 
       with OfFixedLengthStrv0
       with FramePayloadScheme.OfFixedLengthStrv
+      with CodeUnitScheme.WhichIsSimplyRnpIble
       { 
 
          type Instance 
@@ -379,6 +390,7 @@ trait EBsd extends
             ) : Long
          )
 
+         override
          def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
             r.readEbmlDateBytes(supposedReadingLength = supposedReadingLength )
          }
@@ -416,6 +428,7 @@ trait EBsd extends
       CodeUnitScheme 
       with OfFixedLengthStrv0
       with FramePayloadScheme.OfFixedLengthStrv
+      with CodeUnitScheme.WhichIsSimplyRnpIble
       { 
 
          type Instance 
@@ -514,6 +527,7 @@ trait EBsd extends
       with OfFixedLengthStrv0
       with FramePayloadScheme.OfFixedLengthStrv
       with XLengthOverrideableAs[OfStr[?, ActualCharset, DEcv] ]
+      with CodeUnitScheme.WhichIsSimplyRnpIble
       {
          
          if true then {
