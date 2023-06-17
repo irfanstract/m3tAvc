@@ -60,71 +60,71 @@ def ebmlSchemalImplTest(): Unit =
          })
       }
       implicit val trav = EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance
-      locally {
-         val s1 = EBml.FramePayloadScheme.OfNumber.of[Long](defaultValue = -1 )
-         println((
-            s1.readAndParse((
-               IndexedSeq[Int](-1, -1, -1, -1, -1, -1, -1, -1).map(_.toByte)
-               .asBlob
-               .newGrossReader()
-               .asMarkableStream()
-            ))
-         ))
-         println((
-            s1.readAndParse((
-               IndexedSeq[Int](-1, -1, -1, -1, -1, -2, -1, -1).map(_.toByte)
-               .asBlob
-               .newGrossReader()
-               .asMarkableStream()
-            ))
-         ))
-         println((
-            s1.readAndParse((
-               IndexedSeq[Int](-1, -1, -1, -2, -1, -1, -1, -1).map(_.toByte)
-               .asBlob
-               .newGrossReader()
-               .asMarkableStream()
-            ))
-         ))
-      }
-      println((
-         EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
-         .readAndParse((
-            IndexedSeq[Int](-1, -1, -1, -2, -1, -2, -1, -1).map(_.toByte)
-            .asBlob
-            .newGrossReader()
-            .asMarkableStream()
-         ))
-      ))
-      println((
-         EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
-         .readAndParse((
-            IndexedSeq[Int](-1, -25, -1, -2, -1, -2, -1, -1).map(_.toByte)
-            .asBlob
-            .newGrossReader()
-            .asMarkableStream()
-         ))
-      ))
-      try {
-         util.Try({ throw new InterruptedException })
-         throw new AssertionError
-      } catch {
-         case z : InterruptedException =>
-            println(z)
-      }
-      println((
-         util.Try((
-            EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
-            .readAndParse((
-               IndexedSeq[Int](-1, -25, -1, -2, -1 ).map(_.toByte)
-               .asBlob
-               .newGrossReader()
-               .asMarkableStream()
-            ))
-         ))
-         .failed
-         .map({ case e : java.io.EOFException => e })
-      ))
+      // locally {
+      //    val s1 = EBml.FramePayloadScheme.OfNumber.of[Long](defaultValue = -1 )
+      //    println((
+      //       s1.readAndParse((
+      //          IndexedSeq[Int](-1, -1, -1, -1, -1, -1, -1, -1).map(_.toByte)
+      //          .asBlob
+      //          .newGrossReader()
+      //          .asMarkableStream()
+      //       ))
+      //    ))
+      //    println((
+      //       s1.readAndParse((
+      //          IndexedSeq[Int](-1, -1, -1, -1, -1, -2, -1, -1).map(_.toByte)
+      //          .asBlob
+      //          .newGrossReader()
+      //          .asMarkableStream()
+      //       ))
+      //    ))
+      //    println((
+      //       s1.readAndParse((
+      //          IndexedSeq[Int](-1, -1, -1, -2, -1, -1, -1, -1).map(_.toByte)
+      //          .asBlob
+      //          .newGrossReader()
+      //          .asMarkableStream()
+      //       ))
+      //    ))
+      // }
+      // println((
+      //    EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
+      //    .readAndParse((
+      //       IndexedSeq[Int](-1, -1, -1, -2, -1, -2, -1, -1).map(_.toByte)
+      //       .asBlob
+      //       .newGrossReader()
+      //       .asMarkableStream()
+      //    ))
+      // ))
+      // println((
+      //    EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
+      //    .readAndParse((
+      //       IndexedSeq[Int](-1, -25, -1, -2, -1, -2, -1, -1).map(_.toByte)
+      //       .asBlob
+      //       .newGrossReader()
+      //       .asMarkableStream()
+      //    ))
+      // ))
+      // try {
+      //    util.Try({ throw new InterruptedException })
+      //    throw new AssertionError
+      // } catch {
+      //    case z : InterruptedException =>
+      //       println(z)
+      // }
+      // println((
+      //    util.Try((
+      //       EBml.FramePayloadScheme.OfNumber.of[Double](defaultValue = 0)
+      //       .readAndParse((
+      //          IndexedSeq[Int](-1, -25, -1, -2, -1 ).map(_.toByte)
+      //          .asBlob
+      //          .newGrossReader()
+      //          .asMarkableStream()
+      //       ))
+      //    ))
+      //    .failed
+      //    .map({ case e : java.io.EOFException => e })
+      // ))
    }
 
 

@@ -62,7 +62,7 @@ trait EBsd extends
       
       type Instance
 
-      def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
+      // def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
 
       type RnpSource
         <: java.io.InputStream | java.io.DataInput
@@ -81,57 +81,73 @@ trait EBsd extends
    with chvl
    {
 
-      extension (this1 : CodeSchemeOps) {
+      // extension (this1 : CodeSchemeOps) {
 
-         // transparent inline
-         def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
+      //    // transparent inline
+      //    def readAndParse(
+      //       src: this1.RnpSource ,
+
+      //       eagerness : ebmsGenericUtils.Eagerness = {
+               
+      //          ebmsGenericUtils.Eagerness.toBeEager
+      //       } ,
+
+      //    )(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
             
-            this1.readAndParseImpl(r = {
+      //       this1.readAndParseImpl(r = {
 
-               CodeSchemeOps.RpiaImpl(
-                  src = r ,
-                  eagerness = ebmsGenericUtils.Eagerness.toBeEager ,
-               )
+      //          CodeSchemeOps.RpiaImpl(
+      //             src = src ,
+      //             eagerness = eagerness ,
 
-            } )(using td )
+      //             reoc = xNewReoc() ,
+      //          )
 
-         }
+      //       } )(using td )
+
+      //    }
          
-         // transparent inline
-         def readAndParseIteratively(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
+      //    // transparent inline
+      //    def readAndParseIteratively(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
             
-            this1.readAndParseImpl(r = {
+      //       this1.readAndParseImpl(r = {
 
-               CodeSchemeOps.RpiaImpl(
-                  src = r ,
-                  eagerness = ebmsGenericUtils.Eagerness.toBeLazy ,
-               )
+      //          CodeSchemeOps.RpiaImpl(
+      //             src = r ,
+      //             eagerness = ebmsGenericUtils.Eagerness.toBeLazy ,
+                  
+      //             reoc = xNewReoc() ,
+      //          )
 
-            } )(using td )
+      //       } )(using td )
 
-         }
+      //    }
          
-         def readAndParseAlt(
-            //
+      //    def readAndParseAlt(
+      //       //
 
-            src: this1.RnpSource,
+      //       src: this1.RnpSource,
 
-            eagerness : ebmsGenericUtils.Eagerness ,
+      //       eagerness : ebmsGenericUtils.Eagerness ,
 
-         )(using td : CodeSchemeOps.TraversalDiagnostique) = {
+      //       reoc : reocImpl.Reoc ,
+
+      //    )(using td : CodeSchemeOps.TraversalDiagnostique) = {
             
-            this1.readAndParseImpl(r = {
+      //       this1.readAndParseImpl(r = {
 
-               CodeSchemeOps.RpiaImpl(
-                  src = src ,
-                  eagerness = eagerness ,
-               )
+      //          CodeSchemeOps.RpiaImpl(
+      //             src = src ,
+      //             eagerness = eagerness ,
+                  
+      //             reoc = reoc ,
+      //          )
 
-            } )(using td )
+      //       } )(using td )
 
-         }
+      //    }
          
-      }
+      // }
 
       export `% % & @`.TraversalDiagnostique
       
@@ -208,7 +224,15 @@ trait EBsd extends
       case class RpiaImpl(
          src : CodeSchemeOps#RnpSource ,
          eagerness : ebmsGenericUtils.Eagerness ,
+
+         reoc : reocImpl.Reoc ,
+         
       )
+
+      def xNewReoc() : reocImpl.Reoc = {
+
+         reocImpl.newReoc()
+      }
 
    }
 
@@ -275,8 +299,8 @@ trait EBsd extends
    with FramePayloadScheme
    {
       
-      override
-      def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
+      // override
+      // def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
 
       override
       type RnpSource
@@ -372,12 +396,12 @@ trait EBsd extends
             >: UnpickleInputStream
             <: UnpickleInputStream
 
-         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
-            schemeAlternativeImpl.demarsh[
-               Instance1 ,
-               ChildScheme ,
-            ](s)(using summon[CodeSchemeOps.TraversalDiagnostique].ofChild(divName = "alts"))(ec = r , r = r )
-         }
+         // def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
+         //    schemeAlternativeImpl.demarsh[
+         //       Instance1 ,
+         //       ChildScheme ,
+         //    ](s)(using summon[CodeSchemeOps.TraversalDiagnostique].ofChild(divName = "alts"))(ec = r , r = r )
+         // }
 
          // TODO
          override
@@ -727,7 +751,7 @@ trait EBsd extends
 
       type Instance
 
-      def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
+      // def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
 
       /**
        * 
@@ -814,6 +838,7 @@ trait EBsd extends
                FScOps
             ) ]
          ) ,
+         classSimpleName : Null | String ,
       ) 
       extends 
       CodeUnitScheme 
@@ -833,211 +858,211 @@ trait EBsd extends
             >: UnpickleInputStream
             <: UnpickleInputStream
 
-         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
-               // TODO
-               val efpr = {
-                  import trvdFramesIoExcs.*
-                  try ({
+         // def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance = {
+         //       // TODO
+         //       val efpr = {
+         //          import trvdFramesIoExcs.*
+         //          try ({
                      
-                     try {
-                        r.checkNotAtEof()
+         //             try {
+         //                r.checkNotAtEof()
 
-                     } catch {
+         //             } catch {
                         
-                        case z : (java.io.EOFException ) =>
+         //                case z : (java.io.EOFException ) =>
                            
-                           throw (
-                              newFirstPlaceEofException(z = z, r = r)
-                           )
+         //                   throw (
+         //                      newFirstPlaceEofException(z = z, r = r)
+         //                   )
 
-                     }
+         //             }
 
-                     //
-                     /**
-                      * 
-                      * take the next chunk of bytes, and
-                      * get the raw/as-is payload
-                      * 
-                      */
-                     locally({
-                     ;
-                     def getCurrentPosInBytes() = {
-                        r.getCurrentPos().inBytes
-                        .toInt
-                     }
-                     val r1 = r
-                     (new java.io.DataInputStream(r1) )
-                     // .lazilyReadEbmlFrameOfPayloadRaw()
-                     .lazilyReadEbmlFrameOfPayloadRaw()
-                     // .readEbmlFrameOfPayloadRaw()
-                     match {
+         //             //
+         //             /**
+         //              * 
+         //              * take the next chunk of bytes, and
+         //              * get the raw/as-is payload
+         //              * 
+         //              */
+         //             locally({
+         //             ;
+         //             def getCurrentPosInBytes() = {
+         //                r.getCurrentPos().inBytes
+         //                .toInt
+         //             }
+         //             val r1 = r
+         //             (new java.io.DataInputStream(r1) )
+         //             // .lazilyReadEbmlFrameOfPayloadRaw()
+         //             .lazilyReadEbmlFrameOfPayloadRaw()
+         //             // .readEbmlFrameOfPayloadRaw()
+         //             match {
 
-                        case rbe =>
-                           //
+         //                case rbe =>
+         //                   //
 
-                           if (rbe.typeInt == (0x387B27 : BigInt ) ) then {
-                              val msg = (
-                                 summon[CodeSchemeOps.TraversalDiagnostique]
-                                 .newLexerException(msg = s"apparent stream corruption ; <${rbe.typeInt } l=??? /> " )
-                                 .getMessage().nn
-                              )
-                              throw new java.io.IOException(msg )
-                           }
+         //                   if (rbe.typeInt == (0x387B27 : BigInt ) ) then {
+         //                      val msg = (
+         //                         summon[CodeSchemeOps.TraversalDiagnostique]
+         //                         .newLexerException(msg = s"apparent stream corruption ; <${rbe.typeInt } l=??? /> " )
+         //                         .getMessage().nn
+         //                      )
+         //                      throw new java.io.IOException(msg )
+         //                   }
                            
-                           // rbe.payloadLength
+         //                   // rbe.payloadLength
 
-                           val l = {
-                              util.Try({
-                                 ;
-                                 identity[BigDecimal](rbe.payloadLength.inBytes )
-                                 .toIntExact
-                              })
-                              .recover({
-                                 case z : RuntimeException =>
-                                    val msg = (
-                                       summon[CodeSchemeOps.TraversalDiagnostique]
-                                       .newLexerException(msg = s"($z) ; check the stream not corrupted!!! ; <${rbe.typeInt } l=??? /> " )
-                                       .getMessage().nn
-                                    )
-                                    throw new java.io.IOException(msg )
-                              })
-                              .get
-                           }
+         //                   val l = {
+         //                      util.Try({
+         //                         ;
+         //                         identity[BigDecimal](rbe.payloadLength.inBytes )
+         //                         .toIntExact
+         //                      })
+         //                      .recover({
+         //                         case z : RuntimeException =>
+         //                            val msg = (
+         //                               summon[CodeSchemeOps.TraversalDiagnostique]
+         //                               .newLexerException(msg = s"($z) ; check the stream not corrupted!!! ; <${rbe.typeInt } l=??? /> " )
+         //                               .getMessage().nn
+         //                            )
+         //                            throw new java.io.IOException(msg )
+         //                      })
+         //                      .get
+         //                   }
                            
-                           // if true then {
-                           //    util.Using.resource({
-                           //       newMarkResetTurn(r : RnpSource, l )
-                           //    })(_ => {
-                           //       rbe.payload
-                           //    })
-                           // }
+         //                   // if true then {
+         //                   //    util.Using.resource({
+         //                   //       newMarkResetTurn(r : RnpSource, l )
+         //                   //    })(_ => {
+         //                   //       rbe.payload
+         //                   //    })
+         //                   // }
                            
-                           locally { rbe.payloadLength }
+         //                   locally { rbe.payloadLength }
                            
-                           val prePayloadReadingPos = {
-                              getCurrentPosInBytes()
-                           }
+         //                   val prePayloadReadingPos = {
+         //                      getCurrentPosInBytes()
+         //                   }
 
-                           if false then {
-                           ;
+         //                   if false then {
+         //                   ;
                            
-                           /**
-                            * 
-                            * ensure evaluated
-                            * 
-                            */
-                           locally { rbe.payload }
+         //                   /**
+         //                    * 
+         //                    * ensure evaluated
+         //                    * 
+         //                    */
+         //                   locally { rbe.payload }
 
-                           val finalPos = {
-                              getCurrentPosInBytes()
-                           }
+         //                   val finalPos = {
+         //                      getCurrentPosInBytes()
+         //                   }
 
-                           /**
-                            * 
-                            * if it took away more bytes than necessary,
-                            * this would `throw` `IOException : resetting to invalid frame`
-                            * 
-                            */
-                           locally {
-                              if prePayloadReadingPos + l == finalPos then {}
-                              else {
-                                 throw new java.io.IOException(s"corruption. (pprp: $prePayloadReadingPos ; pl: $l ; finalPos: $finalPos ) ")
-                              }
-                           }
+         //                   /**
+         //                    * 
+         //                    * if it took away more bytes than necessary,
+         //                    * this would `throw` `IOException : resetting to invalid frame`
+         //                    * 
+         //                    */
+         //                   locally {
+         //                      if prePayloadReadingPos + l == finalPos then {}
+         //                      else {
+         //                         throw new java.io.IOException(s"corruption. (pprp: $prePayloadReadingPos ; pl: $l ; finalPos: $finalPos ) ")
+         //                      }
+         //                   }
 
-                           }
+         //                   }
 
-                           rbe
+         //                   rbe
 
-                     }
-                     })
+         //             }
+         //             })
 
-                  })
-                  catch {
+         //          })
+         //          catch {
 
-                     case z : (java.io.EOFException ) =>
+         //             case z : (java.io.EOFException ) =>
 
-                        throw (
-                           summon[CodeSchemeOps.TraversalDiagnostique]
+         //                throw (
+         //                   summon[CodeSchemeOps.TraversalDiagnostique]
                            
-                           .newLexerException(
-                              msg = (
-                                 s"EOF while pulling the raw, unprocessed $notEBml frame repr."
-                                 + " " + z.getMessage()
-                              ),
+         //                   .newLexerException(
+         //                      msg = (
+         //                         s"EOF while pulling the raw, unprocessed $notEBml frame repr."
+         //                         + " " + z.getMessage()
+         //                      ),
 
-                              r = r,
+         //                      r = r,
                               
-                           )
+         //                   )
                            
-                        )
+         //                )
 
-                     case z : ( EBmlPrimitivesMalformationException) =>
+         //             case z : ( EBmlPrimitivesMalformationException) =>
 
-                        val msg = (
-                           summon[CodeSchemeOps.TraversalDiagnostique]
+         //                val msg = (
+         //                   summon[CodeSchemeOps.TraversalDiagnostique]
 
-                           .newLexerException(
-                              msg = (
-                                 s"malformed raw, unprocessed $notEBml frame repr."
-                                 + " " + (z.getMessage())
-                              ),
+         //                   .newLexerException(
+         //                      msg = (
+         //                         s"malformed raw, unprocessed $notEBml frame repr."
+         //                         + " " + (z.getMessage())
+         //                      ),
 
-                              r = r ,
+         //                      r = r ,
 
-                           )
+         //                   )
 
-                           .getMessage().nn
+         //                   .getMessage().nn
 
-                        )
+         //                )
 
-                        throw z.rewrapped1(msg)
+         //                throw z.rewrapped1(msg)
                         
-                     case z : (java.io.IOException ) =>
+         //             case z : (java.io.IOException ) =>
                         
-                        throw (
-                           summon[CodeSchemeOps.TraversalDiagnostique]
+         //                throw (
+         //                   summon[CodeSchemeOps.TraversalDiagnostique]
 
-                           .newLexerException(
-                              msg = (
-                                 s"IOException rwhile pulling the raw, unprocessed $notEBml frame repr."
-                                 + " " + (z match { case z : java.io.EOFException => s"EOF: $z" ; case _ => z.getLocalizedMessage() })
-                              ),
+         //                   .newLexerException(
+         //                      msg = (
+         //                         s"IOException rwhile pulling the raw, unprocessed $notEBml frame repr."
+         //                         + " " + (z match { case z : java.io.EOFException => s"EOF: $z" ; case _ => z.getLocalizedMessage() })
+         //                      ),
 
-                              r = r ,
+         //                      r = r ,
 
-                           )
+         //                   )
 
-                        )
+         //                )
 
-                  }
-               }
-               /**
-                * 
-                * the high-level repr
-                * 
-                */
-               ernp(using (
-                  {
-                     val currentPath = summon[CodeSchemeOps.TraversalDiagnostique ]
-                     currentPath
-                     .ofChild(divName = {
+         //          }
+         //       }
+         //       /**
+         //        * 
+         //        * the high-level repr
+         //        * 
+         //        */
+         //       ernp(using (
+         //          {
+         //             val currentPath = summon[CodeSchemeOps.TraversalDiagnostique ]
+         //             currentPath
+         //             .ofChild(divName = {
 
-                        val typeNm = {
+         //                val typeNm = {
 
-                           getXElementEfprSimpleName(using currentPath )(efpr = efpr )
+         //                   getXElementEfprSimpleName(using currentPath )(efpr = efpr )
 
-                        }
+         //                }
                         
-                        s"<${typeNm } (${efpr.payloadLength })>"
+         //                s"<${typeNm } (${efpr.payloadLength })>"
 
-                     })
-                  }
-               ) )(
-                  efpr = efpr, 
-                  rpia = r ,
-               )
-         }
+         //             })
+         //          }
+         //       ) )(
+         //          efpr = efpr, 
+         //          rpia = r ,
+         //       )
+         // }
 
          def getXElementEfprSimpleName(using currentPath : CodeSchemeOps.TraversalDiagnostique)(
             efpr: Rbeiop ,
@@ -1071,216 +1096,225 @@ trait EBsd extends
             ???
          }
          
-         /**
-          * 
-          * transform a `EbmRawFrameElement` into the high-level repr (an `Element`)
-          * 
-          */
-         private 
-         def ernp(using CodeSchemeOps.TraversalDiagnostique)(
-            efpr: Rbeiop ,
-            rpia : ReadingParsingImplArg ,
-         ) = {
-               ;
+         // /**
+         //  * 
+         //  * transform a `EbmRawFrameElement` into the high-level repr (an `Element`)
+         //  * 
+         //  */
+         // private 
+         // def ernp(using CodeSchemeOps.TraversalDiagnostique)(
+         //    efpr: Rbeiop ,
+         //    rpia : ReadingParsingImplArg ,
+         // ) = {
+         //       ;
 
-               efpr.payloadLength.inBytes
-               match { case v if (v.toInt.toLong == v ) => }
+         //       import rpia.reoc
 
-               // efpr.payload
+         //       // val es = reoc.mark()
 
-               inferred
-               object inferred {
+         //       efpr.payloadLength.inBytes
+         //       match { case v if (v.toInt.toLong == v ) => }
+
+         //       // efpr.payload
+
+         //       inferred
+         //       object inferred {
                   
-                  final
-                  lazy val classSimpleName: String = {
+         //          final
+         //          lazy val classSimpleName: String = {
 
-                     getXElementEfprSimpleName(using {
-                        summon[CodeSchemeOps.TraversalDiagnostique ]
+         //             getXElementEfprSimpleName(using {
+         //                summon[CodeSchemeOps.TraversalDiagnostique ]
 
-                     } )(efpr = efpr )
+         //             } )(efpr = efpr )
                      
-                  }
+         //          }
 
-                  val classIntName = {
-                     efpr.typeInt
-                  }
+         //          val classIntName = {
+         //             efpr.typeInt
+         //          }
 
-                  if false then {
-                     appropriateSchemeDef
-                  }
-                  lazy
-                  val appropriateSchemeDef = (
+         //          if false then {
+         //             appropriateSchemeDef
+         //          }
+         //          lazy
+         //          val appropriateSchemeDef = (
 
-                     classPayloadsTable
-                     .applyOrElse(classIntName : BigInt, classIntName => {
-                        val oe = (
-                           summon[CodeSchemeOps.TraversalDiagnostique]
-                           // .newLexerException(msg = (
-                           //    s"no scheme for cls ${classIntName.ebmlClassNameFmatted } "
-                           // ))
-                           .newLexerException(msg = (
-                              s"no scheme for cls ${classIntName.ebmlClassNameFmatted } (it's possible the stream has been corrupted!!!) . (<${classIntName.ebmlClassNameFmatted } (length)=${efpr.payloadLength } >) "
-                           ))
-                        )
-                        throw (
-                           new
-                           java.io.IOException(oe.getMessage().nn )
-                           with EBmlPrimitivesMalformationException.%%!
-                           with FramePayloadScheme.trvdFramesIoExcs.IOfSchemeLookupFailure
-                        )
-                     } )
+         //             classPayloadsTable
+         //             .applyOrElse(classIntName : BigInt, classIntName => {
+         //                val oe = (
+         //                   summon[CodeSchemeOps.TraversalDiagnostique]
+         //                   // .newLexerException(msg = (
+         //                   //    s"no scheme for cls ${classIntName.ebmlClassNameFmatted } "
+         //                   // ))
+         //                   .newLexerException(msg = (
+         //                      s"no scheme for cls ${classIntName.ebmlClassNameFmatted } (it's possible the stream has been corrupted!!!) . (<${classIntName.ebmlClassNameFmatted } (length)=${efpr.payloadLength } >) "
+         //                   ))
+         //                )
+         //                throw (
+         //                   new
+         //                   java.io.IOException(oe.getMessage().nn )
+         //                   with EBmlPrimitivesMalformationException.%%!
+         //                   with FramePayloadScheme.trvdFramesIoExcs.IOfSchemeLookupFailure
+         //                )
+         //             } )
                      
-                     match {
+         //             match {
                         
-                        /**
-                         * 
-                         * some schemes like `OfNumber` and `OfString`
-                         * does not itself contraint/dictate the length in-advance, and
-                         * instead leave it to the enclosing frame's *payload-size*, so
-                         * here 
-                         * this needs to explicitly switch to a derived instance as specified
-                         * 
-                         */
-                        case scheme =>
-                           scheme withSpecificLength(efpr.payloadLength )
+         //                /**
+         //                 * 
+         //                 * some schemes like `OfNumber` and `OfString`
+         //                 * does not itself contraint/dictate the length in-advance, and
+         //                 * instead leave it to the enclosing frame's *payload-size*, so
+         //                 * here 
+         //                 * this needs to explicitly switch to a derived instance as specified
+         //                 * 
+         //                 */
+         //                case scheme =>
+         //                   scheme withSpecificLength(efpr.payloadLength )
 
-                     }
-                  )
+         //             }
+         //          )
 
-                  if true then {
-                     efpr.payload
-                  }
+         //          if true then {
+         //             efpr.payload
+         //          }
 
-                  val childrenAsLazyList = {
+         //          val childrenAsLazyList = {
                      
-                     val r = (
-                        ((
-                           // new MarkableInputStreamImpl((
-                           //    efpr.getPaystringItr()
-                           // ))
-                           // efpr.getPaystringItr()
-                           // .asMarkableStream()
-                           new MarkableInputStreamImpl((
-                              efpr.getPaystringItr()
-                           ))
-                        ))
-                     )
+         //             val r = (
+         //                ((
+         //                   // new MarkableInputStreamImpl((
+         //                   //    efpr.getPaystringItr()
+         //                   // ))
+         //                   // efpr.getPaystringItr()
+         //                   // .asMarkableStream()
+         //                   new MarkableInputStreamImpl((
+         //                      efpr.getPaystringItr()
+         //                   ))
+         //                ))
+         //             )
 
-                     val cp = ({
-                        /**
-                         * 
-                         * new `LazyList` running `readAndParseImpl`
-                         * 
-                         */
-                        LazyList().lazyAppendedAll({
-                           ((using : CodeSchemeOps.TraversalDiagnostique) ?=> {
+         //             val cp = ({
+         //                /**
+         //                 * 
+         //                 * new `LazyList` running `readAndParseImpl`
+         //                 * 
+         //                 */
+         //                LazyList().lazyAppendedAll({
+         //                   ((using : CodeSchemeOps.TraversalDiagnostique) ?=> {
 
-                              extension (scheme : FramePayloadScheme ) {
+         //                      locally {
+         //                         // withShallDebugThrownReocIfNecessary { es._1.checkCompleted() }
+         //                         // es._2.markCompleted()
+         //                      }
+
+         //                      extension (scheme : FramePayloadScheme ) {
                               
-                                 // transparent inline
-                                 def sub1 = {
-                                    ;
-                                    scheme
-                                    .readAndParseAlt(src = r, eagerness = rpia.eagerness )
-                                 }
+         //                         // transparent inline
+         //                         def sub1 = {
+         //                            ;
+         //                            scheme
+         //                            .readAndParseAlt(src = r, eagerness = rpia.eagerness, reoc = rpia.reoc )
+         //                         }
                                  
-                              }
+         //                      }
                               
-                              (appropriateSchemeDef match {
+         //                      (appropriateSchemeDef match {
 
-                                 case scheme : VariadicImpl[?, ?] =>
-                                    scheme.sub1
+         //                         case scheme : VariadicImpl[?, ?] =>
+         //                            scheme.sub1
 
-                                 case scheme =>
-                                    Seq(scheme.sub1 )
+         //                         case scheme =>
+         //                            Seq(scheme.sub1 )
                                     
-                              }): Seq[FramePayloadScheme#Instance]
+         //                      }): Seq[FramePayloadScheme#Instance]
 
-                           })(using (
+         //                   })(using (
                               
-                              summon[CodeSchemeOps.TraversalDiagnostique ]
-                              .ofChild(divName = s"contents")
+         //                      summon[CodeSchemeOps.TraversalDiagnostique ]
+         //                      .ofChild(divName = s"contents")
 
-                           ))
-                        })
-                        match {
-                           case s =>
-                              import avcframewrk.util.lazylists.asTerminatingCollOnException
-                              s.asTerminatingCollOnException()
-                        }
+         //                   ))
+         //                })
+         //                match {
+         //                   case s =>
+         //                      import avcframewrk.util.lazylists.asTerminatingCollOnException
+         //                      s.asTerminatingCollOnException()
+         //                }
 
-                     })
+         //             })
 
-                     cp
-                  }
+         //             cp
+         //          }
                   
-               }
+         //       }
 
-               trait CrossReprCommonOpsTrait
-               extends
-               `E S` with @!.Element
-               {
+         //       trait CrossReprCommonOpsTrait
+         //       extends
+         //       `E S` with @!.Element
+         //       {
 
-                  /* these will each be typed as `path.to.value.type` */
+         //          /* these will each be typed as `path.to.value.type` */
 
-                  override
-                  lazy val classSimpleName: inferred.classSimpleName.type = {
-                     inferred.classSimpleName
-                  }
+         //          override
+         //          lazy val classSimpleName: inferred.classSimpleName.type = {
+         //             inferred.classSimpleName
+         //          }
 
-                  export inferred.{classIntName as className }
+         //          export inferred.{classIntName as className }
 
-               }
+         //       }
                
-               (new CrossReprCommonOpsTrait {
+         //       (new CrossReprCommonOpsTrait {
 
-                  import inferred.appropriateSchemeDef
+         //          import inferred.appropriateSchemeDef
 
-                  override
-                  def toString(): String = {
+         //          override
+         //          def toString(): String = {
                      
-                     import language.unsafeNulls /* for this `toString` impl */
+         //             import language.unsafeNulls /* for this `toString` impl */
                      
-                     super.toString()
-                     .replaceFirst("\\s*(?=\\>)", s" (length)=${efpr.payloadLength }")
-                  }
+         //             super.toString()
+         //             .replaceFirst("\\s*(?=\\>)", s" (length)=${efpr.payloadLength }")
+         //          }
 
-                  override
-                  val children = {
+         //          override
+         //          val children = {
 
-                     import inferred.{childrenAsLazyList => cp }
+         //             import inferred.{childrenAsLazyList => cp }
 
-                     /**
-                      * 
-                      * if appropriate,
-                      * instruct for eager eval of the `LazyList`
-                      * 
-                      */
-                     try {
-                        cp
-                        .to(rpia.eagerness.characteristicSeqFactory )
-                        .toSeq
+         //             /**
+         //              * 
+         //              * if appropriate,
+         //              * instruct for eager eval of the `LazyList`
+         //              * 
+         //              */
+         //             try {
+         //                cp
+         //                .to(rpia.eagerness.characteristicSeqFactory )
+         //                .toSeq
                         
-                     } catch {
+         //             } catch {
 
-                        case z : Exception =>
-                           if false then {
-                           ;
-                           sys.process.stderr.println(s"failed parsing ${efpr.toString() }")
-                           sys.process.stderr.println(s"failing with ($z) ; payload-length: ${efpr.payloadLength } ; parsed children LL: $cp")
-                           }
-                           throw z
+         //                case z : Exception =>
+         //                   if false then {
+         //                   ;
+         //                   sys.process.stderr.println(s"failed parsing ${efpr.toString() }")
+         //                   sys.process.stderr.println(s"failing with ($z) ; payload-length: ${efpr.payloadLength } ; parsed children LL: $cp")
+         //                   }
+         //                   throw z
 
-                     }
+         //             }
 
-                  }
+         //          }
 
-               }) : @!.Element
-               // {
-               //    // TODO
-               //    r.readEbmlElements11(validator = null)
-               // }
-         }
+         //       }) : @!.Element
+         //       // {
+         //       //    // TODO
+         //       //    r.readEbmlElements11(validator = null)
+         //       // }
+         // }
 
          // @deprecated("experimental")
          @annotation.experimental
@@ -1355,163 +1389,304 @@ trait EBsd extends
             >: UnpickleInputStream
             <: UnpickleInputStream
 
-         override
-         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
-
-                  val scheme = (
-                     (
-                        childSchemeM1()
-                     )
-                  ) : FramePayloadScheme
-
-                  var c : Int = 0
-                  val synch = new AnyRef
-                  import synch.{synchronized => synchronizedIfNecessary }
-                  def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = synchronizedIfNecessary (
-                        ({
-                           scheme
-                           .readAndParseImpl(r )
-                           
-                        } , c += 1 )._1
-                  )
-
-                  lazy val childrenLl : LazyList[FramePayloadScheme#Instance] = {
-
-                     import avcframewrk.util.lazylists.asTerminatingCollOnException
-
-                     //
-                     LazyList.unfold[FramePayloadScheme#Instance, Unit](() )((_) => {
-
-                        val noMore = {
-                           r.isAtEofRelevantly
-                        } : Boolean
-                        
-                        if (noMore) {
-                           
-                           sys.process.stderr.println((
-                              summon[CodeSchemeOps.TraversalDiagnostique]
-                              .newLexerException(msg = "no more child to parse, ceasing", r = r )
-                              .getMessage()
-                              
-                           ))
-
-                           None
-                        }
-                        else { 
-                           def forThrownEofException(z: java.io.EOFException ) = {
-                              
-                                 // sys.process.stderr.println(z)
-                                 // None
-                                 
-                                 java.lang.ref.Reference.reachabilityFence(BigInt )
-                                 throw (
-                                    summon[CodeSchemeOps.TraversalDiagnostique]
-                                    .newLexerException(msg = s"encountering EOF during (rather than right-before) parsing of a child. (collected: ${childrenLl })" , r = r )
-                                 )
-
-                           }
-                           def forThrownChildMalformednessException(z: java.io.IOException & EBmlPrimitivesMalformationException ) = {
-                              
-                                 import language.unsafeNulls
-
-                                 // sys.process.stderr.println(z)
-                                 // None
-
-                                 val presentlyIndex = c
-
-                                 val priorChildContent = {
-                                    // TODO
-                                    childrenLl
-                                    .applyOrElse(presentlyIndex + -1, _ => null )
-                                 }
-                                 
-                                 val priorChildToString = {
-                                    priorChildContent
-                                    .tryConvertToString()
-                                 }
-                                 
-                                 java.lang.ref.Reference.reachabilityFence(BigInt )
-                                 val msg = (
-                                    summon[CodeSchemeOps.TraversalDiagnostique]
-                                    .newLexerException(msg = s"encountered EBmlPrimitivesMalformationException during child #$presentlyIndex -- (prior child: $priorChildToString ) -- $z " , r = r )
-                                    .getMessage().nn
-
-                                 )
-                                 z match {
-
-                                    case z : EBmlPrimitivesMalformationException.IDueToZeroByteEofException =>
-                                       /** very normal, meaning that we're supposed to stop and return */
-                                       None
-                                       
-                                    case _ =>
-                                       throw z.rewrapped1(msg)
-
-                                 }
-                              
-                           }
-                           try 
-                              val i = c
-
-                              val s1 = (
-                                 readNextChild()(using (
-                                    summon[CodeSchemeOps.TraversalDiagnostique]
-                                    .ofChild(divName = s"$i")
-                                 ))
-                              )
-                              
-                              Some(s1 , ())
-
-                           catch {
-                              
-                              case z @ CodeSchemeOps.TraversalDiagnostique.PSO(v @ _*) =>
-
-                                 sys.process.stderr.println((
-                                    summon[CodeSchemeOps.TraversalDiagnostique]
-                                    .newLexerException(msg = s"tolerated exception, ($z) $v ", r = r )
-                                    .getMessage()
-                                 ))
-
-                                 None
-
-                              case z : java.io.EOFException =>
-                                 
-                                 forThrownEofException(z)
-
-                              case z : EBmlPrimitivesMalformationException =>
-                                 
-                                 forThrownChildMalformednessException(z)
- 
-                           }
-                        }
-                     })
-                     .asTerminatingCollOnException()
-                     .match { case ll => {
-                        ll
-                        .zipWithIndex
-                        .tapEach({ case (_, i) => {
-                           ll.take(i ).lastOption match {
-                        
-                              case Some(e : @!.Element) =>
-                                 xEnsureFullyEvaluated(e )
-                        
-                              case _ =>
-                        
-                           }
-                        } })
-                        .map(_._1) 
-                     } }
-                  }
+         // override
+         // def readAndParseImpl(r: ReadingParsingImplArg)(using allItemsCst : CodeSchemeOps.TraversalDiagnostique) = {
+         //          ;
                   
-                  /**
-                   * 
-                   * if appropriate ,
-                   * instruct for eager eval of the `LazyList`, and
-                   * return the resulting Seq
-                   * 
-                   */
-                  childrenLl
-                  .to(r.eagerness.characteristicSeqFactory )
-         }
+         //          import r.reoc
+
+         //          extension (es : reocImpl.ReocReturn ) {
+
+         //             def checkPrecedentAndMarkAntecedent(): Unit = {
+
+         //                es._1.checkCompleted()
+         //                es._2.markCompleted()
+         //             }
+
+         //          }
+
+         //          // val esAll = reoc.mark()
+
+         //          val scheme = (
+         //             (
+         //                childSchemeM1()
+         //             )
+         //          ) : FramePayloadScheme
+
+         //          var c : Int = 0
+
+         //          val synch = new AnyRef
+                  
+         //          import synch.{synchronized => synchronizedIfNecessary }
+
+         //          def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = synchronizedIfNecessary ({
+         //                ;
+                        
+         //                // withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException ({
+                           
+         //                //    lazy
+         //                //    val esEach = reoc.mark()
+
+         //                //    esEach._1.checkCompleted()
+         //                //    esEach._2.markCompleted()
+
+         //                // })
+                        
+         //                ({
+         //                   scheme
+         //                   .readAndParseImpl(r )
+                           
+         //                })
+         //                match { case v => c += 1 ; v }
+         //          })
+
+         //          // private
+         //          val checkChildrenLlNotEvaluatedTwice: () => Unit = {
+         //             val c = new java.util.concurrent.atomic.AtomicBoolean
+         //             () => {
+         //                if c.getAndSet(true) then {
+         //                   throw (
+         //                      summon[CodeSchemeOps.TraversalDiagnostique]
+         //                      .newLexerException(msg = s"double childrenLl init")
+         //                   )
+         //                }
+         //             } : Unit
+         //          }
+
+         //          lazy val childrenLl : LazyList[FramePayloadScheme#Instance] = {
+
+         //             import avcframewrk.util.lazylists.asTerminatingCollOnException
+
+         //             @annotation.experimental
+         //             def newXIemrk() = {
+         //                   ;
+         //                   val ec1 = reoc.mark()
+         //                   ec1._1.checkCompleted()
+         //                   ec1
+         //             }
+
+         //             //
+         //             LazyList.unfold[FramePayloadScheme#Instance, (Unit, () => reocImpl.ReocReturn )]({
+         //                // TODO
+         //                ;
+                        
+         //                /**
+         //                 * 
+         //                 * the one for the first turn
+         //                 * needs to be `lazy`, as
+         //                 * the resulting `LazyList`
+         //                 * might remain unevaluated indefinitely
+         //                 * 
+         //                 */
+         //                lazy 
+         //                val esEach = {
+         //                   reoc.mark()
+         //                }
+
+         //                // EmptyTuple :* () :* ""
+         //                ((), () => esEach )
+         //             })({ case (() , esEach0Get ) => {
+         //             ;
+                      
+         //             val i = c
+
+         //             implicit val itemCst : CodeSchemeOps.TraversalDiagnostique = (
+         //                (allItemsCst)
+         //                .ofChild(divName = s"$i")
+         //             )
+
+         //             util.Using.resource({
+
+         //                withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException ({
+                           
+         //                   lazy
+         //                   val esEach = esEach0Get()
+
+         //                   esEach.checkPrecedentAndMarkAntecedent()
+
+         //                })
+                        
+         //                new java.io.Closeable {
+         //                   override
+         //                   def close(): Unit = {
+         //                      // esEach._2.markCompleted()
+         //                   }
+         //                }
+         //             })(_ => {
+
+         //                val noMore = {
+         //                   r.isAtEofRelevantly
+         //                } : Boolean
+                        
+         //                if (noMore) {
+                           
+         //                   sys.process.stderr.println((
+         //                      summon[CodeSchemeOps.TraversalDiagnostique]
+         //                      .newLexerException(msg = "no more child to parse, ceasing", r = r )
+         //                      .getMessage()
+                              
+         //                   ))
+
+         //                   None
+         //                }
+         //                else { 
+         //                   def forThrownEofException(z: java.io.EOFException ) = {
+                              
+         //                         // sys.process.stderr.println(z)
+         //                         // None
+                                 
+         //                         java.lang.ref.Reference.reachabilityFence(BigInt )
+         //                         throw (
+         //                            summon[CodeSchemeOps.TraversalDiagnostique]
+         //                            .newLexerException(msg = s"encountering EOF during (rather than right-before) parsing of a child. (collected: ${childrenLl })" , r = r )
+         //                         )
+
+         //                   }
+         //                   def forThrownChildMalformednessException(z: java.io.IOException & EBmlPrimitivesMalformationException ) = {
+                              
+         //                         import language.unsafeNulls
+
+         //                         // sys.process.stderr.println(z)
+         //                         // None
+
+         //                         val presentlyIndex = c
+
+         //                         val priorChildContent = {
+         //                            // TODO
+         //                            childrenLl
+         //                            .applyOrElse(presentlyIndex + -1, _ => null )
+         //                         }
+                                 
+         //                         val priorChildToString = {
+         //                            priorChildContent
+         //                            .tryConvertToString()
+         //                         }
+                                 
+         //                         java.lang.ref.Reference.reachabilityFence(BigInt )
+         //                         val msg = (
+         //                            summon[CodeSchemeOps.TraversalDiagnostique]
+         //                            .newLexerException(msg = s"encountered EBmlPrimitivesMalformationException during child #$presentlyIndex -- (prior child: $priorChildToString ) -- $z " , r = r )
+         //                            .getMessage().nn
+
+         //                         )
+         //                         z match {
+
+         //                            case z : EBmlPrimitivesMalformationException.IDueToZeroByteEofException =>
+         //                               /** very normal, meaning that we're supposed to stop and return */
+         //                               None
+                                       
+         //                            case _ =>
+         //                               throw z.rewrapped1(msg)
+
+         //                         }
+                              
+         //                   }
+         //                   try
+
+         //                      assert(summon[CodeSchemeOps.TraversalDiagnostique] == itemCst )
+
+         //                      // esEach._2.markCompleted()
+         //                      withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
+         //                         val esEach = reoc.mark()
+         //                         esEach.checkPrecedentAndMarkAntecedent()
+         //                      }
+
+         //                      val s1 = (
+         //                         readNextChild()(using itemCst)
+         //                      )
+                              
+         //                      withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
+         //                         val esEach = reoc.mark()
+         //                         esEach.checkPrecedentAndMarkAntecedent()
+         //                      }
+
+         //                      /**
+         //                       * 
+         //                       * ideally,
+         //                       * there shall be no `input.readYyy(...)`-call(s) between this turn and the next-turn .
+         //                       * to signify this invariant,
+         //                       * the *reoc-mark* for the next turn
+         //                       * shall be allocated at this point,
+         //                       * rather than at the point when the next turn actually start
+         //                       * 
+         //                       */
+         //                      val nextTurnReocMark = {
+         //                         withShallDebugThrownReocIfNecessary { reoc.mark() }
+         //                      }
+
+         //                      Some(s1 , (() , ({
+         //                         { () => nextTurnReocMark } 
+         //                      })))
+
+         //                   catch {
+                              
+         //                      case z @ CodeSchemeOps.TraversalDiagnostique.PSO(v @ _*) =>
+
+         //                         sys.process.stderr.println((
+         //                            summon[CodeSchemeOps.TraversalDiagnostique]
+         //                            .newLexerException(msg = s"tolerated exception, ($z) $v ", r = r )
+         //                            .getMessage()
+         //                         ))
+
+         //                         None
+
+         //                      case z : java.io.EOFException =>
+                                 
+         //                         forThrownEofException(z)
+
+         //                      case z : EBmlPrimitivesMalformationException =>
+                                 
+         //                         forThrownChildMalformednessException(z)
+ 
+         //                   }
+         //                }
+         //             })
+         //             }})
+         //             .match { case ll => {
+         //                LazyList() lazyAppendedAll {
+         //                   ;
+
+         //                   checkChildrenLlNotEvaluatedTwice()
+
+         //                   withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
+         //                      val esEach = reoc.mark()
+         //                      esEach.checkPrecedentAndMarkAntecedent()
+         //                   }
+
+         //                   Seq()
+         //                } lazyAppendedAll ll
+         //             } }
+         //             .match { case ll => {
+         //                ll
+         //                .asTerminatingCollOnException()
+         //             } }
+         //             .match { case ll => {
+         //                ll
+         //                .zipWithIndex
+         //                .tapEach({ case (_, i) => {
+         //                   ll.take(i ).lastOption match {
+                        
+         //                      case Some(e : @!.Element) =>
+         //                         xEnsureFullyEvaluated(e )
+                        
+         //                      case _ =>
+                        
+         //                   }
+         //                } })
+         //                .map(_._1) 
+         //             } }
+         //          }
+                  
+         //          /**
+         //           * 
+         //           * if appropriate ,
+         //           * instruct for eager eval of the `LazyList`, and
+         //           * return the resulting Seq
+         //           * 
+         //           */
+         //          childrenLl
+         //          .to(r.eagerness.characteristicSeqFactory )
+         // }
 
          extension (r: RnpSource) {
             def isAtEofRelevantly: Boolean = {
@@ -1575,7 +1750,7 @@ trait EBsd extends
          lazy val cCached = {
             c.value match {
                case m =>
-                  ofFrame(scheme = m)
+                  ofFrame(scheme = m, classSimpleName = null)
             }
          }
          VariadicImpl(encodedLength = cHasVariableLength, childSchemeM1 = () => {
@@ -1613,11 +1788,11 @@ trait EBsd extends
                // type Instance <: Seq[FramePayloadScheme.OfMulti#Instance ]
             }
          ) ]
-      )): OfFrame = {
+      ), classSimpleName: String | Null ): OfFrame = {
          // TODO
          Offr(encodedLength = cHasVariableLength, classPayloadsTable = (
             scheme
-         ) )
+         ) , classSimpleName = classSimpleName  )
       }
 
       /**
@@ -1630,7 +1805,7 @@ trait EBsd extends
        */
       // @annotation.experimental
       // @deprecated("experimental")
-      def ofFrameOfExactlyOneOccurInSch(schemeLzy : Lazy[XSc ]) = {
+      def ofFrameOfExactlyOneOccurInSch(schemeLzy : Lazy[XSc ], classSimpleName: Null | String) = {
          // TODO
          lazy val sch1 = {
             val scheme = schemeLzy.value
@@ -1646,7 +1821,7 @@ trait EBsd extends
          }
          Offr(encodedLength = cHasVariableLength, classPayloadsTable = (cls1) => (
             sch1
-         ) )
+         ), classSimpleName = classSimpleName  )
       }
 
       /**
@@ -1659,7 +1834,7 @@ trait EBsd extends
        */
       // @annotation.experimental
       // @deprecated("experimental")
-      def ofFrameOfOneOrMoreOfAnyInSch(schemeLzy : Lazy[XSc ]) = {
+      def ofFrameOfOneOrMoreOfAnyInSch(schemeLzy : Lazy[XSc ], classSimpleName: Null | String) = {
          // TODO
          lazy val sch1 = {
             val scheme = schemeLzy.value
@@ -1675,7 +1850,7 @@ trait EBsd extends
          }
          Offr(encodedLength = cHasVariableLength, classPayloadsTable = (cls1) => (
             sch1
-         ) )
+         ) , classSimpleName = classSimpleName  )
       }
 
       object trvdFramesIoExcs {
@@ -1736,8 +1911,10 @@ trait EBsd extends
 
    extension (r: UnpickleInputStream) {
       
+      @annotation.experimental
       def readEbmlByScheme(s: FramePayloadScheme)(using CodeSchemeOps.TraversalDiagnostique) = {
-         s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
+         // s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager, reoc = CodeSchemeOps.xNewReoc() )
+         Predef.???
       }
 
    }
@@ -1861,79 +2038,114 @@ trait EBsd extends
    private 
    object schemeAlternativeImpl {
 
-      def demarsh[
-         Instance1 ,
-         ChildScheme <: (FramePayloadScheme) { type Instance <: Instance1 } ,
-      ](
-         s: ([I] =>> (Set[? <: I] | Seq[I] ) )[ChildScheme ] ,
-      )(using CodeSchemeOps.TraversalDiagnostique)(ec: CodeUnitScheme#ReadingParsingImplArg, r: UnpickleInputStream ): Instance1 = {
-            type Instance = Instance1
-            /**
-             * 
-             * making use the fact that it's a `BufferedInputStream`,
-             * the right thing to do
-             * is to 
-             * try parsing with the first scheme (in the options) or, if failing,
-             * try the next ones until finding a match,
-             * on each failing case rewinding back to the original pos and yet
-             * on the successful case leaving the reader at its current position,
-             * 
-             */
-            ebsr.breakablyGet[Instance1](resolve => {
-               for (c <- s) {
-                  util.Using.resource((
-                     /**
-                      * 
-                      * call `newMarkResetTurn`,
-                      * calling `r.mark(...)` and then returning with a (...)
-                      * 
-                      * must keep reference to the returned (...)
-                      * as later-on
-                      * the successful case will need to
-                      * call `emr.setShallReset(false)` 
-                      * (to prevent the reader from rolling back, leaving the reader at its current position)
-                      * 
-                      */
-                     newMarkResetTurn(r, 0x400) 
-                  ))(emr => {
-                     (try {
-                        ((
-                           // s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
-                           c readAndParseAlt(src = r, eagerness = ec.eagerness )
-                        ), {
-                           import reflect.Selectable.reflectiveSelectable
-                           /**
-                            * 
-                            * otherwise, the reader would roll back
-                            * 
-                            */
-                           emr.setShallReset(false)
-                        } )._1
-                     } catch {
-                        case z : EBmlPrimitivesMalformationException =>
-                           throw z
-                        case z : java.io.EOFException =>
-                           throw z
-                     }) match {
-                        case v =>
-                           /**
-                            * 
-                            * short-circuit the whole loop
-                            * 
-                            */
-                           resolve(v)
-                     }
-                  })
-               }
-               // TODO
-               // throw new java.io.IOException(s"none match. ${s }") with EBmlPrimitivesMalformationException.%%!
-               throw summon[CodeSchemeOps.TraversalDiagnostique].newLexerException(msg = s"none match. ${s }")
-            })
-      }
+      // def demarsh[
+      //    Instance1 ,
+      //    ChildScheme <: (FramePayloadScheme) { type Instance <: Instance1 } ,
+      // ](
+      //    s: ([I] =>> (Set[? <: I] | Seq[I] ) )[ChildScheme ] ,
+      // )(using CodeSchemeOps.TraversalDiagnostique)(ec: CodeUnitScheme#ReadingParsingImplArg, r: UnpickleInputStream ): Instance1 = {
+      //       type Instance = Instance1
+      //       /**
+      //        * 
+      //        * making use the fact that it's a `BufferedInputStream`,
+      //        * the right thing to do
+      //        * is to 
+      //        * try parsing with the first scheme (in the options) or, if failing,
+      //        * try the next ones until finding a match,
+      //        * on each failing case rewinding back to the original pos and yet
+      //        * on the successful case leaving the reader at its current position,
+      //        * 
+      //        */
+      //       ebsr.breakablyGet[Instance1](resolve => {
+      //          for (c <- s) {
+      //             util.Using.resource((
+      //                /**
+      //                 * 
+      //                 * call `newMarkResetTurn`,
+      //                 * calling `r.mark(...)` and then returning with a (...)
+      //                 * 
+      //                 * must keep reference to the returned (...)
+      //                 * as later-on
+      //                 * the successful case will need to
+      //                 * call `emr.setShallReset(false)` 
+      //                 * (to prevent the reader from rolling back, leaving the reader at its current position)
+      //                 * 
+      //                 */
+      //                newMarkResetTurn(r, 0x400) 
+      //             ))(emr => {
+      //                (try {
+      //                   ((
+      //                      // s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
+      //                      c readAndParseAlt(src = r, eagerness = ec.eagerness, reoc = ec.reoc )
+      //                   ), {
+      //                      import reflect.Selectable.reflectiveSelectable
+      //                      /**
+      //                       * 
+      //                       * otherwise, the reader would roll back
+      //                       * 
+      //                       */
+      //                      emr.setShallReset(false)
+      //                   } )._1
+      //                } catch {
+      //                   case z : EBmlPrimitivesMalformationException =>
+      //                      throw z
+      //                   case z : java.io.EOFException =>
+      //                      throw z
+      //                }) match {
+      //                   case v =>
+      //                      /**
+      //                       * 
+      //                       * short-circuit the whole loop
+      //                       * 
+      //                       */
+      //                      resolve(v)
+      //                }
+      //             })
+      //          }
+      //          // TODO
+      //          // throw new java.io.IOException(s"none match. ${s }") with EBmlPrimitivesMalformationException.%%!
+      //          throw summon[CodeSchemeOps.TraversalDiagnostique].newLexerException(msg = s"none match. ${s }")
+      //       })
+      // }
 
    }
 
    // export ebmsGenericUtils.checkNotAtEof
+
+   private
+   def withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException[R](c : => R)(using CodeSchemeOps.TraversalDiagnostique) = {
+
+      try c
+
+      catch {
+
+         case z : EBmlPrimitivesMalformationException =>
+            throw z
+
+         case z : Exception =>
+            import language.unsafeNulls
+            val msg = {
+               summon[CodeSchemeOps.TraversalDiagnostique]
+               .newLexerException(msg = s"reoc exception. check for race-condition or stream pipeline corruption !! $z" )
+               .getMessage()
+            }
+            throw (
+               new
+               java.io.IOException(msg, z)
+               with EBmlPrimitivesMalformationException.%%!
+            )
+
+      }
+   }
+
+   private
+   def withShallDebugThrownReocIfNecessary[R](c : => R) = {
+      try c
+      catch {
+         case z : Exception =>
+            throw z
+      }
+   }
 
    private 
    class PF extends Throwable
@@ -1987,6 +2199,32 @@ trait EBsdSpecificUtilDefs extends
       }
       
    } /* trimToJustFiveHundred */
+
+   /**
+    * 
+    * "Reader/InputStream Usage Control"
+    * a toolkit 
+    * for implementing the locking-control before the main InputStream-or-Reader
+    * 
+    * the entry point is the `newReoc()` method, returning new/independent `Reoc` 
+    * 
+    * every invoc of the `reoc.mark()` method 
+    * shall return a pair of `object`s, one `?{ def checkCompleted() }` and one `?{ def markCompleted() }` .
+    * 
+    * unless the `markCompleted()` of the latter obj has ben called,
+    * the `checkCompleted()` itc returned by the next `reoc.mark()` will `throw` `IllegalStateException`.
+    * however,
+    * as a base-case,
+    * for the first/initial `reoc.mark()`, the returned `checkCompleted()` itc will always return successfully .
+    * 
+    */
+   private[riffmt]
+   final
+   lazy
+   val reocImpl : avcframewrk.util.errorchecking.reocsImpl.type = {
+
+      avcframewrk.util.errorchecking.reocsImpl
+   }
 
 }
 
