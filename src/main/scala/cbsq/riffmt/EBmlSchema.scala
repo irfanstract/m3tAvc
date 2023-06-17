@@ -1441,6 +1441,19 @@ trait EBsd extends
                         match { case v => c += 1 ; v }
                   })
 
+                  // private
+                  val checkChildrenLlNotEvaluatedTwice: () => Unit = {
+                     val c = new java.util.concurrent.atomic.AtomicBoolean
+                     () => {
+                        if c.getAndSet(true) then {
+                           throw (
+                              summon[CodeSchemeOps.TraversalDiagnostique]
+                              .newLexerException(msg = s"double childrenLl init")
+                           )
+                        }
+                     } : Unit
+                  }
+
                   lazy val childrenLl : LazyList[FramePayloadScheme#Instance] = {
 
                      import avcframewrk.util.lazylists.asTerminatingCollOnException
@@ -1632,6 +1645,9 @@ trait EBsd extends
                      }})
                      .match { case ll => {
                         LazyList() lazyAppendedAll {
+                           ;
+
+                           checkChildrenLlNotEvaluatedTwice()
 
                            withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
                               val esEach = reoc.mark()

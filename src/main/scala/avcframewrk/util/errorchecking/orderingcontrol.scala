@@ -123,8 +123,14 @@ object reocsImpl
 
       // import java.util.concurrent.Semaphore
       type Semaphore
-         >: NhwWhichShallReturn[Unit]
-         <: NhwWhichShallReturn[Unit]
+         >: NhwWhichShallReturn[Smci ]
+         <: NhwWhichShallReturn[Smci ]
+
+      protected 
+      case class Smci(e : Throwable)
+      def newSmci(message: String = "" ) : Smci = {
+         Smci(e = new Exception(message) {} )
+      }
 
       /**
        * 
@@ -149,6 +155,17 @@ object reocsImpl
             type Ael
                = AelGeneric[Int]
 
+            def waitListKnownItems = {
+
+               val ksz = {
+                  waitListEvaluatedSize
+               }
+               waitList
+               .take( 1000 * 1000 ).lazyAppendedAll({ throw new Error(s"too many") })
+               .take(ksz )
+               .to(IndexedSeq)
+            }
+
             /**
              * progressive
              */
@@ -157,8 +174,8 @@ object reocsImpl
 
                def newSemaphore(resolve : Boolean ): Semaphore = {
                   
-                  val s = newUnresolvedNhw[Unit]
-                  if resolve then s.success({ })
+                  val s = newUnresolvedNhw[Smci]
+                  if resolve then s.success({ newSmci(s"completed by having 'resolve' been 'true' ") })
                   s
                }
                
@@ -185,13 +202,36 @@ object reocsImpl
                            s"Reoc.Mark(${this.i }; sm: $sm ; )"
                         }
 
+                        // TODO
                         def tryGetPrecedingEvent() = {
-                           waitList
-                           .take( 1000 * 1000 ).lazyAppendedAll({ throw new Error(s"too many") })
+                           waitListKnownItems
                            .takeWhile(_ != mainHandle )
                            .to(IndexedSeq )
                            .reverse
                            .headOption
+                        }
+
+                        // TODO
+                        def tryGetInterleavingEventsAndThis() = {
+                           waitListKnownItems match {
+                           case waitListKnownItems =>
+                              ;
+                              
+                              val i = {
+                                 ;
+                                 waitListKnownItems
+                                 .indexWhere((e : AelGeneric[?] ) => {
+                                    val isImportant = (
+                                       (e == mainHandle || (e.sm.asFuture ).value.fold[Boolean](true)(_.isFailure ) )
+                                    )
+                                    isImportant
+                                 } )
+                              }
+
+                              waitListKnownItems
+                              .drop(i + -1 )
+
+                           }
                         }
 
                         override
@@ -201,12 +241,12 @@ object reocsImpl
                            val e = {
                               super[AelGeneric].newMissingPrecedingMarkCompleteCallYetException()
                            }
-                           for (precedingTurnAllocE <- {
-                              tryGetPrecedingEvent()
-                              .map[Throwable](_.creationalCallEvt )
+                           for ((p, precedingTurnAllocE ) <- {
+                              tryGetInterleavingEventsAndThis()
+                              .map(e => (e, e.creationalCallEvt) )
                            } ) {
                               e addSuppressed {
-                                 new Exception(s" -- $precedingTurnAllocE ", precedingTurnAllocE )
+                                 new Exception(s"apparent interleaving mark() calls [$p] -- ${precedingTurnAllocE } ", precedingTurnAllocE )
                               }
                            }
                            e
@@ -217,7 +257,12 @@ object reocsImpl
                      mainHandle
                      
                })
+               .zipWithIndex
+               .tapEach({ case (item, i) => waitListEvaluatedSize = i })
+               .map({ case (item, i) => item })
             }
+
+            private var waitListEvaluatedSize : Int = 0
 
             waitList(0).markCompleted()
 
@@ -260,13 +305,13 @@ object reocsImpl
                ;
                
                protected 
-               def closeWith(tr : util.Try[Unit] ) = {
-                  sm tryComplete(tr)
+               def closeWith(tr : util.Try[Smci] ) = {
+                  sm tryComplete(tr )
                }
 
                def tryMarkCompleted() : Boolean = {
                   
-                  sm.tryComplete(util.Success { })
+                  sm.tryComplete(util.Success { newSmci(message = s"tryMarkCompleted() here ") })
                }
 
                override
@@ -289,7 +334,7 @@ object reocsImpl
                protected 
                def newMissingPrecedingMarkCompleteCallYetException() : Exception = {
                   val e = new IllegalStateException(s"no 'markCompleted()' call yet -- ${this } -- ")
-                  e addSuppressed { new Exception(s"created here -- apparent interleaving/intermediating call -- $creationalCallEvt ", creationalCallEvt ) {} }
+                  e addSuppressed { new Exception(s"created here (check apparent interleaving/intermediating calls!) -- $creationalCallEvt ", creationalCallEvt ) {} }
                   e
                }
 
@@ -383,11 +428,11 @@ object reocsImpl
                   
                   sm.asFuture
                   .transform(tr => util.Success {
-                     tr match {
-                        case util.Success(value @ () ) =>
-                           new Exception(s"markCompleted() here") {}
+                     tr.map(_.e ) match {
+                        case util.Success(value @ e ) =>
+                           e
                         case util.Failure(z ) =>
-                           new Exception(s"markCompleted() here by Failure: $z", z) {}
+                           new Exception(s"markCompleted() t/here by Failure: $z", z) {}
                      }
                   })
                }
