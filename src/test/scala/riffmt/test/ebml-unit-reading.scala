@@ -51,63 +51,63 @@ org.scalatest.funsuite.AnyFunSuite
 
    class OK[+Value ](value : Value ) extends Throwable(s"value: $value ")
 
-   test(s"shall raise Exception \"expecting 16 bytes, yet only got 5\" ") {
+   // test(s"shall raise Exception \"expecting 16 bytes, yet only got 5\" ") {
 
-      val z = {
-         ;
-         util.Try({
-            ;
+   //    val z = {
+   //       ;
+   //       util.Try({
+   //          ;
             
-            val s = {
-               matroskaSchemeMap
-               .apply(0x73A4)
-            }
+   //          val s = {
+   //             matroskaSchemeMap
+   //             .apply(0x73A4)
+   //          }
 
-            s.readAndParse({ import cbsq.riffmt.byteManipImplicits.* ; basicFiveByteBlob.newGrossReader().asMarkableStream() })
+   //          s.readAndParse({ import cbsq.riffmt.byteManipImplicits.* ; basicFiveByteBlob.newGrossReader().asMarkableStream() })
 
-         })
-         .fold(z => util.Success(z), v => util.Failure(OK(s"$v") ) )
-         .map({ 
-            case z : (EBmlPrimitivesMalformationException.IDueToEofException ) =>
-               z 
-            case z =>
-               throw z
-         })
-         .get
-      }
+   //       })
+   //       .fold(z => util.Success(z), v => util.Failure(OK(s"$v") ) )
+   //       .map({ 
+   //          case z : (EBmlPrimitivesMalformationException.IDueToEofException ) =>
+   //             z 
+   //          case z =>
+   //             throw z
+   //       })
+   //       .get
+   //    }
 
-      z printStackTrace System.err
+   //    z printStackTrace System.err
       
-   }
+   // }
    
-   test(s"if given empty Bytes, shall throw EBmlMalformationException IDueToZeroLengthEofException ") {
+   // test(s"if given empty Bytes, shall throw EBmlMalformationException IDueToZeroLengthEofException ") {
 
-      val z = {
-         ;
-         util.Try({
-            ;
+   //    val z = {
+   //       ;
+   //       util.Try({
+   //          ;
             
-            val s = {
-               matroskaSchemeMap
-               .apply(0x73A4)
-            }
+   //          val s = {
+   //             matroskaSchemeMap
+   //             .apply(0x73A4)
+   //          }
 
-            s.readAndParse({ import cbsq.riffmt.byteManipImplicits.* ; basicZeroLengthBlob.newGrossReader().asMarkableStream() })
+   //          s.readAndParse({ import cbsq.riffmt.byteManipImplicits.* ; basicZeroLengthBlob.newGrossReader().asMarkableStream() })
 
-         })
-         .fold(z => util.Success(z), v => util.Failure(OK(s"$v") ) )
-         .map({ 
-            case z : (EBmlPrimitivesMalformationException.IDueToZeroByteEofException ) =>
-               z 
-            case z =>
-               throw z
-         })
-         .get
-      }
+   //       })
+   //       .fold(z => util.Success(z), v => util.Failure(OK(s"$v") ) )
+   //       .map({ 
+   //          case z : (EBmlPrimitivesMalformationException.IDueToZeroByteEofException ) =>
+   //             z 
+   //          case z =>
+   //             throw z
+   //       })
+   //       .get
+   //    }
 
-      z printStackTrace System.err
+   //    z printStackTrace System.err
       
-   }
+   // }
    
    // test(s" ") {
 

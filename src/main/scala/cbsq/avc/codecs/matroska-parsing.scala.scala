@@ -72,42 +72,43 @@ def demuuxMatroskaFile(r : java.io.InputStream )(
                import cbsq.avc.codecs.matroskaSegmentElementScheme
                
                (
-                  matroskaSegmentElementScheme
+                  // matroskaSegmentElementScheme
 
-                  .readAndParseAlt(
-                     //
+                  // .readAndParse(
+                  //    //
 
-                     src = r ,
+                  //    src = r ,
 
-                     eagerness = eagerness ,
+                  //    eagerness = eagerness ,
 
-                  )(using {
+                  // )(using {
 
-                     EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance
+                  //    EBml.CodeSchemeOps.TraversalDiagnostique.nullaryInstance
 
-                     .withFullSchemeInfo( sE)
+                  //    .withFullSchemeInfo( sE)
 
-                     .withCustomErrorHandler({
-                     //
+                  //    .withCustomErrorHandler({
+                  //    //
 
-                     type XEvt >: Any <: Any
+                  //    type XEvt >: Any <: Any
 
-                     val XTolerableExc = identity[PartialFunction[XEvt, Unit ] ] {
+                  //    val XTolerableExc = identity[PartialFunction[XEvt, Unit ] ] {
                         
-                        case z : (EBmlPrimitivesMalformationException.IDueToPayloadEofException) =>
+                  //       case z : (EBmlPrimitivesMalformationException.IDueToPayloadEofException) =>
 
-                     }
+                  //    }
 
-                     identity[PartialFunction[XEvt, Seq[Any] ] ] {
+                  //    identity[PartialFunction[XEvt, Seq[Any] ] ] {
                         
-                        case z @ XTolerableExc(_) =>
-                           Seq()
+                  //       case z @ XTolerableExc(_) =>
+                  //          Seq()
 
-                     }
+                  //    }
                      
-                     })
+                  //    })
 
-                  } )
+                  // } )
+                  ??? // TODO
 
                )
                
