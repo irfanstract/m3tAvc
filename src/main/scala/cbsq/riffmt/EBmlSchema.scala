@@ -57,7 +57,6 @@ trait EBsd extends
     */
    sealed trait CodeSchemeOps extends 
    AnyRef
-   with CodeSchemeOps.Rpia
    {
       
       type Instance
@@ -218,20 +217,6 @@ trait EBsd extends
          (s : RpiaImpl)
          .src
          .asInstanceOf[ctx.RnpSource]
-      }
-
-      private[EBsd]
-      sealed
-      trait Rpia extends 
-      AnyRef
-      {
-         this : (
-            AnyRef
-            with CodeSchemeOps
-         ) =>
-
-         
-         
       }
 
       // was here
