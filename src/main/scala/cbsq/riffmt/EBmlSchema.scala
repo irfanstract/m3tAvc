@@ -603,6 +603,53 @@ trait EBsd extends
 
       }
 
+      extension (r : (CodeUnitScheme | FramePayloadScheme )#RnpSource ) {
+         //
+         
+         def readEbmlFixedNByteString(l : Int )(using CodeSchemeOps.TraversalDiagnostique ) = {
+            
+                        import language.unsafeNulls /* due to the extended usage of non-Scala API(s) */
+
+                        import EBml.readNBytesEbmSc
+                        
+                        ({
+
+                           try { r readNBytesEbmSc(1) }
+
+                           catch {
+
+                              case z : java.io.EOFException => 
+                                 
+                                 val newMessage = (
+                                    summon[CodeSchemeOps.TraversalDiagnostique ]
+                                    .formatCtxtualMessage(msg = s"zero-byte EOF exception" )
+                                 )
+                                 throw (
+                                    new java.io.IOException(newMessage , z ) with EBmlPrimitivesMalformationException.IDueToZeroByteEofException
+                                 )
+                           } 
+                        })
+                        .++({
+
+                           try { r readNBytesEbmSc(-1 + l ) }
+                           
+                           catch {
+                              
+                              case z : java.io.EOFException => 
+                                 
+                                 val newMessage = (
+                                    summon[CodeSchemeOps.TraversalDiagnostique ]
+                                    .formatCtxtualMessage(msg = s"half-payload EOF exception" )
+                                 )
+                                 throw (
+                                    new java.io.IOException(newMessage , z ) with EBmlPrimitivesMalformationException.IDueToPayloadEofException
+                                 )
+                           } 
+                        }) 
+         }
+         
+      }
+
       // @annotation.experimental
       sealed 
       case class OfStr[
@@ -674,39 +721,7 @@ trait EBsd extends
 
                      import EBml.readNBytesEbmSc
                      
-                     ({
-
-                        try { r readNBytesEbmSc(1) }
-
-                        catch {
-
-                           case z : java.io.EOFException => 
-                              
-                              val newMessage = (
-                                 summon[CodeSchemeOps.TraversalDiagnostique ]
-                                 .formatCtxtualMessage(msg = s"zero-byte EOF exception" )
-                              )
-                              throw (
-                                 new java.io.IOException(newMessage , z ) with EBmlPrimitivesMalformationException.IDueToZeroByteEofException
-                              )
-                        } 
-                     })
-                     .++({
-
-                        try { r readNBytesEbmSc(-1 + l ) }
-                        
-                        catch {
-                           
-                           case z : java.io.EOFException => 
-                              val newMessage = (
-                                 summon[CodeSchemeOps.TraversalDiagnostique ]
-                                 .formatCtxtualMessage(msg = s"half-payload EOF exception" )
-                              )
-                              throw (
-                                 new java.io.IOException(newMessage , z ) with EBmlPrimitivesMalformationException.IDueToPayloadEofException
-                              )
-                        } 
-                     }) 
+                     r readEbmlFixedNByteString(l = l )
                   }
 
                   byteSeq
