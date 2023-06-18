@@ -683,12 +683,12 @@ trait EBsd extends
 
                            case z : java.io.IOException => 
                               
-                              val oe = (
+                              val newMessage = (
                                  summon[CodeSchemeOps.TraversalDiagnostique ]
-                                 .newLexerException(msg = s"zero-byte EOF exception" )
+                                 .formatCtxtualMessage(msg = s"zero-byte EOF exception" )
                               )
                               throw (
-                                 new java.io.IOException(oe.getMessage() , z ) with EBmlPrimitivesMalformationException.IDueToZeroByteEofException
+                                 new java.io.IOException(newMessage , z ) with EBmlPrimitivesMalformationException.IDueToZeroByteEofException
                               )
                         } 
                      })
@@ -699,12 +699,12 @@ trait EBsd extends
                         catch {
                            
                            case z : java.io.IOException => 
-                              val oe = (
+                              val newMessage = (
                                  summon[CodeSchemeOps.TraversalDiagnostique ]
-                                 .newLexerException(msg = s"half-payload EOF exception" )
+                                 .formatCtxtualMessage(msg = s"half-payload EOF exception" )
                               )
                               throw (
-                                 new java.io.IOException(oe.getMessage() , z ) with EBmlPrimitivesMalformationException.IDueToPayloadEofException
+                                 new java.io.IOException(newMessage , z ) with EBmlPrimitivesMalformationException.IDueToPayloadEofException
                               )
                         } 
                      }) 
