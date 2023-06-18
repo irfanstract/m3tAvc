@@ -2142,8 +2142,7 @@ trait EBsd extends
             import language.unsafeNulls
             val msg = {
                summon[CodeSchemeOps.TraversalDiagnostique]
-               .newLexerException(msg = s"reoc exception. check for race-condition or stream pipeline corruption !! $z" )
-               .getMessage()
+               .formatCtxtualMessage(msg = s"reoc exception. check for race-condition or stream pipeline corruption !! $z" )
             }
             throw (
                new
