@@ -954,8 +954,8 @@ trait EBsd extends
                            val l = {
                               util.Try({
                                  ;
-                                 identity[BigDecimal](rbe.payloadLength.inBytes )
-                                 .toIntExact
+                                 rbe.payloadLength
+                                 match { case size => identity[BigDecimal](size.inBytes ).toIntExact }
                               })
                               .recover({
                                  case z : RuntimeException =>
