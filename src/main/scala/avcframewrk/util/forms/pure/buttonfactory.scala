@@ -24,6 +24,7 @@ type LabelledCallbackButtonFactory[-Label, -Callback >: PartialFunction[Any, Not
    
 )
 
+// TODO demote into TB-type (Tightly-Bounded)
 trait LabelledCallbackButtonFactory1[-Label, -Callback, +R] extends
 Any
 // with ButtonActionFactory
@@ -31,6 +32,20 @@ Any
 
    def renderButton(label: Label, callback: Callback ) : R
    
+}
+
+type Lcbf1[-Label, -Callback, +R] = (
+   DefinesDoRenderButtonA2[Label, Callback, R] {
+      def renderButton(label: Label, callback: Callback ) : R
+   }
+)
+
+trait DefinesDoRenderButtonA2[-A1, -A2, +R] extends
+Any
+{
+
+   def renderButton(arg1: A1, arg2: A2 ) : R
+
 }
 
 type ButtonFactory1[-Action, +R]
