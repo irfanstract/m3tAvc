@@ -1559,8 +1559,7 @@ trait EBsd extends
                            
                            sys.process.stderr.println((
                               summon[CodeSchemeOps.TraversalDiagnostique]
-                              .newLexerException(msg = "no more child to parse, ceasing", r = r )
-                              .getMessage()
+                              .formatCtxtualMessage(msg = "no more child to parse, ceasing" )
                               
                            ))
 
@@ -1602,8 +1601,7 @@ trait EBsd extends
                                  java.lang.ref.Reference.reachabilityFence(BigInt )
                                  val msg = (
                                     summon[CodeSchemeOps.TraversalDiagnostique]
-                                    .newLexerException(msg = s"encountered EBmlPrimitivesMalformationException during child #$presentlyIndex -- (prior child: $priorChildToString ) -- $z " , r = r )
-                                    .getMessage().nn
+                                    .formatCtxtualMessage(msg = s"encountered EBmlPrimitivesMalformationException during child #$presentlyIndex -- (prior child: $priorChildToString ) -- $z " )
 
                                  )
                                  z match {
@@ -1647,8 +1645,7 @@ trait EBsd extends
 
                                  sys.process.stderr.println((
                                     summon[CodeSchemeOps.TraversalDiagnostique]
-                                    .newLexerException(msg = s"tolerated exception, ($z) $v ", r = r )
-                                    .getMessage()
+                                    .formatCtxtualMessage(msg = s"tolerated exception, ($z) $v " )
                                  ))
 
                                  None
