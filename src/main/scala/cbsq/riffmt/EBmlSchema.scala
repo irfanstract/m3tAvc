@@ -680,7 +680,7 @@ trait EBsd extends
 
                         catch {
 
-                           case z : java.io.IOException => 
+                           case z : java.io.EOFException => 
                               
                               val newMessage = (
                                  summon[CodeSchemeOps.TraversalDiagnostique ]
@@ -697,7 +697,7 @@ trait EBsd extends
                         
                         catch {
                            
-                           case z : java.io.IOException => 
+                           case z : java.io.EOFException => 
                               val newMessage = (
                                  summon[CodeSchemeOps.TraversalDiagnostique ]
                                  .formatCtxtualMessage(msg = s"half-payload EOF exception" )
