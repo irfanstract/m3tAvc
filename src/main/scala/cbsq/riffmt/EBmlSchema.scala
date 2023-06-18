@@ -75,9 +75,19 @@ trait EBsd extends
        */
       def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
 
+      protected[EBsd] 
+      type ReadingParsingImplArg
+         >: CodeSchemeOps.RpiaImpl
+         <: CodeSchemeOps.RpiaImpl
+      
       type RnpSource
         <: java.io.InputStream | java.io.DataInput
 
+      protected[EBsd] 
+      given Conversion[ReadingParsingImplArg, RnpSource] = {
+         CodeSchemeOps.getRnpSourceRpiaImpl(this) _
+      }
+      
       @annotation.experimental
       def writeBnr(d: Instance, dest: RnpDest): WbnrR
 
@@ -220,15 +230,7 @@ trait EBsd extends
             with CodeSchemeOps
          ) =>
 
-         protected[EBsd] 
-         type ReadingParsingImplArg
-            >: RpiaImpl
-            <: RpiaImpl
          
-         protected[EBsd] 
-         given Conversion[ReadingParsingImplArg, RnpSource] = {
-            getRnpSourceRpiaImpl(this) _
-         }
          
       }
 
