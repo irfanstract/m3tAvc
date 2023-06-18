@@ -943,8 +943,7 @@ trait EBsd extends
                            if (rbe.typeInt == (0x387B27 : BigInt ) ) then {
                               val msg = (
                                  summon[CodeSchemeOps.TraversalDiagnostique]
-                                 .newLexerException(msg = s"apparent stream corruption ; <${rbe.typeInt } l=??? /> " )
-                                 .getMessage().nn
+                                 .formatCtxtualMessage(msg = s"apparent stream corruption ; <${rbe.typeInt } l=??? /> " )
                               )
                               throw new java.io.IOException(msg )
                            }
@@ -961,8 +960,7 @@ trait EBsd extends
                                  case z : RuntimeException =>
                                     val msg = (
                                        summon[CodeSchemeOps.TraversalDiagnostique]
-                                       .newLexerException(msg = s"($z) ; check the stream not corrupted!!! ; <${rbe.typeInt } l=??? /> " )
-                                       .getMessage().nn
+                                       .formatCtxtualMessage(msg = s"($z) ; check the stream not corrupted!!! ; <${rbe.typeInt } l=??? /> " )
                                     )
                                     throw new java.io.IOException(msg )
                               })
@@ -1046,17 +1044,13 @@ trait EBsd extends
                         val msg = (
                            summon[CodeSchemeOps.TraversalDiagnostique]
 
-                           .newLexerException(
+                           .formatCtxtualMessage(
                               msg = (
                                  s"malformed raw, unprocessed $notEBml frame repr."
                                  + " " + (z.getMessage())
                               ),
 
-                              r = r ,
-
                            )
-
-                           .getMessage().nn
 
                         )
 
@@ -1186,18 +1180,18 @@ trait EBsd extends
 
                      classPayloadsTable
                      .applyOrElse(classIntName : BigInt, classIntName => {
-                        val oe = (
+                        val newMessage = (
                            summon[CodeSchemeOps.TraversalDiagnostique]
-                           // .newLexerException(msg = (
+                           // .formatCtxtualMessage(msg = (
                            //    s"no scheme for cls ${classIntName.ebmlClassNameFmatted } "
                            // ))
-                           .newLexerException(msg = (
+                           .formatCtxtualMessage(msg = (
                               s"no scheme for cls ${classIntName.ebmlClassNameFmatted } (it's possible the stream has been corrupted!!!) . (<${classIntName.ebmlClassNameFmatted } (length)=${efpr.payloadLength } >) "
                            ))
                         )
                         throw (
                            new
-                           java.io.IOException(oe.getMessage().nn )
+                           java.io.IOException(newMessage )
                            with EBmlPrimitivesMalformationException.%%!
                            with FramePayloadScheme.trvdFramesIoExcs.IOfSchemeLookupFailure
                         )
