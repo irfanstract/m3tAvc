@@ -82,6 +82,22 @@ object `% % & @` {
             
          }
          
+         /**
+          * 
+          * `formatCtxtualMessage`
+          * 
+          */
+         extension (parent: TraversalDiagnostique) {
+
+            def formatCtxtualMessage(msg : String ) : String = {
+
+               import language.unsafeNulls
+
+               s"[${parent.path }]: $msg"
+            }
+
+         }
+         
          extension (parent: TraversalDiagnostique) {
 
             def newLexerException(
@@ -94,7 +110,7 @@ object `% % & @` {
             ): Exception = {
 
                new
-               java.io.IOException(s"[${parent.path }]: $msg" )
+               java.io.IOException(parent.formatCtxtualMessage(msg = msg ) )
                with EBmlPrimitivesMalformationException.%%!
                {
 
