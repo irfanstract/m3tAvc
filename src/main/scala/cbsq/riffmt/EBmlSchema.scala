@@ -84,13 +84,23 @@ trait EBsd extends
       extension (this1 : CodeSchemeOps) {
 
          // transparent inline
-         def readAndParse(r: this1.RnpSource)(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
+         def readAndParse(
+            src: this1.RnpSource ,
+
+            eagerness : ebmsGenericUtils.Eagerness = {
+               
+               ebmsGenericUtils.Eagerness.toBeEager
+            } ,
+
+         )(using td : CodeSchemeOps.TraversalDiagnostique )(using util.NotGiven[Enct]) = {
             
             this1.readAndParseImpl(r = {
 
                CodeSchemeOps.RpiaImpl(
-                  src = r ,
-                  eagerness = ebmsGenericUtils.Eagerness.toBeEager ,
+                  src = src ,
+                  eagerness = eagerness ,
+
+                  reoc = xNewReoc() ,
                )
 
             } )(using td )
@@ -105,6 +115,8 @@ trait EBsd extends
                CodeSchemeOps.RpiaImpl(
                   src = r ,
                   eagerness = ebmsGenericUtils.Eagerness.toBeLazy ,
+                  
+                  reoc = xNewReoc() ,
                )
 
             } )(using td )
@@ -118,6 +130,8 @@ trait EBsd extends
 
             eagerness : ebmsGenericUtils.Eagerness ,
 
+            reoc : reocImpl.Reoc ,
+
          )(using td : CodeSchemeOps.TraversalDiagnostique) = {
             
             this1.readAndParseImpl(r = {
@@ -125,6 +139,8 @@ trait EBsd extends
                CodeSchemeOps.RpiaImpl(
                   src = src ,
                   eagerness = eagerness ,
+                  
+                  reoc = reoc ,
                )
 
             } )(using td )
@@ -208,7 +224,15 @@ trait EBsd extends
       case class RpiaImpl(
          src : CodeSchemeOps#RnpSource ,
          eagerness : ebmsGenericUtils.Eagerness ,
+
+         reoc : reocImpl.Reoc ,
+         
       )
+
+      def xNewReoc() : reocImpl.Reoc = {
+
+         reocImpl.newReoc()
+      }
 
    }
 
@@ -1083,6 +1107,10 @@ trait EBsd extends
          ) = {
                ;
 
+               import rpia.reoc
+
+               // val es = reoc.mark()
+
                efpr.payloadLength.inBytes
                match { case v if (v.toInt.toLong == v ) => }
 
@@ -1175,13 +1203,18 @@ trait EBsd extends
                         LazyList().lazyAppendedAll({
                            ((using : CodeSchemeOps.TraversalDiagnostique) ?=> {
 
+                              locally {
+                                 // withShallDebugThrownReocIfNecessary { es._1.checkCompleted() }
+                                 // es._2.markCompleted()
+                              }
+
                               extension (scheme : FramePayloadScheme ) {
                               
                                  // transparent inline
                                  def sub1 = {
                                     ;
                                     scheme
-                                    .readAndParseAlt(src = r, eagerness = rpia.eagerness )
+                                    .readAndParseAlt(src = r, eagerness = rpia.eagerness, reoc = rpia.reoc )
                                  }
                                  
                               }
@@ -1356,7 +1389,22 @@ trait EBsd extends
             <: UnpickleInputStream
 
          override
-         def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique) = {
+         def readAndParseImpl(r: ReadingParsingImplArg)(using allItemsCst : CodeSchemeOps.TraversalDiagnostique) = {
+                  ;
+                  
+                  import r.reoc
+
+                  extension (es : reocImpl.ReocReturn ) {
+
+                     def checkPrecedentAndMarkAntecedent(): Unit = {
+
+                        es._1.checkCompleted()
+                        es._2.markCompleted()
+                     }
+
+                  }
+
+                  // val esAll = reoc.mark()
 
                   val scheme = (
                      (
@@ -1365,22 +1413,97 @@ trait EBsd extends
                   ) : FramePayloadScheme
 
                   var c : Int = 0
+
                   val synch = new AnyRef
+                  
                   import synch.{synchronized => synchronizedIfNecessary }
-                  def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = synchronizedIfNecessary (
+
+                  def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = synchronizedIfNecessary ({
+                        ;
+                        
+                        // withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException ({
+                           
+                        //    lazy
+                        //    val esEach = reoc.mark()
+
+                        //    esEach._1.checkCompleted()
+                        //    esEach._2.markCompleted()
+
+                        // })
+                        
                         ({
                            scheme
                            .readAndParseImpl(r )
                            
-                        } , c += 1 )._1
-                  )
+                        })
+                        match { case v => c += 1 ; v }
+                  })
+
+                  // private
+                  val checkChildrenLlNotEvaluatedTwice: () => Unit = {
+                     val c = new java.util.concurrent.atomic.AtomicBoolean
+                     () => {
+                        if c.getAndSet(true) then {
+                           throw (
+                              summon[CodeSchemeOps.TraversalDiagnostique]
+                              .newLexerException(msg = s"double childrenLl init")
+                           )
+                        }
+                     } : Unit
+                  }
 
                   lazy val childrenLl : LazyList[FramePayloadScheme#Instance] = {
 
                      import avcframewrk.util.lazylists.asTerminatingCollOnException
 
                      //
-                     LazyList.unfold[FramePayloadScheme#Instance, Unit](() )((_) => {
+                     LazyList.unfold[FramePayloadScheme#Instance, (Unit, (() => reocImpl.ReocReturn ) | Null )]({
+                        // TODO
+                        ;
+                        
+                        /**
+                         * 
+                         * the one for the first turn
+                         * needs to be `lazy`, as
+                         * the resulting `LazyList`
+                         * might remain unevaluated indefinitely
+                         * 
+                         */
+                        lazy 
+                        val esEach = {
+                           reoc.mark()
+                        }
+
+                        // EmptyTuple :* () :* ""
+                        ((), () => esEach )
+                     })({ case (() , esEach0Get ) => {
+                     ;
+                      
+                     val i = c
+
+                     implicit val itemCst : CodeSchemeOps.TraversalDiagnostique = (
+                        (allItemsCst)
+                        .ofChild(divName = s"$i")
+                     )
+
+                     util.Using.resource({
+
+                        withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException ({
+                           
+                           // lazy
+                           // val esEach = esEach0Get()
+
+                           // esEach.checkPrecedentAndMarkAntecedent()
+
+                        })
+                        
+                        new java.io.Closeable {
+                           override
+                           def close(): Unit = {
+                              // esEach._2.markCompleted()
+                           }
+                        }
+                     })(_ => {
 
                         val noMore = {
                            r.isAtEofRelevantly
@@ -1449,17 +1572,28 @@ trait EBsd extends
                                  }
                               
                            }
-                           try 
-                              val i = c
+                           try
+
+                              assert(summon[CodeSchemeOps.TraversalDiagnostique] == itemCst )
+
+                              // esEach._2.markCompleted()
+                              withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
+                                 // val esEach = reoc.mark()
+                                 // esEach.checkPrecedentAndMarkAntecedent()
+                              }
 
                               val s1 = (
-                                 readNextChild()(using (
-                                    summon[CodeSchemeOps.TraversalDiagnostique]
-                                    .ofChild(divName = s"$i")
-                                 ))
+                                 readNextChild()(using itemCst)
                               )
                               
-                              Some(s1 , ())
+                              withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
+                                 // val esEach = reoc.mark()
+                                 // esEach.checkPrecedentAndMarkAntecedent()
+                              }
+
+                              Some(s1 , (() , ({
+                                 null
+                              })))
 
                            catch {
                               
@@ -1484,7 +1618,25 @@ trait EBsd extends
                            }
                         }
                      })
-                     .asTerminatingCollOnException()
+                     }})
+                     .match { case ll => {
+                        LazyList() lazyAppendedAll {
+                           ;
+
+                           checkChildrenLlNotEvaluatedTwice()
+
+                           withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
+                              // val esEach = reoc.mark()
+                              // esEach.checkPrecedentAndMarkAntecedent()
+                           }
+
+                           Seq()
+                        } lazyAppendedAll ll
+                     } }
+                     .match { case ll => {
+                        ll
+                        .asTerminatingCollOnException()
+                     } }
                      .match { case ll => {
                         ll
                         .zipWithIndex
@@ -1737,7 +1889,7 @@ trait EBsd extends
    extension (r: UnpickleInputStream) {
       
       def readEbmlByScheme(s: FramePayloadScheme)(using CodeSchemeOps.TraversalDiagnostique) = {
-         s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
+         s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager, reoc = CodeSchemeOps.xNewReoc() )
       }
 
    }
@@ -1899,7 +2051,7 @@ trait EBsd extends
                      (try {
                         ((
                            // s readAndParseAlt(src = r, eagerness = ebmsGenericUtils.Eagerness.toBeEager )
-                           c readAndParseAlt(src = r, eagerness = ec.eagerness )
+                           c readAndParseAlt(src = r, eagerness = ec.eagerness, reoc = ec.reoc )
                         ), {
                            import reflect.Selectable.reflectiveSelectable
                            /**
@@ -1934,6 +2086,41 @@ trait EBsd extends
    }
 
    // export ebmsGenericUtils.checkNotAtEof
+
+   private
+   def withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException[R](c : => R)(using CodeSchemeOps.TraversalDiagnostique) = {
+
+      try c
+
+      catch {
+
+         case z : EBmlPrimitivesMalformationException =>
+            throw z
+
+         case z : Exception =>
+            import language.unsafeNulls
+            val msg = {
+               summon[CodeSchemeOps.TraversalDiagnostique]
+               .newLexerException(msg = s"reoc exception. check for race-condition or stream pipeline corruption !! $z" )
+               .getMessage()
+            }
+            throw (
+               new
+               java.io.IOException(msg, z)
+               with EBmlPrimitivesMalformationException.%%!
+            )
+
+      }
+   }
+
+   private
+   def withShallDebugThrownReocIfNecessary[R](c : => R) = {
+      try c
+      catch {
+         case z : Exception =>
+            throw z
+      }
+   }
 
    private 
    class PF extends Throwable
@@ -1987,6 +2174,32 @@ trait EBsdSpecificUtilDefs extends
       }
       
    } /* trimToJustFiveHundred */
+
+   /**
+    * 
+    * "Reader/InputStream Usage Control"
+    * a toolkit 
+    * for implementing the locking-control before the main InputStream-or-Reader
+    * 
+    * the entry point is the `newReoc()` method, returning new/independent `Reoc` 
+    * 
+    * every invoc of the `reoc.mark()` method 
+    * shall return a pair of `object`s, one `?{ def checkCompleted() }` and one `?{ def markCompleted() }` .
+    * 
+    * unless the `markCompleted()` of the latter obj has ben called,
+    * the `checkCompleted()` itc returned by the next `reoc.mark()` will `throw` `IllegalStateException`.
+    * however,
+    * as a base-case,
+    * for the first/initial `reoc.mark()`, the returned `checkCompleted()` itc will always return successfully .
+    * 
+    */
+   private[riffmt]
+   final
+   lazy
+   val reocImpl : avcframewrk.util.errorchecking.reocsImpl.type = {
+
+      avcframewrk.util.errorchecking.reocsImpl
+   }
 
 }
 
