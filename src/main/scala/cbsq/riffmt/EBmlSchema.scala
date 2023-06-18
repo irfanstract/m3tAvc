@@ -250,16 +250,15 @@ trait EBsd extends
 
             if !(eagerness == ebmsGenericUtils.Eagerness.toBeEager ) then {
 
-               val errorMsg = {
+               val newMsg = {
 
                   import language.unsafeNulls
                   
                   summon[TraversalDiagnostique]
-                  .newLexerException(msg = s"unsupported lazy mode $eagerness ; try 'toBeEager' instead ")
-                  .getMessage()
+                  .formatCtxtualMessage(msg = s"unsupported lazy mode $eagerness ; try 'toBeEager' instead ")
                }
 
-               throw new java.io.IOException(errorMsg) with UnsupportedLazyReadingException
+               throw new java.io.IOException(newMsg) with UnsupportedLazyReadingException
             }
          }
 
@@ -1885,11 +1884,10 @@ trait EBsd extends
             
             val msg = (
                summon[CodeSchemeOps.TraversalDiagnostique]
-               .newLexerException(msg = (
+               .formatCtxtualMessage(msg = (
                   s"EOF in the first place - wanted to pull unprocessed EBML frame."
                   + " " + z.getMessage()
-               ), r = r )
-               .getMessage()
+               ) )
             )
 
             (
