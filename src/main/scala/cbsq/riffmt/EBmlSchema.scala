@@ -88,7 +88,8 @@ trait EBsd extends
       }
       
       @annotation.experimental
-      def writeBnr(d: Instance, dest: RnpDest): WbnrR
+      private[EBsd]
+      def writeBnr(d: Instance, dest: RnpDest): WbnrR = ???
 
       type RnpDest
         <: java.io.DataOutput
@@ -349,10 +350,6 @@ trait EBsd extends
          //       this
          //    }
             
-            def writeBnr(d: Instance, dest: RnpDest): WbnrR = {
-               ???
-            }
-
          }
       }
 
@@ -438,8 +435,6 @@ trait EBsd extends
             ))
          }
          
-         def writeBnr(d: Instance, dest: RnpDest): WbnrR = ???
-
       }
 
       /* THE PRIMITIVE DATA-TYPES */
@@ -474,16 +469,6 @@ trait EBsd extends
             r.readEbmlDateBytes(supposedReadingLength = supposedReadingLength )
          }
          
-         @annotation.experimental
-         def writeBnr(d: Instance, dest: RnpDest): WbnrR = {
-            util.control.NonLocalReturns.returning[WbnrR](resolve ?=> {
-               // @annotation.experimental
-               val e = {
-                  resolve.throwReturn(??)
-               }
-            })
-         }
-
          // TODO
          // override
          // def withSpecificLength(l: cbsq.FileSize) = {
@@ -525,10 +510,6 @@ trait EBsd extends
             ))
          }
          
-         def writeBnr(d: Instance, dest: RnpDest): WbnrR = {
-            (summon[OctetWritedownOp[C] ] )(dest, d)
-         }
-
       }
       // @annotation.experimental
       object OfNumber {
@@ -723,9 +704,6 @@ trait EBsd extends
 
          }
 
-         @annotation.experimental
-         def writeBnr(d: Instance, dest: RnpDest): WbnrR = ??
-
          // TODO
          override
          def withSpecificLength(l: cbsq.FileSize): OfStr[l.type, ActualCharset, DEcv] = {
@@ -806,9 +784,6 @@ trait EBsd extends
       type RnpSource
         >: UnpickleInputStream
         <: java.io.InputStream
-
-      @annotation.experimental
-      def writeBnr(d: Instance, dest: RnpDest): WbnrR
 
       type RnpDest
         >: java.io.OutputStream & java.io.DataOutput
@@ -1339,16 +1314,6 @@ trait EBsd extends
                // }
          }
 
-         // @deprecated("experimental")
-         @annotation.experimental
-         def writeBnr(d: Instance, dest: RnpDest): WbnrR = {
-            // dest writeEbmlFrame (({
-            //    import d.{typeInt, payloadLength, payload }
-            //    Wrbeiop(typeInt = typeInt, payload = payload )
-            // }))
-            ??
-         }
-
          def xHandleMissingScheme(
             //
             classIntName : BigInt ,
@@ -1660,9 +1625,6 @@ trait EBsd extends
             }
          }
 
-         @annotation.experimental
-         def writeBnr(d: Instance, dest: RnpDest): WbnrR = ??
-         
       }
       
       export CodeUnitScheme.ofAnyOf
