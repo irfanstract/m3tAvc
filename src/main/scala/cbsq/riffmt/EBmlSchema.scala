@@ -1448,18 +1448,6 @@ trait EBsd extends
                   
                   import r.reoc
 
-                  extension (es : reocImpl.ReocReturn ) {
-
-                     def checkPrecedentAndMarkAntecedent(): Unit = {
-
-                        es._1.checkCompleted()
-                        es._2.markCompleted()
-                     }
-
-                  }
-
-                  // val esAll = reoc.mark()
-
                   val scheme = (
                      (
                         childSchemeM1()
@@ -1474,16 +1462,6 @@ trait EBsd extends
 
                   def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = synchronizedIfNecessary ({
                         ;
-                        
-                        // withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException ({
-                           
-                        //    lazy
-                        //    val esEach = reoc.mark()
-
-                        //    esEach._1.checkCompleted()
-                        //    esEach._2.markCompleted()
-
-                        // })
                         
                         ({
                            import scheme.{readAndParseImpl => specificReadAndParseImpl}
@@ -1521,22 +1499,9 @@ trait EBsd extends
                      LazyList.unfold[FramePayloadScheme#Instance, (Unit, (() => reocImpl.ReocReturn ) | Null )]({
                         // TODO
                         ;
-                        
-                        /**
-                         * 
-                         * the one for the first turn
-                         * needs to be `lazy`, as
-                         * the resulting `LazyList`
-                         * might remain unevaluated indefinitely
-                         * 
-                         */
-                        lazy 
-                        val esEach = {
-                           reoc.mark()
-                        }
 
                         // EmptyTuple :* () :* ""
-                        ((), () => esEach )
+                        ((), null )
                      })({ case (() , esEach0Get ) => {
                      ;
                       
@@ -1548,15 +1513,6 @@ trait EBsd extends
                      )
 
                      util.Using.resource({
-
-                        withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException ({
-                           
-                           // lazy
-                           // val esEach = esEach0Get()
-
-                           // esEach.checkPrecedentAndMarkAntecedent()
-
-                        })
                         
                         new java.io.Closeable {
                            override
@@ -1635,20 +1591,9 @@ trait EBsd extends
 
                               assert(summon[CodeSchemeOps.TraversalDiagnostique] == itemCst )
 
-                              // esEach._2.markCompleted()
-                              withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
-                                 // val esEach = reoc.mark()
-                                 // esEach.checkPrecedentAndMarkAntecedent()
-                              }
-
                               val s1 = (
                                  readNextChild()(using itemCst)
                               )
-                              
-                              withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
-                                 // val esEach = reoc.mark()
-                                 // esEach.checkPrecedentAndMarkAntecedent()
-                              }
 
                               Some(s1 , (() , ({
                                  null
@@ -1677,20 +1622,6 @@ trait EBsd extends
                         }
                      })
                      }})
-                     .match { case ll => {
-                        LazyList() lazyAppendedAll {
-                           ;
-
-                           checkChildrenLlNotEvaluatedTwice()
-
-                           withConvertingReocExceptionIntoStreamRaceCondCorruptiveEbmalformationException {
-                              // val esEach = reoc.mark()
-                              // esEach.checkPrecedentAndMarkAntecedent()
-                           }
-
-                           Seq()
-                        } lazyAppendedAll ll
-                     } }
                      .match { case ll => {
                         ll
                         .asTerminatingCollOnException()
