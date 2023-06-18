@@ -46,7 +46,7 @@ extension [CC[A] <: collection.IterableOnceOps[A, CC, CC[A] ], E ](src: CC[E] ) 
          val s = new AnyRef
  
          // TODO
-         val synchronized     = [E] => (e: DummyImplicit ?=> E ) => (s synchronized { e } ) : E
+         val synchronizedRev  = [E] => (e: DummyImplicit ?=> E ) => (s synchronized { e } ) : E
          val synchronizedRead = [E] => (e: DummyImplicit ?=> E ) => (s synchronized { e } ) : E
 
          def state = (stateVar )
@@ -85,6 +85,13 @@ extension [CC[A] <: collection.IterableOnceOps[A, CC, CC[A] ], E ](src: CC[E] ) 
 
          }
 
+         def markAsClosedAndThrow[Z <: Throwable](z: Z) : Nothing = {
+
+            markAsClosedDueToException(z)
+            
+            throw stateTr.failed.get
+         }
+
          override
          def hasNext: Boolean = synchronizedRead {
             
@@ -93,8 +100,7 @@ extension [CC[A] <: collection.IterableOnceOps[A, CC, CC[A] ], E ](src: CC[E] ) 
             }
             catch {
                case z =>
-                  markAsClosedDueToException(z)
-                  throw stateTr.failed.get
+                  markAsClosedAndThrow(z)
             }
          }
 
@@ -105,7 +111,7 @@ extension [CC[A] <: collection.IterableOnceOps[A, CC, CC[A] ], E ](src: CC[E] ) 
          }
 
          override
-         def next(): E = synchronized {
+         def next(): E = synchronizedRev {
 
             checkStillUp()
 
@@ -114,9 +120,7 @@ extension [CC[A] <: collection.IterableOnceOps[A, CC, CC[A] ], E ](src: CC[E] ) 
 
                case z0 =>
                   
-                  markAsClosedDueToException(z0)
-                  
-                  throw stateTr.failed.get
+                  markAsClosedAndThrow(z0)
 
             }
          }
