@@ -213,14 +213,7 @@ def runEbmlDemonstrativeTransversal(
                      }
                      
                      val xCanUseToString : Boolean = {
-                        /**
-                         * 
-                         * momentarily
-                         * we needed to skip the `toString` calls as
-                         * (for unidentified reasons) it caused race-conditions
-                         * 
-                         */
-                        false
+                        true
                      }
                      
                      c
