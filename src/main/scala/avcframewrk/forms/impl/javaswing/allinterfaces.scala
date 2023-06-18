@@ -513,7 +513,7 @@ AnyRef
 
 trait OmiAll[R] extends 
 AnyRef
-with ButtonFactory1[javax.swing.Action, R ]
+with DefinesDoRenderButtonA1[javax.swing.Action, R ]
 with XWithNjp[R ]
 {
 

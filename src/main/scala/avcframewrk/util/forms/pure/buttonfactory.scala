@@ -33,11 +33,15 @@ Any
    
 }
 
-trait ButtonFactory1[-Action, +R] extends
+type ButtonFactory1[-Action, +R]
+   >: DefinesDoRenderButtonA1[Action, R]
+   <: DefinesDoRenderButtonA1[Action, R]
+
+trait DefinesDoRenderButtonA1[-A1, +R] extends
 Any
 {
 
-   def renderButton(c: Action ) : R
+   def renderButton(c: A1 ) : R
 
 }
 
