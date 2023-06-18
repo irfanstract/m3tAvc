@@ -1179,21 +1179,7 @@ trait EBsd extends
 
                      classPayloadsTable
                      .applyOrElse(classIntName : BigInt, classIntName => {
-                        val newMessage = (
-                           summon[CodeSchemeOps.TraversalDiagnostique]
-                           // .formatCtxtualMessage(msg = (
-                           //    s"no scheme for cls ${classIntName.ebmlClassNameFmatted } "
-                           // ))
-                           .formatCtxtualMessage(msg = (
-                              s"no scheme for cls ${classIntName.ebmlClassNameFmatted } (it's possible the stream has been corrupted!!!) . (<${classIntName.ebmlClassNameFmatted } (length)=${efpr.payloadLength } >) "
-                           ))
-                        )
-                        throw (
-                           new
-                           java.io.IOException(newMessage )
-                           with EBmlPrimitivesMalformationException.%%!
-                           with FramePayloadScheme.trvdFramesIoExcs.IOfSchemeLookupFailure
-                        )
+                        xHandleMissingScheme(classIntName = classIntName )
                      } )
                      
                      match {
@@ -1363,6 +1349,34 @@ trait EBsd extends
             ??
          }
 
+         def xHandleMissingScheme(
+            //
+            classIntName : BigInt ,
+            
+         )(using CodeSchemeOps.TraversalDiagnostique) = {
+
+               throw ({
+                  ;
+                  
+                  val newMessage = (
+                     
+                     summon[CodeSchemeOps.TraversalDiagnostique]
+
+                     .formatCtxtualMessage(msg = (
+                        s"no scheme for cls ${classIntName.ebmlClassNameFmatted } (it's possible the stream has been corrupted!!!) . (<${classIntName.ebmlClassNameFmatted } >) "
+                     ))
+
+                  )
+
+                  (
+                     new
+                     java.io.IOException(newMessage )
+                     with EBmlPrimitivesMalformationException.%%!
+                     with FramePayloadScheme.trvdFramesIoExcs.IOfSchemeLookupFailure
+                  )
+               })
+         }
+         
       }
 
       protected[FramePayloadScheme]
