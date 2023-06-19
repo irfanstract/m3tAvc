@@ -1603,9 +1603,7 @@ trait EBsd extends
                                   * ensure indices `(0, n EXCLUSIVE )` eval when called to
                                   */
                                  r.reoc addOne(() => {
-                                    childrenLl.take(n)
-                                    .to(Vector)
-                                    .foreach({ case _ => })
+                                    synchronouslyEvaluateFirstNChildren(n = n )
                                  })
                                  
                               })
@@ -1660,6 +1658,23 @@ trait EBsd extends
                         } })
                         .map(_._1) 
                      } }
+                  }
+
+                  /**
+                   * 
+                   * SYNCHRONOUSLY
+                   * ensure indices `(0, n EXCLUSIVE )` have been evaluated
+                   * 
+                   */
+                  def synchronouslyEvaluateFirstNChildren(n: Int) : Unit = {
+                     
+                     locally {
+
+                        childrenLl
+                        .slice(0, n)
+                        .foreach({ case _ => })
+
+                     }
                   }
                   
                   /**
