@@ -1597,7 +1597,7 @@ trait EBsd extends
 
                               locally({
 
-                                 val n = c
+                                 val n = i
 
                                  /**
                                   * ensure indices `(0, n EXCLUSIVE )` eval when called to
