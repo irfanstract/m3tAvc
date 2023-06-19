@@ -1596,7 +1596,9 @@ trait EBsd extends
                               assert(summon[CodeSchemeOps.TraversalDiagnostique] == itemCst )
 
                               locally({
+
                                  val n = c
+
                                  /**
                                   * ensure indices `(0, n EXCLUSIVE )` eval when called to
                                   */
@@ -1605,6 +1607,7 @@ trait EBsd extends
                                     .to(Vector)
                                     .foreach({ case _ => })
                                  })
+                                 
                               })
                               
                               val s1 = (
