@@ -15,7 +15,7 @@ package avcframewrk.forms.javaswing
 
 
 
-object util {
+object localUtil {
    
    def enClosure[R](run : => R ) : (() => R ) = () => run
 

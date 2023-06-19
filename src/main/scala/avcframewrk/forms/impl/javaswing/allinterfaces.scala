@@ -20,7 +20,7 @@ AnyRef
 with Aig1More
 {
 
-   import avcframewrk.forms.javaswing.util.enClosure
+   import avcframewrk.forms.javaswing.localUtil.enClosure
 
    import impl.*
    
@@ -104,7 +104,7 @@ AnyRef
 with Aig1
 {
 
-   import avcframewrk.forms.javaswing.util.enClosure
+   import avcframewrk.forms.javaswing.localUtil.enClosure
 
    import impl.*
    
@@ -434,7 +434,7 @@ trait Aig1 extends
 AnyRef
 { allInterfacesGivens =>
 
-   import avcframewrk.forms.javaswing.util.enClosure
+   import avcframewrk.forms.javaswing.localUtil.enClosure
 
    import impl.*
    
