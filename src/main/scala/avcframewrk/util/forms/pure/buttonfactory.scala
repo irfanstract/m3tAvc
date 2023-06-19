@@ -50,11 +50,6 @@ Any
 
 }
 
-lazy val emptyPartialFunc = {
-
-   PartialFunction.empty[Any, Nothing]
-}
-
 
 
 
