@@ -68,8 +68,8 @@ trait EBsd extends
        * reference to the sole `RnpSpurce` and
        * `eagerness` .
        * 
-       * unless the implementation supports *the lazy read mode*,
-       * it *shall* `throw` `UnsupportedLazyReadingException` *without dequeueing anything from the `RnpSource`*.
+       * unless the implementation can defer the reading/dequeueing of a node,
+       * it *shall* invoke `r.checkDemandingEagerParsing()` *before dequeueing anything from the `RnpSource`*.
        * 
        */
       def readAndParseImpl(r: ReadingParsingImplArg)(using CodeSchemeOps.TraversalDiagnostique): Instance
@@ -170,9 +170,6 @@ trait EBsd extends
          
       }
 
-      trait UnsupportedLazyReadingException extends java.io.IOException
-      { this : Exception => }
-
       export `% % & @`.TraversalDiagnostique
       
       abstract class XStringifCtx
@@ -220,6 +217,8 @@ trait EBsd extends
          .asInstanceOf[ctx.RnpSource]
       }
 
+
+      
       // was here
 
       private[EBsd]
@@ -232,29 +231,67 @@ trait EBsd extends
       )
       {
 
-         @throws[java.io.IOException & UnsupportedLazyReadingException]
-         @throws[java.io.IOException]
+         /**
+          * 
+          * ensure that
+          * all the previously-returned graphs have been fully-evaluated (ie all the currently deferred read-call(s) (from the `RnpSource`) have been performed ),
+          * in agreement with the calling scheme's pre-condition of that
+          * (primarily intended to avoid *corruption*).
+          * 
+          */
          def checkDemandingEagerParsing()(using TraversalDiagnostique): Unit = {
 
-            if !(eagerness == ebmsGenericUtils.Eagerness.toBeEager ) then {
-
-               val newMsg = {
-
-                  import language.unsafeNulls
-                  
-                  summon[TraversalDiagnostique]
-                  .formatCtxtualMessage(msg = s"unsupported lazy mode $eagerness ; try 'toBeEager' instead ")
-               }
-
-               throw new java.io.IOException(newMsg) with UnsupportedLazyReadingException
-            }
+            reoc.flush()
          }
 
       }
 
       def xNewReoc() : reocImpl.Reoc = {
 
-         reocImpl.newReoc()
+         new AnyRef
+         with java.io.Flushable
+         with collection.mutable.Growable[((AnyRef | Unit) => Unit ) | (() => Unit ) ]
+         {
+
+            import language.unsafeNulls
+
+            override
+            def toString(): String = s"Rcb[${l } ]"
+
+            val l = {
+               new java.util.concurrent.atomic.AtomicReference[Unit => Unit ](identity[Unit] _ )
+            }
+
+            override
+            def flush(): Unit = {
+
+               val c = l.getAndSet({ case _ => })
+               
+               c.apply(() )
+            }
+
+            override def clear(): Unit = l getAndSet({ case _ => })
+
+            def addOne(runAddedCb: ((AnyRef | Unit) => Unit ) | (() => Unit ) ) = {
+
+               l.updateAndGet(cb0 => {
+                  (_ : Unit) => {
+                     cb0(() )
+                     runAddedCb match {
+                        case cb : Function0[?] =>
+                           cb()
+                        case cb : Function1[Unit, Unit] =>
+                           cb(() )
+                     }
+                  }
+               })
+
+               this
+            }
+
+            //
+            
+         }
       }
 
    }
@@ -878,6 +915,9 @@ trait EBsd extends
                   import trvdFramesIoExcs.*
                   try ({
 
+                     /**
+                      * needs to dequeue and evaluate the next VLI (ie the element UINT name ) immediately
+                      */
                      r.checkDemandingEagerParsing()
                      
                      try {
@@ -957,7 +997,9 @@ trait EBsd extends
                               getCurrentPosInBytes()
                            }
 
-                           if false then {
+                           def forceEval(): Unit = fevImpl
+
+                           lazy val fevImpl = {
                            ;
                            
                            /**
@@ -986,6 +1028,11 @@ trait EBsd extends
 
                            }
 
+                           /**
+                            * ensure entirety eval when called to
+                            */
+                           r.reoc addOne(() => forceEval() )
+
                            rbe
 
                      }
@@ -994,9 +1041,9 @@ trait EBsd extends
                   })
                   catch {
 
-                     case z : CodeSchemeOps.UnsupportedLazyReadingException =>
+                     // case z : CodeSchemeOps.UnsupportedLazyReadingException =>
 
-                        throw z
+                     //    throw z
 
                      case z : (java.io.EOFException ) =>
 
@@ -1425,17 +1472,11 @@ trait EBsd extends
 
                   def readNextChild()(using CodeSchemeOps.TraversalDiagnostique): scheme.Instance = synchronizedIfNecessary ({
                         ;
-                        
+
                         ({
                            import scheme.{readAndParseImpl => specificReadAndParseImpl}
 
-                           util.Try({
-                              specificReadAndParseImpl(r ) 
-                           })
-                           .recover({ case _ : CodeSchemeOps.UnsupportedLazyReadingException => {
-                              specificReadAndParseImpl(r.copy(eagerness = ebmsGenericUtils.Eagerness.toBeEager ) )
-                           } })
-                           .get
+                           specificReadAndParseImpl(r ) 
                            
                         } : scheme.Instance )
                         match { case v => c += 1 ; v }
@@ -1459,7 +1500,7 @@ trait EBsd extends
                      import avcframewrk.util.lazylists.asTerminatingCollOnException
 
                      //
-                     LazyList.unfold[FramePayloadScheme#Instance, (Unit, (() => reocImpl.ReocReturn ) | Null )]({
+                     LazyList.unfold[FramePayloadScheme#Instance, (Unit, Null )]({
                         // TODO
                         ;
 
@@ -1554,6 +1595,18 @@ trait EBsd extends
 
                               assert(summon[CodeSchemeOps.TraversalDiagnostique] == itemCst )
 
+                              locally({
+                                 val n = c
+                                 /**
+                                  * ensure indices `(0, n EXCLUSIVE )` eval when called to
+                                  */
+                                 r.reoc addOne(() => {
+                                    childrenLl.take(n)
+                                    .to(Vector)
+                                    .foreach({ case _ => })
+                                 })
+                              })
+                              
                               val s1 = (
                                  readNextChild()(using itemCst)
                               )
@@ -1613,8 +1666,28 @@ trait EBsd extends
                    * return the resulting Seq
                    * 
                    */
-                  childrenLl
-                  .to(r.eagerness.characteristicSeqFactory )
+                  ({
+                     childrenLl
+                     .to(r.eagerness.characteristicSeqFactory )
+
+                     match { case l => {
+                        // /**
+                        //  * ensure entire eval when called to
+                        //  */
+                        // r.reoc addOne(() => {
+                        //    println(l)
+                        //    l.isEmpty
+                        //    l
+                        //    .zipWithIndex
+                        //    .tapEach({ case (e, i) => println(s"enforcing child $i eval $e") })
+                        //    .to(Vector)
+                        //    .foreach({ case _ => })
+                        // } )
+
+                        l
+                     } }
+
+                  })
          }
 
          extension (r: RnpSource) {
@@ -2141,11 +2214,12 @@ trait EBsdSpecificUtilDefs extends
     * 
     */
    private[riffmt]
-   final
-   lazy
-   val reocImpl : avcframewrk.util.errorchecking.reocsImpl.type = {
+   object reocImpl {
 
-      avcframewrk.util.errorchecking.reocsImpl
+      type Reoc 
+         >: java.io.Flushable & collection.mutable.Growable[([R] =>> (((AnyRef | Unit) => R ) | (( ) => R ) ) )[Unit ] ]
+         <: java.io.Flushable & collection.mutable.Growable[([R] =>> (((AnyRef | Unit) => R ) | (( ) => R ) ) )[Unit ] ]
+
    }
 
 }
