@@ -1560,7 +1560,7 @@ trait EBsd extends
                                  // sys.process.stderr.println(z)
                                  // None
 
-                                 val presentlyIndex = c
+                                 val presentlyIndex: i.type = i
 
                                  val priorChildContent = {
                                     // TODO
