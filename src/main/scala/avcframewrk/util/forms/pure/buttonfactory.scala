@@ -20,17 +20,22 @@ package avcframewrk.util.forms.pure
 
 type LabelledCallbackButtonFactory[-Label, -Callback >: PartialFunction[Any, Nothing], +R ] = (
 
-   LabelledCallbackButtonFactory1[Label, Callback, R ]
+   Lcbf1[Label, Callback, R ]
    
 )
 
-trait LabelledCallbackButtonFactory1[-Label, -Callback, +R] extends
+type Lcbf1[-Label, -Callback, +R] = (
+   DefinesDoRenderButtonA2[Label, Callback, R] {
+      def renderButton(label: Label, callback: Callback ) : R
+   }
+)
+
+trait DefinesDoRenderButtonA2[-A1, -A2, +R] extends
 Any
-// with ButtonActionFactory
 {
 
-   def renderButton(label: Label, callback: Callback ) : R
-   
+   def renderButton(arg1: A1, arg2: A2 ) : R
+
 }
 
 type ButtonFactory1[-Action, +R]
