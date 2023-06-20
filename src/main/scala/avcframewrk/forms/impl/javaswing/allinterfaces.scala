@@ -69,12 +69,13 @@ with Aig1More
    AnyRef
    with OmiAll[MainR]
    with XWithNjp[MainR]
-   with XwnjpTest[MainR, (
-         {}
-         & XwnjpFacBase[MainR]
-         & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
-   ) ]
-   with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
+   with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
+   // with XwnjpTest[MainR, (
+   //       {}
+   //       & XwnjpFacBase[MainR]
+   //       & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
+   // ) ]
+   // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
    with ^&%%^
    // with XJPanelsImpl
    with ComponentSpwReExports
@@ -91,19 +92,20 @@ with Aig1More
       /* exports */  
 
       // export xjpiImpl.*
-      export xjpiImpl.{Njp => _, *}
+      export xjpiImpl.{*}
 
       private[javaswing]
       final
       lazy val xjpiImpl = {
          new AnyRef
          with XJPanelsImpl(otherComponents = this )
-         with XwnjpTest[MainR, (
-               {}
-               & XwnjpFacBase[MainR]
-               & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
-         ) ]
-         with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
+         // with XwnjpTest[MainR, (
+         //       {}
+         //       & XwnjpFacBase[MainR]
+         //       & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
+         // ) ]
+         with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
+         // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
       }
 
    }
@@ -175,13 +177,14 @@ with Aig1
 
    ) extends
    AnyRef
+   with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
    with XWithNjp[MainR]
-   with XwnjpTest[MainR, (
-         {}
-         & XwnjpFacBase[MainR]
-         & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
-   ) ]
-   with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
+   // with XwnjpTest[MainR, (
+   //       {}
+   //       & XwnjpFacBase[MainR]
+   //       & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
+   // ) ]
+   // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
    {
       this : Any =>
 
@@ -190,6 +193,21 @@ with Aig1
       /* name imports */
 
       /* exports */
+
+      export xwnjpFac.{WithLayoutManager => IWithLayoutManager }
+
+      private
+      def byEvid1[L <: java.awt.LayoutManager](): Unit = {
+         summon[xwnjpFac.WithLayoutManager[L] <:< MainR ]
+         // summon[(MainR & XJPanelsImplImpl#newJPanelImpl[L] ) <:< xwnjpFac.WithLayoutManager[L] ]
+         // identity[(MainR & XJPanelsImplImpl#newJPanelImpl[L] ) => (
+         //    (XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] )#WithLayoutManager[L]
+         // ) ](e => e )
+         // identity[xwnjpFac.WithLayoutManager[L] => (
+         //    (XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] )#WithLayoutManager[L]
+         // ) ](e => e )
+         identity[(MainR & XJPanelsImplImpl#newJPanelImpl[L] ) => xwnjpFac.WithLayoutManager[L] ](e => e )
+      }
 
       override
       // def newFourSidebarHolyGrailLayout
@@ -233,7 +251,7 @@ with Aig1
        * `layout` shall never reuse instances
        * 
        */
-      def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): Njp[SpecificLayoutMgr] = {
+      def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ) = {
 
          newJPanelImpl(layout = layout )
          match { case c => fromHasGetNewInstanceNoArg(c) }
@@ -662,12 +680,14 @@ trait OmiAll[R] extends
 AnyRef
 with DefinesDoRenderButtonA1[javax.swing.Action, R ]
 with XWithNjp[R ]
-with XwnjpTest[R, (
-      {}
-      & XwnjpFacBase[R]
-) ]
+// with XwnjpTest[R, (
+//       {}
+//       & XwnjpFacBase[R]
+// ) ]
 with DefinesGetNewPlainOrStyledTextDoc[Any]
 {
+
+   import xwnjpFac.{WithLayoutManager => Njp }
 
    export abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
 
@@ -692,14 +712,50 @@ with DefinesGetNewPlainOrStyledTextDoc[Any]
 
 }
 
+trait XWithNjpBase[+R, +RFac <: XwnjpFacBase[R] ](protected val xwnjpFac : RFac = { (new AnyRef with XwnjpFacBase[R] ).asInstanceOf[RFac] } )
+extends 
+AnyRef
+// with XwnjpTest[R, (
+//       {}
+//       & RFac
+// ) ]
+{
+
+   import xwnjpFac.{WithLayoutManager => Njp }
+
+   import java.awt
+   import javax.swing
+
+   /**
+    * 
+    * a `JPanel` with one main content and four asides
+    * 
+    */
+   // def newFourSidebarHolyGrailLayout
+   def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
+
+   def newInlineSequencePanel() : Njp[awt.LayoutManager ]
+
+   def newThumbnailsLayout() : Njp[awt.LayoutManager ]
+
+   // def newComparativePanel() : Njp[awt.LayoutManager ]
+
+   // type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+   //    <: R
+
+} /* XWithNjp */
+
 trait XWithNjp[+R] extends 
 AnyRef
-with XWithNjp.WithNjpCovar[[_] =>> R ]
-with XwnjpTest[R, (
-      {}
-      & XwnjpFacBase[R]
-) ]
+with XWithNjpBase[R, XwnjpFacBase[R] & XwnjpFacWithLayoutManager[[_] =>> R ] ]
+// with XWithNjp.WithNjpCovar[[_] =>> R ]
+// with XwnjpTest[R, (
+//       {}
+//       & XwnjpFacBase[R]
+// ) ]
 {
+
+   import xwnjpFac.{WithLayoutManager => Njp }
 
    import java.awt
    import javax.swing
