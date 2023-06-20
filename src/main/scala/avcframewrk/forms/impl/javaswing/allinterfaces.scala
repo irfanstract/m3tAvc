@@ -213,14 +213,14 @@ with Aig1
        * `layout` shall never reuse instances
        * 
        */
-      def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): Njp[SpecificLayoutMgr] = {
+      def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): AppendablePanelWithJLayoutManager[SpecificLayoutMgr] = {
 
          newJPanelImpl(layout = layout )
          match { case c => fromHasGetNewInstanceNoArg(c) }
       }
 
       override
-      opaque type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+      opaque type AppendablePanelWithJLayoutManager[+SpecificLayoutMgr <: awt.LayoutManager ]
          <: MainR & newJPanelImpl[SpecificLayoutMgr ]
          =  MainR & newJPanelImpl[SpecificLayoutMgr ]
 
@@ -653,7 +653,7 @@ with DefinesGetNewPlainOrStyledTextDoc[Any]
 
    ) : javax.swing.ButtonModel
 
-   def newThumbnailsLayout() : Njp[java.awt.LayoutManager]
+   def newThumbnailsLayout() : AppendablePanelWithJLayoutManager[java.awt.LayoutManager]
 
    //
 
@@ -679,13 +679,13 @@ trait XWithNjp[+R]
     * 
     */
    // def newFourSidebarHolyGrailLayout
-   def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
+   def newFourAsidesContentPanel() : AppendablePanelWithJLayoutManager[awt.BorderLayout ]
 
-   def newInlineSequencePanel() : Njp[awt.LayoutManager ]
+   def newInlineSequencePanel() : AppendablePanelWithJLayoutManager[awt.LayoutManager ]
 
-   def newThumbnailsLayout() : Njp[awt.LayoutManager ]
+   def newThumbnailsLayout() : AppendablePanelWithJLayoutManager[awt.LayoutManager ]
 
-   type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+   type AppendablePanelWithJLayoutManager[+SpecificLayoutMgr <: awt.LayoutManager ]
       <: R
 
 } /* XWithNjp */
