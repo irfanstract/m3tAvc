@@ -388,61 +388,6 @@ with Aig1
 
    } /* ^&%%^ */
 
-   private[Aig1More]
-   class EBasicCompsImpl(
-      //
-      
-      private[EBasicCompsImpl]
-      val otherComponents : (
-         AnyRef
-         & OmiAll[MainR]
-      ) ,
-
-   )
-   extends
-   AnyRef
-   with DefinesDoRenderButtonA1[swing.Action, MainR]
-   {
-
-      import otherComponents.*
-
-      /* name imports */
-
-      /* exports */
-
-      def renderButton(l: swing.Action) = mainRImplLw {
-         new swing.JButton(l)
-      }
-
-      /**
-       * 
-       * display the Action's Icon dynamically
-       * 
-       */
-      def renderDynamicPoster(l: swing.Action) = mainRImplLw {
-         
-         val lbl1 = new swing.JButton(l)
-         lbl1.setUI({
-            cbsq.avc.quick.javaswing.buttonIconFullSizeUi
-         })
-         lbl1
-      }
-
-      /**
-       * 
-       * display the Icon
-       * 
-       */
-      def renderPoster(l: swing.Icon ) = {
-
-         renderDynamicPoster({
-            
-            renderAbstractAction(label = l , callback = { case _ => } )
-         })
-      }
-
-   }
-
    given Conversion[^&%%^, Rtdd] = {
 
       e => Rtdd(otherComponents = e )
@@ -531,6 +476,64 @@ AnyRef
    import language.unsafeNulls
 
    /* main exports */
+
+   private[javaswing] 
+   class EBasicCompsImpl(
+      //
+      
+      private[EBasicCompsImpl]
+      val otherComponents : (
+         AnyRef
+         & OmiAll[MainR]
+      ) ,
+
+   )
+   extends
+   AnyRef
+   with DefinesDoRenderButtonA1[javax.swing.Action, MainR]
+   {
+
+      import otherComponents.*
+
+      /* name imports */
+
+      import java.awt
+      import javax.swing
+
+      /* exports */
+
+      def renderButton(l: swing.Action) = mainRImplLw {
+         new swing.JButton(l)
+      }
+
+      /**
+       * 
+       * display the Action's Icon dynamically
+       * 
+       */
+      def renderDynamicPoster(l: swing.Action) = mainRImplLw {
+         
+         val lbl1 = new swing.JButton(l)
+         lbl1.setUI({
+            cbsq.avc.quick.javaswing.buttonIconFullSizeUi
+         })
+         lbl1
+      }
+
+      /**
+       * 
+       * display the Icon
+       * 
+       */
+      def renderPoster(l: swing.Icon ) = {
+
+         renderDynamicPoster({
+            
+            renderAbstractAction(label = l , callback = { case _ => } )
+         })
+      }
+
+   }
 
    protected
    trait ComponentSpwReExports {
