@@ -24,15 +24,15 @@ object abstractActionFactory {
    // 
    implicit 
    lazy val lcafP : (
-      // LabelledCallbackButtonFactory[XLabel, XF , javax.swing.Action ]
+      // Lcbf1[XLabel, XF , javax.swing.Action ]
       ([T[-_ >: PartialFunction[Any, Nothing]] ] =>> (
          // T[XF]
          // & 
          T[PartialFunction[Any, Unit] ]
          // & T[PartialFunction[Any, Boolean] ] 
 
-      ) )[[F >: PartialFunction[Any, Nothing] ] =>> LabelledCallbackButtonFactory[XLabel, F , javax.swing.Action ] ]
-   ) = identity[LabelledCallbackButtonFactory[XLabel, XF | PfUnitOrBoolean[Any] , javax.swing.Action ] ] {
+      ) )[[F >: PartialFunction[Any, Nothing] ] =>> Lcbf1[XLabel, F , javax.swing.Action ] ]
+   ) = identity[Lcbf1[XLabel, XF | PfUnitOrBoolean[Any] , javax.swing.Action ] ] {
 
       (label, callback) => {
 
