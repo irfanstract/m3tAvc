@@ -94,7 +94,13 @@ with Aig1More
       private[javaswing]
       final
       lazy val xjpiImpl = {
-         new AnyRef with XJPanelsImpl(otherComponents = this )
+         new AnyRef
+         with XJPanelsImpl(otherComponents = this )
+         with XwnjpTest[MainR, (
+               {}
+               & XwnjpFacBase[MainR]
+               & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
+         ) ]
       }
 
    }
@@ -167,6 +173,11 @@ with Aig1
    ) extends
    AnyRef
    with XWithNjp[MainR]
+   with XwnjpTest[MainR, (
+         {}
+         & XwnjpFacBase[MainR]
+         & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
+   ) ]
    {
       this : Any =>
 
@@ -676,7 +687,13 @@ with DefinesGetNewPlainOrStyledTextDoc[Any]
 
 }
 
-trait XWithNjp[+R]
+trait XWithNjp[+R] extends 
+AnyRef
+// with XWithNjp.WithNjpCovar[[_] =>> R ]
+with XwnjpTest[R, (
+      {}
+      & XwnjpFacBase[R]
+) ]
 {
 
    import java.awt
@@ -700,6 +717,22 @@ trait XWithNjp[+R]
       <: R
 
 } /* XWithNjp */
+
+object XWithNjp {
+
+   type WithNjpCovar[+R[+SpecificLayoutMgr <: java.awt.LayoutManager ] ] = (
+      WithNjpInvar[? <: [SpecificLayoutMgr <: java.awt.LayoutManager ] =>> R[SpecificLayoutMgr] ]
+   )
+
+   trait WithNjpInvar[R[+SpecificLayoutMgr <: java.awt.LayoutManager ] ] {
+      
+      type Njp[+SpecificLayoutMgr <: java.awt.LayoutManager ]
+         >: R[SpecificLayoutMgr]
+         <: R[SpecificLayoutMgr]
+
+   }
+
+}
 
 private
 val _ @ _ = {
