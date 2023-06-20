@@ -74,6 +74,7 @@ with Aig1More
          & XwnjpFacBase[MainR]
          & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
    ) ]
+   with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
    with ^&%%^
    // with XJPanelsImpl
    with ComponentSpwReExports
@@ -87,9 +88,10 @@ with Aig1More
 
       import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
-      /* exports */
+      /* exports */  
 
-      export xjpiImpl.*
+      // export xjpiImpl.*
+      export xjpiImpl.{Njp => _, *}
 
       private[javaswing]
       final
@@ -101,7 +103,7 @@ with Aig1More
                & XwnjpFacBase[MainR]
                & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
          ) ]
-         // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
+         with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
       }
 
    }
@@ -179,7 +181,7 @@ with Aig1
          & XwnjpFacBase[MainR]
          & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
    ) ]
-   // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
+   with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
    {
       this : Any =>
 
@@ -235,12 +237,13 @@ with Aig1
 
          newJPanelImpl(layout = layout )
          match { case c => fromHasGetNewInstanceNoArg(c) }
+         match { case c => c }
       }
 
-      override
-      opaque type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
-         <: MainR & newJPanelImpl[SpecificLayoutMgr ]
-         =  MainR & newJPanelImpl[SpecificLayoutMgr ]
+      // override
+      // opaque type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+      //    <: MainR & newJPanelImpl[SpecificLayoutMgr ]
+      //    =  MainR & newJPanelImpl[SpecificLayoutMgr ]
 
       export njpImplImpl.newJPanelImpl
       
@@ -691,7 +694,7 @@ with DefinesGetNewPlainOrStyledTextDoc[Any]
 
 trait XWithNjp[+R] extends 
 AnyRef
-// with XWithNjp.WithNjpCovar[[_] =>> R ]
+with XWithNjp.WithNjpCovar[[_] =>> R ]
 with XwnjpTest[R, (
       {}
       & XwnjpFacBase[R]
@@ -715,8 +718,8 @@ with XwnjpTest[R, (
 
    // def newComparativePanel() : Njp[awt.LayoutManager ]
 
-   type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
-      <: R
+   // type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+   //    <: R
 
 } /* XWithNjp */
 
