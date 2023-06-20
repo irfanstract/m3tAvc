@@ -70,7 +70,7 @@ with Aig1More
    with OmiAll[MainR]
    with XWithNjp[MainR]
    with ^&%%^
-   with XJPanelsImpl
+   // with XJPanelsImpl
    with ComponentSpwReExports
    with XWithCDoSpawnNewJFrame
    with {
@@ -83,6 +83,14 @@ with Aig1More
       import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
       /* exports */
+
+      export xjpiImpl.*
+
+      private[javaswing]
+      final
+      lazy val xjpiImpl = {
+         new AnyRef with XJPanelsImpl(otherComponents = this )
+      }
 
    }
 
@@ -117,22 +125,42 @@ with Aig1
 
    /* main exports */
 
+   // given Conversion[(
+   //       AnyRef
+   //       // with OmiAll[MainR]
+   //       // with XWithNjp[MainR]
+   //       with ^&%%^
+   //       with ComponentSpwReExports
+   //       //
+   // ), XJPanelsImpl] = {
+   //
+   //    e => {
+   //       new AnyRef
+   //       with XJPanelsImpl(otherComponents = e )
+   //    }
+   // }
+
    private[javaswing] 
    trait XJPanelsImpl(
       //
+
+      private[XJPanelsImpl]
+      val otherComponents : (
+         AnyRef
+         // with OmiAll[MainR]
+         // with XWithNjp[MainR]
+         with ^&%%^
+         with ComponentSpwReExports
+         //
+      ) ,
 
    ) extends
    AnyRef
    with XWithNjp[MainR]
    {
-      this : (
-         AnyRef
-         with OmiAll[MainR]
-         with XWithNjp[MainR]
-         with ^&%%^
-         with ComponentSpwReExports
-         //
-      ) =>
+      this : Any =>
+
+      import otherComponents.*
 
       /* name imports */
 
