@@ -101,6 +101,7 @@ with Aig1More
                & XwnjpFacBase[MainR]
                & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
          ) ]
+         // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
       }
 
    }
@@ -178,6 +179,7 @@ with Aig1
          & XwnjpFacBase[MainR]
          & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
    ) ]
+   // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
    {
       this : Any =>
 
