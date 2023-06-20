@@ -69,6 +69,11 @@ with Aig1More
    AnyRef
    with OmiAll[MainR]
    with XWithNjp[MainR]
+   with XwnjpTest[MainR, (
+         {}
+         & XwnjpFacBase[MainR]
+         & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
+   ) ]
    with ^&%%^
    // with XJPanelsImpl
    with ComponentSpwReExports
@@ -213,14 +218,14 @@ with Aig1
        * `layout` shall never reuse instances
        * 
        */
-      def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): AppendablePanelWithJLayoutManager[SpecificLayoutMgr] = {
+      def newJPanel[SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ): Njp[SpecificLayoutMgr] = {
 
          newJPanelImpl(layout = layout )
          match { case c => fromHasGetNewInstanceNoArg(c) }
       }
 
       override
-      opaque type AppendablePanelWithJLayoutManager[+SpecificLayoutMgr <: awt.LayoutManager ]
+      opaque type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
          <: MainR & newJPanelImpl[SpecificLayoutMgr ]
          =  MainR & newJPanelImpl[SpecificLayoutMgr ]
 
@@ -641,6 +646,10 @@ trait OmiAll[R] extends
 AnyRef
 with DefinesDoRenderButtonA1[javax.swing.Action, R ]
 with XWithNjp[R ]
+with XwnjpTest[R, (
+      {}
+      & XwnjpFacBase[R]
+) ]
 with DefinesGetNewPlainOrStyledTextDoc[Any]
 {
 
@@ -653,7 +662,7 @@ with DefinesGetNewPlainOrStyledTextDoc[Any]
 
    ) : javax.swing.ButtonModel
 
-   def newThumbnailsLayout() : AppendablePanelWithJLayoutManager[java.awt.LayoutManager]
+   def newThumbnailsLayout() : Njp[java.awt.LayoutManager]
 
    //
 
@@ -679,13 +688,15 @@ trait XWithNjp[+R]
     * 
     */
    // def newFourSidebarHolyGrailLayout
-   def newFourAsidesContentPanel() : AppendablePanelWithJLayoutManager[awt.BorderLayout ]
+   def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
 
-   def newInlineSequencePanel() : AppendablePanelWithJLayoutManager[awt.LayoutManager ]
+   def newInlineSequencePanel() : Njp[awt.LayoutManager ]
 
-   def newThumbnailsLayout() : AppendablePanelWithJLayoutManager[awt.LayoutManager ]
+   def newThumbnailsLayout() : Njp[awt.LayoutManager ]
 
-   type AppendablePanelWithJLayoutManager[+SpecificLayoutMgr <: awt.LayoutManager ]
+   // def newComparativePanel() : Njp[awt.LayoutManager ]
+
+   type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
       <: R
 
 } /* XWithNjp */
@@ -701,6 +712,14 @@ val _ @ _ = {
 
    )]
    
+}
+
+@main
+def runAllInterfacesGivensJPanelDemo() : Unit = {
+
+   import allInterfacesGivens.main
+
+   println(main)
 }
 
 

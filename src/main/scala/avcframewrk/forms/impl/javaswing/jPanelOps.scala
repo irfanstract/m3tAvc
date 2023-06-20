@@ -47,10 +47,28 @@ package avcframewrk.forms.impl.javaswing
 
 // } /* XWithNjpNew */
 
+protected 
+trait XwnjpTest[
+   +R,
+   +C <: (
+      {}
+      & XwnjpFacBase[R]
+   ) ,
+
+](private[XwnjpTest] val xwNjpC : C = (new AnyRef).asInstanceOf[C] )
 
 
 
-// trait XwnjpFacWithLayoutManager[+R] { type WithLayoutManager[+L <: java.awt.LayoutManager ] <: R }
+
+trait XwnjpFacBase[+R] extends
+AnyRef
+with XwnjpFacWithLayoutManager[[_] =>> R ]
+
+type XwnjpFacWithLayoutManager[+R[+L <: java.awt.LayoutManager ] ] = XwnjpFacWithLayoutManagerInvar[? <: ([L <: java.awt.LayoutManager ] =>> R[L]) ]
+
+trait XwnjpFacWithLayoutManagerInvar[R[+L <: java.awt.LayoutManager ] ] { type WithLayoutManager[+L <: java.awt.LayoutManager ] >: R[L] <: R[L] }
+
+type XwnjpEany[R] = ({ type Main[_] = R })
 
 
 
