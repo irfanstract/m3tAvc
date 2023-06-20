@@ -318,6 +318,7 @@ with Aig1
    AnyRef
    with OmiAll[MainR]
    with XWithNjp[MainR]
+   with Rtdd
    {
       this : (
          AnyRef
@@ -378,11 +379,6 @@ with Aig1
 
       export impl.{mainRImplEither as getCustomComponent1 }
 
-      export rtddImpl.renderTextDocDisplay
-      
-      final lazy
-      val rtddImpl = new AnyRef with Rtdd(otherComponents = this)
-
       // import avcframewrk.util.lavf.{conditionalTyping as rtddConditionalTyping}
 
       // def renderTextDocDisplay(
@@ -437,13 +433,9 @@ with Aig1
    trait Rtdd(
       //
       
-      private[Rtdd] val otherComponents : ^&%%^ ,
-
    )
    {
-      this : Any =>
-      
-      import otherComponents.*
+      this : ^&%%^ =>
 
       /* name imports */
 
