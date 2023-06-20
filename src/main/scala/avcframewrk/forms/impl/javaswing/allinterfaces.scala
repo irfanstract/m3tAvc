@@ -99,7 +99,7 @@ with Aig1More
          with XwnjpTest[MainR, (
                {}
                & XwnjpFacBase[MainR]
-               & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
+               & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
          ) ]
       }
 
@@ -176,7 +176,7 @@ with Aig1
    with XwnjpTest[MainR, (
          {}
          & XwnjpFacBase[MainR]
-         & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
+         & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
    ) ]
    {
       this : Any =>
