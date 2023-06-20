@@ -118,7 +118,10 @@ with Aig1
    /* main exports */
 
    private[javaswing] 
-   trait XJPanelsImpl extends
+   trait XJPanelsImpl(
+      //
+
+   ) extends
    AnyRef
    with XWithNjp[MainR]
    {
