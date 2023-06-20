@@ -68,7 +68,7 @@ with Aig1More
    given main :
    AnyRef
    with OmiAll[MainR]
-   with XWithNjp[MainR]
+   // with XWithNjp[MainR]
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
    // with XwnjpTest[MainR, (
    //       {}
@@ -178,7 +178,7 @@ with Aig1
    ) extends
    AnyRef
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
-   with XWithNjp[MainR]
+   // with XWithNjp[MainR]
    // with XwnjpTest[MainR, (
    //       {}
    //       & XwnjpFacBase[MainR]
@@ -745,39 +745,42 @@ AnyRef
 
 } /* XWithNjp */
 
-trait XWithNjp[+R] extends 
-AnyRef
-with XWithNjpBase[R, XwnjpFacBase[R] & XwnjpFacWithLayoutManager[[_] =>> R ] ]
-// with XWithNjp.WithNjpCovar[[_] =>> R ]
-// with XwnjpTest[R, (
-//       {}
-//       & XwnjpFacBase[R]
-// ) ]
-{
+// trait XWithNjp[+R] extends 
+// AnyRef
+// with XWithNjpBase[R, XwnjpFacBase[R] & XwnjpFacWithLayoutManager[[_] =>> R ] ]
+// // with XWithNjp.WithNjpCovar[[_] =>> R ]
+// // with XwnjpTest[R, (
+// //       {}
+// //       & XwnjpFacBase[R]
+// // ) ]
+// {
 
-   import xwnjpFac.{WithLayoutManager => Njp }
+//    import xwnjpFac.{WithLayoutManager => Njp }
 
-   import java.awt
-   import javax.swing
+//    import java.awt
+//    import javax.swing
 
-   /**
-    * 
-    * a `JPanel` with one main content and four asides
-    * 
-    */
-   // def newFourSidebarHolyGrailLayout
-   def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
+//    /**
+//     * 
+//     * a `JPanel` with one main content and four asides
+//     * 
+//     */
+//    // def newFourSidebarHolyGrailLayout
+//    def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
 
-   def newInlineSequencePanel() : Njp[awt.LayoutManager ]
+//    def newInlineSequencePanel() : Njp[awt.LayoutManager ]
 
-   def newThumbnailsLayout() : Njp[awt.LayoutManager ]
+//    def newThumbnailsLayout() : Njp[awt.LayoutManager ]
 
-   // def newComparativePanel() : Njp[awt.LayoutManager ]
+//    // def newComparativePanel() : Njp[awt.LayoutManager ]
 
-   // type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
-   //    <: R
+//    // type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
+//    //    <: R
 
-} /* XWithNjp */
+// } /* XWithNjp */
+type XWithNjp[+R] = (
+   XWithNjpBase[R, XwnjpFacBase[R] & XwnjpFacWithLayoutManager[[_] =>> R ] ]
+)
 
 object XWithNjp {
 
