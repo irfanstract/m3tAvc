@@ -224,6 +224,42 @@ with Aig1
          <: MainR & newJPanelImpl[SpecificLayoutMgr ]
          =  MainR & newJPanelImpl[SpecificLayoutMgr ]
 
+      export njpImplImpl.newJPanelImpl
+      
+      private[XJPanelsImpl]
+      final
+      lazy val njpImplImpl = {
+         new AnyRef with XJPanelsImplImpl(otherComponents = otherComponents )
+      }
+
+   }
+
+   private[javaswing] 
+   trait XJPanelsImplImpl(
+      //
+
+      private[XJPanelsImplImpl]
+      val otherComponents : (
+         AnyRef
+         // with OmiAll[MainR]
+         // with XWithNjp[MainR]
+         with ^&%%^
+         with ComponentSpwReExports
+         //
+      ) ,
+
+   ) extends
+   AnyRef
+   {
+
+      /* base closure */
+
+      import otherComponents.*
+
+      /* utility imports */
+
+      /* exports */
+
       object newJPanelImpl {
 
          // given Conversion[XNewInstance[MainRSpawned ], MainR] = {
