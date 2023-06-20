@@ -371,6 +371,45 @@ with Aig1
          jcb.getModel()
       }
 
+      export eBasicCompsImpl.*
+
+      private[Aig1More]
+      final lazy
+      val eBasicCompsImpl = {
+         EBasicCompsImpl(otherComponents = this )
+      }
+
+      export impl.{mainRImplEither as getCustomComponent1 }
+
+      export rtddImpl.renderTextDocDisplay
+      
+      final lazy
+      val rtddImpl = (this : Rtdd )
+
+   } /* ^&%%^ */
+
+   private[Aig1More]
+   class EBasicCompsImpl(
+      //
+      
+      private[EBasicCompsImpl]
+      val otherComponents : (
+         AnyRef
+         & OmiAll[MainR]
+      ) ,
+
+   )
+   extends
+   AnyRef
+   with DefinesDoRenderButtonA1[swing.Action, MainR]
+   {
+
+      import otherComponents.*
+
+      /* name imports */
+
+      /* exports */
+
       def renderButton(l: swing.Action) = mainRImplLw {
          new swing.JButton(l)
       }
@@ -402,14 +441,7 @@ with Aig1
          })
       }
 
-      export impl.{mainRImplEither as getCustomComponent1 }
-
-      export rtddImpl.renderTextDocDisplay
-      
-      final lazy
-      val rtddImpl = (this : Rtdd )
-
-   } /* ^&%%^ */
+   }
 
    given Conversion[^&%%^, Rtdd] = {
 
