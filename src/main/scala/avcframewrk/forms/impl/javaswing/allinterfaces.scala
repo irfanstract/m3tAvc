@@ -118,6 +118,11 @@ with Aig1
 
    import impl.*
    
+   import java.awt
+   import javax.swing
+
+   import avcframewrk.forms.javaswing.actionObjUtil.setIcon
+
    /* givens and UnsafeNulls */
 
    import concurrent.ExecutionContext.Implicits.global
@@ -163,11 +168,6 @@ with Aig1
       import otherComponents.*
 
       /* name imports */
-
-      import java.awt
-      import javax.swing
-
-      import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
       /* exports */
 
@@ -356,11 +356,6 @@ with Aig1
 
       /* name imports */
 
-      import java.awt
-      import javax.swing
-
-      import avcframewrk.forms.javaswing.actionObjUtil.setIcon
-
       /* exports */
 
       override
@@ -433,11 +428,6 @@ with Aig1
       import otherComponents.*
 
       /* name imports */
-
-      import java.awt
-      import javax.swing
-
-      import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
       /* exports */
 
