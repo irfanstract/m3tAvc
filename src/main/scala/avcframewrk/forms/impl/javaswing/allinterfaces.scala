@@ -430,7 +430,10 @@ with Aig1
 
    } /* ^&%%^ */
 
-   trait Rtdd
+   trait Rtdd(
+      //
+      
+   )
    {
       this : ^&%%^ =>
 
