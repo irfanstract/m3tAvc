@@ -425,6 +425,7 @@ with Aig1
    AnyRef
    with OmiAll[MainR]
    with XWithNjp[MainR]
+   with Egcc
    {
       this : (
          AnyRef
@@ -454,8 +455,6 @@ with Aig1
       val eBasicCompsImpl = {
          EBasicCompsImpl(otherComponents = this )
       }
-
-      export impl.{mainRImplEither as getCustomComponent1 }
 
       export rtddImpl.renderTextDocDisplay
       
@@ -608,6 +607,19 @@ AnyRef
             renderAbstractAction(label = l , callback = { case _ => } )
          })
       }
+
+   }
+
+   /**
+    * 
+    * `export impl.{mainRImplEither as getCustomComponent1 }`
+    * 
+    */
+   trait Egcc extends
+   AnyRef
+   {
+
+      export impl.{mainRImplEither as getCustomComponent1 }
 
    }
 
