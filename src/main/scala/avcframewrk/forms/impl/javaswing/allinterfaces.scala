@@ -712,39 +712,6 @@ with DefinesGetNewPlainOrStyledTextDoc[Any]
 
 }
 
-trait XWithNjpBase[+R, +RFac <: XwnjpFacBase[R] ](protected val xwnjpFac : RFac = { (new AnyRef with XwnjpFacBase[R] ).asInstanceOf[RFac] } )
-extends 
-AnyRef
-// with XwnjpTest[R, (
-//       {}
-//       & RFac
-// ) ]
-{
-
-   import xwnjpFac.{WithLayoutManager => Njp }
-
-   import java.awt
-   import javax.swing
-
-   /**
-    * 
-    * a `JPanel` with one main content and four asides
-    * 
-    */
-   // def newFourSidebarHolyGrailLayout
-   def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
-
-   def newInlineSequencePanel() : Njp[awt.LayoutManager ]
-
-   def newThumbnailsLayout() : Njp[awt.LayoutManager ]
-
-   // def newComparativePanel() : Njp[awt.LayoutManager ]
-
-   // type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
-   //    <: R
-
-} /* XWithNjp */
-
 // trait XWithNjp[+R] extends 
 // AnyRef
 // with XWithNjpBase[R, XwnjpFacBase[R] & XwnjpFacWithLayoutManager[[_] =>> R ] ]
