@@ -463,6 +463,13 @@ with Aig1
 
    } /* ^&%%^ */
 
+   object ^&%%^
+   {
+
+      //
+
+   }
+
    given Conversion[^&%%^, Rtdd] = {
 
       e => Rtdd(otherComponents = e )
