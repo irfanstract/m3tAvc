@@ -764,62 +764,7 @@ object XWithNjp {
  * this additional complexity becomes essential.
  * 
  */
-class XDecorativeFncQueue[C : avcframewrk.util.errorchecking.EvidenceOfBeingNeitherExactlyAnyNorNothing]()
-{
-
-   import language.unsafeNulls
-
-   def addOperand(c: C ): Unit = {
-      
-      oph ensureOped c
-
-   }
-
-   private[XDecorativeFncQueue]
-   val oph = {
-      new XIdempotentInitOperandList[C](onReg = c => {
-         
-         concurrent.Future[Unit]({
-            ;
-            
-            allDecorators
-            .map(decorate1 => {
-               decorate1(c)
-            })
-            /**
-             * 
-             * `LazyList`s are by-definition *lazy*.
-             * needs explicit `foreach`.
-             * 
-             * alternatively `to(Vector)` would also work, but that's unsemantic
-             * 
-             */
-            .foreach({ case _ => })
-
-         })(using servicingThread)
-
-      })
-   }
-
-   protected 
-   lazy
-   val servicingThread: concurrent.ExecutionContext = {
-
-      concurrent.ExecutionContext.global
-   }
-
-   def addOperator(f: C => Unit ): Unit = {
-
-      addDecorator1(f)
-      
-   }
-
-   private[XDecorativeFncQueue]
-   val (addDecorator1, allDecorators) = {
-      newXcdfLl[C, Unit]()
-   }
-
-}
+export avcframewrk.util.syncing.CallbackSequenceReplay.XDecorativeFncQueue
 
 /**
  * 
@@ -827,32 +772,7 @@ class XDecorativeFncQueue[C : avcframewrk.util.errorchecking.EvidenceOfBeingNeit
  * will not make the callback run twice (ie the callback will only run once)
  * 
  */
-class XIdempotentInitOperandList[C : avcframewrk.util.errorchecking.EvidenceOfBeingNeitherExactlyAnyNorNothing ](onReg : C => Unit )
-{
-
-   import language.unsafeNulls
-
-   private[XIdempotentInitOperandList]
-   val alreadyOpedItems = {
-      new java.util.concurrent.atomic.AtomicReference[Set[C] ](Set() )
-   }
-
-   def ensureOped(c: C) : Unit = {
-      
-      val alreadyOped = {
-
-         alreadyOpedItems
-         .getAndUpdate({ case operands0 => operands0.incl(c) })
-         .contains(c)
-      }
-
-      if !alreadyOped then {
-         onReg(c)
-      }
-
-   }
-
-}
+export avcframewrk.util.syncing.CallbackSequenceReplay.XIdempotentInitOperandList
 
 /**
  * 
@@ -862,20 +782,7 @@ class XIdempotentInitOperandList[C : avcframewrk.util.errorchecking.EvidenceOfBe
  * 
  */
 // : avcframewrk.util.errorchecking
-def newXcdfLl[C : avcframewrk.util.errorchecking.EvidenceOfBeingNeitherExactlyAnyNorNothing, R]() : ((C => R ) => Unit , LazyList[C => R] ) = {
-
-   import language.unsafeNulls
-
-   val ebq = {
-      new java.util.concurrent.LinkedBlockingQueue[C => R ]()
-   }
-   
-   val dequeueingLl = {
-      LazyList.continually(ebq.take() )
-   }
-
-   (ebq.put _ , dequeueingLl )
-}
+export avcframewrk.util.syncing.CallbackSequenceReplay.newXcdfLl
 
 private
 val _ @ _ = {
