@@ -338,8 +338,8 @@ with Aig1
             (mainRImplEither {
 
                val p = new swing.JPanel(layout )
-               addNativesC.get()
-               .apply(p )
+               addNativesCAlt
+               .addOperand(p)
                p
             })
             .toHasGetNewInstanceNoArg
@@ -351,18 +351,15 @@ with Aig1
           * 
           */
          def appendInit(impl : java.awt.Container => Unit ): Unit = {
-            addNativesC
-            .updateAndGet(fnc0 => {
-               c => {
-                  fnc0(c)
-                  impl(c)
-               }
-            })
+            addNativesCAlt
+            .addOperator((c : java.awt.Container ) => { impl(c) ; c.revalidate() } )
          }
 
          private[newJPanelImpl] 
-         var addNativesC = {
-            new java.util.concurrent.atomic.AtomicReference[awt.Container => Unit ]({ case _ => })
+         val addNativesCAlt = {
+            new XDecorativeFncQueue[java.awt.Container](
+               //
+            )
          }
 
          import etp.*
@@ -730,6 +727,135 @@ object XWithNjp {
 
    }
 
+}
+
+/**
+ * 
+ * a helper to
+ * allow later-added decorators
+ * to automatically be applied to instances of `C` already passed-in-to `addOperand`
+ * 
+ * the templates returned by `allInterfacesGivens`
+ * are not directly an instantiated `awt.Component`s (since that'd prevent reuse), but instead
+ * a "zero-arg factory" (eg `DefinesGetNewInstanceNoArg`) which produces those.
+ * the ability to `theTemplate.newInstance()` more-than-once,
+ * combined with
+ * the imperativity (to make it a drop-in sub of the typical `swing.JYyyComponent`s) of
+ * the interface(s) returned by the methods `newYyyPanel(.....)`,
+ * this additional complexity becomes essential.
+ * 
+ */
+class XDecorativeFncQueue[C : avcframewrk.util.errorchecking.EvidenceOfBeingNeitherExactlyAnyNorNothing]()
+{
+
+   import language.unsafeNulls
+
+   def addOperand(c: C ): Unit = {
+      
+      oph ensureOped c
+
+   }
+
+   private[XDecorativeFncQueue]
+   val oph = {
+      new XIdempotentInitOperandList[C](onReg = c => {
+         
+         concurrent.Future[Unit]({
+            ;
+            
+            allDecorators
+            .map(decorate1 => {
+               decorate1(c)
+            })
+            /**
+             * 
+             * `LazyList`s are by-definition *lazy*.
+             * needs explicit `foreach`.
+             * 
+             * alternatively `to(Vector)` would also work, but that's unsemantic
+             * 
+             */
+            .foreach({ case _ => })
+
+         })(using servicingThread)
+
+      })
+   }
+
+   protected 
+   lazy
+   val servicingThread: concurrent.ExecutionContext = {
+
+      concurrent.ExecutionContext.global
+   }
+
+   def addOperator(f: C => Unit ): Unit = {
+
+      addDecorator1(f)
+      
+   }
+
+   private[XDecorativeFncQueue]
+   val (addDecorator1, allDecorators) = {
+      newXcdfLl[C, Unit]()
+   }
+
+}
+
+/**
+ * 
+ * secondary `ensureOped` invoc "with given instance of `C`"
+ * will not make the callback run twice (ie the callback will only run once)
+ * 
+ */
+class XIdempotentInitOperandList[C : avcframewrk.util.errorchecking.EvidenceOfBeingNeitherExactlyAnyNorNothing ](onReg : C => Unit )
+{
+
+   import language.unsafeNulls
+
+   private[XIdempotentInitOperandList]
+   val alreadyOpedItems = {
+      new java.util.concurrent.atomic.AtomicReference[Set[C] ](Set() )
+   }
+
+   def ensureOped(c: C) : Unit = {
+      
+      val alreadyOped = {
+
+         alreadyOpedItems
+         .getAndUpdate({ case operands0 => operands0.incl(c) })
+         .contains(c)
+      }
+
+      if !alreadyOped then {
+         onReg(c)
+      }
+
+   }
+
+}
+
+/**
+ * 
+ * the 2nd itc is
+ * an infinite-length `LazyList`
+ * whose items are the values submitted onto the *callback* returned as the 1st itc (in order)
+ * 
+ */
+// : avcframewrk.util.errorchecking
+def newXcdfLl[C : avcframewrk.util.errorchecking.EvidenceOfBeingNeitherExactlyAnyNorNothing, R]() : ((C => R ) => Unit , LazyList[C => R] ) = {
+
+   import language.unsafeNulls
+
+   val ebq = {
+      new java.util.concurrent.LinkedBlockingQueue[C => R ]()
+   }
+   
+   val dequeueingLl = {
+      LazyList.continually(ebq.take() )
+   }
+
+   (ebq.put _ , dequeueingLl )
 }
 
 private
