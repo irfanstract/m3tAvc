@@ -68,16 +68,8 @@ with Aig1More
    given main :
    AnyRef
    with OmiAll[MainR]
-   // with XWithNjp[MainR]
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
-   // with XwnjpTest[MainR, (
-   //       {}
-   //       & XwnjpFacBase[MainR]
-   //       & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
-   // ) ]
-   // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
    with ^&%%^
-   // with XJPanelsImpl
    with ComponentSpwReExports
    with XWithCDoSpawnNewJFrame
    with {
