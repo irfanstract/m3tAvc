@@ -170,13 +170,6 @@ with Aig1
    ) extends
    AnyRef
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
-   // with XWithNjp[MainR]
-   // with XwnjpTest[MainR, (
-   //       {}
-   //       & XwnjpFacBase[MainR]
-   //       & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
-   // ) ]
-   // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
    {
       this : Any =>
 
