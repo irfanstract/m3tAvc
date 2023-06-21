@@ -456,23 +456,16 @@ with Aig1
          EBasicCompsImpl(otherComponents = this )
       }
 
-      export rtddImpl.renderTextDocDisplay
-      
-      final lazy
-      val rtddImpl = (this : Rtdd )
-
    } /* ^&%%^ */
 
    object ^&%%^
    {
 
-      //
+      given Conversion[^&%%^, Rtdd] = {
 
-   }
+         e => Rtdd(otherComponents = e )
+      }
 
-   given Conversion[^&%%^, Rtdd] = {
-
-      e => Rtdd(otherComponents = e )
    }
 
    class Rtdd(
