@@ -73,6 +73,7 @@ with Aig1
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
    with ^&%%^
    with ComponentSpwReExports
+   with XJPanelsImpl
    with Rtdd
    with XWithCDoSpawnNewJFrame
    with {
@@ -85,23 +86,6 @@ with Aig1
       import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
       /* exports */  
-
-      // export xjpiImpl.*
-      export xjpiImpl.{*}
-
-      private[javaswing]
-      final
-      lazy val xjpiImpl = {
-         new AnyRef
-         with XJPanelsImpl(otherComponents = this )
-         // with XwnjpTest[MainR, (
-         //       {}
-         //       & XwnjpFacBase[MainR]
-         //       & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> XJPanelsImplImpl#newJPanelImpl[L] ]
-         // ) ]
-         with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
-         // with XWithNjp.WithNjpInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] )]
-      }
 
    }
 
@@ -177,21 +161,18 @@ AnyRef
    trait XJPanelsImpl(
       //
 
-      private[XJPanelsImpl]
-      val otherComponents : (
+   ) extends
+   AnyRef
+   with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
+   {
+      otherComponents : (
          AnyRef
          // with OmiAll[MainR]
          // with XWithNjp[MainR]
          with ^&%%^
          with ComponentSpwReExports
          //
-      ) ,
-
-   ) extends
-   AnyRef
-   with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
-   {
-      this : Any =>
+      ) =>
 
       import otherComponents.*
 
