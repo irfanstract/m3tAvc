@@ -687,7 +687,7 @@ AnyRef
 
    }
 
-   export impl.MainR
+   type MainR = impl.MainR
    
    // private[javaswing] 
    // object typingAndFactoryImpl extends 
