@@ -715,6 +715,13 @@ AnyRef
    
 }
 
+trait ReExportsDoRenderAbstractAction
+{
+   
+   export abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
+
+}
+
 trait OmiAll[R] extends 
 AnyRef
 with DefinesDoRenderButtonA1[javax.swing.Action, R ]
@@ -723,12 +730,11 @@ with XWithNjp[R ]
 //       {}
 //       & XwnjpFacBase[R]
 // ) ]
+with ReExportsDoRenderAbstractAction
 with DefinesGetNewPlainOrStyledTextDoc[Any]
 {
 
    import xwnjpFac.{WithLayoutManager => Njp }
-
-   export abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
 
    def newCheckBoxState(
       //
