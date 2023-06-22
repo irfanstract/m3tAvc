@@ -471,7 +471,7 @@ with Aig1
    class Rtdd(
       //
       
-      private[Rtdd] val otherComponents : ^&%%^ ,
+      private[Rtdd] val otherComponents : Egcc ,
 
    )
    {
