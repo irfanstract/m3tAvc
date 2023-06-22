@@ -585,7 +585,6 @@ AnyRef
       private[EBasicCompsImpl]
       val otherComponents : (
          AnyRef
-         & OmiAll[MainR]
       ) ,
 
    )
@@ -594,12 +593,12 @@ AnyRef
    with DefinesDoRenderButtonA1[javax.swing.Action, MainR]
    {
 
-      import otherComponents.*
-
       /* name imports */
 
       import java.awt
       import javax.swing
+
+      import abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
 
       /* exports */
 
