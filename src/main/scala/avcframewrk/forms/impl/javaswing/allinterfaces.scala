@@ -336,7 +336,7 @@ AnyRef
       }
       
       class newJPanelImpl[+SpecificLayoutMgr <: awt.LayoutManager ](layout : => SpecificLayoutMgr ) extends
-      AnyRef with XNewInstance[MainRSpawned ]
+      AnyRef with util_%^**#%.SupportsGetNewInstanceNoArg[MainRSpawned ]
       {
 
          import newJPanelImpl.*
@@ -569,6 +569,20 @@ AnyRef
 
    import avcframewrk.forms.javaswing.localUtil.enClosure
 
+   private[javaswing] 
+   final
+   lazy
+   val impl : (
+      AnyRef
+      & EmTypingImpl
+   ) = {
+
+      object implImpl extends
+      AnyRef
+      with EmviTypingAndAllocImpl
+      implImpl
+   }
+   
    import impl.*
    
    /* givens and UnsafeNulls */
@@ -701,16 +715,6 @@ AnyRef
    // val typingAndFactoryImpl = {
    //    emviTypingImpl
    // }
-   
-   private[javaswing] 
-   object impl extends 
-   AnyRef with
-   EmviTypingAndAllocImpl
-   {
-
-      /*   */
-      
-   }
    
 }
 
