@@ -23,6 +23,12 @@ object util_%^**#% {
 
       }
 
+      trait SupportsDoSpawnByArgs1[-MainR, +MainRSpawned] {
+
+         def spawn(c : MainR ): MainRSpawned
+
+      }
+
 }
 
 
@@ -48,6 +54,8 @@ AnyRef
          C <: XNewInstance[MainRSpawned ] ,
 
       ](c : C ): C & MainR
+
+      extension (c : MainR ) def toHasGetNewInstanceNoArg: XNewInstance[MainRSpawned ]
       
       type XNewInstance[+R]
          >: util_%^**#%.SupportsGetNewInstanceNoArg[R]
@@ -67,6 +75,13 @@ AnyRef
          //
          
       }
+
+      val spw : (
+         AnyRef
+         with util_%^**#%.SupportsDoSpawnByArgs1[MainR, MainRSpawned]
+         with XGspnc[MainR, MainRSpawned]
+
+      )
 
       /**
        * 
@@ -101,6 +116,13 @@ AnyRef
 
 } /* EmTypingImpl */
 
+// protected 
+trait XGspnc[+MainR, MainRSpawned] {
+
+   def getSpawnedNativeComponent[C <: MainRSpawned](c : C ) : java.awt.Component
+   
+}
+
 // @deprecated
 // protected 
 trait EmviTypingAndAllocImpl extends 
@@ -131,7 +153,11 @@ with EmTypingImpl
          <: AnyRef with java.io.Closeable
          = MainRSpawnedImpl[java.awt.Component ]
       
-      object spw {
+      object spw extends
+      AnyRef
+      with util_%^**#%.SupportsDoSpawnByArgs1[MainR, MainRSpawned]
+      with XGspnc[MainR, MainRSpawned]
+      {
          
          def spawn(c : MainR ): MainRSpawned = {
             c.newInstance()
