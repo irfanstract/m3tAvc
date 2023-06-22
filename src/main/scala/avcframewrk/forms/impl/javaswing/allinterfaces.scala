@@ -454,6 +454,7 @@ AnyRef
    trait ^&%%^ extends
    AnyRef
    with OmiAll[MainR]
+   with ENewCheckBoxStateImpl
    with XWithNjp[MainR]
    with Egcc
    {
@@ -464,19 +465,6 @@ AnyRef
       /* name imports */
 
       /* exports */
-
-      override
-      def newCheckBoxState(
-         //
-
-         initiallySelected : Boolean ,
-
-      ) : javax.swing.ButtonModel = {
-
-         val jcb = new swing.JCheckBox
-         jcb setSelected initiallySelected
-         jcb.getModel()
-      }
 
       export eBasicCompsImpl.*
 
@@ -587,6 +575,37 @@ AnyRef
    import language.unsafeNulls
 
    /* main exports */
+
+   private[javaswing] 
+   trait ENewCheckBoxStateImpl
+   extends
+   AnyRef
+   {
+      this : OmiAll[?] =>
+
+      /* name imports */
+
+      import java.awt
+      import javax.swing
+
+      import abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
+
+      /* exports */
+
+      override
+      def newCheckBoxState(
+         //
+
+         initiallySelected : Boolean ,
+
+      ) : swing.ButtonModel = {
+
+         val jcb = new swing.JCheckBox
+         jcb setSelected initiallySelected
+         jcb.getModel()
+      }
+
+   }
 
    private[javaswing] 
    class EBasicCompsImpl(
