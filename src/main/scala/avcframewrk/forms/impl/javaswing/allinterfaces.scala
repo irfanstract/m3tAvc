@@ -126,32 +126,6 @@ AnyRef
 with Aig1
 {
 
-   //
-
-   export aigimImpl.*
-
-   private[Aig1More]
-   object aigimImpl extends Aig1MoreDefs(aigimImplem = this)
-   
-}
-
-protected 
-// sealed
-trait Aig1MoreDefs[
-   +Ctx <: Singleton & Aig1 ,
-
-](
-   //
-
-   private[Aig1MoreDefs]
-   val aigimImplem : Ctx ,
-
-) extends 
-AnyRef
-{
-
-   import aigimImplem.*
-
    import avcframewrk.forms.javaswing.localUtil.enClosure
 
    import impl.*
@@ -450,7 +424,7 @@ AnyRef
 
       export eBasicCompsImpl.*
 
-      private[Aig1MoreDefs]
+      private[Aig1More]
       final lazy
       val eBasicCompsImpl = {
          EBasicCompsImpl(otherComponents = this )
