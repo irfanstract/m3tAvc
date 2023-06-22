@@ -211,19 +211,6 @@ AnyRef
 
       export xwnjpFac.{WithLayoutManager => IWithLayoutManager }
 
-      private
-      def byEvid1[L <: java.awt.LayoutManager](): Unit = {
-         summon[xwnjpFac.WithLayoutManager[L] <:< MainR ]
-         // summon[(MainR & XJPanelsImplImpl#newJPanelImpl[L] ) <:< xwnjpFac.WithLayoutManager[L] ]
-         // identity[(MainR & XJPanelsImplImpl#newJPanelImpl[L] ) => (
-         //    (XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] )#WithLayoutManager[L]
-         // ) ](e => e )
-         // identity[xwnjpFac.WithLayoutManager[L] => (
-         //    (XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] )#WithLayoutManager[L]
-         // ) ](e => e )
-         identity[(MainR & XJPanelsImplImpl#newJPanelImpl[L] ) => xwnjpFac.WithLayoutManager[L] ](e => e )
-      }
-
       override
       // def newFourSidebarHolyGrailLayout
       def newFourAsidesContentPanel() = {
@@ -272,11 +259,6 @@ AnyRef
          match { case c => fromHasGetNewInstanceNoArg(c) }
          match { case c => c }
       }
-
-      // override
-      // opaque type Njp[+SpecificLayoutMgr <: awt.LayoutManager ]
-      //    <: MainR & newJPanelImpl[SpecificLayoutMgr ]
-      //    =  MainR & newJPanelImpl[SpecificLayoutMgr ]
 
       export njpImplImpl.newJPanelImpl
       
