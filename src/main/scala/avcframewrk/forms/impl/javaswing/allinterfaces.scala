@@ -113,6 +113,10 @@ with Aig1More
 
    } /* XWithCDoSpawnNewJFrame */
 
+   object impl extends
+   AnyRef
+   with EmviTypingAndAllocImpl
+   
 }
 
 protected 
@@ -570,18 +574,10 @@ AnyRef
    import avcframewrk.forms.javaswing.localUtil.enClosure
 
    private[javaswing] 
-   final
-   lazy
    val impl : (
       AnyRef
       & EmTypingImpl
-   ) = {
-
-      object implImpl extends
-      AnyRef
-      with EmviTypingAndAllocImpl
-      implImpl
-   }
+   )
    
    import impl.*
    
