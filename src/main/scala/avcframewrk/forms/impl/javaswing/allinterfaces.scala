@@ -428,6 +428,7 @@ AnyRef
    with ENewCheckBoxStateImpl
    with XWithNjp[MainR]
    with Egcc
+   with Rtdd
    {
       this : (
          AnyRef
@@ -450,23 +451,19 @@ AnyRef
    object ^&%%^
    {
 
-      given Conversion[^&%%^, Rtdd] = {
-
-         e => Rtdd(otherComponents = e )
-      }
+      // given Conversion[^&%%^, Rtdd] = {
+      
+      //    e => Rtdd(otherComponents = e )
+      // }
 
    }
 
-   class Rtdd(
+   trait Rtdd(
       //
       
-      private[Rtdd] val otherComponents : Egcc ,
-
    )
    {
-      this : Any =>
-
-      import otherComponents.*
+      this : Egcc =>
 
       /* name imports */
 
