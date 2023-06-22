@@ -49,6 +49,7 @@ AnyRef
 
    //
 
+   private[runMultiWindowSyncDemoImpl]
    val cd = xSwing.newInlineSequencePanel()
 
    def spawnOutlet(displayTitle : String ): xSwing.spawnNewJFrame = {
