@@ -73,6 +73,7 @@ with Aig1
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
    with ^&%%^
    with ComponentSpwReExports
+   with Rtdd
    with XWithCDoSpawnNewJFrame
    with {
 
@@ -428,7 +429,6 @@ AnyRef
    with ENewCheckBoxStateImpl
    with XWithNjp[MainR]
    with Egcc
-   with Rtdd
    {
       this : (
          AnyRef
