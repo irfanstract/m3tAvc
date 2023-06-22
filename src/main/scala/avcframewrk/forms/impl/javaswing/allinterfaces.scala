@@ -74,7 +74,7 @@ with Aig1
    with ^&%%^
    with ComponentSpwReExports
    with XJPanelsImpl
-   with Rtdd
+   with XDefinesDoRenderSwingTextDocDisplay
    with XWithCDoSpawnNewJFrame
    with {
 
@@ -432,14 +432,14 @@ AnyRef
    object ^&%%^
    {
 
-      // given Conversion[^&%%^, Rtdd] = {
+      // given Conversion[^&%%^, XDefinesDoRenderSwingTextDocDisplay] = {
       
-      //    e => Rtdd(otherComponents = e )
+      //    e => XDefinesDoRenderSwingTextDocDisplay(otherComponents = e )
       // }
 
    }
 
-   trait Rtdd(
+   trait XDefinesDoRenderSwingTextDocDisplay(
       //
       
    )
