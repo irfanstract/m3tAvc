@@ -623,7 +623,7 @@ AnyRef
 
    }
 
-   protected
+   protected[javaswing]
    trait ComponentSpwReExports {
 
       export componentSpw.*
