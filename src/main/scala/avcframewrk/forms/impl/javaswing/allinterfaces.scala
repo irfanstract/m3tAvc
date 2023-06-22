@@ -19,7 +19,7 @@ import abstractActionFactory.{XLabel, XF}
 
 object allInterfacesGivens extends 
 AnyRef
-with Aig1More
+with Aig1
 {
 
    import avcframewrk.forms.javaswing.localUtil.enClosure
@@ -64,6 +64,8 @@ with Aig1More
       import main.spawnContentPaneAndGetNative
 
    }
+
+   import aigimImpl.*
 
    given main :
    AnyRef
@@ -117,20 +119,7 @@ with Aig1More
    AnyRef
    with EmviTypingAndAllocImpl
    
-}
-
-protected 
-// sealed
-trait Aig1More extends 
-AnyRef
-with Aig1
-{
-
-   //
-
-   export aigimImpl.*
-
-   private[Aig1More]
+   private[allInterfacesGivens]
    object aigimImpl extends Aig1MoreDefs(aigimImplem = this)
    
 }
