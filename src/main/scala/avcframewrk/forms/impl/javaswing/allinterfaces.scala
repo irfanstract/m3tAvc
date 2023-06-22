@@ -526,37 +526,6 @@ AnyRef
    /* main exports */
 
    private[javaswing] 
-   trait ENewCheckBoxStateImpl
-   extends
-   AnyRef
-   {
-      this : OmiAll[?] =>
-
-      /* name imports */
-
-      import java.awt
-      import javax.swing
-
-      import abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
-
-      /* exports */
-
-      override
-      def newCheckBoxState(
-         //
-
-         initiallySelected : Boolean ,
-
-      ) : swing.ButtonModel = {
-
-         val jcb = new swing.JCheckBox
-         jcb setSelected initiallySelected
-         jcb.getModel()
-      }
-
-   }
-
-   private[javaswing] 
    class EBasicCompsImpl(
       //
       
@@ -779,6 +748,43 @@ export avcframewrk.util.syncing.CallbackSequenceReplay.XIdempotentInitOperandLis
  */
 // : avcframewrk.util.errorchecking
 export avcframewrk.util.syncing.CallbackSequenceReplay.newXcdfLl
+
+private[javaswing] 
+trait ENewCheckBoxStateImpl
+extends
+AnyRef
+{
+   this : OmiAll[?] =>
+
+   /* name imports */
+
+   import java.awt
+   import javax.swing
+
+   import abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
+
+   /* givens and UnsafeNulls */
+
+   import concurrent.ExecutionContext.Implicits.global
+   
+   import language.unsafeNulls
+
+   /* exports */
+
+   override
+   def newCheckBoxState(
+      //
+
+      initiallySelected : Boolean ,
+
+   ) : swing.ButtonModel = {
+
+      val jcb = new swing.JCheckBox
+      jcb setSelected initiallySelected
+      jcb.getModel()
+   }
+
+}
 
 private
 val _ @ _ = {
