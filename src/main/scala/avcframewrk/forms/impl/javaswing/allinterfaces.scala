@@ -408,7 +408,7 @@ AnyRef
    with ReExportsDoRenderAbstractAction
    with XDefinesAllocNewCheckBoxState
    with DefinesGetNewPlainOrStyledTextDoc[Any]
-   with EBasicCompsImpl
+   with ESingularCommonCompsImpl
    with ENewCheckBoxStateImpl
    with XWithNjp[MainR]
    with Egcc
@@ -458,7 +458,7 @@ AnyRef
    /* main exports */
 
    private[javaswing] 
-   trait EBasicCompsImpl(
+   trait ESingularCommonCompsImpl(
       //
       
    )
