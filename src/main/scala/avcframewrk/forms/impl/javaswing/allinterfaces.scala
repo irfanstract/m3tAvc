@@ -69,7 +69,7 @@ with Aig1
 
    given main :
    AnyRef
-   with OmiAll[MainR]
+   with XAllComponentsList[MainR]
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
    with ^&%%^
    with ComponentSpwReExports
@@ -151,7 +151,7 @@ AnyRef
 
    // given Conversion[(
    //       AnyRef
-   //       // with OmiAll[MainR]
+   //       // with XAllComponentsList[MainR]
    //       // with XWithNjp[MainR]
    //       with ^&%%^
    //       with ComponentSpwReExports
@@ -174,7 +174,7 @@ AnyRef
    {
       otherComponents : (
          AnyRef
-         // with OmiAll[MainR]
+         // with XAllComponentsList[MainR]
          // with XWithNjp[MainR]
          with ^&%%^
          with ComponentSpwReExports
@@ -253,7 +253,7 @@ AnyRef
       private[XJPanelsImplImpl]
       val otherComponents : (
          AnyRef
-         // with OmiAll[MainR]
+         // with XAllComponentsList[MainR]
          // with XWithNjp[MainR]
          with ^&%%^
          with ComponentSpwReExports
@@ -558,7 +558,7 @@ trait XDefinesDoRenderSwingTextDocDisplay(
 }
 
 sealed
-trait OmiAll[R] extends
+trait XAllComponentsList[R] extends
       AnyRef
       with DefinesDoRenderButtonA1[javax.swing.Action, R ]
       with XWithNjp[R ]
@@ -567,10 +567,10 @@ trait OmiAll[R] extends
       with DefinesGetNewPlainOrStyledTextDoc[Any]
       with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
 
-object OmiAll
+object XAllComponentsList
 {
 
-} /* object `OmiAll` */
+} /* object `XAllComponentsList` */
 
 private
 val _ @ _ = {
@@ -580,7 +580,7 @@ val _ @ _ = {
 
    summon[(
       ([R] =>> (
-         OmiAll[R]
+         XAllComponentsList[R]
       ))
       [?]
 
