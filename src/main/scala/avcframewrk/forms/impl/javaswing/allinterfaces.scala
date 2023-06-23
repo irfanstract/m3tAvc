@@ -69,7 +69,6 @@ with Aig1
 
    given main :
    AnyRef
-   with OmiAll[MainR]
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
    with ^&%%^
    with ComponentSpwReExports
@@ -406,7 +405,11 @@ AnyRef
    sealed
    trait ^&%%^ extends
    AnyRef
-   with OmiAll[MainR]
+   with DefinesDoRenderButtonA1[javax.swing.Action, MainR ]
+   // with XWithNjp[MainR ] // already metioned below
+   with ReExportsDoRenderAbstractAction
+   with XDefinesAllocNewCheckBoxState
+   with DefinesGetNewPlainOrStyledTextDoc[Any]
    with EBasicCompsImpl
    with ENewCheckBoxStateImpl
    with XWithNjp[MainR]
@@ -595,35 +598,6 @@ trait ReExportsDoRenderAbstractAction
 
 }
 
-trait OmiAll[R] extends 
-AnyRef
-with DefinesDoRenderButtonA1[javax.swing.Action, R ]
-with XWithNjp[R ]
-// with XwnjpTest[R, (
-//       {}
-//       & XwnjpFacBase[R]
-// ) ]
-with ReExportsDoRenderAbstractAction
-with XDefinesAllocNewCheckBoxState
-with DefinesGetNewPlainOrStyledTextDoc[Any]
-{
-
-   import xwnjpFac.{WithLayoutManager => Njp }
-
-   def newThumbnailsLayout() : Njp[java.awt.LayoutManager]
-
-   //
-
-   /**
-    * 
-    * render a "button" wrapping the given `Action`
-    * 
-    */
-   override
-   def renderButton(l: javax.swing.Action): R
-
-}
-
 private[javaswing] 
 trait ENewCheckBoxStateImpl
 extends
@@ -738,7 +712,15 @@ val _ @ _ = {
    import allInterfacesGivens.main
 
    summon[(
-      OmiAll[?]
+      ([R] =>> (
+         AnyRef
+         with DefinesDoRenderButtonA1[javax.swing.Action, R ]
+         with XWithNjp[R ]
+         with ReExportsDoRenderAbstractAction
+         with XDefinesAllocNewCheckBoxState
+         with DefinesGetNewPlainOrStyledTextDoc[Any]
+      ))
+      [?]
 
    )]
    
