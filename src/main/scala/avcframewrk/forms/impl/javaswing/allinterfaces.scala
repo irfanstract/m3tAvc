@@ -424,7 +424,7 @@ AnyRef
       private[Aig1MoreDefs]
       final lazy
       val eBasicCompsImpl = {
-         EBasicCompsImpl(otherComponents = this )
+         EBasicCompsImpl()
       }
 
    } /* ^&%%^ */
@@ -467,11 +467,6 @@ AnyRef
    class EBasicCompsImpl(
       //
       
-      private[EBasicCompsImpl]
-      val otherComponents : (
-         AnyRef
-      ) ,
-
    )
    extends
    AnyRef
