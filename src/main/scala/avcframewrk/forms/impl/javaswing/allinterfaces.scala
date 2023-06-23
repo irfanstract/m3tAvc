@@ -589,6 +589,7 @@ AnyRef
     */
    trait Egcc extends
    AnyRef
+   with XDefinesGetCustomComponent[MainR]
    {
 
       export impl.{mainRImplEither as getCustomComponent1 }
@@ -649,6 +650,16 @@ AnyRef
    //    emviTypingImpl
    // }
    
+}
+
+protected 
+trait XDefinesGetCustomComponent[+R0]
+extends
+AnyRef
+{
+
+   def getCustomComponent1[R1 <: java.awt.Component ](newNativePeer: => R1 ): R0
+
 }
 
 trait ReExportsDoRenderAbstractAction
