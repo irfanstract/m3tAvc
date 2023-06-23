@@ -407,6 +407,7 @@ AnyRef
    trait ^&%%^ extends
    AnyRef
    with OmiAll[MainR]
+   with EBasicCompsImpl
    with ENewCheckBoxStateImpl
    with XWithNjp[MainR]
    with Egcc
@@ -418,14 +419,6 @@ AnyRef
       /* name imports */
 
       /* exports */
-
-      export eBasicCompsImpl.*
-
-      private[Aig1MoreDefs]
-      final lazy
-      val eBasicCompsImpl = {
-         EBasicCompsImpl()
-      }
 
    } /* ^&%%^ */
 
@@ -464,7 +457,7 @@ AnyRef
    /* main exports */
 
    private[javaswing] 
-   class EBasicCompsImpl(
+   trait EBasicCompsImpl(
       //
       
    )
