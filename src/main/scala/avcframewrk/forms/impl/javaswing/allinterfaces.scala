@@ -75,6 +75,7 @@ with Aig1
    with XJPanelsImpl
    with XDefinesDoRenderSwingTextDocDisplay
    with XWithCDoSpawnNewJFrame
+   with avcframewrk.util.forms.DefinesDoOpenGiven[MainR, java.io.Closeable]
    with {
 
       /* name imports */
@@ -85,6 +86,12 @@ with Aig1
       import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
       /* exports */  
+
+      override
+      def open(c: MainR): java.io.Closeable = {
+         
+         this.spawnNewJFrame(title = "", contentPane = c )
+      }
 
    }
 
