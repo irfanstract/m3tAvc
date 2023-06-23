@@ -465,6 +465,8 @@ AnyRef
    extends
    AnyRef
    with DefinesDoRenderButtonA1[javax.swing.Action, MainR]
+   with DefinesDoRenderDynamicPoster[javax.swing.Action , MainR]
+   with DefinesDoRenderPoster       [javax.swing.Icon   , MainR]
    {
 
       /* name imports */
