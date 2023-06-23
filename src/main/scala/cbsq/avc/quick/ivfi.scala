@@ -101,7 +101,7 @@ extends AnyRef with java.io.Closeable
       import generalImpl.eofEdNessState
 
       val fSet = {
-      new xSwing.spawnNewJFrame(title = "decoded frames", contentPane = {
+      xSwing.spawnNewJFrame(title = "decoded frames", contentPane = {
          val p = xSwing.newJPanel(new awt.GridLayout )
          p add {
             val p = xSwing.newInlineSequencePanel()

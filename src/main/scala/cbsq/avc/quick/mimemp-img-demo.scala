@@ -67,7 +67,7 @@ extends AnyRef with java.io.Closeable
    private[startMimempImgDemo] 
    val fE = {
    ;
-   new xSwing.spawnNewJFrame(title = "video frames", contentPane = {
+   xSwing.spawnNewJFrame(title = "video frames", contentPane = {
       
       val l = {
          identity[swing.AbstractAction ](_ => {
