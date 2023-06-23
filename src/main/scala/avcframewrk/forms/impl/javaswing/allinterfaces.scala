@@ -561,7 +561,35 @@ sealed
 trait XAllComponentsList[R] extends
       AnyRef
       with DefinesDoRenderButtonA1[javax.swing.Action, R ]
-      with XWithNjp[R ]
+      with (
+         //
+
+         /**
+          * 
+          * `XWithNjpBase` specialised this way --
+          * `Aig1MoreDefs` requires type-argument, which would have been the implementing `class`
+          * 
+          */
+         ([Definer <: Singleton & Aig1] =>> (
+
+            XWithNjpBase[R, (
+
+               XwnjpFacBase[R]
+               &
+               XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> (
+                  R &
+                  Aig1MoreDefs[Definer ]#XJPanelsImplImpl#newJPanelImpl[L] 
+               ) ]
+               
+            ) ]
+            
+         ) )
+         [(
+            (Singleton & Aig1)
+            & { val impl : EmTypingImpl { type MainR >: R <: R } } 
+         )]
+
+      )
       with ReExportsDoRenderAbstractAction
       with XDefinesAllocNewCheckBoxState
       with DefinesGetNewPlainOrStyledTextDoc[Any]
@@ -586,6 +614,11 @@ val _ @ _ = {
 
    )]
    
+   ([C <: AnyRef] => (e: XAllComponentsList[C]) => {
+      e.newInlineSequencePanel()
+      .add({ e.newInlineSequencePanel() })
+   })
+
 }
 
 @main
