@@ -561,7 +561,10 @@ sealed
 trait XAllComponentsList[R] extends
       AnyRef
       with DefinesDoRenderButtonA1[javax.swing.Action, R ]
-      with XWithNjp[R ]
+      with XWithNjpBase[R, (
+         XwnjpFacBase[R]
+         & XwnjpFacWithLayoutManager[[L <: java.awt.LayoutManager] =>> (R & Aig1MoreDefs[?]#XJPanelsImplImpl#newJPanelImpl[L] ) ]
+      ) ]
       with ReExportsDoRenderAbstractAction
       with XDefinesAllocNewCheckBoxState
       with DefinesGetNewPlainOrStyledTextDoc[Any]
