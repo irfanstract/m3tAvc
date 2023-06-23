@@ -667,17 +667,11 @@ with XWithNjp[R ]
 //       & XwnjpFacBase[R]
 // ) ]
 with ReExportsDoRenderAbstractAction
+with XDefinesAllocNewCheckBoxState
 with DefinesGetNewPlainOrStyledTextDoc[Any]
 {
 
    import xwnjpFac.{WithLayoutManager => Njp }
-
-   def newCheckBoxState(
-      //
-
-      initiallySelected : Boolean ,
-
-   ) : javax.swing.ButtonModel
 
    def newThumbnailsLayout() : Njp[java.awt.LayoutManager]
 
@@ -697,8 +691,8 @@ private[javaswing]
 trait ENewCheckBoxStateImpl
 extends
 AnyRef
+with XDefinesAllocNewCheckBoxState
 {
-   this : OmiAll[?] =>
 
    /* name imports */
 
