@@ -69,6 +69,7 @@ with Aig1
 
    given main :
    AnyRef
+   with OmiAll[MainR]
    with XWithNjpBase[MainR, XwnjpFacBase[MainR] & XwnjpFacWithLayoutManagerInvar[[L <: java.awt.LayoutManager] =>> (MainR & XJPanelsImplImpl#newJPanelImpl[L] ) ] ]
    with ^&%%^
    with ComponentSpwReExports
@@ -556,6 +557,21 @@ trait XDefinesDoRenderSwingTextDocDisplay(
 
 }
 
+sealed
+trait OmiAll[R] extends
+      AnyRef
+      with DefinesDoRenderButtonA1[javax.swing.Action, R ]
+      with XWithNjp[R ]
+      with ReExportsDoRenderAbstractAction
+      with XDefinesAllocNewCheckBoxState
+      with DefinesGetNewPlainOrStyledTextDoc[Any]
+      with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
+
+object OmiAll
+{
+
+} /* object `OmiAll` */
+
 private
 val _ @ _ = {
    ;
@@ -564,13 +580,7 @@ val _ @ _ = {
 
    summon[(
       ([R] =>> (
-         AnyRef
-         with DefinesDoRenderButtonA1[javax.swing.Action, R ]
-         with XWithNjp[R ]
-         with ReExportsDoRenderAbstractAction
-         with XDefinesAllocNewCheckBoxState
-         with DefinesGetNewPlainOrStyledTextDoc[Any]
-         with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
+         OmiAll[R]
       ))
       [?]
 
