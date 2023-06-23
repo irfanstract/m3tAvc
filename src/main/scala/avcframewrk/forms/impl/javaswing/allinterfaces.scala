@@ -179,8 +179,6 @@ AnyRef
 
       /* exports */
 
-      export xwnjpFac.{WithLayoutManager => IWithLayoutManager }
-
       override
       // def newFourSidebarHolyGrailLayout
       def newFourAsidesContentPanel() = {
