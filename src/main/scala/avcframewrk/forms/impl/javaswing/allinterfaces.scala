@@ -726,6 +726,7 @@ val _ @ _ = {
          with ReExportsDoRenderAbstractAction
          with XDefinesAllocNewCheckBoxState
          with DefinesGetNewPlainOrStyledTextDoc[Any]
+         with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
       ))
       [?]
 
