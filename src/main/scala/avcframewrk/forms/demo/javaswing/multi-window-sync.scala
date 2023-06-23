@@ -55,7 +55,7 @@ AnyRef
    def spawnOutlet(displayTitle : String ): xSwing.spawnNewJFrame = {
       ;
       
-      new xSwing.spawnNewJFrame(title = displayTitle, contentPane = {
+      xSwing.spawnNewJFrame(title = displayTitle, contentPane = {
          
          val c = xSwing.newFourAsidesContentPanel()
 
