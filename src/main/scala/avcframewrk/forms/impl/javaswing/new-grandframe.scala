@@ -25,6 +25,7 @@ open class ImplSpawnNewJFrame(
 extends
 AnyRef
 with java.io.Closeable
+with avcframewrk.util.AwaitableWithoutArg[Unit]
 {
    
    import java.awt
