@@ -634,7 +634,7 @@ val _ @ _ = {
    
    ([C <: AnyRef] => (e: XAllComponentsList[C]) => {
       e.newInlineSequencePanel()
-      .add({ e.newInlineSequencePanel() })
+      .add({ e.renderTextDocDisplay(src = ??? ) })
    })
 
 }
