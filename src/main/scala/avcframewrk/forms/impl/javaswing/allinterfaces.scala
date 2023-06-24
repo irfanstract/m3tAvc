@@ -600,6 +600,7 @@ trait XAllComponentsList[R] extends
       with ReExportsDoRenderAbstractAction
       with XDefinesAllocNewCheckBoxState
       with DefinesGetNewPlainOrStyledTextDoc[Any]
+      with XDefinesDoRenderSwingTextDocDisplay
       with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
       with avcframewrk.util.forms.DefinesDoOpenTopicGiven[String, R, java.io.Closeable]
 {
