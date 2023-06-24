@@ -94,6 +94,12 @@ with Aig1
          this.spawnNewJFrame(title = "", contentPane = c )
       }
 
+      override
+      def open(title: String, body: MainR): java.io.Closeable = {
+         
+         this.spawnNewJFrame(title = title, contentPane = body )
+      }
+
    }
 
    private[javaswing] 
@@ -594,6 +600,7 @@ trait XAllComponentsList[R] extends
       with XDefinesAllocNewCheckBoxState
       with DefinesGetNewPlainOrStyledTextDoc[Any]
       with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
+      with avcframewrk.util.forms.DefinesDoOpenTopicGiven[String, R, java.io.Closeable]
 
 object XAllComponentsList
 {
