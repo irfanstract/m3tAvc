@@ -89,13 +89,13 @@ with Aig1
       /* exports */  
 
       override
-      def open(c: MainR): java.io.Closeable = {
+      def open(c: MainR) = {
          
          this.spawnNewJFrame(title = "", contentPane = c )
       }
 
       override
-      def open(title: String, body: MainR): java.io.Closeable = {
+      def open(title: String, body: MainR) = {
          
          this.spawnNewJFrame(title = title, contentPane = body )
       }
