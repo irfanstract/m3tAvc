@@ -214,7 +214,7 @@ AnyRef
 
       override
       final
-      def newThumbnailsLayout() = {
+      def newThumbnailsListPanel() = {
 
          newJPanel({
 
