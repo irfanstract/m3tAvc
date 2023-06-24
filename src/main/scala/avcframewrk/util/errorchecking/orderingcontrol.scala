@@ -46,18 +46,7 @@ object reocsImpl
          
       }
 
-      trait JoinableNoArg[+R] {
-
-         /**
-          * 
-          * synchronously await until exactly
-          * what this JNA calls "completion" happens ;
-          * idempotent, that is, if it already happens, this will simply return
-          * 
-          */
-         def join() : R
-         
-      }
+      export avcframewrk.util.{AwaitableWithoutArg as JoinableNoArg }
 
       trait HasDoMarkCompletedNoArg[+R] {
 

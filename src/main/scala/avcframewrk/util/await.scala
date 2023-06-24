@@ -105,6 +105,37 @@ extension[R](f: concurrent.Future[R] ) {
 
 
 
+;
+
+trait DefinesDoJoinWithoutArg[+R] {
+
+   def join() : R
+
+}
+
+trait AwaitableWithoutArg[+R] extends
+AnyRef
+with DefinesDoJoinWithoutArg[R]
+{
+
+   /**
+    * 
+    * synchronously await until exactly
+    * what this AWA calls "completion" happens ;
+    * idempotent, that is, if it already happens, this will simply return
+    * 
+    */
+   def join() : R
+
+}
+
+;
+
+
+
+
+
+
 
 
 
