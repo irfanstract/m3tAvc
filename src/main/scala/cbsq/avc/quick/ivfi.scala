@@ -104,7 +104,7 @@ extends AnyRef with java.io.Closeable
       xSwing.spawnNewJFrame(title = "decoded frames", contentPane = {
          val p = xSwing.newJPanel(new awt.GridLayout )
          p add {
-            val p = xSwing.newInlineSequencePanel()
+            val p = xSwing.newParagraphicPanel()
             p add {
                xSwing renderTextDocDisplay(tStampInfoDoc)
             }

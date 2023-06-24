@@ -204,7 +204,7 @@ AnyRef
       }
 
       override
-      def newInlineSequencePanel() = {
+      def newParagraphicPanel() = {
 
          newJPanel({
 
@@ -631,7 +631,7 @@ val _ @ _ = {
    )]
    
    ([C <: AnyRef] => (e: XAllComponentsList[C]) => {
-      e.newInlineSequencePanel()
+      e.newParagraphicPanel()
       .add({ e.renderTextDocDisplay(src = ??? ) })
    })
 

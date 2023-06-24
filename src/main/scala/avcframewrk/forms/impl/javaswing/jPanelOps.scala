@@ -36,7 +36,7 @@ AnyRef
    // def newFourSidebarHolyGrailLayout
    def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
 
-   def newInlineSequencePanel() : Njp[awt.LayoutManager ]
+   def newParagraphicPanel() : Njp[awt.LayoutManager ]
 
    def newThumbnailsLayout() : Njp[awt.LayoutManager ]
 
