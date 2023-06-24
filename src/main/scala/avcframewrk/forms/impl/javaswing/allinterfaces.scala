@@ -218,7 +218,59 @@ AnyRef
 
          newJPanel({
 
-            new awt.GridLayout(0, 2)
+            new awt.FlowLayout()
+            {
+
+               override
+               def minimumLayoutSize(container : awt.Container ) = {
+
+                  reAdjustChildComponentsPreferredSizes(container )
+
+                  super.minimumLayoutSize(container)
+               }
+
+               override
+               def preferredLayoutSize(container : awt.Container ) = {
+
+                  reAdjustChildComponentsPreferredSizes(container )
+
+                  super.preferredLayoutSize(container)
+               }
+
+               override
+               def layoutContainer(container : awt.Container ) : Unit = {
+
+                  reAdjustChildComponentsPreferredSizes(container )
+
+                  super.layoutContainer(container)
+               }
+
+               /**
+                * 
+                * modify the child components' *preferred size*s
+                * 
+                */
+               def reAdjustChildComponentsPreferredSizes(container: awt.Container ): Unit = {
+
+                  val intendedPerComponentLength = {
+                     
+                     computePerComponentLength(container)
+                  }
+
+                  for (childComp <- container.getComponents() ) {
+
+                     childComp setPreferredSize(new awt.Dimension(intendedPerComponentLength, intendedPerComponentLength ) )
+                     
+                  }
+
+               }
+
+               def computePerComponentLength(c : awt.Container ) : Int = {
+
+                  96
+               }
+               
+            }
          })
       }
 
