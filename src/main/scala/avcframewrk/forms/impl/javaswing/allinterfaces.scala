@@ -680,6 +680,11 @@ trait XAllComponentsList[R] extends
 object XAllComponentsList
 {
 
+   given defaultInstance : XAllComponentsList[allInterfacesGivens.MainR] = {
+
+      allInterfacesGivens.main
+   }
+
 } /* object `XAllComponentsList` */
 
 private
