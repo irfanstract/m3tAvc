@@ -34,6 +34,17 @@ trait DefinesDoOpenGiven[-C, +R] {
 
 }
 
+/**
+ * 
+ * .
+ * 
+ */
+trait DefinesDoOpenTopicGiven[-Title, -Body, +R] {
+
+   def open(title: Title, body: Body) : R
+
+}
+
 
 
 
