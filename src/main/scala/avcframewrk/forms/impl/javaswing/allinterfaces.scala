@@ -678,6 +678,18 @@ trait XAllComponentsList[R] extends
 object XAllComponentsList
 {
 
+   given defaultInstance : XAllComponentsList[allInterfacesGivens.MainR] = {
+
+      allInterfacesGivens.main
+   }
+
+   // def c(e: XAllComponentsList[?]) = {
+   //    e match {
+   //       case e : XAllComponentsList[r] =>
+   //          e
+   //    }
+   // }
+
 } /* object `XAllComponentsList` */
 
 private

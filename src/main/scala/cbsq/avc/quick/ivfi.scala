@@ -30,7 +30,12 @@ class openInteractiveFrameIterativeUiImpl(
 )
 (using 
    logger : cbsq.avc.PhrStagedLogging.ByDName["cbsq.avc.quick.openInteractiveFrameIterativeUiImpl$.main"] ,
-   xSwing : avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ,
+   xSwing : (
+      // ([R] =>> avcframewrk.forms.impl.javaswing.XAllComponentsList[R] )[?]
+      // avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type
+      // avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type
+      avcframewrk.forms.impl.javaswing.XAllComponentsList.defaultInstance.type
+   ) ,
 )
 extends AnyRef with java.io.Closeable
 {
@@ -46,6 +51,135 @@ extends AnyRef with java.io.Closeable
       refresh()
 
    }
+
+   // ((mnext: ([R] =>> avcframewrk.forms.impl.javaswing.XAllComponentsList[R] )[?]) => {
+   //    // mnext.apply(???)
+   //    mnext.open(??? )
+   //    5
+   //    val mne = (identity[avcframewrk.util.forms.DefinesDoOpenGiven[?, ?]](mnext ) )
+   //    val mnDoOpen = (mne.open _ )
+   //    // compiletime.codeOf((mne.open _ ) ) : "what"
+   // })
+   
+   // ((mne: ([R] =>> ((R => Unit) ) )[?]) => {
+   //    // mnext.apply(???)
+   // })
+   // // ([C[R] <: ((R => Unit) & (java.util.function.Supplier[R]) ) ] => (mne: C[?]) => {
+   // //    //
+   // // })
+   // // ((mne: ([R] =>> ((R => Unit) & ((R, Boolean) => Unit ) ) )[?]) => {
+   // //    // mnext.apply(???)
+   // // })
+   // ({
+   //    import avcframewrk.forms.impl.javaswing.allInterfacesGivens
+
+   //    import allInterfacesGivens.main
+
+   //    summon[(
+   //       ([R] =>> (
+   //          AnyRef
+   //          with avcframewrk.util.forms.pure.DefinesDoRenderButtonA1[javax.swing.Action, R ]
+   //          // with XWithNjp[R ]
+   //          // with ReExportsDoRenderAbstractAction
+   //          // with XDefinesAllocNewCheckBoxState
+   //          // with DefinesGetNewPlainOrStyledTextDoc[Any]
+   //          with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
+   //       ))
+   //       [?]
+
+   //    )]
+
+   //    // compiletime.codeOf({
+   //    //    ;
+   //    //    summon[(
+   //    //       ([R] =>> (
+   //    //          AnyRef
+   //    //          with avcframewrk.util.forms.pure.DefinesDoRenderButtonA1[javax.swing.Action, R ]
+   //    //          // with XWithNjp[R ]
+   //    //          // with ReExportsDoRenderAbstractAction
+   //    //          // with XDefinesAllocNewCheckBoxState
+   //    //          // with DefinesGetNewPlainOrStyledTextDoc[Any]
+   //    //          with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
+   //    //       ))
+   //    //       [?]
+
+   //    //    )]
+   //    // }) : ""
+
+   //    // type Emain = (
+         
+   //    //    ([R] =>> (
+   //    //       AnyRef
+   //    //       with avcframewrk.util.forms.pure.DefinesDoRenderButtonA1[javax.swing.Action, R ]
+   //    //       // with XWithNjp[R ]
+   //    //       with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
+   //    //    ))
+   //    //    [?]
+   //    // )
+
+   //    compiletime.codeOf((e: (
+   //       ([ER] =>> (
+   //          AnyRef
+   //          with avcframewrk.util.forms.pure.DefinesDoRenderButtonA1[javax.swing.Action, ER ]
+   //          // with XWithNjp[ER ]
+   //          with avcframewrk.util.forms.DefinesDoOpenGiven[ER, java.io.Closeable]
+   //       ))
+   //       [?]
+
+   //    )) => {
+   //       val mnDoOpen = (e.open _ )
+   //       def mnNew = e.renderButton(???)
+   //       val e1 = e
+   //       5
+   //       //
+   //       ()
+   //    }) : ""
+      
+   // })
+   // ({
+   //    ;
+   //    type Imnet = [R] =>> ((R => Unit) & (java.util.function.Supplier[R]) )
+   //    ((mne: Imnet[? >: Nothing <: Any]) => {
+   //       // mnext.apply(???)
+   //       val mnDoOpen = (mne.apply _ )
+   //       def mnNew = mne.get()
+   //       // compiletime.codeOf((mne.open _ ) ) : "what"
+   //    })
+   // })
+
+   // ({
+   //    ;
+      
+   //    import avcframewrk.forms.impl.javaswing.allInterfacesGivens
+
+   //    import allInterfacesGivens.main
+
+   //    type Erb = (
+   //       ([R] =>> (
+   //          AnyRef
+   //          with avcframewrk.util.forms.pure.DefinesDoRenderButtonA1[javax.swing.Action, R ]
+   //          // with XWithNjp[R ]
+   //          // with ReExportsDoRenderAbstractAction
+   //          // with XDefinesAllocNewCheckBoxState
+   //          // with DefinesGetNewPlainOrStyledTextDoc[Any]
+   //          with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
+   //       ))
+   //       [({ type E })#E]
+
+   //    )
+
+   //    // compiletime.codeOf((e: Erb) => { val e1 = e.open _ } ) : ""
+
+   //    // summon[(Erb)]
+
+   // })
+
+   // ((ec: ([R] =>> avcframewrk.forms.impl.javaswing.XAllComponentsList[R] )[?] ) => {
+   //    // compiletime.codeOf(ec.open(_) ) : ""
+   //    ec.open(ec.newAggregatingPanel() )
+   // })
+
+   {}
 
    generalImpl
    private  
@@ -101,8 +235,8 @@ extends AnyRef with java.io.Closeable
       import generalImpl.eofEdNessState
 
       val fSet = {
-      xSwing.spawnNewJFrame(title = "decoded frames", contentPane = {
-         val p = xSwing.newJPanel(new awt.GridLayout )
+      xSwing.open(title = "decoded frames", body = {
+         val p = xSwing.newAggregatingPanel()
          p add {
             val p = xSwing.newParagraphicPanel()
             p add {
