@@ -601,6 +601,13 @@ trait XAllComponentsList[R] extends
       with DefinesGetNewPlainOrStyledTextDoc[Any]
       with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
       with avcframewrk.util.forms.DefinesDoOpenTopicGiven[String, R, java.io.Closeable]
+{
+   this : (
+      AnyRef
+      //
+   ) =>
+
+}
 
 object XAllComponentsList
 {
