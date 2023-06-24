@@ -36,6 +36,14 @@ AnyRef
    // def newFourSidebarHolyGrailLayout
    def newFourAsidesContentPanel() : Njp[awt.BorderLayout ]
 
+   /**
+    * 
+    * a `JPanel` for
+    * mutually-logically-independent children with equivalent level-of-priority
+    * 
+    */
+   def newAggregatingPanel() : Njp[awt.LayoutManager ]
+
    def newParagraphicPanel() : Njp[awt.LayoutManager ]
 
    def newThumbnailsListPanel() : Njp[awt.LayoutManager ]
