@@ -38,7 +38,7 @@ AnyRef
 
    def newParagraphicPanel() : Njp[awt.LayoutManager ]
 
-   def newThumbnailsLayout() : Njp[awt.LayoutManager ]
+   def newThumbnailsListPanel() : Njp[awt.LayoutManager ]
 
    // def newComparativePanel() : Njp[awt.LayoutManager ]
 
