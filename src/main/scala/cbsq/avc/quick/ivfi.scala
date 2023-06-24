@@ -30,7 +30,10 @@ class openInteractiveFrameIterativeUiImpl(
 )
 (using 
    logger : cbsq.avc.PhrStagedLogging.ByDName["cbsq.avc.quick.openInteractiveFrameIterativeUiImpl$.main"] ,
-   xSwing : avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ,
+   xSwing : (
+      // ([R] =>> avcframewrk.forms.impl.javaswing.XAllComponentsList[R] )[?]
+      avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type
+   ) ,
 )
 extends AnyRef with java.io.Closeable
 {
@@ -101,7 +104,7 @@ extends AnyRef with java.io.Closeable
       import generalImpl.eofEdNessState
 
       val fSet = {
-      xSwing.spawnNewJFrame(title = "decoded frames", contentPane = {
+      xSwing.open(title = "decoded frames", body = {
          val p = xSwing.newJPanel(new awt.GridLayout )
          p add {
             val p = xSwing.newParagraphicPanel()

@@ -678,6 +678,11 @@ trait XAllComponentsList[R] extends
 object XAllComponentsList
 {
 
+   given XAllComponentsList[?] = {
+
+      allInterfacesGivens.main
+   }
+   
 } /* object `XAllComponentsList` */
 
 private
