@@ -566,6 +566,7 @@ trait XDefinesDoRenderSwingTextDocDisplay(
 sealed
 trait XAllComponentsList[R] extends
       AnyRef
+      with XDefinesGetCustomComponent[R]
       with DefinesDoRenderButtonA1[javax.swing.Action, R ]
       with (
          //
