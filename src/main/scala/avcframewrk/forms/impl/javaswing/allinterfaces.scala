@@ -204,6 +204,18 @@ AnyRef
       }
 
       override
+      def newAggregatingPanel() = {
+
+         newJPanel({
+
+            /**
+             * GridLayout with exactly `1` column(s)
+             */
+            new awt.GridLayout(0, 1 ) 
+         })
+      }
+
+      override
       def newParagraphicPanel() = {
 
          newJPanel({
