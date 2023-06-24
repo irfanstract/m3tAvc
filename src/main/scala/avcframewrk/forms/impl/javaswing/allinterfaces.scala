@@ -601,8 +601,8 @@ trait XAllComponentsList[R] extends
       with XDefinesAllocNewCheckBoxState
       with DefinesGetNewPlainOrStyledTextDoc[Any]
       with XDefinesDoRenderSwingTextDocDisplay
-      with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
-      with avcframewrk.util.forms.DefinesDoOpenTopicGiven[String, R, java.io.Closeable]
+      with avcframewrk.util.forms.DefinesDoOpenGiven[R, ImplSpawnNewJFrame]
+      with avcframewrk.util.forms.DefinesDoOpenTopicGiven[String, R, ImplSpawnNewJFrame]
 {
    this : (
       AnyRef
