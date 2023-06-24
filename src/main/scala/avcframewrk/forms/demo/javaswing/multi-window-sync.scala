@@ -50,7 +50,7 @@ AnyRef
    //
 
    private[runMultiWindowSyncDemoImpl]
-   val cd = xSwing.newInlineSequencePanel()
+   val cd = xSwing.newParagraphicPanel()
 
    def spawnOutlet(displayTitle : String ): xSwing.spawnNewJFrame = {
       ;
@@ -83,7 +83,7 @@ AnyRef
 
          c addOne({
 
-            val btnsPanel = xSwing.newInlineSequencePanel()
+            val btnsPanel = xSwing.newParagraphicPanel()
 
             btnsPanel add { xSwing renderButton(uNextBtnAction ) }
 
