@@ -185,12 +185,13 @@ AnyRef
 
          src : (
             (String | java.net.URI)
-            | lavfConditionalTyping.IfConforms[fmt.type, Fmt, FmtCharacteristicFd, [_] =>> Null]
+            // | lavfConditionalTyping.IfConforms[fmt.type, Fmt, FmtCharacteristicFd, [_] =>> Null]
 
          ) ,
 
          otherOpts : (
-            lavfConditionalTyping.IfConforms[fmt.type, Fmt, FmtSpecificOptions, [_] =>> LavfEmptyMap ]
+            // lavfConditionalTyping.IfConforms[fmt.type, Fmt, FmtSpecificOptions, [_] =>> LavfEmptyMap ]
+            LavfEmptyMap
             
          ) = { Map() } ,
          
