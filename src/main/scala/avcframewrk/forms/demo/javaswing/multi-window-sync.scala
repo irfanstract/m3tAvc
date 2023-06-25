@@ -89,6 +89,8 @@ AnyRef
 
             btnsPanel add { xSwing renderButton(spawnNewOutletBtnAction ) }
 
+            btnsPanel add { fic }
+
             btnsPanel
 
          } , awt.BorderLayout.PAGE_END )
@@ -101,6 +103,11 @@ AnyRef
       
       spawnOutlet(displayTitle = s"frame $i ;" )
 
+   }
+
+   private 
+   lazy val fic = {
+      xSwing renderFiniteItemChooser({ new javax.swing.DefaultComboBoxModel[Int]() { addElement(1) ; addElement(2) ; addElement(3) } } , formatItemForDisplay = (value: Any) => xSwing.getCustomComponent1(new javax.swing.JLabel(s"${value}") ) )
    }
 
    def runUNextBtnAction(): Unit = {
