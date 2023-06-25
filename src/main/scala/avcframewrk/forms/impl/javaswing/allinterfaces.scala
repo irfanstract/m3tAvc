@@ -672,6 +672,7 @@ trait XAllComponentsList[R] extends
 {
    this : (
       AnyRef
+      & (Aig1 { val impl : EmTypingImpl { type MainR >: R <: R } } )#ComponentSpwReExports
       //
    ) =>
 
