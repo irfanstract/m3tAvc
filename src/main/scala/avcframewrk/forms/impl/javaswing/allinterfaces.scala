@@ -675,6 +675,22 @@ trait XAllComponentsList[R] extends
       //
    ) =>
 
+   def renderLinearRangeBoundedEditor[
+      Model <: (
+         javax.swing.BoundedRangeModel
+      ) ,
+
+   ](model: Model): R = {
+
+      import language.unsafeNulls
+
+      getCustomComponent1 {
+
+         val s = new javax.swing.JSlider(model)
+         s
+      }
+   }
+
 }
 
 object XAllComponentsList
