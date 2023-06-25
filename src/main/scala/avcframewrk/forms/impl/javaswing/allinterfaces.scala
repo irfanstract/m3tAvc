@@ -563,6 +563,8 @@ trait XAllComponentsList[R] extends
       with DefinesDoRenderButtonA1[javax.swing.Action, R ]
       with XWithNjp[R ]
       with ReExportsDoRenderAbstractAction
+      with DefinesDoRenderDynamicPoster[javax.swing.Action , R ]
+      with DefinesDoRenderPoster       [javax.swing.Icon   , R ]
       with XDefinesAllocNewCheckBoxState
       with DefinesGetNewPlainOrStyledTextDoc[Any]
       with avcframewrk.util.forms.DefinesDoOpenGiven[R, java.io.Closeable]
