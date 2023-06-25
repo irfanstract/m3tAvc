@@ -692,6 +692,66 @@ trait XAllComponentsList[R] extends
       }
    }
 
+   def renderFiniteItemChooser[
+      K : Ordering ,
+      Model <: (
+         ([E] =>> (
+            javax.swing.ListModel[E]
+            | javax.swing.ComboBoxModel[E] 
+         ) )[K]
+      ) ,
+
+   ](m: Model, formatItemForDisplay: K => R ): R = {
+
+      import language.unsafeNulls
+
+      val cellRenderer = {
+         
+                  identity[javax.swing.ListCellRenderer[K] ]((_, item, i, isSelected, _ ) => {
+
+                     val itemC = {
+                        { formatItemForDisplay((item : K | Null).asInstanceOf[K] ) }
+                        match { case e => spawnAndGetNative(e) }
+                     }
+                     itemC
+                  })
+      }
+
+      getCustomComponent1 {
+
+         (m, () ) match {
+            //
+
+            /*
+             * 
+             * `ComboBoxModel` `extends` `ListModel`, so
+             * the `case` for `ComboBoxModel`
+             * needs to come up first
+             * 
+             */
+
+            case (m : javax.swing.ComboBoxModel[?], () ) =>
+               ;
+               
+               val s = new javax.swing.JComboBox(m)
+               s.setRenderer({
+                  cellRenderer
+               })
+               s
+
+            case (m : javax.swing.ListModel[?], () ) =>
+               ;
+               
+               val s = new javax.swing.JList(m)
+               s setCellRenderer({
+                  cellRenderer
+               })
+               s
+
+         }
+      }
+   } /* renderFiniteItemChooser */
+
 }
 
 object XAllComponentsList
