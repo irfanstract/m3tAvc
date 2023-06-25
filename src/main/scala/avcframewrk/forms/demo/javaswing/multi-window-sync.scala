@@ -52,6 +52,16 @@ AnyRef
    private[runMultiWindowSyncDemoImpl]
    val cd = xSwing.newParagraphicPanel()
 
+   {
+      
+      val model = new javax.swing.DefaultBoundedRangeModel(0, 100, -2000, 2000 )
+
+      cd add { xSwing getCustomComponent1 { new javax.swing.JSlider(model ) } }
+      
+      cd add { xSwing getCustomComponent1 { new javax.swing.JSlider(model ) } }
+
+   }
+
    def spawnOutlet(displayTitle : String ): xSwing.spawnNewJFrame = {
       ;
       
