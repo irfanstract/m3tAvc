@@ -757,10 +757,28 @@ trait XAllComponentsList[R] extends
 object XAllComponentsList
 {
 
-   given defaultInstance : XAllComponentsList[allInterfacesGivens.MainR] = {
+   given defaultInstance : impl.epm.valuePallete.type = {
 
-      allInterfacesGivens.main
+      impl.epm.valuePallete
    }
+
+   private [XAllComponentsList]
+   object impl {
+
+      val epm = {
+
+         new avcframewrk.util.errorchecking.WildcardTypedInstancing.::![XAllComponentsList ] {
+            
+            opaque type Value
+               = allInterfacesGivens.MainR
+
+            final val valuePallete : XAllComponentsList[Value]
+               = allInterfacesGivens.main
+
+         }
+      }
+
+   } /* `impl` */
 
 } /* object `XAllComponentsList` */
 
