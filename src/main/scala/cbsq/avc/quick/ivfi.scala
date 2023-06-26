@@ -166,7 +166,7 @@ class Eitrn(
 )
 (using 
    logger : cbsq.avc.PhrStagedLogging.ByDName["cbsq.avc.quick.openInteractiveFrameIterativeUiImpl$.Eitrn"] ,
-   xSwing : avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ,
+   xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance.type ,
 )
 {
       ;
