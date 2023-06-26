@@ -27,7 +27,7 @@ class runMultiWindowSyncDemoImpl(
    // givens
 
    private
-   val xSwing : avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ,
+   val xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance.type ,
 
 )
 extends
@@ -62,10 +62,15 @@ AnyRef
 
    }
 
-   def spawnOutlet(displayTitle : String ): xSwing.spawnNewJFrame = {
+   def spawnOutlet(displayTitle : String ): (
+      AnyRef
+      with java.io.Closeable
+      with avcframewrk.util.AwaitableWithoutArg[Unit]
+      //
+   ) = {
       ;
       
-      xSwing.spawnNewJFrame(title = displayTitle, contentPane = {
+      xSwing.open(title = displayTitle, body = {
          
          val c = xSwing.newFourAsidesContentPanel()
 
