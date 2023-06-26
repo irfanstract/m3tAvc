@@ -31,7 +31,7 @@ class startMimempImgDemo(
    // givens
 
    private
-   val xSwing : avcframewrk.forms.impl.javaswing.allInterfacesGivens.main.type ,
+   val xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance.type ,
 
 )
 extends AnyRef with java.io.Closeable
@@ -67,7 +67,7 @@ extends AnyRef with java.io.Closeable
    private[startMimempImgDemo] 
    val fE = {
    ;
-   xSwing.spawnNewJFrame(title = "video frames", contentPane = {
+   xSwing.open(title = "video frames", body = {
       
       val l = {
          identity[swing.AbstractAction ](_ => {
