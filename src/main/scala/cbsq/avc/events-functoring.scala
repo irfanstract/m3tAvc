@@ -244,13 +244,14 @@ val tsevp : TsevpOps = {
 
          evtType : TsevpEventType ,
 
-      ) : (E => Unit , EventIterator[E] ) = {
+      ) : (E => Unit , EventIterator[E] & evtType.XSpcf ) = {
          val peer = {
             new EventIteratorImpl[E](
                //
                evtType = evtType ,
                lastKnownValueOption = None ,
             )
+            match { case c => evtType.asXSpcf(c) }
          }
          ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
       }
@@ -277,7 +278,7 @@ trait TsevpOps
          TsevpEventType.ofAction
       } ,
 
-   ) : (E => Unit , EventIterator[E] )
+   ) : (E => Unit , EventIterator[E] & evtType.XSpcf )
    
 }
 
@@ -286,6 +287,25 @@ enum TsevpEventType {
    case ofUpdate
 
    case ofAction
+
+   /**
+    * 
+    * for listeners added later than events already fired,
+    * it'd be necessary to make the intended behv (eg shall fire immediately ?) clear enough AOT.
+    * hence this tagging method.
+    * 
+    */
+   def asXSpcf[A](c: A): A & XSpcf = c
+
+   /**
+    * 
+    * for listeners added later than events already fired,
+    * it'd be necessary to make the intended behv (eg shall fire immediately ?) clear enough AOT.
+    * hence this tagging.
+    * 
+    */
+   opaque type XSpcf
+      = Any
 
 }
 
