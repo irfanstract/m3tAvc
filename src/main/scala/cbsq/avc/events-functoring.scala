@@ -33,6 +33,7 @@ val tsevp : TsevpOps = {
    class EventIteratorImpl[E]
    extends
    collection.WithFilter[E, EventIteratorImpl ]
+   with java.io.Closeable
    {
 
       type XStorableListener
@@ -46,7 +47,20 @@ val tsevp : TsevpOps = {
          )](Seq() )
       }
 
-      def emitItem(newEvt: E): Boolean = {
+      def removeAllListeners(): Unit = {
+
+         listeners0
+         .updateAndGet(e => e.nn.empty )
+         
+      }
+
+      /**
+       * 
+       * trigger
+       * propagation, invoking all the registered callbacks, of the given item
+       * 
+       */
+      def propagateItem(newEvt: E): Boolean = {
 
          listeners0.get().nn 
          .foreach((propagateX : XStorableListener ) => {
@@ -54,6 +68,21 @@ val tsevp : TsevpOps = {
          } )
 
          true
+      }
+
+      protected[EventIteratorImpl] 
+      def addListener[U](propagateX: E => U) = {
+   
+         import language.unsafeNulls
+
+         listeners0
+         .updateAndGet(ls0 => (
+            ls0 :+ {
+               ((evt: E) => { propagateX(evt) } : Unit )
+               .andThen(<:<.refl[Unit] )
+            }
+         ))
+
       }
 
       /**
@@ -65,15 +94,8 @@ val tsevp : TsevpOps = {
       // inline
       final
       def foreach[U](propagateX: E => U) = {
-         import language.unsafeNulls
-
-         listeners0
-         .updateAndGet(ls0 => (
-            ls0 :+ {
-               ((evt: E) => { propagateX(evt) } : Unit )
-               .andThen(<:<.refl[Unit] )
-            }
-         ))
+         
+         addListener(propagateX )
          
       }
 
@@ -122,7 +144,7 @@ val tsevp : TsevpOps = {
              * 
              */
             for (e1 <- e1s) {
-               mappedValuesInstance emitItem e1
+               mappedValuesInstance propagateItem e1
             }
 
          })
@@ -152,30 +174,46 @@ val tsevp : TsevpOps = {
          } )
       }
 
+      override
+      def close(): Unit = {
+
+         removeAllListeners()
+         
+      }
+
    }
+   type EventIteratorImplCovar[+E] = (
+      EventIteratorImpl[? <: E]
+   )
    
-   new AnyRef with TsevpOps
+   object main extends AnyRef with TsevpOps
    {
 
-      type EventIterator[+E] = (
-         collection.WithFilter[E, EventIteratorImpl ]
-      )
+      type EventIterator[+E]
+         >: EventIteratorImplCovar[E]
+         <: EventIteratorImplCovar[E]
 
       def newEventEmitter[E]() : (E => Unit , EventIterator[E] ) = {
          val peer = {
             new EventIteratorImpl[E]()
          }
-         ((e: E) => require(peer.emitItem(e), s"failing the emit of ${e}" ) , peer )
+         ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
       }
       
    }
+   main
 }
 
 protected
 trait TsevpOps
 {
 
-   type EventIterator[+E] <: collection.WithFilter[E, EventIterator ]
+   type EventIterator[+E]
+      <: (
+         AnyRef
+         & collection.WithFilter[E, EventIterator ]
+         & java.io.Closeable
+      )
 
    def newEventEmitter[E]() : (E => Unit , EventIterator[E] )
    
