@@ -55,6 +55,38 @@ case class CvcEvent[+Value](newValue: Value )
 
 ;
 
+/**
+ * 
+ * a dedicated backend for implementing `addChangeListener`s
+ * 
+ */
+class XSwingChangeListenerList() {
+   
+   import language.unsafeNulls
+
+   protected
+   val listenerList = new javax.swing.event.EventListenerList()
+   
+   def addChangeListener   (l: javax.swing.event.ChangeListener ): Unit = listenerList add   (classOf[javax.swing.event.ChangeListener], l )
+   def removeChangeListener(l: javax.swing.event.ChangeListener ): Unit = listenerList remove(classOf[javax.swing.event.ChangeListener], l )
+
+   def getAllListeners() = {
+
+      listenerList.getListeners(classOf[javax.swing.event.ChangeListener] ).toIndexedSeq
+   }
+
+   def fireAllChangeListeners(src: AnyRef): Unit = {
+
+      val e = new javax.swing.event.ChangeEvent(src)
+
+      for (l <- getAllListeners() ) {
+
+         l stateChanged(e)
+      }
+   }
+
+}
+
 ;
 
 
