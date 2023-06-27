@@ -41,6 +41,9 @@ val tsevp : TsevpOps = {
       //
 
       protected
+      var evtType : TsevpEventType ,
+
+      protected
       var lastKnownValueOption : Option[E] ,
 
    )
@@ -133,6 +136,8 @@ val tsevp : TsevpOps = {
             new EventIteratorImpl[U](
                //
 
+               evtType = evtType ,
+
                lastKnownValueOption = None ,
 
             )
@@ -140,12 +145,17 @@ val tsevp : TsevpOps = {
 
          /**
           * 
-          * the initial call
+          * run the initial call,
+          * if appropriate
           * 
           */
-         for (lastKnownValue <- lastKnownValueOption) {
+         if evtType == TsevpEventType.ofUpdate then {
+            
+            for (lastKnownValue <- lastKnownValueOption) {
 
-            runCallbackTask(lastKnownValue)
+               runCallbackTask(lastKnownValue)
+            }
+
          }
 
          /**
@@ -184,7 +194,7 @@ val tsevp : TsevpOps = {
             }
 
          }
-         
+
          mappedValuesInstance
       }
       
@@ -229,10 +239,16 @@ val tsevp : TsevpOps = {
          >: EventIteratorImplCovar[E]
          <: EventIteratorImplCovar[E]
 
-      def newEventEmitter[E]() : (E => Unit , EventIterator[E] ) = {
+      def newEventEmitter[E](
+         //
+
+         evtType : TsevpEventType ,
+
+      ) : (E => Unit , EventIterator[E] ) = {
          val peer = {
             new EventIteratorImpl[E](
                //
+               evtType = evtType ,
                lastKnownValueOption = None ,
             )
          }
@@ -254,7 +270,14 @@ trait TsevpOps
          & java.io.Closeable
       )
 
-   def newEventEmitter[E]() : (E => Unit , EventIterator[E] )
+   def newEventEmitter[E](
+      //
+
+      evtType : TsevpEventType = {
+         TsevpEventType.ofAction
+      } ,
+
+   ) : (E => Unit , EventIterator[E] )
    
 }
 
@@ -276,7 +299,10 @@ def runEventsFunctoringDemo(): Unit = {
    import language.unsafeNulls
 
    val (emit, eh1) = {
-      newEventEmitter[(Unit, Int)]()
+      newEventEmitter[(Unit, Int)](
+         //
+         evtType = TsevpEventType.ofAction ,
+      )
    }
 
    eh1

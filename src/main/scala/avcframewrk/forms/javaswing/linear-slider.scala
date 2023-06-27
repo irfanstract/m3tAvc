@@ -107,7 +107,7 @@ with java.io.Closeable
    final 
    lazy
    val vceImpl = {
-      avcframewrk.util.newEventEmitter[ValueChgEvent]()
+      avcframewrk.util.newEventEmitter[ValueChgEvent](evtType = avcframewrk.util.TsevpEventType.ofUpdate )
    }
 
    private[asAvslEventEmitterImpl] 
@@ -141,6 +141,62 @@ with java.io.Closeable
 
 
 
+
+@deprecated
+object XBoundedRangeModelByEps {
+
+   //
+
+   case class StateImpl(
+      //
+
+      range: (Int, Int),
+      value: Int,
+      slidingWindowExtent: Int ,
+      
+      changing: Boolean,
+
+      shallHoldNotify : Boolean ,
+
+   )
+   {
+
+      def withChangedMin(newBnd : Int) = copy(range = (range).copy(_1 = newBnd ) )
+
+      def withChangedMax(newBnd : Int) = copy(range = (range).copy(_2 = newBnd ) )
+
+   }
+
+}
+
+/**
+ * 
+ * implementation of the querying/reading methods of `javax.swing.BoundedRangeModel`
+ * based on reading `presentlyState`
+ * 
+ */
+@deprecated
+trait XBoundedRangeModelByEps(presentlyState0 : () => XBoundedRangeModelByEps.StateImpl ) extends
+javax.swing.BoundedRangeModel
+{
+      //
+
+      def presentlyState = presentlyState0()
+
+      def range = { presentlyState.range }
+
+      def getMaximum(): Int = range._2
+      def getMinimum(): Int = range._1
+
+      def getValue() = presentlyState.value 
+
+      def getValueIsAdjusting() = presentlyState.changing
+
+      def getExtent() = presentlyState.slidingWindowExtent 
+
+}
+
+;
 
 ;
 
