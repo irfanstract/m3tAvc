@@ -244,13 +244,14 @@ val tsevp : TsevpOps = {
 
          evtType : TsevpEventType ,
 
-      ) : (E => Unit , EventIterator[E] ) = {
+      ) : (E => Unit , EventIterator[E] & evtType.Inheritor ) = {
          val peer = {
             new EventIteratorImpl[E](
                //
                evtType = evtType ,
                lastKnownValueOption = None ,
             )
+            match { case c => evtType.pretendEvtItrAsBeingOfThisType(c) }
          }
          ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
       }
@@ -277,7 +278,7 @@ trait TsevpOps
          TsevpEventType.ofAction
       } ,
 
-   ) : (E => Unit , EventIterator[E] )
+   ) : (E => Unit , EventIterator[E] & evtType.Inheritor )
    
    opaque type NewvetImplSpecificToken <: Any
       = Unit
