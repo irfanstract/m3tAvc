@@ -30,10 +30,22 @@ export tsevp.newEventEmitter
 
 // protected
 val tsevp : TsevpOps = {
-   class EventIteratorImpl[E]
+
+   sealed
+   trait EventIteratorImplPre[E1, +C[E0] ]
    extends
-   collection.WithFilter[E, EventIteratorImpl ]
+   collection.WithFilter[E1, C ]
    with java.io.Closeable
+   
+   class EventIteratorImpl[E](
+      //
+
+      protected
+      var lastKnownValueOption : Option[E] ,
+
+   )
+   extends
+   EventIteratorImplPre[E, EventIteratorImpl]
    {
 
       type XStorableListener
@@ -61,6 +73,8 @@ val tsevp : TsevpOps = {
        * 
        */
       def propagateItem(newEvt: E): Boolean = {
+
+         lastKnownValueOption = Some(newEvt)
 
          listeners0.get().nn 
          .foreach((propagateX : XStorableListener ) => {
@@ -115,8 +129,24 @@ val tsevp : TsevpOps = {
           * 
           */
          val mappedValuesInstance = ({
-            new EventIteratorImpl[U]()
+
+            new EventIteratorImpl[U](
+               //
+
+               lastKnownValueOption = None ,
+
+            )
          })
+
+         /**
+          * 
+          * the initial call
+          * 
+          */
+         for (lastKnownValue <- lastKnownValueOption) {
+
+            runCallbackTask(lastKnownValue)
+         }
 
          /**
           * 
@@ -124,6 +154,12 @@ val tsevp : TsevpOps = {
           * 
           */
          foreach((e0: E) => {
+
+            runCallbackTask(e0)
+
+         })
+         
+         def runCallbackTask(e0: E): Unit = {
 
             /**
              * 
@@ -147,7 +183,7 @@ val tsevp : TsevpOps = {
                mappedValuesInstance propagateItem e1
             }
 
-         })
+         }
          
          mappedValuesInstance
       }
@@ -195,7 +231,10 @@ val tsevp : TsevpOps = {
 
       def newEventEmitter[E]() : (E => Unit , EventIterator[E] ) = {
          val peer = {
-            new EventIteratorImpl[E]()
+            new EventIteratorImpl[E](
+               //
+               lastKnownValueOption = None ,
+            )
          }
          ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
       }
@@ -217,6 +256,18 @@ trait TsevpOps
 
    def newEventEmitter[E]() : (E => Unit , EventIterator[E] )
    
+}
+
+enum TsevpEventType {
+
+   case ofUpdate
+
+   case ofAction
+
+}
+
+object TsevpEventType {
+
 }
 
 
