@@ -279,6 +279,11 @@ trait TsevpOps
 
    ) : (E => Unit , EventIterator[E] )
    
+   opaque type NewvetImplSpecificToken <: Any
+      = Unit
+   protected
+   given NewvetImplSpecificToken = ()
+
 }
 
 enum TsevpEventType {
