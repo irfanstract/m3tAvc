@@ -280,6 +280,21 @@ trait TsevpOps
 
    ) : (E => Unit , EventIterator[E] & evtType.Inheritor )
    
+   extension [E](itr0: EventIterator[E] ) {
+
+      def asOfNewEventType(newEvtType : TsevpEventType) = {
+
+         val (p, itr1) = {
+            newEventEmitter[E](evtType = newEvtType )
+         }
+
+         itr0 foreach(p)
+
+         itr1
+      }
+      
+   }
+
    opaque type NewvetImplSpecificToken <: Any
       = Unit
    protected
