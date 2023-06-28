@@ -121,7 +121,7 @@ with java.io.Closeable
     * all listeners this constructor registered
     * 
     */
-   def retractAllListeners(): Unit = {
+   def retractAllPreDippedListeners(): Unit = {
 
       import language.unsafeNulls 
       
@@ -131,7 +131,7 @@ with java.io.Closeable
    override 
    def close(): Unit = {
 
-      retractAllListeners()
+      retractAllPreDippedListeners()
    }
    
 }
