@@ -292,6 +292,31 @@ enum TsevpEventType {
 
    case ofAction
 
+   /**
+    * 
+    * for listeners added later than events already fired,
+    * it'd be necessary to make the intended behv (eg shall fire immediately ?) clear enough AOT.
+    * hence this tagging.
+    * 
+    */
+   opaque type Inheritor
+      = Any
+
+   /**
+    * 
+    * for listeners added later than events already fired,
+    * it'd be necessary to make the intended behv (eg shall fire immediately ?) clear enough AOT.
+    * hence this tagging method.
+    * 
+    */
+   def pretendEvtItrAsBeingOfThisType[
+      A <: (
+         // TsevpOps#EventIterator[?] // resulted in type-mismatch for some reason
+         collection.WithFilter[?, ?]
+      ) ,
+      
+   ](c: A)(using TsevpOps#NewvetImplSpecificToken ) : c.type & Inheritor = c
+
 }
 
 object TsevpEventType {
