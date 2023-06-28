@@ -128,10 +128,19 @@ with java.io.Closeable
       nativeModel removeChangeListener lowerUpwardsListenerObj
    }
    
+   def closeAllClientSideIterators(): Unit = {
+
+      import language.unsafeNulls 
+      
+      clientSideEvtItr.close()
+   }
+   
    override 
    def close(): Unit = {
 
       retractAllPreDippedListeners()
+
+      closeAllClientSideIterators()
    }
    
 }
