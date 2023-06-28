@@ -94,7 +94,7 @@ with java.io.Closeable
                }
             }
             
-            fireValueChgEvent(e)
+            fireClientSideValueChgEvent(e)
 
             {}
             
@@ -102,7 +102,7 @@ with java.io.Closeable
    }
 
    // protected
-   export vceImpl._1.{apply => fireValueChgEvent }
+   export vceImpl._1.{apply => fireClientSideValueChgEvent }
 
    private[asAvslEventEmitterImpl] 
    final 
