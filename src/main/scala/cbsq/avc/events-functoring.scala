@@ -282,7 +282,7 @@ trait TsevpOps
    
    extension [E](itr0: EventIterator[E] ) {
 
-      def asOfNewEventType(newEvtType : TsevpEventType) = {
+      def asOfNewEventType(newEvtType : TsevpEventType): EventIterator[E] & newEvtType.Inheritor = {
 
          val (p, itr1) = {
             newEventEmitter[E](evtType = newEvtType )
