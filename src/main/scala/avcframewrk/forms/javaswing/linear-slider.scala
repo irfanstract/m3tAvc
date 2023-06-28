@@ -57,17 +57,29 @@ with java.io.Closeable
       & avcframewrk.util.TsevpEventType.ofUpdate.Inheritor
    ) = {
 
+      /**
+       * first
+       * init what's necessary to init
+       */
+      %::!
+
       vceImpl._2
    }
 
+   %::!
+
    /**
-    * registers it
+    * when first invoked,
+    * register this into `nativeModel`, and immediately fire it
     */
-   locally {
+   private
+   lazy val %::! = {
 
       import language.unsafeNulls 
       
       nativeModel addChangeListener lowerUpwardsListenerObj
+
+      lowerUpwardsListenerObj stateChanged { new javax.swing.event.ChangeEvent(this) }
    }
 
    /**
