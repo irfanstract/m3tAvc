@@ -11,15 +11,21 @@ package avcframewrk.forms.impl.javaswing
 
 
 
-protected 
+// protected 
 // abstract 
 open class ImplSpawnNewJFrame(
    //
 
-   title: String,
+   title: => String,
+
+   newJMenuBar   : () => (javax.swing.JMenuBar | Null) = () => { null } ,
+
    newContentPane: () => java.awt.Container ,
    
-   iconImage : java.awt.Image & java.awt.image.RenderedImage ,
+   iconImage : java.awt.Image & java.awt.image.RenderedImage = {
+
+      avcframewrk.forms.impl.javaswing.defaultAppIconImg
+   } ,
 
 )
 extends
@@ -69,6 +75,8 @@ with avcframewrk.util.AwaitableWithoutArg[Unit]
    f setTitle title
 
    f setContentPane { newContentPane() }
+
+   f setJMenuBar { newJMenuBar() }
 
    f setIconImage {
       iconImage
