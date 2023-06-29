@@ -445,6 +445,61 @@ AnyRef
 
       extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
 
+         /**
+          * 
+          * mimics `Iterator.instance.sliding(.....)`
+          * 
+          */
+         def sliding(size: Int, step: Int ) = {
+
+            originalIterator
+            .slidingImpl(expectedLength = size, step = step )
+         }
+
+         private[TsevpIterableOnceOpDefs]
+         def slidingImpl(expectedLength: Int, step: Int ) = {
+
+            originalIterator
+            .scanLeft[IndexedSeq[OriginalItrItem] ](Vector() )({
+
+               case (bufferedItems0, newItem) =>
+                  //
+                  
+                  bufferedItems0
+
+                  match { case bufferedItems => {
+
+                     /**
+                      * deduce, if reaching `expectedLength`,
+                      * by `step`
+                      */
+                     if bufferedItems.length <= expectedLength then 
+                        bufferedItems
+                     else bufferedItems.drop(step )
+                  } }
+                  
+                  match { case bufferedItems => {
+                     
+                     /**
+                      * append `newItem`, and then
+                      * truncate to the rightmost `expectedLength` items
+                      */
+                     bufferedItems
+                     .appended[OriginalItrItem ](newItem )
+                     .takeRight(expectedLength )
+                  } }
+
+            })
+            .filter((bufferedItems0: IndexedSeq[?]) => {
+
+               expectedLength <= bufferedItems0.length
+            } )
+         }
+
+      } /* `sliding` */
+
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
          def tapEach[U](f: OriginalItrItem => U ) = {
 
             originalIterator
@@ -485,6 +540,29 @@ AnyRef
                case item if { switch1.get() || switch1.compareAndSet(false, f(item) ) } =>
                   item
             })
+         }
+
+         def takeWhile(f: OriginalItrItem => Boolean ) = {
+
+            /**
+             * 
+             * the resulting iterator
+             * needs to bbe closed upon termination
+             * 
+             */
+            {
+               
+               lazy val newItr : EventIterator[OriginalItrItem] = {
+
+                  originalIterator
+                  .collect({
+                     ((item : OriginalItrItem ) => Some(item).filter(f) ).unlift
+                     .orElse({ case _ if { newItr.close() ; false } => throw new AssertionError() })
+                  }) 
+               }
+
+               newItr
+            }
          }
 
       }
