@@ -525,9 +525,84 @@ trait ReExportsDoRenderAbstractAction
 
       import avcframewrk.forms.impl.javaswing.abstractActionFactory.XLabel 
 
+      import avcframewrk.util.EventIterator
+      
+      import avcframewrk.util.forms.controls.KValueChangeEvent
+
       def apply(label: XLabel, callback: PartialFunction[Any, Unit] ) = {
          renderAbstractActionImpl(label = label, callback = callback )
       }
+
+      /**
+       * 
+       * an ever-updating
+       * 
+       *
+       * @param label
+       * @param callback
+       * @param stateChgEvtItr
+       * 
+       */
+      def apply[State](
+         //
+         renderLabel: State => XLabel,
+         callback: PartialFunction[AsceiInvocationEvtByExtractedState[State] , Unit] ,
+         stateChgEvtItr : EventIterator[KValueChangeEvent.ForValue[State] ] ,
+         
+      ) = {
+
+         type InvocEvent
+            >: AsceiInvocationEvtByExtractedState[State]
+            <: AsceiInvocationEvtByExtractedState[State]
+         
+         var implOption : Option[() => Unit] = {
+
+            None
+         }
+
+         val a = {
+            
+            renderAbstractActionImpl(label = "???", callback = { case _ => for (c <- implOption) do c() } )
+         }
+
+         stateChgEvtItr
+         .foreach((evt : KValueChangeEvent.ForValue[State] ) => {
+
+            import evt.{newValue => value }
+
+            val label = {
+               
+               renderLabel(value )
+            }
+
+            def newInvocEvent() : InvocEvent = {
+
+               AsceiInvocationEvtImpl(extractedState = value , actualLabel = label  )
+            }
+            
+            { 
+               val evt = newInvocEvent()
+               a setEnabled(callback isDefinedAt evt ) 
+            }
+
+            implOption = {
+               Some(() => { val evt = newInvocEvent() ; callback(evt ) } )
+            }
+         })
+
+         a
+      }
+
+      type AsceiInvocationEvtByExtractedState[+State] = (
+         AsceiInvocationEvtImpl[State]
+      )
+      
+      case class AsceiInvocationEvtImpl[+State](
+         //
+         extractedState: State ,
+         actualLabel: XLabel ,
+
+      ) extends AnyRef
 
    }
 

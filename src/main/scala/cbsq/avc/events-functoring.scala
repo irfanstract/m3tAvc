@@ -249,6 +249,26 @@ val tsevp : TsevpOps = {
       ]
    )
    
+   // type Eabyevt[
+   //    +AssignedEventType <: TsevpEventType ,
+   // ] = (
+   //    AnyRef
+   //    // & ForAet[AssignedEventType]
+   //    // & collection.WithFilter[Any, [_] =>> EventIteratorDesignativePart[AssignedEventType ] ]
+   //    & EvtIteratorImplByItemAndDesignationCovar[Any, AssignedEventType ]
+   // )
+   
+   // ([AssignedEventType] => () => {
+   //    summon[(
+   //       Eabyevt[AssignedEventType]
+   //       <:<
+   //       (
+   //          collection.WithFilter[Any, [_] =>> Eabyevt[AssignedEventType ] ] 
+   //          // Any
+   //       )
+   //    )]
+   // })
+
    object main extends AnyRef with TsevpOps
    {
 
@@ -277,6 +297,11 @@ val tsevp : TsevpOps = {
    main
 }
 
+// protected
+// type ForAet[
+//    +AssignedEventType <: TsevpEventType ,
+// ] = ({ val main0: AssignedEventType ; type Main = main0.Inheritor })#Main
+
 protected
 trait TsevpOps
 extends
@@ -291,6 +316,7 @@ with TsevpIterableOnceOpDefs
       <: (
          AnyRef
          & collection.WithFilter[E, [NewE] =>> EventIteratorByItemAndDesignation[NewE, AssignedEventType] ]
+         // & ForAet[AssignedEventType]
          & java.io.Closeable
       )
 
