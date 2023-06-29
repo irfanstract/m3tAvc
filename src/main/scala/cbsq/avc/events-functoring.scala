@@ -252,16 +252,16 @@ val tsevp : TsevpOps = {
    object main extends AnyRef with TsevpOps
    {
 
-      type EventIterator[+E]
-         >: EvtIteratorImplByItemAndDesignationCovar[E, TsevpEventType ]
-         <: EvtIteratorImplByItemAndDesignationCovar[E, TsevpEventType ]
+      type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
+         >: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
+         <: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
 
       def newEventEmitter[E](
          //
 
          evtType : TsevpEventType ,
 
-      ) : (E => Unit , EventIterator[E] & evtType.Inheritor ) = {
+      ) : (E => Unit , EventIteratorByItemAndDesignation[E, evtType.type] ) = {
          val peer = {
             new EventIteratorImpl[E, evtType.type](
                //
@@ -285,9 +285,12 @@ with TsevpIterableOnceOpDefs
 {
 
    type EventIterator[+E]
+      = EventIteratorByItemAndDesignation[E, TsevpEventType ]
+
+   type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
       <: (
          AnyRef
-         & collection.WithFilter[E, EventIterator ]
+         & collection.WithFilter[E, [NewE] =>> EventIteratorByItemAndDesignation[NewE, AssignedEventType] ]
          & java.io.Closeable
       )
 
@@ -298,11 +301,11 @@ with TsevpIterableOnceOpDefs
          TsevpEventType.ofAction
       } ,
 
-   ) : (E => Unit , EventIterator[E] & evtType.Inheritor )
+   ) : (E => Unit , EventIteratorByItemAndDesignation[E, evtType.type] )
    
    extension [E](itr0: EventIterator[E] ) {
 
-      def asOfNewEventType(newEvtType : TsevpEventType): EventIterator[E] & newEvtType.Inheritor = {
+      def asOfNewEventType(newEvtType : TsevpEventType): EventIteratorByItemAndDesignation[E, newEvtType.type] = {
 
          val (p, itr1) = {
             newEventEmitter[E](evtType = newEvtType )
@@ -383,7 +386,7 @@ AnyRef
 
    object tsevpIterableOps {
 
-      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+      extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
          def collect[Value](f: PartialFunction[OriginalItrItem, Value] ) = {
 
@@ -419,8 +422,9 @@ AnyRef
          // protected
          def scanLeft[State](seed: State )(digest: (State, OriginalItrItem) => State ) : (
             //
-            EventIterator[State]
-            & TsevpEventType.ofUpdate.Inheritor
+            // EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
+            // & TsevpEventType.ofUpdate.Inheritor
+            EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
 
          ) = {
 

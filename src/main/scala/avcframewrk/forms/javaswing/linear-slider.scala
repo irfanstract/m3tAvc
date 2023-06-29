@@ -54,7 +54,7 @@ with java.io.Closeable
    lazy
    val clientSideEvtItr : (
       avcframewrk.util.EventIterator[ValueChgEvent]
-      & avcframewrk.util.TsevpEventType.ofUpdate.Inheritor
+      // & avcframewrk.util.TsevpEventType.ofUpdate.Inheritor
    ) = {
 
       /**
