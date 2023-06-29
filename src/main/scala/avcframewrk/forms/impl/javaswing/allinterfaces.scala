@@ -516,7 +516,20 @@ AnyRef
 trait ReExportsDoRenderAbstractAction
 {
    
-   export abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
+   export raa.{apply as renderAbstractAction }
+
+   import abstractActionFactory.lcafP.{renderButton as renderAbstractActionImpl }
+
+   private[ReExportsDoRenderAbstractAction]
+   object raa {
+
+      import avcframewrk.forms.impl.javaswing.abstractActionFactory.XLabel 
+
+      def apply(label: XLabel, callback: PartialFunction[Any, Unit] ) = {
+         renderAbstractActionImpl(label = label, callback = callback )
+      }
+
+   }
 
 }
 
