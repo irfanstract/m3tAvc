@@ -41,7 +41,7 @@ val tsevp : TsevpOps = {
       //
 
       protected
-      var evtType : TsevpEventType ,
+      val evtType : TsevpEventType ,
 
       protected
       var lastKnownValueOption : Option[E] ,
