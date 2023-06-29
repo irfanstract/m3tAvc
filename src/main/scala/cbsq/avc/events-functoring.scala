@@ -262,6 +262,8 @@ val tsevp : TsevpOps = {
 
 protected
 trait TsevpOps
+extends
+AnyRef
 {
 
    type EventIterator[+E]
