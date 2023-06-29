@@ -264,6 +264,7 @@ protected
 trait TsevpOps
 extends
 AnyRef
+with TsevpIterableOnceOpDefs
 {
 
    type EventIterator[+E]
@@ -338,6 +339,267 @@ enum TsevpEventType {
 }
 
 object TsevpEventType {
+
+}
+
+protected
+trait TsevpIterableOnceOpDefs
+extends
+AnyRef
+{
+   this : (
+      AnyRef
+      & TsevpOps
+      //
+   ) =>
+
+   //
+   
+   /* 
+    * 
+    * can't directly `extends` `IterableOnceOps`, since
+    * `IterableOnceOps` defines synchronous peeking methods while `EventIterator` doesn't
+    * 
+    */
+   
+   export tsevpIterableOps.*
+
+   object tsevpIterableOps {
+
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
+         def collect[Value](f: PartialFunction[OriginalItrItem, Value] ) = {
+
+            originalIterator
+            .flatMap((f.lift).apply _ )
+         }
+
+      }
+
+      extension [E](itr0: EventIterator[E] ) {
+
+         def filter(f: E => Boolean ) = {
+
+            import f.{apply => test }
+
+            itr0
+            .collect({
+               case item if test(item) =>
+                  item
+            })
+         }
+
+      }
+
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
+         /**
+          * 
+          * mimics `IterableOnceOps.instance.scanLeft(...)(.....)` .
+          * turns it into `TsevpEventType.ofUpdate.Inheritor`
+          * 
+          */
+         // protected
+         def scanLeft[State](seed: State )(digest: (State, OriginalItrItem) => State ) : (
+            //
+            EventIterator[State]
+            & TsevpEventType.ofUpdate.Inheritor
+
+         ) = {
+
+            val stateVar = {
+               /**
+                * due to the flakiness of `-Yunsafe-nulls`,
+                * needs an extra `Some(...)` containment
+                */
+               new java.util.concurrent.atomic.AtomicReference[Some[State] ](Some(seed) )
+            }
+
+            originalIterator
+            .map[State]((originalItrNextItem: OriginalItrItem ) => {
+
+               import language.unsafeNulls
+
+               stateVar.updateAndGet({ case Some(state0) => {
+
+                  val state1 = {
+                     digest(state0, originalItrNextItem )
+                  }
+
+                  Some(state1)
+               } } )
+               match { case Some(state) => state }
+            } )
+            /**
+             * 
+             * by definition,
+             * it need it to be `ofUpdate`
+             * 
+             */
+            .asOfNewEventType(newEvtType = avcframewrk.util.TsevpEventType.ofUpdate )
+            
+            match { case itr => itr }
+         }
+
+      }
+
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
+         /**
+          * 
+          * mimics `Iterator.instance.sliding(.....)`
+          * 
+          */
+         def sliding(size: Int, step: Int ) = {
+
+            originalIterator
+            .slidingImpl(expectedLength = size, step = step )
+         }
+
+         private[TsevpIterableOnceOpDefs]
+         def slidingImpl(expectedLength: Int, step: Int ) = {
+
+            originalIterator
+            .scanLeft[IndexedSeq[OriginalItrItem] ](Vector() )({
+
+               case (bufferedItems0, newItem) =>
+                  //
+                  
+                  bufferedItems0
+
+                  match { case bufferedItems => {
+
+                     /**
+                      * deduce, if reaching `expectedLength`,
+                      * by `step`
+                      */
+                     if bufferedItems.length <= expectedLength then 
+                        bufferedItems
+                     else bufferedItems.drop(step )
+                  } }
+                  
+                  match { case bufferedItems => {
+                     
+                     /**
+                      * append `newItem`, and then
+                      * truncate to the rightmost `expectedLength` items
+                      */
+                     bufferedItems
+                     .appended[OriginalItrItem ](newItem )
+                     .takeRight(expectedLength )
+                  } }
+
+            })
+            .filter((bufferedItems0: IndexedSeq[?]) => {
+
+               expectedLength <= bufferedItems0.length
+            } )
+         }
+
+      }
+
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
+         def tapEach[U](f: OriginalItrItem => U ) = {
+
+            originalIterator
+            .map(item => { f(item) ; item })
+         }
+
+      }
+
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
+         /**
+          * 
+          * the number of fires.
+          * whose `eventType` will be `ofUpdate`
+          * 
+          * `Long` rather than `Int`,
+          * to minimise the potential issues like overflows
+          * 
+          */
+         def counting() = {
+
+            originalIterator
+            .scanLeft[Long](0 )((i0, _ ) => (i0 + 1 ) )
+         }
+
+      }
+
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
+         def dropWhile(f: OriginalItrItem => Boolean ) = {
+
+            val switch1 = {
+               new java.util.concurrent.atomic.AtomicBoolean(false)
+            }
+
+            originalIterator
+            .collect({
+               case item if { switch1.get() || switch1.compareAndSet(false, f(item) ) } =>
+                  item
+            })
+         }
+
+         def takeWhile(f: OriginalItrItem => Boolean ) = {
+
+            /**
+             * 
+             * the resulting iterator
+             * needs to bbe closed upon termination
+             * 
+             */
+            {
+               
+               lazy val newItr : EventIterator[OriginalItrItem] = {
+
+                  originalIterator
+                  .collect({
+                     ((item : OriginalItrItem ) => Some(item).filter(f) ).unlift
+                     .orElse({ case _ if { newItr.close() ; false } => throw new AssertionError() })
+                  }) 
+               }
+
+               newItr
+            }
+         }
+
+      }
+
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
+         def find(f: OriginalItrItem => Boolean ) : concurrent.Future[OriginalItrItem] = {
+
+            val p = {
+               avcframewrk.util.LateBoundValue.newInstance[OriginalItrItem]
+            }
+
+            lazy val newItr : EventIterator[OriginalItrItem] = {
+
+               originalIterator
+               .tapEach(item => {
+
+                  if f(item) then {
+
+                     if { p tryComplete(util.Success(item) ) } != true then {
+                        
+                        throw new java.util.ConcurrentModificationException
+                     }
+
+                     newItr.close() 
+                     
+                  }
+
+               })
+            }
+
+            p.asFuture
+         }
+
+      }
+
+   }
 
 }
 
