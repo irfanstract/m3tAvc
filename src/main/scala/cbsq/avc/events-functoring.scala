@@ -37,18 +37,26 @@ val tsevp : TsevpOps = {
    collection.WithFilter[E1, C ]
    with java.io.Closeable
    
-   class EventIteratorImpl[E](
+   class EventIteratorImpl[E, +AssignedEvtType <: TsevpEventType ](
       //
 
       protected
-      val evtType : TsevpEventType ,
+      val evtType : AssignedEvtType ,
 
       protected
       var lastKnownValueOption : Option[E] ,
 
    )
    extends
-   EventIteratorImplPre[E, EventIteratorImpl]
+   EventIteratorImplPre[E, [E1] =>> (
+      EventIteratorImpl[E1, (
+         /**
+          * by definition of those four methods,
+          * the resulting views can confidently inherit the src's `evtType`, too 
+          */
+         (evtType.type & AssignedEvtType)
+      )]
+   ) ]
    {
 
       type XStorableListener
@@ -123,7 +131,7 @@ val tsevp : TsevpOps = {
        */
       // inline
       final 
-      def flatMap[U](processEvt: E => IterableOnce[U]): EventIteratorImpl[U] = {
+      def flatMap[U](processEvt: E => IterableOnce[U]) = {
          
          /**
           * 
@@ -133,7 +141,7 @@ val tsevp : TsevpOps = {
           */
          val mappedValuesInstance = ({
 
-            new EventIteratorImpl[U](
+            new EventIteratorImpl[U, evtType.type](
                //
 
                evtType = evtType ,
@@ -211,7 +219,7 @@ val tsevp : TsevpOps = {
          }) )
       }
       
-      def withFilter(q: E => Boolean): scala.collection.WithFilter[E, EventIteratorImpl] = {
+      def withFilter(q: E => Boolean) = {
          flatMap(evt => {
             
             (Seq() :+ evt )
@@ -228,16 +236,25 @@ val tsevp : TsevpOps = {
       }
 
    }
-   type EventIteratorImplCovar[+E] = (
-      EventIteratorImpl[? <: E]
+   type EvtIteratorImplByItemAndDesignation[E, +AssignedEvtType <: TsevpEventType ] = (
+      EventIteratorImpl[
+         E,
+         AssignedEvtType,
+      ]
+   )
+   type EvtIteratorImplByItemAndDesignationCovar[+E, +AssignedEvtType <: TsevpEventType ] = (
+      EvtIteratorImplByItemAndDesignation[
+         ? <: E,
+         AssignedEvtType ,
+      ]
    )
    
    object main extends AnyRef with TsevpOps
    {
 
       type EventIterator[+E]
-         >: EventIteratorImplCovar[E]
-         <: EventIteratorImplCovar[E]
+         >: EvtIteratorImplByItemAndDesignationCovar[E, TsevpEventType ]
+         <: EvtIteratorImplByItemAndDesignationCovar[E, TsevpEventType ]
 
       def newEventEmitter[E](
          //
@@ -246,7 +263,7 @@ val tsevp : TsevpOps = {
 
       ) : (E => Unit , EventIterator[E] & evtType.Inheritor ) = {
          val peer = {
-            new EventIteratorImpl[E](
+            new EventIteratorImpl[E, evtType.type](
                //
                evtType = evtType ,
                lastKnownValueOption = None ,
