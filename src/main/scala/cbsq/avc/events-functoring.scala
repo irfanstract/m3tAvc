@@ -197,13 +197,39 @@ val tsevp : TsevpOps = {
              * further pass (in)to `mappedValuesInstance`
              * 
              */
-            for (e1 <- e1s) {
+            for (e1 <- {
+               Vector.from(e1s)
+               match {
+                  case s @ (_ :+ lastItem) if (mayFlatMappingInstanceImposeIdempotenceByOmissiveBehv && evtType == TsevpEventType.ofUpdate ) =>
+                     Vector(lastItem)
+                  case s =>
+                     s 
+               }
+               match { case s => s : Seq[U] }
+            }) {
                mappedValuesInstance propagateItem e1
             }
 
          }
 
          mappedValuesInstance
+      }
+
+      /**
+       * 
+       * in theory,
+       * when `evtType == EventType.ofUpdate`,
+       * we
+       * had choice to make `flatMap` to restrict to, from the returned `ItrOnce`, the last item,
+       * but
+       * this
+       * can result in
+       * the undesirable *over-omission* in combination with later-applied `collect`, `filter`, any other methods which omits items
+       * 
+       */
+      val mayFlatMappingInstanceImposeIdempotenceByOmissiveBehv : Boolean = {
+
+         false
       }
       
       override
@@ -287,6 +313,20 @@ with TsevpIterableOnceOpDefs
    type EventIterator[+E]
       = EventIteratorByItemAndDesignation[E, TsevpEventType ]
 
+   /**
+    * 
+    * the base-type for *event iterator*s.
+    * must maintain `the item-type`.
+    * 
+    * in addition,
+    * for purpose of defining additional/extra ops, often restricted to instances of certain specialisations,
+    * needs to maintain additional tagging(s), like `AssignedEventType`
+    * 
+    * when `the evt-type` is `ofUpdate`, to establish *idempotence*,
+    * `flatMap`
+    * may drop, from the callback-returned `IterableOnce`, all-but-the-last *item*s
+    * 
+    */
    type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
       <: (
          AnyRef
@@ -386,8 +426,32 @@ AnyRef
 
    object tsevpIterableOps {
 
+      /* flatten */ extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
+
+         /**
+          * 
+          * mimics the same-named method in `IterableOnceOps` .
+          * mainly for filtering-or-mapping the items (*event*s) ;
+          * does not switch `designation` at all .
+          * 
+          */
+         def flatten[NewItrValue](using OriginalItrItem <:< IterableOnce[NewItrValue] ) = {
+
+            originalIterator
+            .flatMap(summon[OriginalItrItem <:< IterableOnce[NewItrValue] ] )
+         }
+
+      } /* flatten */
+
       extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
+         /**
+          * 
+          * mimics the same-named method in `IterableOnceOps` .
+          * mainly for filtering-or-mapping the items (*event*s) ;
+          * does not switch `designation` at all .
+          * 
+          */
          def collect[Value](f: PartialFunction[OriginalItrItem, Value] ) = {
 
             originalIterator
@@ -398,6 +462,13 @@ AnyRef
 
       extension [E, AssignedEventType <: TsevpEventType ](itr0: EventIteratorByItemAndDesignation[E , AssignedEventType ] ) {
 
+         /**
+          * 
+          * mimics the same-named method in `IterableOnceOps` .
+          * mainly for filtering-or-mapping the items (*event*s) ;
+          * does not switch `designation` at all .
+          * 
+          */
          def filter(f: E => Boolean ) = {
 
             import f.{apply => test }
@@ -416,14 +487,11 @@ AnyRef
          /**
           * 
           * mimics `IterableOnceOps.instance.scanLeft(...)(.....)` .
-          * turns it into `TsevpEventType.ofUpdate.Inheritor`
+          * turns into `TsevpEventType.ofUpdate.Inheritor`; this is all about *state*
           * 
           */
-         // protected
          def scanLeft[State](seed: State )(digest: (State, OriginalItrItem) => State ) : (
             //
-            // EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
-            // & TsevpEventType.ofUpdate.Inheritor
             EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
 
          ) = {
@@ -460,6 +528,25 @@ AnyRef
             .asOfNewEventType(newEvtType = avcframewrk.util.TsevpEventType.ofUpdate )
             
             match { case itr => itr }
+         }
+
+      }
+
+      extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
+
+         def deduplicate()(using itsIdempotentality: AssignedEventType <:< TsevpEventType.ofUpdate.type ) = {
+
+            originalIterator
+            .scanLeft[Option[OriginalItrItem] ](None )({
+
+               case (state0 : Option[s], newItem ) =>
+                  if state0 == Some(newItem) then
+                     None
+                  else Some(newItem)
+
+            })
+            .flatten
+            // match { case itr => val itrFltCode = ((e => Some(e) ) : ((e: String ) => Some[e.type] ) )(compiletime.codeOf({ val itr1 = itr ; itr1.flatten }) ) ; itr.flatten }
          }
 
       }
