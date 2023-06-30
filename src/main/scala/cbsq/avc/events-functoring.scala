@@ -396,7 +396,7 @@ AnyRef
 
       }
 
-      extension [E](itr0: EventIterator[E] ) {
+      extension [E, AssignedEventType <: TsevpEventType ](itr0: EventIteratorByItemAndDesignation[E , AssignedEventType ] ) {
 
          def filter(f: E => Boolean ) = {
 
@@ -519,7 +519,7 @@ AnyRef
 
       } /* `sliding` */
 
-      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+      extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
          def tapEach[U](f: OriginalItrItem => U ) = {
 
