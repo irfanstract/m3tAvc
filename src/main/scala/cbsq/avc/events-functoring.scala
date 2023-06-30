@@ -464,7 +464,7 @@ AnyRef
 
       }
 
-      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+      extension [OriginalItrItem ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem, TsevpEventType.ofUpdate.type ] ) {
 
          /**
           * 
