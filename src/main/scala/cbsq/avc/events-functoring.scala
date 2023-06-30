@@ -548,7 +548,7 @@ AnyRef
 
       }
 
-      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+      extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
          def dropWhile(f: OriginalItrItem => Boolean ) = {
 
@@ -573,7 +573,7 @@ AnyRef
              */
             {
                
-               lazy val newItr : EventIterator[OriginalItrItem] = {
+               lazy val newItr : EventIteratorByItemAndDesignation[OriginalItrItem, AssignedEventType] = {
 
                   originalIterator
                   .collect({
