@@ -386,6 +386,23 @@ AnyRef
 
    object tsevpIterableOps {
 
+      /* flatten */ extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
+
+         /**
+          * 
+          * mimics the same-named method in `IterableOnceOps` .
+          * mainly for filtering-or-mapping the items (*event*s) ;
+          * does not switch `designation` at all .
+          * 
+          */
+         def flatten[NewItrValue](using OriginalItrItem <:< IterableOnce[NewItrValue] ) = {
+
+            originalIterator
+            .flatMap(summon[OriginalItrItem <:< IterableOnce[NewItrValue] ] )
+         }
+
+      } /* flatten */
+
       extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
          def collect[Value](f: PartialFunction[OriginalItrItem, Value] ) = {
