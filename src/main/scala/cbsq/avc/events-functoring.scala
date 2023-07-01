@@ -197,13 +197,39 @@ val tsevp : TsevpOps = {
              * further pass (in)to `mappedValuesInstance`
              * 
              */
-            for (e1 <- e1s) {
+            for (e1 <- {
+               Vector.from(e1s)
+               match {
+                  case s @ (_ :+ lastItem) if (mayFlatMappingInstanceImposeIdempotenceByOmissiveBehv && evtType == TsevpEventType.ofUpdate ) =>
+                     Vector(lastItem)
+                  case s =>
+                     s 
+               }
+               match { case s => s : Seq[U] }
+            }) {
                mappedValuesInstance propagateItem e1
             }
 
          }
 
          mappedValuesInstance
+      }
+
+      /**
+       * 
+       * in theory,
+       * when `evtType == EventType.ofUpdate`,
+       * we
+       * had choice to make `flatMap` to restrict to, from the returned `ItrOnce`, the last item,
+       * but
+       * this
+       * can result in
+       * the undesirable *over-omission* in combination with later-applied `collect`, `filter`, any other methods which omits items
+       * 
+       */
+      val mayFlatMappingInstanceImposeIdempotenceByOmissiveBehv : Boolean = {
+
+         false
       }
       
       override
