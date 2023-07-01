@@ -287,6 +287,20 @@ with TsevpIterableOnceOpDefs
    type EventIterator[+E]
       = EventIteratorByItemAndDesignation[E, TsevpEventType ]
 
+   /**
+    * 
+    * the base-type for *event iterator*s.
+    * must maintain `the item-type`.
+    * 
+    * in addition,
+    * for purpose of defining additional/extra ops, often restricted to instances of certain specialisations,
+    * needs to maintain additional tagging(s), like `AssignedEventType`
+    * 
+    * when `the evt-type` is `ofUpdate`, to establish *idempotence*,
+    * `flatMap`
+    * may drop, from the callback-returned `IterableOnce`, all-but-the-last *item*s
+    * 
+    */
    type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
       <: (
          AnyRef
