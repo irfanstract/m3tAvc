@@ -476,11 +476,8 @@ AnyRef
           * turns into `TsevpEventType.ofUpdate.Inheritor`; this is all about *state*
           * 
           */
-         // protected
          def scanLeft[State](seed: State )(digest: (State, OriginalItrItem) => State ) : (
             //
-            // EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
-            // & TsevpEventType.ofUpdate.Inheritor
             EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
 
          ) = {
