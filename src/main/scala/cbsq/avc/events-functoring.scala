@@ -445,6 +445,13 @@ AnyRef
 
       extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
+         /**
+          * 
+          * mimics the same-named method in `IterableOnceOps` .
+          * mainly for filtering-or-mapping the items (*event*s) ;
+          * does not switch `designation` at all .
+          * 
+          */
          def collect[Value](f: PartialFunction[OriginalItrItem, Value] ) = {
 
             originalIterator
@@ -455,6 +462,13 @@ AnyRef
 
       extension [E, AssignedEventType <: TsevpEventType ](itr0: EventIteratorByItemAndDesignation[E , AssignedEventType ] ) {
 
+         /**
+          * 
+          * mimics the same-named method in `IterableOnceOps` .
+          * mainly for filtering-or-mapping the items (*event*s) ;
+          * does not switch `designation` at all .
+          * 
+          */
          def filter(f: E => Boolean ) = {
 
             import f.{apply => test }
@@ -473,14 +487,11 @@ AnyRef
          /**
           * 
           * mimics `IterableOnceOps.instance.scanLeft(...)(.....)` .
-          * turns it into `TsevpEventType.ofUpdate.Inheritor`
+          * turns into `TsevpEventType.ofUpdate.Inheritor`; this is all about *state*
           * 
           */
-         // protected
          def scanLeft[State](seed: State )(digest: (State, OriginalItrItem) => State ) : (
             //
-            // EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
-            // & TsevpEventType.ofUpdate.Inheritor
             EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
 
          ) = {
