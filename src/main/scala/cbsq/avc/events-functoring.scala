@@ -473,7 +473,7 @@ AnyRef
          /**
           * 
           * mimics `IterableOnceOps.instance.scanLeft(...)(.....)` .
-          * turns it into `TsevpEventType.ofUpdate.Inheritor`
+          * turns into `TsevpEventType.ofUpdate.Inheritor`; this is all about *state*
           * 
           */
          // protected
