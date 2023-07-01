@@ -27,7 +27,7 @@ object KValueChangeEvent {
    trait ImplOps[+Value]
       extends 
          AnyRef
-         with Cvo[Value]
+         with DefinesPriorValueAndNewValue[Value]
    {
 
       val isByUndo : Boolean
@@ -70,6 +70,109 @@ object KValueChangeEvent {
 
 } /* `KValueChangeEvent` */
 
+trait KFiniteStateTwoWayFlowOpsGivens1[-This0[Value <: Value0], -Value0]
+{
+
+   extension [Value <: Value0](c : This0[Value] ) {
+
+      /**
+       * 
+       * conversion to `avcframewrk.util.EventIterator[Value]`
+       * 
+       * `EventIterator` is co-variant
+       * 
+       */
+      def valueChangeEvents: (
+         
+         avcframewrk.util.EventIterator[(
+            //
+            KValueChangeEvent.ForValue[Value]
+         )]
+      )
+      
+   }
+
+   extension [Value <: Value0](c : This0[Value] ) {
+
+      /**
+       * 
+       * acknowledging that
+       * the underlying implementation might support undo/redo stack,
+       * commit an edit, but neither undo nor redo,
+       * updating the value
+       * 
+       */
+      def commitValueShift(
+         //
+
+         computeNewValue: Value => Value ,
+
+      ): CvsOutcome[Value]
+
+      /**
+       * 
+       * acknowledging that
+       * the underlying implementation might support undo/redo stack,
+       * commit an edit, but neither undo nor redo,
+       * updating the value
+       * 
+       * to avoid the negative impacts of race-condition(s),
+       * evaluation of `newValue`
+       * might need to be delayed
+       * 
+       */
+      // transparent inline
+      def value_=(newValue: => Value ) = {
+
+         c commitValueShift(_ => newValue )
+      }
+
+      private
+      def compilerTestAssignedValue_=(newValue: Value ) = {
+
+         c value_=(newValue )
+      }
+
+   }
+
+}
+
+object KFiniteStateTwoWayFlowOpsGivens1 {
+
+   /**
+    * 
+    * the base type
+    * which the return-value of `commitValueShift` shall `extends`
+    * 
+    */
+   type CvsOutcome[+Value]
+      >: Either[Unit | Throwable, Cvo[Value] ]
+      <: Either[Unit | Throwable, Cvo[Value] ]
+
+   //
+   
+   /**
+    * 
+    * defines a minimum set of info relevant to a successful `value_=` op
+    * 
+    * `priorValue`, `newValue`
+    * 
+    */
+   private[avcframewrk]
+   type Cvo[+Value]
+      >: AnyRef & DefinesPriorValueAndNewValue[Value]
+      <: AnyRef & DefinesPriorValueAndNewValue[Value]
+
+}
+
+/**
+ * 
+ * the base type
+ * which the return-value of `commitValueShift` shall `extends`
+ * 
+ */
+export KFiniteStateTwoWayFlowOpsGivens1.{CvsOutcome as CvsOutcome }
+
 /**
  * 
  * defines a minimum set of info relevant to a successful `value_=` op
@@ -77,14 +180,38 @@ object KValueChangeEvent {
  * `priorValue`, `newValue`
  * 
  */
+@deprecated("this was named after 'CvsOutcome', but I'm unhappy with the naming.")
 protected
-trait Cvo[+Value] {
+type Cvo[+Value] = KFiniteStateTwoWayFlowOpsGivens1.Cvo[Value]
+
+trait DefinesPriorValueAndNewValue[+Value] {
 
    val priorValue : Value
 
    val newValue : Value
 
 } /* `Cvo` */
+
+/* test */
+
+val _ = {
+
+   trait XWithImpl {
+
+      type Impl[_]
+      val Impl : KFiniteStateTwoWayFlowOpsGivens1[Impl, Any ]
+      export Impl.*
+
+      ([Value] => (e : Impl[Value] ) => {
+         e.value_=(??? )
+         e.commitValueShift(v => v )
+         e.valueChangeEvents
+         .foreach(v => println(v) )
+      } )
+
+   }
+
+}
 
 ;
 
