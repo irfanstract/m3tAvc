@@ -495,6 +495,37 @@ AnyRef
 
       }
 
+      extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
+
+         /**
+          * 
+          * given this *state-update iterator*,
+          * return
+          * one which reduces consecutive duplicates into one
+          * 
+          */
+         def deduplicate()(using itsIdempotentality: AssignedEventType <:< TsevpEventType.ofUpdate.type ) = {
+
+            originalIterator
+            .scanLeft[Option[OriginalItrItem] ](None )({
+
+               case (state0 : Option[s], newItem ) =>
+                  //
+
+                  locally[Option[newItem.type] ] {
+                     
+                     if state0 == Some(newItem) then
+                        None
+                     else Some(newItem)
+                  }
+
+            })
+            .flatten
+            // match { case itr => val itrFltCode = ((e => Some(e) ) : ((e: String ) => Some[e.type] ) )(compiletime.codeOf({ val itr1 = itr ; itr1.flatten }) ) ; itr.flatten }
+         }
+
+      } /* deduplicate */
+
       extension [OriginalItrItem ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem, TsevpEventType.ofUpdate.type ] ) {
 
          /**
