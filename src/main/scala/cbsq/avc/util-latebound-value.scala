@@ -66,8 +66,13 @@ object LateBoundValue
       
    }
 
+   lazy val ofAlreadyResolvedWithUnit = {
+      ofAlreadyResolvedWithValue[Unit](() )
+   }
+
+   @deprecated("i meant 'ofAlreadyResolvedWithUnit'.")
    lazy val ofUnit = {
-      forValue[Unit](() )
+      ofAlreadyResolvedWithUnit
    }
 
    if false then {
