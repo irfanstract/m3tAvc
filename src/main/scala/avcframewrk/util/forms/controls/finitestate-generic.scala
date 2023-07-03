@@ -199,6 +199,27 @@ trait DefinesPriorValueAndNewValue[+Value] {
 
 } /* `Cvo` */
 
+/* test */
+
+val _ = {
+
+   trait XWithImpl {
+
+      type Impl[_]
+      val Impl : KFiniteStateTwoWayFlowOpsGivens1[Impl, Any ]
+      export Impl.*
+
+      ([Value] => (e : Impl[Value] ) => {
+         e.value_=(??? )
+         e.commitValueShift(v => v )
+         e.valueChangeEvents
+         .foreach(v => println(v) )
+      } )
+
+   }
+
+}
+
 ;
 
 ;
