@@ -445,6 +445,13 @@ AnyRef
 
       extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
+         /**
+          * 
+          * mimics the same-named method in `IterableOnceOps` .
+          * mainly for filtering-or-mapping the items (*event*s) ;
+          * does not switch `designation` at all .
+          * 
+          */
          def collect[Value](f: PartialFunction[OriginalItrItem, Value] ) = {
 
             originalIterator
