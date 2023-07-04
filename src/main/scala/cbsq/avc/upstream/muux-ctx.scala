@@ -115,7 +115,7 @@ extends
       = Unit
 
    def newAvClassQuestion() = {
-      LateBoundValue.forValue(() )
+      LateBoundValue.ofAlreadyResolvedWithValue(() )
    }
 
    trait OfCoreQuestions 
