@@ -66,15 +66,15 @@ object LateBoundValue
       
    }
 
-   lazy val ofUnit = {
+   lazy val ofAlreadyResolvedWithUnit = {
       forValue[Unit](() )
    }
 
    if false then {
 
-      summon[util.NotGiven[ofUnit.type <:< NhwCompleteWith[?] ] ]
+      summon[util.NotGiven[ofAlreadyResolvedWithUnit.type <:< NhwCompleteWith[?] ] ]
 
-      summon[ofUnit.value.type <:< Unit ]
+      summon[ofAlreadyResolvedWithUnit.value.type <:< Unit ]
 
    }
 
