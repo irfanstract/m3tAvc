@@ -39,26 +39,11 @@ object LateBoundValue
       p
    }
 
-   /**
-    * 
-    * `ofAlreadyResolvedWithValue(value )`
-    * 
-    */
-   @deprecated("this name made confusion.")
-   def forValue[V](value: V) : (
-      AnyRef
-      with NhwGetValue[value.type ]
-   
-   ) = {
-      
-      ofAlreadyResolvedWithValue[value.type ](value = value )
-   }
-
    if false then {
 
       val randomFloat = math.random()
 
-      val prm = LateBoundValue.forValue(randomFloat)
+      val prm = LateBoundValue.ofAlreadyResolvedWithValue(randomFloat)
       
       summon[util.NotGiven[prm.type <:< NhwCompleteWith[?] ] ]
 
@@ -67,7 +52,7 @@ object LateBoundValue
    }
 
    lazy val ofAlreadyResolvedWithUnit = {
-      forValue[Unit](() )
+      ofAlreadyResolvedWithValue[Unit](() )
    }
 
    if false then {
@@ -79,10 +64,10 @@ object LateBoundValue
    }
 
    if false then {
-      forValue(() )
-      forValue(5 )
-      forValue("true" )
-      forValue(true )
+      ofAlreadyResolvedWithValue(() )
+      ofAlreadyResolvedWithValue(5 )
+      ofAlreadyResolvedWithValue("true" )
+      ofAlreadyResolvedWithValue(true )
    }
 
    /**
