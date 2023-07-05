@@ -261,6 +261,10 @@ object LateBoundValue
 
    }
 
+   object NhwGetValue {
+
+   } /* `NhwGetValue` */
+
    protected 
    class newHolderWithConstraints1[V](
 
