@@ -44,6 +44,23 @@ with avcframewrk.util.AwaitableWithoutArg[Unit]
 
    import language.unsafeNulls
 
+   /**
+    * 
+    * nothing in the AWT/Swing spec
+    * strongly specify the handing of `throw`n exceptions ;
+    * to avoid unexpected effects on Swing,
+    * it's worth slapping-in a step of asynchronicity ;
+    * 
+    * BTW above has `given` `concurrent.ExecutionContext`
+    * 
+    */
+   protected 
+   def asAsyncClientSideUnitBlock[U](r: => U ): Unit = {
+
+      concurrent.Future.unit
+      .foreach(_ => r )
+   }
+
    final
    val f = new swing.JFrame
    
@@ -52,7 +69,10 @@ with avcframewrk.util.AwaitableWithoutArg[Unit]
       new awt.event.WindowAdapter {
          import awt.event.WindowEvent
          override def windowClosing(e: WindowEvent | Null): Unit = {
+            asAsyncClientSideUnitBlock {
+            ;
             runCloseButtonAction()
+            }
          }
       }
    }
@@ -67,7 +87,10 @@ with avcframewrk.util.AwaitableWithoutArg[Unit]
       new awt.event.WindowAdapter {
          import awt.event.WindowEvent
          override def windowClosed(e: WindowEvent | Null): Unit = {
+            asAsyncClientSideUnitBlock {
+            ;
             windowClosedownReturnQuestion.tryComplete(util.Success {} )
+            }
          }
       }
    }
