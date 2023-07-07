@@ -81,6 +81,39 @@ object LateBoundValue
 
    /**
     * 
+    * the argument to the callback
+    * will be `util.Try` instance
+    * 
+    */
+   def forTrialCallback[E](
+      callback: PartialFunction[util.Try[E],  Unit ] ,
+
+   ): NhwCompleteWith[E]
+   = {
+      
+      val derived = LateBoundValue.newInstance[E] 
+
+      /**
+       * schedule the callback
+       */
+      locally {
+         ;
+
+         given concurrent.ExecutionContext = {
+            concurrent.ExecutionContext.parasitic
+         }
+         
+         derived.asFuture
+         .transform(tr => util.Success(tr) )
+         .foreach(tr => { callback.applyOrElse(tr, _ => {} ) } )
+         
+      }
+
+      derived 
+   }
+
+   /**
+    * 
     * defines a single `val` in-turn referencing some `Promise[Future[V ] ]`.
     * 
     */
