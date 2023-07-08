@@ -39,26 +39,11 @@ object LateBoundValue
       p
    }
 
-   /**
-    * 
-    * `ofAlreadyResolvedWithValue(value )`
-    * 
-    */
-   @deprecated("this name made confusion.")
-   def forValue[V](value: V) : (
-      AnyRef
-      with NhwGetValue[value.type ]
-   
-   ) = {
-      
-      ofAlreadyResolvedWithValue[value.type ](value = value )
-   }
-
    if false then {
 
       val randomFloat = math.random()
 
-      val prm = LateBoundValue.forValue(randomFloat)
+      val prm = LateBoundValue.ofAlreadyResolvedWithValue(randomFloat)
       
       summon[util.NotGiven[prm.type <:< NhwCompleteWith[?] ] ]
 
@@ -70,24 +55,61 @@ object LateBoundValue
       ofAlreadyResolvedWithValue[Unit](() )
    }
 
-   @deprecated("i meant 'ofAlreadyResolvedWithUnit'.")
-   lazy val ofUnit = {
-      ofAlreadyResolvedWithUnit
-   }
-
    if false then {
 
-      summon[util.NotGiven[ofUnit.type <:< NhwCompleteWith[?] ] ]
+      summon[util.NotGiven[ofAlreadyResolvedWithUnit.type <:< NhwCompleteWith[?] ] ]
 
-      summon[ofUnit.value.type <:< Unit ]
+      summon[ofAlreadyResolvedWithUnit.value.type <:< Unit ]
 
    }
 
    if false then {
-      forValue(() )
-      forValue(5 )
-      forValue("true" )
-      forValue(true )
+      ofAlreadyResolvedWithValue(() )
+      ofAlreadyResolvedWithValue(5 )
+      ofAlreadyResolvedWithValue("true" )
+      ofAlreadyResolvedWithValue(true )
+   }
+
+   def byFuture[E](f: concurrent.Future[E] ): NhwGetValue[E] = {
+      
+      val derived = LateBoundValue.newInstance[E] 
+
+      (derived match { case e : NhwPrm[E] => e }) completeWith(f)
+
+      derived 
+   }
+
+   /**
+    * 
+    * the argument to the callback
+    * will be `util.Try` instance
+    * 
+    */
+   def forTrialCallback[E](
+      callback: PartialFunction[util.Try[E],  Unit ] ,
+
+   ): NhwCompleteWith[E]
+   = {
+      
+      val derived = LateBoundValue.newInstance[E] 
+
+      /**
+       * schedule the callback
+       */
+      locally {
+         ;
+
+         given concurrent.ExecutionContext = {
+            concurrent.ExecutionContext.parasitic
+         }
+         
+         derived.asFuture
+         .transform(tr => util.Success(tr) )
+         .foreach(tr => { callback.applyOrElse(tr, _ => {} ) } )
+         
+      }
+
+      derived 
    }
 
    /**
@@ -281,6 +303,20 @@ object LateBoundValue
 
    }
 
+   object NhwGetValue {
+      implicit
+      def asIterableOps[V](src : NhwGetValue[V] ): NhwIterableOpsImpl[V, NhwGetValue] = {
+
+         new NhwIterableOpsImpl(
+            //
+            src = src,
+            wrp = [E] => (f: concurrent.Future[E]) => byFuture(f) ,
+            
+         )
+      }
+      
+   } /* `NhwGetValue` */
+
    protected 
    class newHolderWithConstraints1[V](
 
@@ -302,7 +338,68 @@ object LateBoundValue
       }
       
    }
+   protected[LateBoundValue] 
+   case
+   class NhwIterableOpsImpl[V, +CC[V1] <: NhwAsFuture[V1] ](
+      //
+      val src : NhwAsFuture[V],
+      wrp : [V1] => concurrent.Future[V1] => CC[V1]
+         
+   ) extends 
+   collection.WithFilter[V, CC ]
+   {
 
+      def foreach[U](f: V => U) = {
+
+         map(f)
+      }
+
+      def map[B](f: V => B) = {
+
+         src.asFuture
+         match { case c => c.map(f)(using concurrent.ExecutionContext.parasitic ) }
+         match { case c => wrp(c) }
+      }
+
+      @deprecated("'flatMap' signature-wise does not prevent violating the invariant \"only one value\" (eg by expanding to more-than-one values). ")
+      def flatMap[B](f: V => scala.collection.IterableOnce[B]) = {
+
+         map((val0: V ) => {
+
+            val val1 +: remainingVal1 = {
+
+               f(val0)
+               .iterator
+               .toIndexedSeq
+            }
+
+            for (_ <- remainingVal1 ) {
+               throw new IllegalArgumentException(s"got more than one values. ($val1 +: $remainingVal1 ) ")
+            }
+
+            val1
+            
+         })
+      }
+
+      def collect[B](q: PartialFunction[V, B]) = {
+
+         flatMap((q.lift).apply _ )
+      }
+
+      def filter(q: V => Boolean) = {
+
+         flatMap(v => Some(v).filter(q) )
+      }
+
+      def withFilter(q: V => Boolean) = {
+
+         filter(q )
+         match { case c => copy[V, CC ](src = c ) }
+      }
+      
+   }
+   
    private[LateBoundValue]
    def startTimingOutIterator(
       timeout : concurrent.duration.Duration ,

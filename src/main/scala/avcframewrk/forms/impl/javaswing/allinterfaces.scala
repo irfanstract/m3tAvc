@@ -358,6 +358,16 @@ AnyRef
 
          newJPanel({
 
+            /**
+             * 
+             * a subclass of `FlowLayout`
+             * with
+             * interception in these methods
+             * to additionally invoke `reAdjustChildComponentsPreferredSizes` (which reassigns the Component's one-or-more non-`size` properties, normally a wrong thing to do for `LayoutManager`s)
+             * .
+             * AVOID EXTRACTING THIS OUT
+             * 
+             */
             new awt.FlowLayout()
             {
 

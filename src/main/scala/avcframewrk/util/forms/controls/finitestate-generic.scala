@@ -207,14 +207,17 @@ val _ = {
 
       type Impl[_]
       val Impl : KFiniteStateTwoWayFlowOpsGivens1[Impl, Any ]
-      export Impl.*
+      given KFiniteStateTwoWayFlowOpsGivens1[Impl, Any ] = Impl
 
-      ([Value] => (e : Impl[Value] ) => {
-         e.value_=(??? )
-         e.commitValueShift(v => v )
-         e.valueChangeEvents
-         .foreach(v => println(v) )
-      } )
+      lazy val _ = (
+         
+         [Value] => (e : Impl[Value] ) => {
+            e.value_=(??? )
+            e.commitValueShift(v => v )
+            e.valueChangeEvents
+            .foreach(v => println(v) )
+         } 
+      )
 
    }
 

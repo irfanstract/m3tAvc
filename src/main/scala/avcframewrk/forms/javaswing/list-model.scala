@@ -18,7 +18,7 @@ package avcframewrk.forms.javaswing
 
 ;
 
-def getStaticListModel[E](src : Seq[E] ): javax.swing.ListModel[E] = {
+def getImmutableListModel[E](src : Seq[E] ): javax.swing.ListModel[E] = {
 
    import language.unsafeNulls
 
@@ -35,6 +35,11 @@ def getStaticListModel[E](src : Seq[E] ): javax.swing.ListModel[E] = {
 
 extension [E](src : javax.swing.ListModel[E] ) {
 
+   /**
+    * 
+    * a read-only *view* of it
+    * 
+    */
    def asReadOnly() : javax.swing.ListModel[E] = {
 
       new javax.swing.ListModel[E] {
@@ -405,7 +410,7 @@ def newRlsmdListModel(): ([C[_]] =>> (C[String] ) )[javax.swing.ListModel ] = {
    import language.unsafeNulls
 
    {
-      getStaticListModel({
+      getImmutableListModel({
          // "favulous"
          "Terminal will be reused by tasks, press any key to close it."
          .split("\\b(?:(?<=\\w)(?!\\s|\\w)|(?<!\\s|\\w)(?=\\w))|\\s+").toIndexedSeq

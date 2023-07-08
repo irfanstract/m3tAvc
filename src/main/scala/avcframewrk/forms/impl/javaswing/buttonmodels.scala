@@ -31,6 +31,8 @@ trait ReExportsDoRenderAbstractAction
 
 }
 
+export raa.{apply as renderAbstractAction }
+
 protected 
 object raa {
 
