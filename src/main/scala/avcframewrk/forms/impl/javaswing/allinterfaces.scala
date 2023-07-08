@@ -123,6 +123,134 @@ with Aig1
 }
 
 protected 
+trait Aig1 extends 
+AnyRef
+{ allInterfacesGivens =>
+
+   import avcframewrk.forms.javaswing.localUtil.enClosure
+
+   private[javaswing] 
+   val impl : (
+      AnyRef
+      & EmTypingImpl
+   )
+   
+   import impl.*
+   
+   /* givens and UnsafeNulls */
+
+   import concurrent.ExecutionContext.Implicits.global
+   import language.unsafeNulls
+
+   /* main exports */
+
+   private[javaswing] 
+   trait ESingularCommonCompsImpl(
+      //
+      
+   )
+   extends
+   AnyRef
+   with DefinesDoRenderButtonA1[javax.swing.Action, MainR]
+   with DefinesDoRenderDynamicPoster[javax.swing.Action , MainR]
+   with DefinesDoRenderPoster       [javax.swing.Icon   , MainR]
+   {
+
+      /* name imports */
+
+      import java.awt
+      import javax.swing
+
+      import abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
+
+      /* exports */
+
+      def renderButton(l: swing.Action) = mainRImplLw {
+         new swing.JButton(l)
+      }
+
+      /**
+       * 
+       * display the Action's Icon dynamically
+       * 
+       */
+      def renderDynamicPoster(l: swing.Action) = mainRImplLw {
+         
+         val lbl1 = new swing.JButton(l)
+         lbl1.setUI({
+            cbsq.avc.quick.javaswing.buttonIconFullSizeUi
+         })
+         lbl1
+      }
+
+      /**
+       * 
+       * display the Icon
+       * 
+       */
+      def renderPoster(l: swing.Icon ) = {
+
+         renderDynamicPoster({
+            
+            renderAbstractAction(label = l , callback = { case _ => } )
+         })
+      }
+
+   }
+
+   /**
+    * 
+    * `export impl.{mainRImplEither as getCustomComponent1 }`
+    * 
+    */
+   trait Egcc extends
+   AnyRef
+   with XDefinesGetCustomComponent[MainR]
+   {
+
+      export impl.{mainRImplEither as getCustomComponent1 }
+
+   }
+
+   protected[javaswing]
+   trait ComponentSpwReExports {
+
+      export componentSpw.*
+
+   } /* ComponentSpwReExports */
+
+   private[javaswing] 
+   object componentSpw {
+      
+      extension (c : MainR ) def spawnNow() = spawn(c )
+
+      export spw.spawn
+
+      export spw.getSpawnedNativeComponent
+
+      def spawnAndGetNative[C <: MainR](c : C )  = {
+         c
+         match { case c => spawn(c) }
+         match { case c => getSpawnedNativeComponent(c) }
+      }
+
+      @deprecated
+      def spawnContentPaneAndGetNative[C <: MainR](c : C ) = {
+         spawnAndGetNative(c )
+         match { case c: java.awt.Container => c }
+      }
+
+      extension [C <: MainRSpawned](c : C ) @deprecated def spawnedNativeComponent = {
+         spw.getSpawnedNativeComponent(c )
+      }
+
+   }
+
+   type MainR = impl.MainR
+   
+}
+
+protected 
 // sealed
 trait Aig1MoreDefs[
    +Ctx <: Singleton & Aig1 ,
@@ -230,6 +358,16 @@ AnyRef
 
          newJPanel({
 
+            /**
+             * 
+             * a subclass of `FlowLayout`
+             * with
+             * interception in these methods
+             * to additionally invoke `reAdjustChildComponentsPreferredSizes` (which reassigns the Component's one-or-more non-`size` properties, normally a wrong thing to do for `LayoutManager`s)
+             * .
+             * AVOID EXTRACTING THIS OUT
+             * 
+             */
             new awt.FlowLayout()
             {
 
@@ -513,132 +651,7 @@ AnyRef
 
 }
 
-trait ReExportsDoRenderAbstractAction
-{
-   
-   export raa.{apply as renderAbstractAction }
-
-   import abstractActionFactory.lcafP.{renderButton as renderAbstractActionImpl }
-
-   private[ReExportsDoRenderAbstractAction]
-   object raa {
-
-      import avcframewrk.forms.impl.javaswing.abstractActionFactory.XLabel 
-
-      def apply(label: XLabel, callback: PartialFunction[Any, Unit] ) = {
-         renderAbstractActionImpl(label = label, callback = callback )
-      }
-
-   }
-
-}
-
-private[javaswing] 
-trait ENewCheckBoxStateImpl
-extends
-AnyRef
-with XDefinesAllocNewCheckBoxState
-{
-
-   /* name imports */
-
-   import java.awt
-   import javax.swing
-
-   import abstractActionFactory.lcafP.{renderButton as renderAbstractAction }
-
-   /* givens and UnsafeNulls */
-
-   import concurrent.ExecutionContext.Implicits.global
-   
-   import language.unsafeNulls
-
-   /* exports */
-
-   override
-   def newCheckBoxState(
-      //
-
-      initiallySelected : Boolean ,
-
-   ) : swing.ButtonModel = {
-
-      val jcb = new swing.JCheckBox
-      jcb setSelected initiallySelected
-      jcb.getModel()
-   }
-
-}
-
-trait XDefinesDoRenderSwingTextDocDisplay(
-   //
-   
-)
-{
-   this : XDefinesGetCustomComponent[?] =>
-
-   /* name imports */
-
-   import java.awt
-   import javax.swing
-
-   /* givens and UnsafeNulls */
-
-   import concurrent.ExecutionContext.Implicits.global
-   import language.unsafeNulls
-
-   /* exports */
-
-   import avcframewrk.util.lavf.{conditionalTyping as rtddConditionalTyping}
-
-   def renderTextDocDisplay(
-      //
-
-      src : swing.text.Document ,
-      onlyShortPhrase : (
-         rtddConditionalTyping.IfConforms[src.type, swing.text.StyledDocument, [_] =>> false, [_] =>> Boolean ]
-         
-      ) = false ,
-      
-      editing : Boolean = false ,
-      editorKit : (
-         rtddConditionalTyping.IfConforms[editing.type, true, [_] =>> (swing.text.EditorKit | Null), [_] =>> Null ]
-         
-      ) = null ,
-      
-   ) = getCustomComponent1 {
-
-      (src, onlyShortPhrase) match {
-         //
-
-         case (_, true) =>
-
-            new swing.JTextField(src, null, 0 )
-
-         case (src : swing.text.PlainDocument, false) =>
-
-            new swing.JTextArea(src)
-
-         case (src : swing.text.StyledDocument, false) =>
-
-            new swing.JTextPane(src)
-
-         case (src, false) =>
-
-            val edp = new swing.JEditorPane
-
-            if editorKit != null then {
-               edp setEditorKit editorKit
-            }
-            edp setDocument src
-            
-            edp
-
-      }
-      match { case e => e.setEditable(editing) ; e }
-   }
-
-}
+val _ = {}
 
 sealed
 trait XAllComponentsList[R] extends
