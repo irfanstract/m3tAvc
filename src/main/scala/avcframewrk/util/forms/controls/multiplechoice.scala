@@ -41,7 +41,7 @@ object MultipleChoiceProblem {
       // sealed
       trait SharedExtensionalDefs[
          //
-         C[R, V] ,
+         C[R, -V] ,
 
       ]
       {
