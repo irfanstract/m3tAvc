@@ -17,11 +17,8 @@ package avcframewrk.forms.impl.javaswing
 
 object util_%^**#% {
    
-      trait SupportsGetNewInstanceNoArg[+R] {
-
-         def newInstance() : R
-
-      }
+      type SupportsGetNewInstanceNoArg[+R]
+         = avcframewrk.util.DefinesGetNewInstance[R]
 
       trait SupportsDoSpawnByArgs1[-MainR, +MainRSpawned] {
 
