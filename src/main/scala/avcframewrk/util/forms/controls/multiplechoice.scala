@@ -71,7 +71,7 @@ object MultipleChoiceProblem {
 
       //
 
-   }
+   } /* `OptionsTranslativeFnc` */
    
    object XDescriptor {
 
@@ -109,7 +109,7 @@ object MultipleChoiceProblem {
       require(enforcedArity.copy(min = 0                      ) containsValue(defaultOption.size      ), s"'defaultOption.size' exceeds `enforcedArity.max` " )
       require(enforcedArity.copy(max = Double.PositiveInfinity) containsValue(supposedAllOptions.size ), s"'supposedAllOptions' does not provide enough cardinality for the enforced arity " )
 
-   }
+   } /* `XDescriptor` */
    
    /**
     * 
@@ -147,7 +147,7 @@ object MultipleChoiceProblem {
          (min <= v ) && (v <= maxValueD )
       }
       
-   }
+   } /* `ArityPrecisely` */
 
    /**
     * 
@@ -183,7 +183,7 @@ object MultipleChoiceProblem {
 
       }
 
-   }
+   } /* `apx` */
 
    /**
     * 
@@ -234,7 +234,7 @@ object MultipleChoiceProblem {
       type ByE[-Item]
          = ByCcE[collection.immutable.Iterable, Item ]
       
-   }
+   } /* `DefinesDoReassignSelectedItems` */
 
    object BasicOptionsTranslativeFnc {
 
