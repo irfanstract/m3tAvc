@@ -149,6 +149,12 @@ object MultipleChoiceProblem {
       
    }
 
+   /**
+    * 
+    * must be left `implicit` and
+    * defines these important `extension def`s
+    * 
+    */
    implicit
    object apx extends
    AnyRef
