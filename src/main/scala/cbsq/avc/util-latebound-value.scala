@@ -17,6 +17,8 @@ package cbsq.avc
 
 
 
+import LateBoundValue.NhwFactoryPostSpawnAutoUnpackingUtilDefs.DefinesTypeXRhetoricalGivenEquiv
+
 object LateBoundValue
 {
 
@@ -458,6 +460,103 @@ object LateBoundValue
          
       }
 
+   }
+
+   object NhwFactoryPostSpawnAutoUnpackingUtilDefs
+   {
+
+      //
+
+      trait DefinesTypeXRhetoricalGivenEquiv[T] {
+
+         type XRhetoricalGiven
+            >: T
+            <: T
+            
+      }
+
+   }
+
+   trait NhwFactoryPostSpawnAutoUnpackingUtilDefs
+   {
+
+      this: (
+         AnyRef
+         & DefinesTypeXRhetoricalGivenEquiv[?]
+         //
+      ) =>
+
+      //
+
+      protected 
+      trait PostSpawnAutoUnpackingPrefImpl[UnpackedFormByValue0[+V] ]
+      {
+
+         def apply[Value](
+            src: LateBoundValue.NhwGetValue[Value] ,
+            
+         ) : UnpackedFormByValueAsIs[Value]
+
+         type UnpackedFormByValueEquiv[+V]
+            >: (UnpackedFormByValue0[V] ) @annotation.unchecked.uncheckedVariance
+            <: (UnpackedFormByValue0[V] )
+            
+         /**
+          * 
+          * note --
+          * avoid using this definition, due to issues with type-inference
+          * 
+          */
+         type UnpackedFormByValueAsIs[+V]
+            = UnpackedFormByValue0[V] @annotation.unchecked.uncheckedVariance
+
+      }
+
+      type PostSpawnAutoUnpackingPrefByValue[+UnpackedFormByValue[+V] ]
+         = PostSpawnAutoUnpackingPrefImpl[? <: [V] =>> UnpackedFormByValue[V] ]
+
+      // def givenNonRepacking =
+      object givenNonRepacking extends
+      AnyRef
+      with PostSpawnAutoUnpackingPrefImpl[[Value] =>> (LateBoundValue.NhwGetValue[Value] ) ]
+      {
+         
+         def apply[Value](
+            src: LateBoundValue.NhwGetValue[Value] ,
+            
+         ): src.type
+         = src
+         
+      }
+
+      /**
+       * 
+       * the output of this implementation
+       * are `?=>`-fncs ;
+       * this will effectively imply *await-on-return*
+       * 
+       */
+      object givenImmediateRepacker extends
+      AnyRef
+      with PostSpawnAutoUnpackingPrefImpl[[Value] =>> (XRhetoricalGiven ?=> Value ) ]
+      {
+
+         { import language.unsafeNulls ; (new Exception(s"'givenImmediateRepacker' ") {} ).printStackTrace() }
+
+         def apply[Value](
+            src: LateBoundValue.NhwGetValue[Value] ,
+            
+         ): (XRhetoricalGiven ?=> Value ) = {
+
+            (
+               /* givens-only lambda */ (_ : XRhetoricalGiven) ?=> (
+                  src.value
+               )
+            )
+         }
+         
+      }
+      
    }
 
 }
