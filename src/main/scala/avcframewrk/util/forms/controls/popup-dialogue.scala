@@ -243,81 +243,29 @@ object DefinesDoPrompt {
       given givenImmediateRepacker.type =
          givenImmediateRepacker
       
-      protected 
-      trait PostSpawnAutoUnpackingPrefImpl[UnpackedFormByValue0[+V] ]
-      {
+      // export npsuug.*
+      export npsuug.{
+         //
 
-         def apply[Value](
-            src: avcframewrk.util.LateBoundValue.NhwGetValue[Value] ,
-            
-         ) : UnpackedFormByValueAsIs[Value]
+         givenNonRepacking ,
+         givenImmediateRepacker ,
 
-         type UnpackedFormByValueEquiv[+V]
-            >: (UnpackedFormByValue0[V] ) @annotation.unchecked.uncheckedVariance
-            <: (UnpackedFormByValue0[V] )
-            
-         /**
-          * 
-          * note --
-          * avoid using this definition, due to issues with type-inference
-          * 
-          */
-         type UnpackedFormByValueAsIs[+V]
-            = UnpackedFormByValue0[V] @annotation.unchecked.uncheckedVariance
+         PostSpawnAutoUnpackingPrefByValue ,
 
       }
 
-      type PostSpawnAutoUnpackingPrefByValue[+UnpackedFormByValue[+V] ]
-         = PostSpawnAutoUnpackingPrefImpl[? <: [V] =>> UnpackedFormByValue[V] ]
-
-      // def givenNonRepacking =
-      object givenNonRepacking extends
-      AnyRef
-      // with PostSpawnAutoUnpackingPrefByValue[[Value] =>> (XRhetoricalGiven ?=> Value ) ]
-      with PostSpawnAutoUnpackingPrefImpl[[Value] =>> (avcframewrk.util.LateBoundValue.NhwGetValue[Value] ) ]
-      {
-         
-         import avcframewrk.util.LateBoundValue
-
-         def apply[Value](
-            src: LateBoundValue.NhwGetValue[Value] ,
-            
-         ): src.type
-         = src
-         
-      }
-
-      /**
-       * 
-       * the output of this implementation
-       * are `?=>`-fncs ;
-       * this will effectively imply *await-on-return*
-       * 
-       */
-      object givenImmediateRepacker extends
-      AnyRef
-      // with PostSpawnAutoUnpackingPrefByValue[[Value] =>> (XRhetoricalGiven ?=> Value ) ]
-      with PostSpawnAutoUnpackingPrefImpl[[Value] =>> (XRhetoricalGiven ?=> Value ) ]
-      {
-
-         { import language.unsafeNulls ; (new Exception(s"'givenImmediateRepacker' ") {} ).printStackTrace() }
-
-         import avcframewrk.util.LateBoundValue
-
-         def apply[Value](
-            src: LateBoundValue.NhwGetValue[Value] ,
-            
-         ): (XRhetoricalGiven ?=> Value ) = {
-
-            (
-               /* givens-only lambda */ (_ : XRhetoricalGiven) ?=> (
-                  src.value
-               )
-            )
-         }
-         
-      }
+      final lazy val npsuug
+         // : avcframewrk.util.LateBoundValue.NhwFactoryPostSpawnAutoUnpackingUtilDefs /* won't work, as `XRhetoricalGiven` is defined separately */
+         : npsuugImpl.type
+         = npsuugImpl
       
+      protected[DefinesDoPrompt]
+      object npsuugImpl extends
+      AnyRef
+      with avcframewrk.util.LateBoundValue.NhwFactoryPostSpawnAutoUnpackingUtilDefs
+      with avcframewrk.util.LateBoundValue.NhwFactoryPostSpawnAutoUnpackingUtilDefs.DefinesTypeXRhetoricalGivenEquiv[XRhetoricalGiven]
+      ;
+
       /**
        * 
        *
