@@ -31,6 +31,7 @@ object MultipleChoiceProblem {
     * 
     * instances of the main `trait`
     * defines
+    * `apply(....)` with
     * the minimum set of parameters necessary to (re)construct a *multiple-choice*'s *options*
     * 
     */
