@@ -340,7 +340,7 @@ object DefinesDoPrompt {
 /**
  * 
  * ad-hoc `trait` to
- * support both type-narrowing pattern(s) - one being top-level and another one being inner
+ * support both type-param-ing pattern(s) - one being top-level and another being inner/nested
  * 
  */
 @deprecated("this is an ad-hoc definition which we would otherwise have removed.")
