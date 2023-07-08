@@ -350,6 +350,7 @@ trait WithPtoTyper[
 ]
 extends
 AnyRef
+with avcframewrk.util.errorchecking.TypeParamPlacement.STyper[T]
 {
 
    protected
