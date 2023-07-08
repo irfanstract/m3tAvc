@@ -99,9 +99,21 @@ extends java.io.Closeable
          title = s"Document" ,
 
          newContentPane = () => {
-            val p = new javax.swing.JPanel(new java.awt.GridLayout )
-            p add { val p = new javax.swing.JEditorPane() ; p setEditable false ; p setDocument(modelValueChgDoc) ; p }
-            p
+
+            (identity [(mode: Int ) => java.awt.Container] {
+
+               case 0 =>
+                  val p = new javax.swing.JPanel(new java.awt.GridLayout )
+                  p add { val p = new javax.swing.JEditorPane() ; p setEditable false ; p setDocument(modelValueChgDoc) ; p }
+                  p
+                  
+               case 1 =>
+                  val p = new javax.swing.JPanel(new java.awt.GridLayout )
+                  p add { val p = new javax.swing.JEditorPane() ; p setEditable false ; p setDocument(modelValueChgDoc) ; p }
+                  p add { val p = new javax.swing.JTextArea() ; p setEditable false ; p setDocument(modelUndoStackStructureDoc) ; p }
+                  p
+
+            })(mode = 1 )
          } ,
          
          newJMenuBar = () => {
