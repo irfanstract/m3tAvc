@@ -60,6 +60,21 @@ extends java.io.Closeable
       .asAnimatedSwingTextDocument()
    }
 
+   extension (s: XUndoStack ) {
+
+      def formatXUndoStackState(): String = {
+
+            (
+               IndexedSeq((true, s.headValue ) )
+               .prependedAll(s.redoStates.reverse map(e => (false, e) ) )
+               .appendedAll(s.undoStates map(e => (false, e) ) )
+            )
+            .map({ case (active, v) => "" + (if active then "->" else "  " ) + s"$v" })
+            .mkString("\r\n")
+      }
+
+   }
+
    val fH = {
       
       import language.unsafeNulls
