@@ -75,6 +75,20 @@ extends java.io.Closeable
 
    }
 
+   val modelUndoStackStructureDoc = {
+      import avcframewrk.forms.javaswing.CvcEvent
+      import avcframewrk.forms.javaswing.asAnimatedSwingTextDocument
+      model.stateChgEventItr
+      .map[avcframewrk.util.forms.controls.KValueChangeEvent.ForValue[XUndoStack] ](e => e.map(s => s ) )
+      .map(e => (
+         e.map(s => {
+            s.formatXUndoStackState()
+         })
+      ))
+      .map(s => CvcEvent(newValue = s.newValue ) )
+      .asAnimatedSwingTextDocument()
+   }
+
    val fH = {
       
       import language.unsafeNulls
