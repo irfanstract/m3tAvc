@@ -102,8 +102,12 @@ object DefinesDoPrompt {
       
    }
 
-   type TitleOptionsCallback[-Title, -Options, +R ]
+   type TitleAndOptionsCallback[-Title, -Options, +R ]
       = (title: Title, options: Options ) => R
+
+   @deprecated("the literal meaning of 'TitleOptions' conflicts with what pseudo-that meant here.")
+   type TitleOptionsCallback[-Title, -Options, +R ]
+      = TitleAndOptionsCallback[Title, Options, R ]
 
    /**
     * 
