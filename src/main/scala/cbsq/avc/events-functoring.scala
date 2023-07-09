@@ -200,7 +200,7 @@ val tsevp : TsevpOps = {
             for (e1 <- {
                Vector.from(e1s)
                match {
-                  case s @ (_ :+ lastItem) if (mayFlatMappingInstanceImposeIdempotenceByOmissiveBehv && evtType == TsevpEventType.ofUpdate ) =>
+                  case s @ (_ :+ lastItem) if (mayFlatMappingInstanceImposeIdempotenceByOmissiveBehv && evtType.necessitatesIdempotence ) =>
                      Vector(lastItem)
                   case s =>
                      s 
