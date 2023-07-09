@@ -365,11 +365,18 @@ with TsevpIterableOnceOpDefs
 
 }
 
-enum TsevpEventType {
-
-   case ofUpdate
-
-   case ofAction
+/**
+ * 
+ * `TsevpEventType`
+ * 
+ * initially, this was `enum`, but
+ * I changed this into being `sealed class`, for these reasons
+ * (a) `enum`s cannot be subclassed ☹
+ * (b) *type-inference* involving `enum`s applies widening in ways obscuring the original `Designation` ☹
+ * 
+ */
+sealed
+abstract class TsevpEventType {
 
    /**
     * 
@@ -399,6 +406,27 @@ enum TsevpEventType {
 }
 
 object TsevpEventType {
+
+   final
+   lazy val values: IArray[TsevpEventType] = {
+
+      IArray(
+         ofUpdate ,
+         ofAction ,
+      )
+   }
+
+   case object ofUpdate extends
+   TsevpEventType
+   {
+
+   }
+
+   case object ofAction extends
+   TsevpEventType
+   {
+
+   }
 
 }
 
