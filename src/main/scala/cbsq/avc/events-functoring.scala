@@ -597,14 +597,16 @@ AnyRef
 
       } /* deduplicate */
 
-      extension [OriginalItrItem ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem, TsevpEventType.ofUpdate.type ] ) {
+      extension [OriginalItrItem ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem, TsevpEventType ] ) {
 
          /**
           * 
           * mimics `Iterator.instance.sliding(.....)`
           * 
           */
-         def sliding(size: Int, step: Int ) = {
+         def sliding(size: Int, step: Int )
+         (using itsNonIdempotentiality: originalIterator.type <:< EventIteratorByItemAndDesignation[Any, TsevpEventType.ofAction.type] )
+         = {
 
             originalIterator
             .slidingImpl(expectedLength = size, step = step )
