@@ -28,8 +28,10 @@ export tsevp.EventIterator
 
 export tsevp.newEventEmitter
 
-// protected
-val tsevp : TsevpOps = {
+protected
+final
+lazy
+val tsevpFactoryImpl : tsevp.XFactoryOps = {
 
    sealed
    trait EventIteratorImplPre[E1, +C[E0] ]
@@ -275,8 +277,10 @@ val tsevp : TsevpOps = {
       ]
    )
    
-   object main extends AnyRef with TsevpOps
+   object g1 extends AnyRef
    {
+
+      export tsevp.XFactoryOps
 
       object factory extends 
       AnyRef with XFactoryOps
@@ -312,11 +316,14 @@ val tsevp : TsevpOps = {
       }
       
    }
-   main
+   g1.factory
 }
 
 protected
-trait TsevpOps
+type TsevpOps
+   = tsevp.type
+
+object tsevp
 extends
 AnyRef
 with TsevpIterableOnceOpDefs
@@ -342,7 +349,12 @@ with TsevpIterableOnceOpDefs
    type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
       = factory.InstanceByItemAndDesignation[E, AssignedEventType]
 
-   val factory : XFactoryOps
+   final
+   lazy
+   val factory : XFactoryOps = {
+
+      tsevpFactoryImpl
+   }
 
    sealed 
    trait XFactoryOps
@@ -369,6 +381,11 @@ with TsevpIterableOnceOpDefs
 
       ) : (E => Unit , InstanceByItemAndDesignation[E, evtType.type] )
       
+      opaque type NewvetImplSpecificToken <: Any
+         = Unit
+      protected
+      given NewvetImplSpecificToken = ()
+
    }
 
    def newEventEmitter[E](
@@ -397,11 +414,6 @@ with TsevpIterableOnceOpDefs
       }
       
    }
-
-   opaque type NewvetImplSpecificToken <: Any
-      = Unit
-   protected
-   given NewvetImplSpecificToken = ()
 
 }
 
@@ -441,7 +453,7 @@ abstract class TsevpEventType {
          collection.WithFilter[?, ?]
       ) ,
       
-   ](c: A)(using TsevpOps#NewvetImplSpecificToken ) : c.type & Inheritor = c
+   ](c: A)(using tsevp.XFactoryOps#NewvetImplSpecificToken ) : c.type & Inheritor = c
 
    val necessitatesIdempotence : Boolean
 
