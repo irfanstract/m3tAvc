@@ -403,6 +403,8 @@ abstract class TsevpEventType {
       
    ](c: A)(using TsevpOps#NewvetImplSpecificToken ) : c.type & Inheritor = c
 
+   val necessitatesIdempotence : Boolean
+
 }
 
 object TsevpEventType {
@@ -420,11 +422,15 @@ object TsevpEventType {
    TsevpEventType
    {
 
+      inline val necessitatesIdempotence = true
+
    }
 
    case object ofAction extends
    TsevpEventType
    {
+
+      inline val necessitatesIdempotence = false
 
    }
 
