@@ -278,25 +278,37 @@ val tsevp : TsevpOps = {
    object main extends AnyRef with TsevpOps
    {
 
-      type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
-         >: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
-         <: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
+      object factory extends 
+      AnyRef with XFactoryOps
+      {
+         
+         type InstanceByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
+            >: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
+            <: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
 
-      def newEventEmitter[E](
-         //
+         def newPipe[E](
+            //
 
-         evtType : TsevpEventType ,
+            evtType : TsevpEventType
+            ,
 
-      ) : (E => Unit , EventIteratorByItemAndDesignation[E, evtType.type] ) = {
-         val peer = {
-            new EventIteratorImpl[E, evtType.type](
-               //
-               evtType = evtType ,
-               lastKnownValueOption = None ,
-            )
-            match { case c => evtType.pretendEvtItrAsBeingOfThisType(c) }
-         }
-         ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
+         )
+         = {
+
+            val peer = {
+
+               new EventIteratorImpl[E, evtType.type](
+                  //
+                  evtType = evtType ,
+                  lastKnownValueOption = None ,
+               )
+               
+               match { case c => evtType.pretendEvtItrAsBeingOfThisType(c) }
+            }
+
+            ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
+         } /* `newPipe` */
+         
       }
       
    }
@@ -328,11 +340,36 @@ with TsevpIterableOnceOpDefs
     * 
     */
    type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
-      <: (
-         AnyRef
-         & collection.WithFilter[E, [NewE] =>> EventIteratorByItemAndDesignation[NewE, AssignedEventType] ]
-         & java.io.Closeable
-      )
+      = factory.InstanceByItemAndDesignation[E, AssignedEventType]
+
+   val factory : XFactoryOps
+
+   sealed 
+   trait XFactoryOps
+   {
+
+      type InstanceByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
+         <: (
+            AnyRef
+            & collection.WithFilter[E, [NewE] =>> InstanceByItemAndDesignation[NewE, AssignedEventType] ]
+            & java.io.Closeable
+         )
+      
+      /**
+       * 
+       * allocates a new pipe and
+       * returns a pair of itc(s) together proxying the both sides of that (newly-allocated) pipe
+       * 
+       */
+      def newPipe[E](
+         //
+
+         evtType : TsevpEventType
+         ,
+
+      ) : (E => Unit , InstanceByItemAndDesignation[E, evtType.type] )
+      
+   }
 
    def newEventEmitter[E](
       //
@@ -341,7 +378,10 @@ with TsevpIterableOnceOpDefs
          TsevpEventType.ofAction
       } ,
 
-   ) : (E => Unit , EventIteratorByItemAndDesignation[E, evtType.type] )
+   ) = {
+
+      factory.newPipe[E](evtType = evtType )
+   }
    
    extension [E](itr0: EventIterator[E] ) {
 
