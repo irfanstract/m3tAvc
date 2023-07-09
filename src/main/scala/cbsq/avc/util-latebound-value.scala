@@ -281,25 +281,7 @@ object LateBoundValue
        */
       def getValue(): Gv = {
 
-         import concurrent.duration.*
-
-         val timeout : FiniteDuration = {
-            nhwgvTimeoutPolicies
-            .getTimeoutValue()
-         }
-
-         for (_ <- startTimingOutIterator(timeout = timeout ) ) {
-            try {
-               return {
-                  concurrent.Await.result(asFuture, 100.milliseconds )
-               }
-            }
-            catch {
-               case z : java.util.concurrent.TimeoutException =>
-            }
-         }
-
-         throw new java.util.concurrent.TimeoutException(s"time up ($timeout); consider manual await with larger timeout")
+         this.implGetValue()
 
       }
 
@@ -402,30 +384,87 @@ object LateBoundValue
       
    }
    
+   /**
+    * 
+    * the impleentation for `NhwGetValue`'s main method.
+    * 
+    * note
+    * the modifier `implicit` necessary for the auto-augment
+    * 
+    */
    private[LateBoundValue]
-   def startTimingOutIterator(
-      timeout : concurrent.duration.Duration ,
-      
-   ): Iterator[Unit] = {
+   implicit
+   object implGetNhwValue
+   {
 
-         import concurrent.duration.*
+      import concurrent.duration.*
+      import java.util.concurrent.TimeoutException
 
-         (
-            new collection.AbstractIterator[Unit] {
+      extension [V](callee: NhwGetValue[V] & NhwAsFuture[V] ) {
 
-               protected 
-               val initialT = 0.seconds.fromNow
+         private[LateBoundValue]
+         def implGetValue(
+            //
+            
+         ): V = {
 
-               def hasNext = {
-                  (0.seconds.fromNow - initialT ) < timeout
-               }
-
-               def next = {}
-               
+            import callee.{
+               asFuture ,
             }
-         )
+
+            val timeout : FiniteDuration = {
+               nhwgvTimeoutPolicies
+               .getTimeoutValue()
+            }
+
+            for (_ <- startTimingOutIterator(timeout = timeout ) ) {
+               try {
+                  return {
+                     concurrent.Await.result(asFuture, 100.milliseconds )
+                  }
+               }
+               catch {
+                  case z : TimeoutException =>
+               }
+            }
+
+            throw new TimeoutException(s"time up ($timeout); consider manual await with larger timeout")
+            
+         }
          
-   }
+      }
+
+      private[LateBoundValue]
+      def startTimingOutIterator(
+         //
+         
+         timeout : concurrent.duration.Duration ,
+         
+      ): Iterator[Unit]
+      = {
+
+            import concurrent.duration.*
+
+            (
+               new collection.AbstractIterator[Unit] {
+
+                  protected 
+                  val initialT = 0.seconds.fromNow
+
+                  def hasNext = {
+                     (0.seconds.fromNow - initialT ) < timeout
+                  }
+
+                  def next = {}
+                  
+               }
+            )
+            
+      }
+
+      //
+
+   } /* `implGetNhwValue` */
 
    @deprecated("experimental")
    object nhwgvTimeoutPolicies
