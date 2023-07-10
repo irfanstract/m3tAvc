@@ -49,6 +49,52 @@ object WildcardTypedInstancing
    ]
       = C[Any, Nothing]
 
+   object ForIcdf {
+      
+      def apply[
+         ImplFactoryFor[_] ,
+         ActualR ,
+
+      ](actualFactory : ImplFactoryFor[ActualR] )
+      : ({ type Instance ; type Factory <: ImplFactoryFor[Instance] })#Factory
+      = {
+
+         object %%% {
+
+            object e0 {}
+
+            object e1 {
+               // export allInterfacesGivens.{main => main0 }
+               val main0
+                  : actualFactory.type
+                  = actualFactory
+               opaque type Instance
+                  = ActualR
+               opaque type Factory
+                  <: ImplFactoryFor[Instance]
+                  = main0.type
+               val main1
+                  : Factory
+                  = main0
+               opaque type ThisDefiner
+                  <: { type Instance ; type Factory <: ImplFactoryFor[Instance] ; val main1 : Factory }
+                  = this.type
+            }
+
+            val mainPre1
+               : { type Instance ; type Factory <: ImplFactoryFor[Instance] ; val main1 : Factory }
+               = e1
+               
+         }
+         {
+            import reflect.Selectable.reflectiveSelectable
+            (%%%.mainPre1)
+            .main1
+         }
+      }
+
+   }
+
 }
 
 
