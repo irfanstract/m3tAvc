@@ -31,6 +31,7 @@ object MultipleChoiceProblem {
     * 
     * instances of the main `trait`
     * defines
+    * `apply(....)` with
     * the minimum set of parameters necessary to (re)construct a *multiple-choice*'s *options*
     * 
     */
@@ -41,7 +42,7 @@ object MultipleChoiceProblem {
       // sealed
       trait SharedExtensionalDefs[
          //
-         C[R, V] ,
+         C[R, -V] ,
 
       ]
       {
@@ -70,7 +71,7 @@ object MultipleChoiceProblem {
 
       //
 
-   }
+   } /* `OptionsTranslativeFnc` */
    
    object XDescriptor {
 
@@ -108,7 +109,7 @@ object MultipleChoiceProblem {
       require(enforcedArity.copy(min = 0                      ) containsValue(defaultOption.size      ), s"'defaultOption.size' exceeds `enforcedArity.max` " )
       require(enforcedArity.copy(max = Double.PositiveInfinity) containsValue(supposedAllOptions.size ), s"'supposedAllOptions' does not provide enough cardinality for the enforced arity " )
 
-   }
+   } /* `XDescriptor` */
    
    /**
     * 
@@ -146,8 +147,14 @@ object MultipleChoiceProblem {
          (min <= v ) && (v <= maxValueD )
       }
       
-   }
+   } /* `ArityPrecisely` */
 
+   /**
+    * 
+    * must be left `implicit` and
+    * defines these important `extension def`s
+    * 
+    */
    implicit
    object apx extends
    AnyRef
@@ -176,7 +183,7 @@ object MultipleChoiceProblem {
 
       }
 
-   }
+   } /* `apx` */
 
    /**
     * 
@@ -227,7 +234,7 @@ object MultipleChoiceProblem {
       type ByE[-Item]
          = ByCcE[collection.immutable.Iterable, Item ]
       
-   }
+   } /* `DefinesDoReassignSelectedItems` */
 
    object BasicOptionsTranslativeFnc {
 
