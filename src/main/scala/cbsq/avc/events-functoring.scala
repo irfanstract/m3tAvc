@@ -28,8 +28,10 @@ export tsevp.EventIterator
 
 export tsevp.newEventEmitter
 
-// protected
-val tsevp : TsevpOps = {
+protected
+final
+lazy
+val tsevpFactoryImpl : tsevp.XFactoryOps = {
 
    sealed
    trait EventIteratorImplPre[E1, +C[E0] ]
@@ -200,7 +202,7 @@ val tsevp : TsevpOps = {
             for (e1 <- {
                Vector.from(e1s)
                match {
-                  case s @ (_ :+ lastItem) if (mayFlatMappingInstanceImposeIdempotenceByOmissiveBehv && evtType == TsevpEventType.ofUpdate ) =>
+                  case s @ (_ :+ lastItem) if (mayFlatMappingInstanceImposeIdempotenceByOmissiveBehv && evtType.necessitatesIdempotence ) =>
                      Vector(lastItem)
                   case s =>
                      s 
@@ -275,36 +277,53 @@ val tsevp : TsevpOps = {
       ]
    )
    
-   object main extends AnyRef with TsevpOps
+   object g1 extends AnyRef
    {
 
-      type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
-         >: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
-         <: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
+      export tsevp.XFactoryOps
 
-      def newEventEmitter[E](
-         //
+      object factory extends 
+      AnyRef with XFactoryOps
+      {
+         
+         type InstanceByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
+            >: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
+            <: EvtIteratorImplByItemAndDesignationCovar[E, AssignedEventType ]
 
-         evtType : TsevpEventType ,
+         def newPipe[E](
+            //
 
-      ) : (E => Unit , EventIteratorByItemAndDesignation[E, evtType.type] ) = {
-         val peer = {
-            new EventIteratorImpl[E, evtType.type](
-               //
-               evtType = evtType ,
-               lastKnownValueOption = None ,
-            )
-            match { case c => evtType.pretendEvtItrAsBeingOfThisType(c) }
-         }
-         ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
+            evtType : TsevpEventType
+            ,
+
+         )
+         = {
+
+            val peer = {
+
+               new EventIteratorImpl[E, evtType.type](
+                  //
+                  evtType = evtType ,
+                  lastKnownValueOption = None ,
+               )
+               
+               match { case c => evtType.pretendEvtItrAsBeingOfThisType(c) }
+            }
+
+            ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
+         } /* `newPipe` */
+         
       }
       
    }
-   main
+   g1.factory
 }
 
 protected
-trait TsevpOps
+type TsevpOps
+   = tsevp.type
+
+object tsevp
 extends
 AnyRef
 with TsevpIterableOnceOpDefs
@@ -328,11 +347,46 @@ with TsevpIterableOnceOpDefs
     * 
     */
    type EventIteratorByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
-      <: (
-         AnyRef
-         & collection.WithFilter[E, [NewE] =>> EventIteratorByItemAndDesignation[NewE, AssignedEventType] ]
-         & java.io.Closeable
-      )
+      = factory.InstanceByItemAndDesignation[E, AssignedEventType]
+
+   final
+   lazy
+   val factory : XFactoryOps = {
+
+      tsevpFactoryImpl
+   }
+
+   sealed 
+   trait XFactoryOps
+   {
+
+      type InstanceByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
+         <: (
+            AnyRef
+            & collection.WithFilter[E, [NewE] =>> InstanceByItemAndDesignation[NewE, AssignedEventType] ]
+            & java.io.Closeable
+         )
+      
+      /**
+       * 
+       * allocates a new pipe and
+       * returns a pair of itc(s) together proxying the both sides of that (newly-allocated) pipe
+       * 
+       */
+      def newPipe[E](
+         //
+
+         evtType : TsevpEventType
+         ,
+
+      ) : (E => Unit , InstanceByItemAndDesignation[E, evtType.type] )
+      
+      opaque type NewvetImplSpecificToken <: Any
+         = Unit
+      protected
+      given NewvetImplSpecificToken = ()
+
+   }
 
    def newEventEmitter[E](
       //
@@ -341,7 +395,10 @@ with TsevpIterableOnceOpDefs
          TsevpEventType.ofAction
       } ,
 
-   ) : (E => Unit , EventIteratorByItemAndDesignation[E, evtType.type] )
+   ) = {
+
+      factory.newPipe[E](evtType = evtType )
+   }
    
    extension [E](itr0: EventIterator[E] ) {
 
@@ -358,18 +415,20 @@ with TsevpIterableOnceOpDefs
       
    }
 
-   opaque type NewvetImplSpecificToken <: Any
-      = Unit
-   protected
-   given NewvetImplSpecificToken = ()
-
 }
 
-enum TsevpEventType {
-
-   case ofUpdate
-
-   case ofAction
+/**
+ * 
+ * `TsevpEventType`
+ * 
+ * initially, this was `enum`, but
+ * I changed this into being `sealed class`, for these reasons
+ * (a) `enum`s cannot be subclassed ☹
+ * (b) *type-inference* involving `enum`s applies widening in ways obscuring the original `Designation` ☹
+ * 
+ */
+sealed
+abstract class TsevpEventType {
 
    /**
     * 
@@ -394,11 +453,38 @@ enum TsevpEventType {
          collection.WithFilter[?, ?]
       ) ,
       
-   ](c: A)(using TsevpOps#NewvetImplSpecificToken ) : c.type & Inheritor = c
+   ](c: A)(using tsevp.XFactoryOps#NewvetImplSpecificToken ) : c.type & Inheritor = c
+
+   val necessitatesIdempotence : Boolean
 
 }
 
 object TsevpEventType {
+
+   final
+   lazy val values: IArray[TsevpEventType] = {
+
+      IArray(
+         ofUpdate ,
+         ofAction ,
+      )
+   }
+
+   case object ofUpdate extends
+   TsevpEventType
+   {
+
+      inline val necessitatesIdempotence = true
+
+   }
+
+   case object ofAction extends
+   TsevpEventType
+   {
+
+      inline val necessitatesIdempotence = false
+
+   }
 
 }
 
@@ -563,14 +649,16 @@ AnyRef
 
       } /* deduplicate */
 
-      extension [OriginalItrItem ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem, TsevpEventType.ofUpdate.type ] ) {
+      extension [OriginalItrItem ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem, TsevpEventType ] ) {
 
          /**
           * 
           * mimics `Iterator.instance.sliding(.....)`
           * 
           */
-         def sliding(size: Int, step: Int ) = {
+         def sliding(size: Int, step: Int )
+         (using itsNonIdempotentiality: originalIterator.type <:< EventIteratorByItemAndDesignation[Any, TsevpEventType.ofAction.type] )
+         = {
 
             originalIterator
             .slidingImpl(expectedLength = size, step = step )
