@@ -38,6 +38,12 @@ object WildcardTypedInstancing
       val valuePallete : C[Value]
    }
 
+   type &&&@![
+      C1[+_] ,
+      C2[-_] ,
+   ]
+      = C1[Any] & C2[Nothing]
+
 }
 
 
