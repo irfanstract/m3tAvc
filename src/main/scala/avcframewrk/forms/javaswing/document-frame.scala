@@ -60,6 +60,35 @@ extends java.io.Closeable
       .asAnimatedSwingTextDocument()
    }
 
+   extension (s: XUndoStack ) {
+
+      def formatXUndoStackState(): String = {
+
+            (
+               IndexedSeq((true, s.headValue ) )
+               .prependedAll(s.redoStates.reverse map(e => (false, e) ) )
+               .appendedAll(s.undoStates map(e => (false, e) ) )
+            )
+            .map({ case (active, v) => "" + (if active then "->" else "  " ) + s"$v" })
+            .mkString("\r\n")
+      }
+
+   }
+
+   val modelUndoStackStructureDoc = {
+      import avcframewrk.forms.javaswing.CvcEvent
+      import avcframewrk.forms.javaswing.asAnimatedSwingTextDocument
+      model.stateChgEventItr
+      .map[avcframewrk.util.forms.controls.KValueChangeEvent.ForValue[XUndoStack] ](e => e.map(s => s ) )
+      .map(e => (
+         e.map(s => {
+            s.formatXUndoStackState()
+         })
+      ))
+      .map(s => CvcEvent(newValue = s.newValue ) )
+      .asAnimatedSwingTextDocument()
+   }
+
    val fH = {
       
       import language.unsafeNulls
@@ -70,9 +99,21 @@ extends java.io.Closeable
          title = s"Document" ,
 
          newContentPane = () => {
-            val p = new javax.swing.JPanel(new java.awt.GridLayout )
-            p add { val p = new javax.swing.JEditorPane() ; p setEditable false ; p setDocument(modelValueChgDoc) ; p }
-            p
+
+            (identity [(mode: Int ) => java.awt.Container] {
+
+               case 0 =>
+                  val p = new javax.swing.JPanel(new java.awt.GridLayout )
+                  p add { val p = new javax.swing.JEditorPane() ; p setEditable false ; p setDocument(modelValueChgDoc) ; p }
+                  p
+                  
+               case 1 =>
+                  val p = new javax.swing.JPanel(new java.awt.GridLayout )
+                  p add { val p = new javax.swing.JEditorPane() ; p setEditable false ; p setDocument(modelValueChgDoc) ; p }
+                  p add { val p = new javax.swing.JTextArea() ; p setEditable false ; p setDocument(modelUndoStackStructureDoc) ; p }
+                  p
+
+            })(mode = 1 )
          } ,
          
          newJMenuBar = () => {
