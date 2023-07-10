@@ -31,7 +31,7 @@ class startMimempImgDemo(
    // givens
 
    private
-   val xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance.type ,
+   val xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.OfWldcd ,
 
 )
 extends AnyRef with java.io.Closeable

@@ -783,28 +783,22 @@ trait XAllComponentsList[R] extends
 object XAllComponentsList
 {
 
-   given defaultInstance : impl.epm.valuePallete.type = {
+   given defaultInstance: ({ type Instance ; type Factory <: XAllComponentsList[Instance] })#Factory = {
 
-      impl.epm.valuePallete
+      avcframewrk.util.errorchecking.WildcardTypedInstancing.ForIcdf[
+         XAllComponentsList,
+         allInterfacesGivens.MainR ,
+      ](
+         //
+         actualFactory = allInterfacesGivens.main ,
+      )
    }
 
-   private [XAllComponentsList]
-   object impl {
+   (() => {
 
-      val epm = {
+      defaultInstance.open(defaultInstance.renderButton(???) )
 
-         new avcframewrk.util.errorchecking.WildcardTypedInstancing.::![XAllComponentsList ] {
-            
-            opaque type Value
-               = allInterfacesGivens.MainR
-
-            final val valuePallete : XAllComponentsList[Value]
-               = allInterfacesGivens.main
-
-         }
-      }
-
-   } /* `impl` */
+   })
 
 } /* object `XAllComponentsList` */
 

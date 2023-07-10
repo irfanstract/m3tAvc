@@ -23,7 +23,7 @@ val _ = {}
 @main
 def runBavslDemo() : Unit = {
 
-   val xSwing = summon[avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance.type]
+   val xSwing = summon[avcframewrk.forms.impl.generic.XAllComponentsList.OfWldcd]
 
    val c = {
       import javax.swing

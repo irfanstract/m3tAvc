@@ -21,7 +21,7 @@ package avcframewrk.forms.impl.generic
 val _ = {}
 
 opaque type XAllComponentsList[R]
-   >: avcframewrk.forms.impl.javaswing.XAllComponentsList[R]
+   // >: avcframewrk.forms.impl.javaswing.XAllComponentsList[R]
    <: avcframewrk.forms.impl.javaswing.XAllComponentsList[R]
    = avcframewrk.forms.impl.javaswing.XAllComponentsList[R]
 
@@ -29,27 +29,21 @@ opaque type XAllComponentsList[R]
 object XAllComponentsList
 {
 
-   given defaultInstance : impl.epm.valuePallete.type = {
+   import avcframewrk.forms.impl.javaswing.allInterfacesGivens
 
-      { import scala.reflect.Selectable.reflectiveSelectable ; impl.epm.valuePallete }
-   }
+   type OfWldcd
+      >: ({ type Instance ; type Factory <: XAllComponentsList[Instance] })#Factory
+      <: ({ type Instance ; type Factory <: XAllComponentsList[Instance] })#Factory
 
-   private [XAllComponentsList]
-   object impl {
+   given defaultInstance: OfWldcd = {
 
-      val epm = {
-
-         new avcframewrk.util.errorchecking.WildcardTypedInstancing.::![XAllComponentsList ] {
-            
-            opaque type Value
-               = avcframewrk.forms.impl.javaswing.allInterfacesGivens.MainR
-
-            final val valuePallete : XAllComponentsList[Value]
-               = avcframewrk.forms.impl.javaswing.allInterfacesGivens.main
-
-         }
-      }
-
+      avcframewrk.util.errorchecking.WildcardTypedInstancing.ForIcdf[
+         XAllComponentsList,
+         allInterfacesGivens.MainR ,
+      ](
+         //
+         actualFactory = allInterfacesGivens.main ,
+      )
    }
 
 } /* object `XAllComponentsList` */

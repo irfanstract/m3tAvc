@@ -27,7 +27,7 @@ class runMultiWindowSyncDemoImpl(
    // givens
 
    private
-   val xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance.type ,
+   val xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.OfWldcd ,
 
 )
 extends
