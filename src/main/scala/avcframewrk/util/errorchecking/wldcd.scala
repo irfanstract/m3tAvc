@@ -44,6 +44,11 @@ object WildcardTypedInstancing
    ]
       = C1[Any] & C2[Nothing]
 
+   type &&&@%%![
+      C[+BU, -BL <: BU ] ,
+   ]
+      = C[Any, Nothing]
+
 }
 
 
