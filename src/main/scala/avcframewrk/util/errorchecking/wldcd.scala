@@ -102,6 +102,35 @@ object WildcardTypedInstancing
 
    }
 
+   type &&&@%&%![ImplFactoryFor[_] ]
+      >: ({ type Instance ; type Factory <: ImplFactoryFor[Instance] })#Factory
+      <: ({ type Instance ; type Factory <: ImplFactoryFor[Instance] })#Factory
+
+   object &&&@%&%!
+   {
+
+      def apply[
+         ImplFactoryFor[_] ,
+         ActualR , // otherwise there we'd go again
+
+      ](actualFactory : ImplFactoryFor[ActualR] )
+      : ({ type Instance ; type Factory <: ImplFactoryFor[Instance] })#Factory
+      = {
+
+         // ForIcdf(actualFactory = actualFactory )
+         // match { case e => e }
+         ???
+      }
+
+   }
+
+   given [
+      ImplFactoryFor[_] ,
+      ActualR , // otherwise there we'd go again
+
+   ] : Conversion[ImplFactoryFor[ActualR], &&&@%&%![ImplFactoryFor ] ]
+   = (e => &&&@%&%!(e) )
+
 }
 
 
