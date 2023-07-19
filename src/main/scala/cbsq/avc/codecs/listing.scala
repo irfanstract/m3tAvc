@@ -78,8 +78,9 @@ def runCodecListingAndMpJpegTrialDemo() : Unit = {
 
          println(s"${started }")
 
-         cbsq.avc.quick.openInteractiveFrameIterativeUiImpl(src = started.frameIterator )
-         .join()
+         // cbsq.avc.quick.openInteractiveFrameIterativeUiImpl(src = started.frameIterator )
+         // .join()
+         ???
          
       }
       finally {

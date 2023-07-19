@@ -295,27 +295,29 @@ def runListModelAdapterDemo() : Unit = {
 
    import language.unsafeNulls
 
-   val xSwing = {
-      avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance
-   }
+   // val xSwing = {
+   //    avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance
+   // }
 
-   val m = {
-      newRlsmdListModel()
-   }
+   // val m = {
+   //    newRlsmdListModel()
+   // }
 
-   xSwing `open` {
-      xSwing getCustomComponent1 {
-         val tableComp = {
-            ;
-            new javax.swing.JTable({
-               m
-               .asTableModel(itemCls = classOf[java.lang.Object ] )
-            })
-         }
-         tableComp setDragEnabled(true)
-         new javax.swing.JScrollPane(tableComp)
-      }
-   }
+   // xSwing `open` {
+   //    xSwing getCustomComponent1 {
+   //       val tableComp = {
+   //          ;
+   //          new javax.swing.JTable({
+   //             m
+   //             .asTableModel(itemCls = classOf[java.lang.Object ] )
+   //          })
+   //       }
+   //       tableComp setDragEnabled(true)
+   //       new javax.swing.JScrollPane(tableComp)
+   //    }
+   // }
+
+   ???
 }
 
 /**
@@ -327,76 +329,78 @@ def runListModelAdapterDemo() : Unit = {
 @main
 def runListModelChoiceAdapterDemo() : Unit = {
 
-   import language.unsafeNulls
+   // import language.unsafeNulls
 
-   import concurrent.ExecutionContext.Implicits.*
+   // import concurrent.ExecutionContext.Implicits.*
 
-   val xSwing = {
-      avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance
-   }
+   // val xSwing = {
+   //    avcframewrk.forms.impl.generic.XAllComponentsList.defaultInstance
+   // }
 
-   import javax.swing
-   import java.awt
+   // import javax.swing
+   // import java.awt
 
-   val mOriginal = {
-      locally[swing.DefaultListModel[Int] ] {
+   // val mOriginal = {
+   //    locally[swing.DefaultListModel[Int] ] {
 
-         new swing.DefaultListModel[Int]()
-      }
-   }
-   val m = {
-      newComboBoxModelWithSyncedOptionList(mOriginal )
-   }
-   def addIntoM() : Unit = {
-      mOriginal add(0, mOriginal.size() )
-   }
+   //       new swing.DefaultListModel[Int]()
+   //    }
+   // }
+   // val m = {
+   //    newComboBoxModelWithSyncedOptionList(mOriginal )
+   // }
+   // def addIntoM() : Unit = {
+   //    mOriginal add(0, mOriginal.size() )
+   // }
 
-   /**
-    * 
-    * spawn
-    * a thread to periodically mutate the model
-    * 
-    */
-   summon[concurrent.ExecutionContext]
-   .execute(() => {
+   // /**
+   //  * 
+   //  * spawn
+   //  * a thread to periodically mutate the model
+   //  * 
+   //  */
+   // summon[concurrent.ExecutionContext]
+   // .execute(() => {
 
-      for (_ <- Range(0, 5) ) {
-         addIntoM()
-      }
+   //    for (_ <- Range(0, 5) ) {
+   //       addIntoM()
+   //    }
 
-      assert(0 < mOriginal.getSize() )
-      assert(0 < m.getSize() )
+   //    assert(0 < mOriginal.getSize() )
+   //    assert(0 < m.getSize() )
 
-      while ({ Thread.sleep((8.5 * 1000 ).toLong ) ; true }) {
+   //    while ({ Thread.sleep((8.5 * 1000 ).toLong ) ; true }) {
          
-         addIntoM()
+   //       addIntoM()
          
-      }
+   //    }
       
-   })
+   // })
 
-   // Thread.sleep(6 * 1000)
+   // // Thread.sleep(6 * 1000)
 
-   /**
-    * 
-    * spawn some test outlets.
-    * needs more-than-one,
-    * to exam/test the sync across multiple outlets
-    * 
-    */
-   for (i <- Range(0, 2) ) {
-      ;
+   // /**
+   //  * 
+   //  * spawn some test outlets.
+   //  * needs more-than-one,
+   //  * to exam/test the sync across multiple outlets
+   //  * 
+   //  */
+   // for (i <- Range(0, 2) ) {
+   //    ;
 
-      xSwing `open` {
-         xSwing getCustomComponent1 {
-            val p = new swing.JPanel(new java.awt.FlowLayout )
-            p add { new swing.JComboBox(m ) }
-            p add { new swing.JLabel("component" ) }
-            p
-         }
-      }
+   //    xSwing `open` {
+   //       xSwing getCustomComponent1 {
+   //          val p = new swing.JPanel(new java.awt.FlowLayout )
+   //          p add { new swing.JComboBox(m ) }
+   //          p add { new swing.JLabel("component" ) }
+   //          p
+   //       }
+   //    }
 
-   }
+   // }
+
+   ???
 }
 
 /**

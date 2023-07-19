@@ -16,124 +16,124 @@ package cbsq.avc.quick
 
 
 
-@main
-def runMimempImgDemo() : Unit = {
+// @main
+// def runMimempImgDemo() : Unit = {
 
-   startMimempImgDemo()
+//    startMimempImgDemo()
 
-}
+// }
 
-class startMimempImgDemo(
-   // args
+// class startMimempImgDemo(
+//    // args
 
-)
-(using 
-   // givens
+// )
+// (using 
+//    // givens
 
-   private
-   val xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.OfWldcd ,
+//    private
+//    val xSwing : avcframewrk.forms.impl.generic.XAllComponentsList.OfWldcd ,
 
-)
-extends AnyRef with java.io.Closeable
-{
+// )
+// extends AnyRef with java.io.Closeable
+// {
 
-   import cbsq.avc.newXResourcesManager
+//    import cbsq.avc.newXResourcesManager
    
-   import smjg.startBasicMpJpegGener1
-   import cbsq.avc.MimeMultipart
-   import MimeMultipart.asMimeMultipartDecoded1
+//    import smjg.startBasicMpJpegGener1
+//    import cbsq.avc.MimeMultipart
+//    import MimeMultipart.asMimeMultipartDecoded1
 
-   import java.awt
-   import javax.swing
+//    import java.awt
+//    import javax.swing
 
-   import concurrent.ExecutionContext.Implicits.global
+//    import concurrent.ExecutionContext.Implicits.global
 
-   //
+//    //
 
-   import avcframewrk.forms.javaswing.actionObjUtil.setIcon
+//    import avcframewrk.forms.javaswing.actionObjUtil.setIcon
 
-   import language.unsafeNulls
+//    import language.unsafeNulls
 
-   protected 
-   val payloadResource = {
-      rmpdStart()
-   }
+//    protected 
+//    val payloadResource = {
+//       rmpdStart()
+//    }
    
-   import payloadResource.{
-      close => closeAllPayloadResources,
-      * ,
-   }
+//    import payloadResource.{
+//       close => closeAllPayloadResources,
+//       * ,
+//    }
 
-   private[startMimempImgDemo] 
-   val fE = {
-   ;
-   xSwing.open(title = "video frames", body = {
+//    private[startMimempImgDemo] 
+//    val fE = {
+//    ;
+//    xSwing.open(title = "video frames", body = {
       
-      val l = {
-         identity[swing.AbstractAction ](_ => {
-            System.err println("display/label clicked")
-         })
-      }
+//       val l = {
+//          identity[swing.AbstractAction ](_ => {
+//             System.err println("display/label clicked")
+//          })
+//       }
 
-      val c = xSwing.newFourAsidesContentPanel()
+//       val c = xSwing.newFourAsidesContentPanel()
 
-      c add xSwing.renderDynamicPoster(l)
+//       c add xSwing.renderDynamicPoster(l)
 
-      def runUpdateBtnAction() : Unit = {
+//       def runUpdateBtnAction() : Unit = {
 
-         concurrent.Future.unit
-         .map((_: Unit ) => {
-            nextAsJ2DBufferedImg()
-         })
-         .map(d => {
+//          concurrent.Future.unit
+//          .map((_: Unit ) => {
+//             nextAsJ2DBufferedImg()
+//          })
+//          .map(d => {
             
-            if d != null then {
-                  awt.EventQueue.invokeLater(() => {
-                     l setIcon {
-                        new swing.ImageIcon(d)
-                     }
-                  })
-            }
+//             if d != null then {
+//                   awt.EventQueue.invokeLater(() => {
+//                      l setIcon {
+//                         new swing.ImageIcon(d)
+//                      }
+//                   })
+//             }
 
-         })
-         .transform(tr => util.Success(tr) ).foreach(_.get )
+//          })
+//          .transform(tr => util.Success(tr) ).foreach(_.get )
 
-      }
-      val updateBtnAction = {
-            new swing.AbstractAction("next") {
-               import java.awt.event.ActionEvent
-               def actionPerformed(e: ActionEvent | Null): Unit = {
-                  runUpdateBtnAction()
-               }
-            }
-      }
+//       }
+//       val updateBtnAction = {
+//             new swing.AbstractAction("next") {
+//                import java.awt.event.ActionEvent
+//                def actionPerformed(e: ActionEvent | Null): Unit = {
+//                   runUpdateBtnAction()
+//                }
+//             }
+//       }
 
-      c addOne(xSwing renderButton(updateBtnAction ) , awt.BorderLayout.PAGE_END )
+//       c addOne(xSwing renderButton(updateBtnAction ) , awt.BorderLayout.PAGE_END )
       
-      c
-   } )
-   }
+//       c
+//    } )
+//    }
 
-   protected
-   def disposeAllWindows() : Unit = {
-      fE.close()
-   }
+//    protected
+//    def disposeAllWindows() : Unit = {
+//       fE.close()
+//    }
 
-   protected
-   def runCloseButtonAction() : Unit = {
-            ;
-            disposeAllWindows()
-            closeAllPayloadResources()
-   }
+//    protected
+//    def runCloseButtonAction() : Unit = {
+//             ;
+//             disposeAllWindows()
+//             closeAllPayloadResources()
+//    }
 
-   // ???
+//    // ???
 
-   override
-   def close(): Unit = {
-      runCloseButtonAction()
-   }
+//    override
+//    def close(): Unit = {
+//       runCloseButtonAction()
+//    }
 
-}
+// }
 
 class rmpdStart()
 extends AnyRef with java.io.Closeable
