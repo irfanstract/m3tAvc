@@ -16,6 +16,13 @@ package avcframewrk.util.errorchecking
 
 
 
+/**
+ * 
+ * a workaround to "error: unreducible application for (...) to wildcardarguments"
+ * 
+ * sadly, neither of these candidates each `EC` satisfy `[T] ?=>> (EC[T] =: T[?] ) `
+ * 
+ */
 object WildcardTypedInstancing
 {
 
