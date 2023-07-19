@@ -26,6 +26,10 @@ package avcframewrk.util.errorchecking
 object WildcardTypedInstancing
 {
 
+   type Main[ImplFactoryFor[_] ]
+      >: &&&@%&%![ImplFactoryFor ]
+      <: &&&@%&%![ImplFactoryFor ]
+
    // case class Ef1[I[_], E0](value : I[E0] ) { type E = E0 }
    // object Ef1
    // {
