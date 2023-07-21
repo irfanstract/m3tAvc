@@ -26,6 +26,8 @@ package cbsq.avc
 
 export tsevp.EventIterator
 
+export tsevp.EventIteratorByItemAndDesignation
+
 export tsevp.newEventEmitter
 
 protected
