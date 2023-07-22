@@ -32,6 +32,22 @@ Any
 
 }
 
+trait DefinesDoDescribeButtonA2[
+   -A1,
+   -A2,
+   +R,
+]
+extends
+Any
+{
+
+   def describeButton(
+      arg1: A1 ,
+      arg2: A2 ,
+   ) : R
+
+} /* trait DefinesDoDescribeButtonA2 */
+
 trait DefinesDoRenderButtonA1[-A1, +R] extends
 Any
 {
@@ -39,6 +55,18 @@ Any
    def renderButton(c: A1 ) : R
 
 }
+
+trait DefinesDoDescribeButtonA1[
+   -A1,
+   +R,
+]
+extends
+Any
+{
+
+   def describeButton(c: A1 ) : R
+
+} /* trait DefinesDoDescribeButtonA1 */
 
 
 
