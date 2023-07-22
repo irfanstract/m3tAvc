@@ -38,6 +38,21 @@ trait DefinesDoRenderDynamicPoster[-A, +R]
 
 }
 
+trait DefinesDoDescribeDynamicPoster[-A, +R]
+{
+
+   /**
+    * 
+    * treats `c: A` as a possibly-animating source of a graphical content, and
+    * return
+    * (a markup for)
+    * a display-component for it which will animate accordingly
+    * 
+    */
+   def describeDynamicPoster(c: A ): R
+
+} /* type DefinesDoDescribeDynamicPoster */
+
 
 
 
