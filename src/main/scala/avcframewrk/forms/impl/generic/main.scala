@@ -62,6 +62,17 @@ trait XAclImpl
 
    val asDescribesDoRenderCommonContent : XImplementsDoDescribeCommonContent[this.type]
 
+   extension (operand0: RDoc ) {
+
+      /**
+       * 
+       * concat
+       * 
+       */
+      def ++(operand1: RDoc): RDoc
+
+   }
+
 }
 
 object XAclImpl
@@ -82,6 +93,12 @@ object XAclImpl
       (c: XAclImpl ) => {
 
          //
+
+         (e : c.RDoc ) => {
+
+            e ++ e
+
+         } : Unit
          
       } : Unit
       
@@ -118,12 +135,13 @@ type XddccImplByReceiver[+C0 <: Singleton & XAclImpl ]
       (
          ({
 
-            val c1 : C0 @annotation.unchecked.uncheckedVariance
-            type T2 = XddccImpl[c1.RDoc ]
+            val ctx
+               : C0 @annotation.unchecked.uncheckedVariance
 
-            type TFinal = T2
+            type Main
+               = XddccImpl[ctx.RDoc ]
          })
-         #TFinal
+         #Main
       )
    )
 
@@ -156,7 +174,66 @@ AnyRef
 
    )
    : RDoc
+
+   /**
+    * 
+    * a prosal list,
+    * with the orderedness depends on the `CC` which `children` implements,
+    * 
+    */
+   def describePhrasalList(
+      children: collection.immutable.Iterable[RDoc] ,
+      header: RDoc ,
+
+   )
+   : RDoc
    
+   /**
+    * 
+    * a list of values each together with label,
+    * with the orderedness depends on the `CC` which `children` implements,
+    * 
+    */
+   def describeKeyList[
+      Value ,
+   ](
+      dataSet: (
+         XDataListDescriptorByItem[Value]
+      ) ,
+      renderItemByKey: Value => RDoc ,
+
+   )
+   : RDoc
+
+   type XDataListDescriptor
+
+   val XDataListDescriptor
+   : (
+      AnyRef
+      & XDldFactoryImpl[XDataListDescriptorByItem ]
+   )
+
+   type XDataListDescriptorByItem[+Item]
+      <: XDataListDescriptor
+
+}
+
+trait XDldFactoryImpl[+ROf <: [Item] =>> Any ]
+{
+
+   def apply[
+      Value ,
+   ](
+      keySet: (
+         ([CC <: [Item] =>> collection.Iterable[Item] ] =>> (
+            CC[AnyVal] | CC[String]
+         ))[[E] =>> (Seq[E] | Set[E] ) ]
+      ) ,
+      getItemByKey: Any => Value ,
+
+   )
+   : ROf[Value]
+
 }
 
 type XImplementsDoDescribeDiscretelyProgressiveCont[+This <: Singleton & XAclImpl ]
@@ -168,16 +245,17 @@ type XFpDddpcByAc[+C0 <: Singleton & XAclImpl ]
    = (
       ({
          
-         val c1 : C0 @annotation.unchecked.uncheckedVariance
-         type T2 = (
-            avcframewrk.util.forms.pure.XDefinesDoDescribeDiscretelyProgressiveCont.IndependentlyByRDoc[(
-               c1.RDoc
-            )]
-         )
+         val ctx
+            : C0 @annotation.unchecked.uncheckedVariance
+         type Main
+            = (
+               avcframewrk.util.forms.pure.XDefinesDoDescribeDiscretelyProgressiveCont.IndependentlyByRDoc[(
+                  ctx.RDoc
+               )]
+            )
 
-         type TFinal = T2
       })
-      #TFinal
+      #Main
    )
 
 trait XddPre[+This <: XAclImpl ](val this1: This) {
