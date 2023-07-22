@@ -16,12 +16,13 @@ package cbsq.avc.quick
 
 
 
-// @main
-// def runMimempImgDemo() : Unit = {
+@main
+def runMimempImgDemo() : Unit = {
 
-//    startMimempImgDemo()
+   // startMimempImgDemo()
+   ???
 
-// }
+}
 
 // class startMimempImgDemo(
 //    // args
