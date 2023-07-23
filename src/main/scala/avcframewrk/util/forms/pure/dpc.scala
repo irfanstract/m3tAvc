@@ -34,7 +34,13 @@ object XDefinesDoDescribeDiscretelyProgressiveCont
        * describe
        * a discretely-progressive anim whose (key)frames come from the given `EventIterator`
        * 
-       * the diffing will solely be based on the final `RDoc`s
+       * implementation-notes for `describeDiscretelyProgressiveContent`:
+       * 
+       * to maintain efficiency in case of lifecycle-based backend,
+       * implementations
+       * should try to keep the peer mounted and simply dispatch something like *set-content-to*,
+       * unless the type clearly changes (eg from *picture* to *text-field*)
+       * 
        * 
        */
       def describeDiscretelyProgressiveContent(
@@ -51,7 +57,12 @@ object XDefinesDoDescribeDiscretelyProgressiveCont
        * and
        * which'd dispatch `r` to render the ctrl value
        * 
-       * the diffing will primarily be based on the values returned by `i1`
+       * implementation-notes for `describeDiscretelyProgressiveValue`:
+       * 
+       * the intent is that the refresh-calls be restricted to updates ; however,
+       * the machinery had no way to check the callback's purity, so
+       * it would be very important to re-run the callback to compute updated value and,
+       * if desired, emit a deprec warning
        * 
        */
       def describeDiscretelyProgressiveValue[

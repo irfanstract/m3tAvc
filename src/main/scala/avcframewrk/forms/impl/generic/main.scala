@@ -253,78 +253,7 @@ object XDefinesDoDescribeSingularElement
 
 }
 
-object XDefinesDoDescribePhrasalOrKeyList
-{
-
-   type ByR[RDoc]
-      = Impl[RDoc]
-
-   protected
-   trait Impl[RDoc]
-   {
-
-      /**
-       * 
-       * a prosal list,
-       * with the orderedness depends on the `CC` which `children` implements,
-       * 
-       */
-      def describePhrasalList(
-         children: collection.immutable.Iterable[RDoc] ,
-         header: RDoc ,
-
-      )
-      : RDoc
-      
-      /**
-       * 
-       * a list of values each together with label,
-       * with the orderedness depends on the `CC` which `children` implements,
-       * 
-       */
-      def describeKeyList[
-         Value ,
-      ](
-         dataSet: (
-            DklDataSetByItem[Value]
-         ) ,
-         renderItemByKey: Value => RDoc ,
-
-      )
-      : RDoc
-
-      type DklDataSet
-
-      val DklDataSet
-      : (
-         AnyRef
-         & XDldFactoryImpl[DklDataSetByItem ]
-      )
-
-      type DklDataSetByItem[+Item]
-         <: DklDataSet
-
-   }
-   
-}
-
-trait XDldFactoryImpl[+ROf <: [Item] =>> Any ]
-{
-
-   def apply[
-      Value ,
-   ](
-      keySet: (
-         ([CC <: [Item] =>> collection.Iterable[Item] ] =>> (
-            CC[AnyVal] | CC[String]
-         ))[[E] =>> (Seq[E] | Set[E] ) ]
-      ) ,
-      getItemByKey: Any => Value ,
-
-   )
-   : ROf[Value]
-
-}
+export avcframewrk.util.forms.pure.XDefinesDoDescribePhrasalOrKeyList
 
 type XImplementsDoDescribeDiscretelyProgressiveCont[+This <: Singleton & XAclTemplativeOpsImpl ]
    >: XFpDddpcByAc[This ]
