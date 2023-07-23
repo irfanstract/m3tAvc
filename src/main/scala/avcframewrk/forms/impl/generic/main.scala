@@ -87,7 +87,7 @@ lazy val _ = {
       //
       (() => {
 
-         c describeCriticalityLabel(msg = c describeAwtImageObj(???) )
+         c describeCriticalityLabel(msg = c describeAwtImageDisplay(???) )
          
       } : Unit )
 
@@ -98,10 +98,30 @@ lazy val _ = {
          
       } : Unit )
 
+      //
+      (() => {
+
+         c describeButton(???)
+         
+      } : Unit )
+
+      ()
+
+      //
+      (() => {
+
+         // c describeButton(c describeActible(label = ???, callback = ??? ) )
+
+         ()
+
+      } : Unit )
+
    } : Unit
    
    (c: XAclTemplativeOpsImpl { type RDoc >: AnyRef } ) => {
 
+      XAclTemplativeOpsImpl.getDdcc(c)
+      
       //
       (() => {
 
@@ -113,10 +133,12 @@ lazy val _ = {
    
 }
 
-// lazy val _ = {
+lazy val _ = {
 
-//    ??? : ({ type Main[-A] = XAclTemplativeOpsByRDoc[A] })#Main[AnyRef]
-// }
+   // ??? : ({ type Main[-A] = XAclTemplativeOpsByRDoc[A] })#Main[AnyRef]
+
+   // { type Main = [C <: [+_] =>> Any ] =>> Unit }
+}
 
 type XAclTemplativeOpsByRDoc[ActualRDoc]
    = XAclTemplativeOpsImpl { type RDoc >: ActualRDoc <: ActualRDoc }
@@ -147,6 +169,26 @@ trait XAclTemplativeOpsImpl
 
    }
 
+   /**
+    * 
+    * an actionable.
+    * 
+    */
+   type Actible
+
+   def describeActible(
+      label : RDoc ,
+      callback : PartialFunction[Any, Unit] ,
+   )
+   : Actible
+
+   val representor
+   : XAclTemplativeOpsImpl.this.type
+   = XAclTemplativeOpsImpl.this
+
+   type representorS
+      = representor.type
+
 }
 
 object XAclTemplativeOpsImpl
@@ -162,26 +204,61 @@ object XAclTemplativeOpsImpl
    : this1.asDescribesDoRenderCommonContent.type
    = this1.asDescribesDoRenderCommonContent
    
-   protected[avcframewrk] 
-   type CtxBeingCAndMainBeingCtxRDoc[+C0 <: Singleton & XAclTemplativeOpsImpl ]
-      = {
-         
+   type XItsRepresentor[+C0 <: Singleton & XAclTemplativeOpsImpl ]
+      = (
+         (
+            (
+            {
+               
+               val ctx
+                  : C0
+
+               type Main
+                  = ctx.representorS
+
+            }
+            )
+            #Main
+         )
+      )
+
+   type XItsRDoc[+C0 <: Singleton & XAclTemplativeOpsImpl ]
+      = (
+         (
+            (
+            {
+               
                val ctx
                   : C0
 
                type Main
                   = ctx.RDoc
 
-      }
+            }
+            )
+            #Main
+         )
+      )
 
-   type XRDocFrom[+C0 <: Singleton & XAclTemplativeOpsImpl ]
-      >: XItsRDoc[C0]
-      <: XItsRDoc[C0]
-
-   type XItsRDoc[+C0 <: Singleton & XAclTemplativeOpsImpl ]
+   // implicit
+   // def getAcb(this1 : XAclTemplativeOpsImpl)
+   // : avcframewrk.util.forms.pure.DefinesDoDescribeButtonA1[this1.Actible, this1.RDoc]
+   // = ???
+   
+   type XItsXActible[+C0 <: Singleton & XAclTemplativeOpsImpl ]
       = (
          (
-            CtxBeingCAndMainBeingCtxRDoc[C0]
+            (
+            {
+               
+               val ctx
+                  : C0
+
+               type Main
+                  = ctx.Actible
+
+            }
+            )
             #Main
          )
       )
@@ -189,16 +266,57 @@ object XAclTemplativeOpsImpl
 }
 
 type XImplementsDoDescribeCommonContent[+This <: Singleton & XAclTemplativeOpsImpl ]
-   >: XddccImplByReceiver[This ]
-   <: XddccImplByReceiver[This ]
+   // >: XddccImplByReceiver[This ]
+   // <: XddccImplByReceiver[This ]
+   >: XddccImplByRepresentor[(XImplementsDoDescribeCommonContent.RepresentorBaseline & XAclTemplativeOpsImpl.XItsRepresentor[This ]) @annotation.unchecked.uncheckedVariance ]
+   <: XddccImplByRepresentor[(XImplementsDoDescribeCommonContent.RepresentorBaseline & XAclTemplativeOpsImpl.XItsRepresentor[This ]) @annotation.unchecked.uncheckedVariance ]
 
+object XImplementsDoDescribeCommonContent
+{
+
+   type RepresentorBaseline
+      >: XAclTemplativeOpsImpl#representorS
+      <: XAclTemplativeOpsImpl#representorS
+
+   //
+   
+}
+
+@deprecated
 type XddccImplByReceiver[+C0 <: Singleton & XAclTemplativeOpsImpl ]
-   = XddccImpl[XAclTemplativeOpsImpl.XItsRDoc[C0 ] @annotation.unchecked.uncheckedVariance ]
+   = (
+      XddccImpl[
+         XAclTemplativeOpsImpl.XItsRDoc[C0 ] @annotation.unchecked.uncheckedVariance ,
+         (XImplementsDoDescribeCommonContent.RepresentorBaseline & XAclTemplativeOpsImpl.XItsRepresentor[C0 ]) @annotation.unchecked.uncheckedVariance ,
+      ]
+   )
 
-trait XddccImpl[RDoc ]
+type XddccImplByRepresentor[Representor <: Singleton & XImplementsDoDescribeCommonContent.RepresentorBaseline ]
+   = (
+      ({
+         val representor : Representor
+
+         type Main
+         = 
+         XddccImpl[
+            representor.RDoc ,
+            representor.type ,
+         ]
+      })
+      #Main
+   )
+
+protected
+trait XddccImpl[
+   RDoc ,
+   +R <: Singleton & XImplementsDoDescribeCommonContent.RepresentorBaseline ,
+]( )
 extends
 AnyRef
-with XDefinesDoDescribeSingularElement.ByR[RDoc]
+with XDefinesDoDescribeSingularElement.ByRepresentor[(XImplementsDoDescribeCommonContent.RepresentorBaseline) & R ]
+// with (
+//    avcframewrk.util.forms.pure.DefinesDoDescribeButtonA1[XAclTemplativeOpsImpl.XItsXActible[C0] @annotation.unchecked.uncheckedVariance , RDoc]
+// )
 with XDefinesDoDescribePhrasalOrKeyList.ByR[RDoc]
 {
 
@@ -219,14 +337,33 @@ object XddccImpl {
 object XDefinesDoDescribeSingularElement
 {
 
-   type ByR[RDoc]
-      = Impl[RDoc]
-      
+   type RepresentorBaseline
+      >: XImplementsDoDescribeCommonContent.RepresentorBaseline
+      <: XImplementsDoDescribeCommonContent.RepresentorBaseline
+
+   type ByRepresentor[
+      +Representor <: Singleton & RepresentorBaseline ,
+   ]
+   = Impl[Representor]
+
    protected
-   trait Impl[RDoc]
+   trait Impl[
+      +Representor <: Singleton & RepresentorBaseline ,
+   ](
+      val representor : Representor ,
+   )
+   extends
+   AnyRef
+   with avcframewrk.util.forms.pure.DefinesDoDescribeButtonA1[Nothing, Any & representor.RDoc]
    {
 
+      // export representor.{*}
+      export representor.{RDoc, Actible}
+
       //
+
+      // def describeTrigger(c: Actible)
+      // : RDoc
       
       /**
        * 
@@ -241,7 +378,14 @@ object XDefinesDoDescribeSingularElement
       )
       : RDoc
 
-      def describeAwtImageObj(
+      def describeNumericalDisplay(
+         v: String | AnyVal ,
+         
+      )
+      (using Numeric[? >: v.type <: Any ] )
+      : RDoc
+
+      def describeAwtImageDisplay(
          v: java.awt.Image ,
 
       )
@@ -253,78 +397,7 @@ object XDefinesDoDescribeSingularElement
 
 }
 
-object XDefinesDoDescribePhrasalOrKeyList
-{
-
-   type ByR[RDoc]
-      = Impl[RDoc]
-
-   protected
-   trait Impl[RDoc]
-   {
-
-      /**
-       * 
-       * a prosal list,
-       * with the orderedness depends on the `CC` which `children` implements,
-       * 
-       */
-      def describePhrasalList(
-         children: collection.immutable.Iterable[RDoc] ,
-         header: RDoc ,
-
-      )
-      : RDoc
-      
-      /**
-       * 
-       * a list of values each together with label,
-       * with the orderedness depends on the `CC` which `children` implements,
-       * 
-       */
-      def describeKeyList[
-         Value ,
-      ](
-         dataSet: (
-            DklDataSetByItem[Value]
-         ) ,
-         renderItemByKey: Value => RDoc ,
-
-      )
-      : RDoc
-
-      type DklDataSet
-
-      val DklDataSet
-      : (
-         AnyRef
-         & XDldFactoryImpl[DklDataSetByItem ]
-      )
-
-      type DklDataSetByItem[+Item]
-         <: DklDataSet
-
-   }
-   
-}
-
-trait XDldFactoryImpl[+ROf <: [Item] =>> Any ]
-{
-
-   def apply[
-      Value ,
-   ](
-      keySet: (
-         ([CC <: [Item] =>> collection.Iterable[Item] ] =>> (
-            CC[AnyVal] | CC[String]
-         ))[[E] =>> (Seq[E] | Set[E] ) ]
-      ) ,
-      getItemByKey: Any => Value ,
-
-   )
-   : ROf[Value]
-
-}
+export avcframewrk.util.forms.pure.XDefinesDoDescribePhrasalOrKeyList
 
 type XImplementsDoDescribeDiscretelyProgressiveCont[+This <: Singleton & XAclTemplativeOpsImpl ]
    >: XFpDddpcByAc[This ]
