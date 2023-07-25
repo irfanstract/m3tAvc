@@ -566,6 +566,24 @@ object AclNamerOps
          >: XAclImpl
          <: XAclImpl
 
+      extension (ctx: XAcl) {
+
+         def open(c: templativeRepresentor.RDoc )
+         : java.io.Closeable
+         = {
+            
+            new AnyRef with java.io.Closeable
+            {
+
+               override
+               def close(): Unit
+               = {}
+
+            }
+         }
+
+      }
+
    }
 
    {}
