@@ -262,6 +262,31 @@ object AclNamerOps
 
       }
       
+      /** 
+       * 
+       * `XDefinesDoDescribePhrasalOrKeyList`.
+       * 
+       */
+      trait XAcesImplExdpks[-XAllComponentsList]
+      {
+         this : (AnyRef & XAcesImplNondepPart[XAllComponentsList] ) =>
+
+         //
+
+         /* `avcframewrk.util.forms.pure.XDefinesDoDescribePhrasalOrKeyList.ByR` */
+         extension (receiver : XAllComponentsList )
+         {
+
+            protected 
+            def exddpk
+            : avcframewrk.util.forms.pure.XDefinesDoDescribePhrasalOrKeyList.ByR[RDoc]
+
+            export exddpk.{*}
+
+         }
+
+      }
+      
       trait XActiblesOperatorImplCore[-XAllComponentsList]
       {
          this : (
@@ -290,6 +315,7 @@ object AclNamerOps
       AnyRef
       with XAcesImplNondepPart[XAclTemplativeOpsImpl]
       with XAcesImplExdccs[XAclTemplativeOpsImpl]
+      with XAcesImplExdpks[XAclTemplativeOpsImpl]
       {
          this : (
             AnyRef
