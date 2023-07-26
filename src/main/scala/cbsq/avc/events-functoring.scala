@@ -140,51 +140,11 @@ with TsevpIterableOnceOpDefs
 
 }
 
-/**
- * 
- * `TsevpEventType`
- * 
- * initially, this was `enum`, but
- * I changed this into being `sealed class`, for these reasons
- * (a) `enum`s cannot be subclassed ☹
- * (b) *type-inference* involving `enum`s applies widening in ways obscuring the original `Designation` ☹
- * 
- */
-sealed
-abstract class TsevpEventType {
-
-   val necessitatesIdempotence : Boolean
-
-}
-
-object TsevpEventType {
-
-   final
-   lazy val values: IArray[TsevpEventType] = {
-
-      IArray(
-         ofUpdate ,
-         ofAction ,
-      )
-   }
-
-   case object ofUpdate extends
-   TsevpEventType
-   {
-
-      inline val necessitatesIdempotence = true
-
-   }
-
-   case object ofAction extends
-   TsevpEventType
-   {
-
-      inline val necessitatesIdempotence = false
-
-   }
-
-}
+// export avcframewrk.util.effectsystem.{EventSeqEffectExtent as TsevpEventType }
+final
+lazy
+val  TsevpEventType = avcframewrk.util.effectsystem.EventSeqEffectExtent
+type TsevpEventType = avcframewrk.util.effectsystem.EventSeqEffectExtent
 
 protected
 trait TsevpIterableOnceOpDefs
