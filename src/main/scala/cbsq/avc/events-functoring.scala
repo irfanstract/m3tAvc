@@ -81,33 +81,10 @@ with TsevpIterableOnceOpDefs
 
    // sealed 
    trait XFactoryOps
+   extends
+   AnyRef
+   with avcframewrk.util.xconcurrent.eventflow.XAsyncMonadFactoryOpsXAsyncMonadFactoryOps
    {
-
-      type InstanceByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
-         <: (
-            AnyRef
-            & collection.WithFilter[E, [NewE] =>> InstanceByItemAndDesignation[NewE, AssignedEventType] ]
-            & java.io.Closeable
-         )
-      
-      /**
-       * 
-       * allocates a new pipe and
-       * returns a pair of itc(s) together proxying the both sides of that (newly-allocated) pipe
-       * 
-       */
-      def newPipe[E](
-         //
-
-         evtType : TsevpEventType
-         ,
-
-      ) : (E => Unit , InstanceByItemAndDesignation[E, evtType.type] )
-      
-      opaque type NewvetImplSpecificToken <: Any
-         = Unit
-      protected
-      given NewvetImplSpecificToken = ()
 
    }
 
@@ -138,90 +115,38 @@ with TsevpIterableOnceOpDefs
       
    }
 
-}
+   implicit
+   object evtIteratorSingleArgFunctory extends
+   AnyRef
+   with avcframewrk.util.xconcurrent.eventflow.XAsyncMonadFactoryOpsAsyncMonadXMissingSingleArgFunctory[factory.type](factory)
+   {
 
-// export avcframewrk.util.effectsystem.{EventSeqEffectExtent as TsevpEventType }
-final
-lazy
-val  TsevpEventType = avcframewrk.util.effectsystem.EventSeqEffectExtent
-type TsevpEventType = avcframewrk.util.effectsystem.EventSeqEffectExtent
-
-protected
-trait TsevpIterableOnceOpDefs
-extends
-AnyRef
-{
-   this : (
-      AnyRef
-      & TsevpOps
       //
-   ) =>
 
-   //
+   }
    
-   /* 
-    * 
-    * can't directly `extends` `IterableOnceOps`, since
-    * `IterableOnceOps` defines synchronous peeking methods while `EventIterator` doesn't
-    * 
-    */
-   
-   export tsevpIterableOps.*
+   implicit
+   object evtIteratorMiscCoreOps extends
+   AnyRef
+   {
 
-   object tsevpIterableOps {
+      //
 
-      /* flatten */ extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
 
          /**
           * 
-          * mimics the same-named method in `IterableOnceOps` .
-          * mainly for filtering-or-mapping the items (*event*s) ;
-          * does not switch `designation` at all .
+          * the number of fires.
+          * whose `eventType` will be `ofUpdate`
+          * 
+          * `Long` rather than `Int`,
+          * to minimise the potential issues like overflows
           * 
           */
-         def flatten[NewItrValue](using OriginalItrItem <:< IterableOnce[NewItrValue] ) = {
+         def counting() = {
 
             originalIterator
-            .flatMap(summon[OriginalItrItem <:< IterableOnce[NewItrValue] ] )
-         }
-
-      } /* flatten */
-
-      extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
-
-         /**
-          * 
-          * mimics the same-named method in `IterableOnceOps` .
-          * mainly for filtering-or-mapping the items (*event*s) ;
-          * does not switch `designation` at all .
-          * 
-          */
-         def collect[Value](f: PartialFunction[OriginalItrItem, Value] ) = {
-
-            originalIterator
-            .flatMap((f.lift).apply _ )
-         }
-
-      }
-
-      extension [E, AssignedEventType <: TsevpEventType ](itr0: EventIteratorByItemAndDesignation[E , AssignedEventType ] ) {
-
-         /**
-          * 
-          * mimics the same-named method in `IterableOnceOps` .
-          * mainly for filtering-or-mapping the items (*event*s) ;
-          * does not switch `designation` at all .
-          * 
-          */
-         def filter(f: E => Boolean ) = {
-
-            import f.{apply => test }
-
-            itr0
-            .collect({
-               case item if test(item) =>
-                  item
-            })
+            .scanLeft[Long](0 )((i0, _ ) => (i0 + 1 ) )
          }
 
       }
@@ -234,11 +159,13 @@ AnyRef
           * turns into `TsevpEventType.ofUpdate.Inheritor`; this is all about *state*
           * 
           */
-         def scanLeft[State](seed: State )(digest: (State, OriginalItrItem) => State ) : (
+         def scanLeft[State](seed: State )(digest: (State, OriginalItrItem) => State )
+         : (
             //
             EventIteratorByItemAndDesignation[State, TsevpEventType.ofUpdate.type ]
 
-         ) = {
+         )
+         = {
 
             val stateVar = {
                /**
@@ -276,7 +203,13 @@ AnyRef
 
       }
 
-      extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
+      extension [
+         OriginalItrItem,
+         AssignedEventType <: TsevpEventType ,
+
+      ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] )
+      (using itsIdempotentality: ({ val t1: AssignedEventType ; type T2 = t1.necessitatesIdempotence.type })#T2 <:< true )
+      {
 
          /**
           * 
@@ -285,7 +218,9 @@ AnyRef
           * one which reduces consecutive duplicates into one
           * 
           */
-         def deduplicate()(using itsIdempotentality: AssignedEventType <:< TsevpEventType.ofUpdate.type ) = {
+         def deduplicate()
+         // (using itsIdempotentality: AssignedEventType <:< TsevpEventType.ofUpdate.type )
+         = {
 
             originalIterator
             .scanLeft[Option[OriginalItrItem] ](None )({
@@ -307,7 +242,80 @@ AnyRef
 
       } /* deduplicate */
 
-      extension [OriginalItrItem ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem, TsevpEventType ] ) {
+      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
+
+         def find(f: OriginalItrItem => Boolean )
+         : concurrent.Future[OriginalItrItem]
+         = {
+
+            val p = {
+               avcframewrk.util.LateBoundValue.newInstance[OriginalItrItem]
+            }
+
+            lazy val newItr : EventIterator[OriginalItrItem] = {
+
+               originalIterator
+               .tapEach(item => {
+
+                  if f(item) then {
+
+                     if { p tryComplete(util.Success(item) ) } != true then {
+                        
+                        throw new java.util.ConcurrentModificationException
+                     }
+
+                     newItr.close() 
+                     
+                  }
+
+               })
+            }
+
+            p.asFuture
+         }
+
+      }
+
+   }
+
+}
+
+// export avcframewrk.util.effectsystem.{EventSeqEffectExtent as TsevpEventType }
+final
+lazy
+val  TsevpEventType = avcframewrk.util.effectsystem.EventSeqEffectExtent
+type TsevpEventType = avcframewrk.util.effectsystem.EventSeqEffectExtent
+
+protected
+trait TsevpIterableOnceOpDefs
+extends
+AnyRef
+{
+   this : (
+      AnyRef
+      & TsevpOps
+      //
+   ) =>
+
+   //
+   
+   /* 
+    * 
+    * can't directly `extends` `IterableOnceOps`, since
+    * `IterableOnceOps` defines synchronous peeking methods while `EventIterator` doesn't
+    * 
+    */
+   
+   // export tsevpIterableOps.*
+
+   implicit
+   object tsevpIterableExtraOps {
+
+      extension [
+         OriginalItrItem ,
+
+      ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem, TsevpEventType ] )
+      {
 
          /**
           * 
@@ -364,34 +372,15 @@ AnyRef
 
       } /* `sliding` */
 
-      extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
+      // extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
-         def tapEach[U](f: OriginalItrItem => U ) = {
+      //    def tapEach[U](f: OriginalItrItem => U ) = {
 
-            originalIterator
-            .map(item => { f(item) ; item })
-         }
+      //       originalIterator
+      //       .map(item => { f(item) ; item })
+      //    }
 
-      }
-
-      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
-
-         /**
-          * 
-          * the number of fires.
-          * whose `eventType` will be `ofUpdate`
-          * 
-          * `Long` rather than `Int`,
-          * to minimise the potential issues like overflows
-          * 
-          */
-         def counting() = {
-
-            originalIterator
-            .scanLeft[Long](0 )((i0, _ ) => (i0 + 1 ) )
-         }
-
-      }
+      // }
 
       extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
@@ -429,38 +418,6 @@ AnyRef
 
                newItr
             }
-         }
-
-      }
-
-      extension [OriginalItrItem ](originalIterator: EventIterator[OriginalItrItem] ) {
-
-         def find(f: OriginalItrItem => Boolean ) : concurrent.Future[OriginalItrItem] = {
-
-            val p = {
-               avcframewrk.util.LateBoundValue.newInstance[OriginalItrItem]
-            }
-
-            lazy val newItr : EventIterator[OriginalItrItem] = {
-
-               originalIterator
-               .tapEach(item => {
-
-                  if f(item) then {
-
-                     if { p tryComplete(util.Success(item) ) } != true then {
-                        
-                        throw new java.util.ConcurrentModificationException
-                     }
-
-                     newItr.close() 
-                     
-                  }
-
-               })
-            }
-
-            p.asFuture
          }
 
       }
