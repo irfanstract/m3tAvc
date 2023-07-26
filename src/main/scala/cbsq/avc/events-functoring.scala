@@ -54,11 +54,7 @@ val tsevpFactoryImpl : tsevp.XFactoryOps = {
    extends
    EventIteratorImplPre[E, [E1] =>> (
       EventIteratorImpl[E1, (
-         /**
-          * by definition of those four methods,
-          * the resulting views can confidently inherit the src's `evtType`, too 
-          */
-         (evtType.type & AssignedEvtType)
+         (AssignedEvtType)
       )]
    ) ]
    {
