@@ -81,33 +81,10 @@ with TsevpIterableOnceOpDefs
 
    // sealed 
    trait XFactoryOps
+   extends
+   AnyRef
+   with avcframewrk.util.concurrent.eventflow.XFactoryOps
    {
-
-      type InstanceByItemAndDesignation[+E, +AssignedEventType <: TsevpEventType]
-         <: (
-            AnyRef
-            & collection.WithFilter[E, [NewE] =>> InstanceByItemAndDesignation[NewE, AssignedEventType] ]
-            & java.io.Closeable
-         )
-      
-      /**
-       * 
-       * allocates a new pipe and
-       * returns a pair of itc(s) together proxying the both sides of that (newly-allocated) pipe
-       * 
-       */
-      def newPipe[E](
-         //
-
-         evtType : TsevpEventType
-         ,
-
-      ) : (E => Unit , InstanceByItemAndDesignation[E, evtType.type] )
-      
-      opaque type NewvetImplSpecificToken <: Any
-         = Unit
-      protected
-      given NewvetImplSpecificToken = ()
 
    }
 
@@ -166,9 +143,10 @@ AnyRef
     * 
     */
    
-   export tsevpIterableOps.*
+   // export tsevpIterableOps.*
 
-   object tsevpIterableOps {
+   implicit
+   object tsevpIterableExtraOps {
 
       /* flatten */ extension [OriginalItrItem, AssignedEventType <: TsevpEventType ](originalIterator: EventIteratorByItemAndDesignation[OriginalItrItem , AssignedEventType ] ) {
 
