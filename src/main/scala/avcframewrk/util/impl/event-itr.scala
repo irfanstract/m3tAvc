@@ -306,7 +306,6 @@ val tsevpFactoryImpl : tsevp.XFactoryOps = {
                   lastKnownValueOption = None ,
                )
                
-               match { case c => evtType.pretendEvtItrAsBeingOfThisType(c) }
             }
 
             ((e: E) => require(peer.propagateItem(e), s"failing the emit of ${e}" ) , peer )
