@@ -475,8 +475,13 @@ AnyRef
 
 
 @main
+// @scala.scalajs.js.annotation.main
 def runEventsFunctoringDemo(): Unit = {
    import language.unsafeNulls
+
+   ()
+
+   ()
 
    val (emit, eh1) = {
       newEventEmitter[(Unit, Int)](
