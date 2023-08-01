@@ -65,6 +65,46 @@ libraryDependencies ++= {
 val packagesParentDir
 = file("packages")
 
+lazy val avFwUtilityLibProject
+=
+  (project in (packagesParentDir / "avfgenerics" ) )
+  .aggregate(
+
+    avFwHeadlessUtilityLibProject ,
+
+    avcFormsProject ,
+
+  )
+
+lazy val avFwHeadlessUtilityLibProject
+=
+  (project in (packagesParentDir / "avfservergenerics" ) )
+  .aggregate(
+
+    avcEvLibProject ,
+    
+  )
+
+lazy val avcEvLibProject
+=
+  (project in (packagesParentDir / "avfgevops" ) )
+  .settings(
+    
+    computeNecessaryProjectSettings() ,
+
+    //
+  )
+
+lazy val avcFormsProject
+=
+  (project in (packagesParentDir / "avfwforms" ) )
+  .settings(
+
+    computeNecessaryProjectSettings() ,
+
+    //
+  )
+
 
 
 
