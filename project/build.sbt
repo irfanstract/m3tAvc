@@ -1,0 +1,30 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// System.err.println(s"meta-build manifest")
+
+// scalaVersion := "2.13.11"
+
+
+
+
+
+
+
+
+
+
+
