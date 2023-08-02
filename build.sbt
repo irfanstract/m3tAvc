@@ -95,6 +95,13 @@ lazy val avcEvLibProject
     //
   )
 
+// lazy val amf
+// =
+//   (project in (packagesParentDir / "amfnf" ) )
+//   .aggregate(
+// 
+//   )
+
 lazy val avcFormsProject
 =
   (project in (packagesParentDir / "avfwforms" ) )
