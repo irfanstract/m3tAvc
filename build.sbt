@@ -16,13 +16,18 @@
 
 // System.err.println("SBT scalac version: " + scala)
 
+val suggestedScalaVersionV: String
+= "3.3.0"
+
+ThisBuild / scalaVersion := suggestedScalaVersionV
+
 def computeNecessaryProjectSettings() =
   Seq(
     //
 
     /* SCALAC OPTIONS */
 
-    scalaVersion := "3.3.0" ,
+    scalaVersion := suggestedScalaVersionV ,
 
     scalacOptions += "-Yexplicit-nulls" ,
 
