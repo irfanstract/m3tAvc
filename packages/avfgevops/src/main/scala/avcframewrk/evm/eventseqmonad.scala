@@ -22,8 +22,8 @@ package avcframewrk.evm
  * 
  */
 type EventSeqMonad[+E <: Product]
-   >: AsyncEnumerativeMonad[E]
-   <: AsyncEnumerativeMonad[E]
+   >: AsyncAlgMonad[E]
+   <: AsyncAlgMonad[E]
 
 /**
  * 
