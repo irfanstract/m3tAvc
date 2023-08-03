@@ -131,24 +131,17 @@ object Question {
          
       }
 
-      case object ofUnit extends Ops
+      case object ofUnit extends
+      Ops
+      with ImplXvi[
+         Unit,
+         (e: Unit) => Right[Nothing, Unit]
+         ,
+
+      ](
+         toEither = e => Right(() ) ,
+      )
       {
-
-         type XValue
-            >: Unit
-            <: Unit
-
-         extension (value: XValue ) {
-
-            def isPositive
-            : true
-            = true
-
-            def isNegative
-            : false
-            = false
-
-         }
 
       }
 
