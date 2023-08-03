@@ -103,6 +103,37 @@ object Question {
 
       }
 
+      /**
+       * 
+       * for nullable cases
+       * 
+       * rather than
+       * resorting to
+       * `Option` which does not provide any way to propagate "the failing-case details",
+       * we
+       * strive for `Either` which is as polymorphic as necessary
+       * 
+       */
+      case class OfOptional[LV, RV](
+         //
+
+         positiveCaseScheme
+         : (ResponseFormat.Ops { type XValue >: RV <: RV } )
+         ,
+         
+      )
+      extends
+      Ops
+      {
+
+         import annotation.unchecked.uncheckedVariance
+
+         type XValue
+            >: Either[LV , RV ]
+            <: Either[LV , RV ]
+
+      } /* `OfOptional` */
+
       //
 
    }
