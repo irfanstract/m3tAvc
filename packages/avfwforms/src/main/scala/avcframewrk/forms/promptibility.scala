@@ -141,7 +141,12 @@ protected
 object IResponseFormat
 { ResponseFormat =>
 
+   sealed
    trait Ops
+
+   trait XAlgebraicCaseOps
+   extends
+   Ops
    {
 
       type XValue
@@ -173,12 +178,12 @@ object IResponseFormat
       //
 
       positiveCaseScheme
-      : (ResponseFormat.Ops { type XValue >: RV <: RV } )
+      : (ResponseFormat.XAlgebraicCaseOps { type XValue >: RV <: RV } )
       ,
 
    )
    extends
-   Ops
+   XAlgebraicCaseOps
    with ImplXvi[
       Either[LV , RV ]
       ,
@@ -201,7 +206,7 @@ object IResponseFormat
    } /* `OfOptional` */
 
    case object ofUnit extends
-   Ops
+   XAlgebraicCaseOps
    with ImplXvi[
       Unit,
       (e: Unit) => Right[Nothing, Unit]
@@ -215,7 +220,7 @@ object IResponseFormat
    }
 
    case object ofBoolean extends
-   Ops
+   XAlgebraicCaseOps
    with ImplXvi[
       Boolean,
       (e: Boolean) => OboTrueGivesRightAndFalseGivesLeft[e.type]
@@ -249,7 +254,7 @@ object IResponseFormat
 
    @deprecated
    case object ofUtf extends
-   Ops
+   XAlgebraicCaseOps
    with ImplXvi[
       String,
       (e: String) => Right[Nothing, Unit]
@@ -286,9 +291,9 @@ object IResponseFormat
    )
    extends 
    AnyRef
-   with Ops
+   with XAlgebraicCaseOps
    {
-      this : Ops =>
+      this : XAlgebraicCaseOps =>
 
       type XValue
          >: E
