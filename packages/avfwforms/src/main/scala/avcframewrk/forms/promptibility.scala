@@ -73,6 +73,16 @@ object Question {
 
          type XValue
 
+         extension (value: XValue ) {
+
+            def isPositive
+            : Boolean
+
+            def isNegative
+            : Boolean
+
+         }
+
       }
 
       case object ofUnit extends Ops
@@ -81,6 +91,18 @@ object Question {
          type XValue
             >: Unit
             <: Unit
+
+         extension (value: XValue ) {
+
+            def isPositive
+            : true
+            = true
+
+            def isNegative
+            : false
+            = false
+
+         }
 
       }
 
@@ -91,6 +113,18 @@ object Question {
             >: Boolean
             <: Boolean
 
+         extension (value: XValue ) {
+
+            transparent inline
+            def isPositive
+            = value
+
+            transparent inline
+            def isNegative
+            = !value
+
+         }
+
       }
 
       @deprecated
@@ -100,6 +134,18 @@ object Question {
          type XValue
             >: String
             <: String
+
+         extension (value: XValue ) {
+
+            def isPositive
+            : true
+            = true
+
+            def isNegative
+            : false
+            = false
+
+         }
 
       }
 
@@ -131,6 +177,18 @@ object Question {
          type XValue
             >: Either[LV , RV ]
             <: Either[LV , RV ]
+
+         extension (value: XValue ) {
+
+            transparent inline
+            def isPositive
+            = value.isRight
+
+            transparent inline
+            def isNegative
+            = value.isLeft
+
+         }
 
       } /* `OfOptional` */
 
