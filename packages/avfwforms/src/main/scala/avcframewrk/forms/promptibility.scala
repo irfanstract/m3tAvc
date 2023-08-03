@@ -251,7 +251,7 @@ object Question {
 object Response {
 
    final
-   lazy val AlgebraicFormat
+   lazy val XAlgebraicFormat
    : Question.ResponseFormat.type
    = Question.ResponseFormat
 
