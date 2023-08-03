@@ -105,7 +105,8 @@ object Question {
 
 object Response {
 
-   given AlgebraicFormat
+   final
+   lazy val AlgebraicFormat
    : Question.ResponseFormat.type
    = Question.ResponseFormat
 
