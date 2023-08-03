@@ -73,6 +73,16 @@ object Question {
 
 }
 
+/**
+ * 
+ * describes the type/kind of the expected response.
+ * 
+ */
+final
+lazy val ResponseFormat
+   : IResponseFormat.type
+   = IResponseFormat
+
 object Response {
 
    final
