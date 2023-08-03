@@ -85,6 +85,52 @@ object Question {
 
       }
 
+      /**
+       * 
+       * implementative mixin
+       * constraining `XValue` to `E` and
+       * making those methods `transparent`.
+       * 
+       */
+      protected
+      trait ImplXvi[
+         E
+            <: Any
+         ,
+         +XPositivityWindow
+            <: (e: E) => Either[Any, Any]
+         ,
+         
+      ](
+         toEither : XPositivityWindow
+         ,
+      )
+      extends 
+      AnyRef
+      with Ops
+      {
+         this : Ops =>
+
+         type XValue
+            >: E
+            <: E
+
+         extension (value: XValue ) {
+
+            transparent inline
+            def isPositive
+            = toEither(value).isRight
+
+            transparent inline
+            def isNegative
+            = toEither(value).isLeft
+
+         }
+
+         //
+         
+      }
+
       case object ofUnit extends Ops
       {
 
@@ -106,26 +152,38 @@ object Question {
 
       }
 
-      case object ofBoolean extends Ops
+      case object ofBoolean extends
+      Ops
+      with ImplXvi[
+         Boolean,
+         (e: Boolean) => OboTrueGivesRightAndFalseGivesLeft[e.type]
+         ,
+
+      ](
+         toEither = e => oboTryAssertTrue(e) ,
+      )
       {
 
-         type XValue
-            >: Boolean
-            <: Boolean
-
-         extension (value: XValue ) {
-
-            transparent inline
-            def isPositive
-            = value
-
-            transparent inline
-            def isNegative
-            = !value
-
-         }
-
       }
+
+      /* does not throw */
+      def oboTryAssertTrue(e: Boolean) : OboTrueGivesRightAndFalseGivesLeft[e.type]
+      = {
+         e match {
+            case (_: true) =>
+               Right(() )
+            case (_: false) =>
+               Left(() )
+         }
+      }
+
+      type OboTrueGivesRightAndFalseGivesLeft[v <: Boolean]
+         <: (Right[Nothing, Any] | Left[Any, Nothing] )
+         =
+            v match {
+               case true => Right[Nothing, Any]
+               case false => Left[Any, Nothing]
+            } 
 
       @deprecated
       case object ofUtf extends Ops
@@ -170,25 +228,24 @@ object Question {
       )
       extends
       Ops
+      with ImplXvi[
+         Either[LV , RV ]
+         ,
+         (e: Either[LV , RV ] ) => e.type
+         ,
+
+      ](
+         toEither = e => e 
+         ,
+      )
       {
 
-         import annotation.unchecked.uncheckedVariance
+         lazy val _ = {
 
-         type XValue
-            >: Either[LV , RV ]
-            <: Either[LV , RV ]
+            val r01
+            = (Right(??? ) : XValue ).isPositive
 
-         extension (value: XValue ) {
-
-            transparent inline
-            def isPositive
-            = value.isRight
-
-            transparent inline
-            def isNegative
-            = value.isLeft
-
-         }
+         } : Unit
 
       } /* `OfOptional` */
 
