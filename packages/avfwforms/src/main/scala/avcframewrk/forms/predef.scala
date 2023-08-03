@@ -32,6 +32,10 @@ package avcframewrk.forms
 type TL[C <: AnyKind]
    = C
 
+export avcframewrk.forms.math.CSingleton
+
+export avcframewrk.forms.math.InstanceOf
+
 
 
 
