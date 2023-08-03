@@ -32,17 +32,8 @@ object Question {
 
    }
 
-   trait ResolverExtractor[C <: Any]
-   {
-
-      extension (c: C)
-         def resolver
-         : ItsResolver[c.type]
-
-      type ItsResolver[+c <: InstanceOf[C] ]
-         <: InstanceOf[Any]
-
-   }
+   type ResolverExtractor[-C <: Any]
+      = ResolutiveExtension[C]
 
    trait AcceptableResponseFormatDescExtractor[C <: Any]
    {
@@ -111,6 +102,21 @@ object Response {
    = Question.ResponseFormat
 
 }
+
+type ResolutiveExtension[-C <: Any]
+   = ResolutiveExtensionOps[? >: C]
+
+trait ResolutiveExtensionOps[C <: Any]
+{
+
+   extension (c: C)
+      def resolver
+      : ItsResolver[c.type]
+
+   type ItsResolver[+c <: InstanceOf[C] ]
+      <: InstanceOf[Any]
+
+} /* ResolutiveExtensionOps */
 
 
 
