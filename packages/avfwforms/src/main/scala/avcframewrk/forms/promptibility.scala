@@ -18,6 +18,14 @@ object Promptibility {
 
 }
 
+/* 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
 object Question {
 
    trait HeadlineExtractor[C <: Any]
