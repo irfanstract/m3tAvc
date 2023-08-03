@@ -18,6 +18,21 @@ object Promptibility {
 
 }
 
+type HeadlineInspectiveExtension[-C]
+   = HeadlineInspectiveExtensiveOps[? >: C]
+
+trait HeadlineInspectiveExtensiveOps[C]
+{
+
+   extension (c: C)
+      def headline
+      : ItsHeadline[c.type]
+
+   type ItsHeadline[+c <: InstanceOf[C] ]
+      <: InstanceOf[Any ]
+
+} /* `HeadlineInspectiveExtensiveOps` */
+
 /* 
  * 
  * 
@@ -28,17 +43,8 @@ object Promptibility {
 
 object Question {
 
-   trait HeadlineExtractor[C <: Any]
-   {
-
-      extension (c: C)
-         def headline
-         : ItsHeadline[c.type]
-
-      type ItsHeadline[+c <: InstanceOf[C] ]
-         <: InstanceOf[Any ]
-
-   }
+   type HeadlineExtractor[-C]
+      = HeadlineInspectiveExtension[C]
 
    type ResolverExtractor[-C <: Any]
       = ResolutiveExtension[C]
