@@ -85,11 +85,6 @@ lazy val ResponseFormat
 
 object Response {
 
-   final
-   lazy val XAlgebraicFormat
-   : Question.ResponseFormat.type
-   = Question.ResponseFormat
-
 }
 
 type ResolutiveExtension[-C <: Any]
