@@ -32,6 +32,9 @@ object Build {
 
       import sbt.*
 
+      lazy val comMonix
+         = identity[ModuleID]("io.monix" %% "monix" % "3.4.1" )
+
    } // externalLibraryVersions$
 
    // final
