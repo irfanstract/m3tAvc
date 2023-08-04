@@ -23,6 +23,17 @@ object Build {
 
    } /* object vars */
 
+   /**
+    * 
+    * external library versions
+    * 
+    */
+   object externalLibraryVersions {
+
+      import sbt.*
+
+   } // externalLibraryVersions$
+
    // final
    // lazy val pre
    // : PreBuild.type
