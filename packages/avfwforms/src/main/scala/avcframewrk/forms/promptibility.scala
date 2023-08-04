@@ -68,6 +68,23 @@ object Question {
 
    /**
     * 
+    * `AcceptableResponseFormatDescExtractor` where
+    * the extracted `ResponseFormat` shall also conform to `ResponseFormat.XAlgebraicCaseOps`
+    * 
+    */
+   type AcceptableResponseFormatDescExtractorAlgebraic[-C <: Any]
+      <: /* not an alias, just co-incidence */
+      (
+         AcceptableResponseFormatDescExtractor[C] {
+
+            type ItsAcceptableResponseFormatDesc[+c <: InstanceOf[C] ]
+               <: InstanceOf[ResponseFormat.XAlgebraicCaseOps ]
+            
+         }
+      )
+
+   /**
+    * 
     * describes the type/kind of the expected response.
     * 
     */
