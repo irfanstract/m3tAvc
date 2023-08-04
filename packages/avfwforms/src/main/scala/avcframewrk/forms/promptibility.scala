@@ -16,6 +16,11 @@ package avcframewrk.forms
 
 object Promptibility {
 
+   object XDispatcher
+   {
+
+   } /* `XDispatcher$` */
+
 }
 
 type HeadlineInspectiveExtension[-C]
