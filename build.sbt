@@ -102,6 +102,7 @@ lazy val avcEvLibProject
 
     //
   )
+  .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
 
 // lazy val amf
 // =
