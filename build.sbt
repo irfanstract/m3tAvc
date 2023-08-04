@@ -30,8 +30,11 @@ def computeNecessaryProjectSettings() =
     scalaVersion := suggestedScalaVersionV ,
 
     scalacOptions += "-Yexplicit-nulls" ,
+    scalacOptions += "-Ysafe-init" ,
 
+    scalacOptions += "-feature" ,
     scalacOptions += "-deprecation" ,
+    scalacOptions += "-unchecked" ,
 
     /* RESOURCE PATHS */
 
