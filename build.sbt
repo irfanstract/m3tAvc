@@ -122,6 +122,7 @@ lazy val avcFormsProject
   )
   // .dependsOn(avFwHeadlessUtilityLibProject ) /* this pattern is prone to making dependency cycles, and SBT f*c*ed the resol up ☹ */
   .dependsOn(avcEvLibProject )
+  .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
 
 
 
