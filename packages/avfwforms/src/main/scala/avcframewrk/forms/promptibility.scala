@@ -54,7 +54,7 @@ object Question {
    type ResolverExtractor[-C <: Any]
       = ResolutiveExtension[C]
 
-   trait AcceptableResponseFormatDescExtractor[C <: Any]
+   trait AcceptableResponseFormatDescExtractor[-C <: Any]
    {
 
       extension (c: C)
