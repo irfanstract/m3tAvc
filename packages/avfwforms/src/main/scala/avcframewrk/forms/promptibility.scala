@@ -19,7 +19,89 @@ object Promptibility {
    object XDispatcher
    {
 
+      type Impl
+         <: (
+            [M <: Singleton] =>
+            (m: M )
+            =>
+            (rf0: XDispatchTimePrereqsImpl[m.type] )
+            ?=>
+            DeferredReturn[(
+               // TODO wait until the first cand no longer crash the compiler, and switch back to it
+               
+               rf0.ItsRfdXValue[m.type]
+               // rf0.ItsRfdXValue[? ]
+               // Any
+            ) ]
+         )
+
    } /* `XDispatcher$` */
+
+   type DeferredReturn[+R]
+      <: (DummyImplicit) ?=> R
+
+   /**
+    * 
+    * this `given`
+    * would
+    * avoid the need to list each child/individual `given`s separately and
+    * enforce these contract(s) across/between them
+    * 
+    */
+   type XDispatchTimePrereqsImpl[M]
+      = XDispatchTimePrereqsImplImpl[M]
+   
+   given XDispatchTimePrereqsImplImpl[M] (using 
+      rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[M] ,
+   )
+   :
+   AnyRef
+   with {
+
+      export rfExtractor.ItsAcceptableResponseFormatDesc
+
+      summon[(
+         ItsAcceptableResponseFormatDesc[InstanceOf[M] ]
+         <:< ResponseFormat.XAlgebraicCaseOps
+      ) ]
+
+      /**
+       * 
+       * `(arg : M ).responseType.XValue`.
+       * 
+       */
+      type ItsRfdXValue[+m <: InstanceOf[M] ]
+         = RfXAcoXValue[(
+            // TODO wait until the first cand no longer crash the compiler, and switch back to it
+            
+            ItsAcceptableResponseFormatDesc[m ]
+            // InstanceOf[ResponseFormat.XAlgebraicCaseOps ]
+            // ResponseFormat.XAlgebraicCaseOps
+         ) ]
+      
+   }
+
+   /**
+    * 
+    * `(arg : ResponseFormat.XAlgebraicCaseOps ).XValue`.
+    * 
+    */
+   type RfXAcoXValue[
+      +Fmt <: InstanceOf[ResponseFormat.XAlgebraicCaseOps] ,
+   ]
+         = (
+            ({
+               val t1
+                  : Fmt
+                  // : { type XValue }
+               type R
+                  = t1.XValue 
+                  // = Any
+            })#R
+         )
+
+   given LolAyRef101[M] : AnyRef with {}
+   given LolAyRef102[M](using i: DummyImplicit) : AnyRef with {}
 
 }
 
