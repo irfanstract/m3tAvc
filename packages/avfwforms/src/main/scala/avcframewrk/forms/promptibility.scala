@@ -48,8 +48,8 @@ object Promptibility {
     * enforce these contract(s) across/between them
     * 
     */
-   type XDispatchTimePrereqsImpl[M]
-      = XDispatchTimePrereqsImplImpl[M]
+   type XDispatchTimePrereqsImpl[XReceiver]
+      = XDispatchTimePrereqsImplImpl[XReceiver]
    
    given XDispatchTimePrereqsImplImpl[M] (using 
       rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[M] ,
