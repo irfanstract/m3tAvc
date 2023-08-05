@@ -46,7 +46,7 @@ def newAlgebrPipe[E1](
    typingFnc: E1 => Unit ,
 
    multicastStrategy
-   : monix.reactive.MulticastStrategy[E1]
+   : MonixMulticastStrategy[E1]
    ,
 
    scheduler
