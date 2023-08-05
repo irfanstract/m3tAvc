@@ -81,6 +81,14 @@ def newAlgebrPipe[E1](
    (core1, core1 )
 }
 
+/**
+ * 
+ * was initially implemented as `monix.reactive.MulticastStrategy`.
+ * 
+ */
+type MonixMulticastStrategy[+E]
+   = monix.reactive.MulticastStrategy[E]
+
 
 
 
