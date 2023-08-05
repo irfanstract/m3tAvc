@@ -57,6 +57,8 @@ def runAevgmCallbackTest1() : Unit
    pipe1._2
    .printAll()
 
+   java.lang.Thread.sleep(3 * 1000 )
+
    pipe1._2
    .printAll()
 
