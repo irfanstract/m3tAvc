@@ -24,7 +24,7 @@ object Promptibility {
             [M <: Singleton] =>
             (m: M )
             =>
-            (rf0: XDispatchTimePrereqsImpl[m.type] )
+            (rf0: XDispatchTimePrereqsImpl[? >: m.type] )
             ?=>
             DeferredReturn[(
                // TODO wait until the first cand no longer crash the compiler, and switch back to it
