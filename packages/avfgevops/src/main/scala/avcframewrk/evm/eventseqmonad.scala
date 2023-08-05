@@ -28,6 +28,9 @@ type EventSequenceMonad[+E <: Product]
 type EventSeqMonad[+E <: Product]
    = EventSequenceMonad[E]
 
+type EventMonad[+E <: Product]
+   = EventSequenceMonad[E]
+
 /**
  * 
  * a `EventSeqMonad` which does not yield any event.
