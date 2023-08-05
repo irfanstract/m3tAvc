@@ -35,6 +35,9 @@ object Build {
       lazy val comMonix
          = identity[ModuleID]("io.monix" %% "monix" % "3.4.1" )
 
+      lazy val orgTypelevelCatsCore
+         = identity[ModuleID]("org.typelevel" %% "cats-core" % "2.9.0" )
+
    } // externalLibraryVersions$
 
    // final
