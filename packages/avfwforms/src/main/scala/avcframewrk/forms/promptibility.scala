@@ -49,10 +49,20 @@ object Promptibility {
     * 
     */
    type XDispatchTimePrereqsImpl[XReceiver]
-      = XDispatchTimePrereqsImplImpl[XReceiver]
-   
-   given XDispatchTimePrereqsImplImpl[M] (using 
-      rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[M] ,
+      = XDispatchTimePrereqsImplImpl[XReceiver, ? ]
+
+   /**
+    * 
+    * INTERNAL ONLY --
+    * the implementation of `XDispatchTimePrereqsImpl`
+    * 
+    */
+   given XDispatchTimePrereqsImplImpl[
+      XReceiver ,
+      XRfExtractor <: Singleton & Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
+      
+   ] (using 
+      rfExtractor: XRfExtractor ,
    )
    :
    AnyRef
@@ -61,16 +71,16 @@ object Promptibility {
       export rfExtractor.ItsAcceptableResponseFormatDesc
 
       summon[(
-         ItsAcceptableResponseFormatDesc[InstanceOf[M] ]
+         ItsAcceptableResponseFormatDesc[InstanceOf[XReceiver] ]
          <:< ResponseFormat.XAlgebraicCaseOps
       ) ]
 
       /**
        * 
-       * `(arg : M ).responseType.XValue`.
+       * `(arg : XReceiver ).responseType.XValue`.
        * 
        */
-      type ItsRfdXValue[+m <: InstanceOf[M] ]
+      type ItsRfdXValue[+m <: InstanceOf[XReceiver] ]
          = RfXAcoXValue[(
             // TODO wait until the first cand no longer crash the compiler, and switch back to it
             
