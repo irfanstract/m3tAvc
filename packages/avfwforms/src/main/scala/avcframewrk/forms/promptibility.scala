@@ -35,10 +35,38 @@ object Promptibility {
             ) ]
          )
 
+      extension (dispatcher: Impl)
+      {
+
+         @deprecated
+         def applyXdpERTest(e1 : Product )
+         = {
+
+            given xdp
+            : (
+               Question.AcceptableResponseFormatDescExtractorAlgebraic[e1.type]
+               {
+                  type ItsAcceptableResponseFormatDesc[+c]
+                     >: ResponseFormat.ofBoolean.type
+                     <: ResponseFormat.ofBoolean.type
+               }
+            )
+            = ???
+
+            val xdpc = summon[XDispatchTimePrereqsImpl[e1.type] ]
+
+            ()
+
+            val r0 = dispatcher.apply(e1) 
+
+         }
+         
+      }
+
    } /* `XDispatcher$` */
 
    type DeferredReturn[+R]
-      <: (DummyImplicit) ?=> R
+      = R
 
    /**
     * 
