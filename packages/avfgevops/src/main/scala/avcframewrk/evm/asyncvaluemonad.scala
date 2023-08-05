@@ -19,6 +19,28 @@ type AsyncAlgebraicMonad[+E1]
    >: ({ type Main[+E2] = monix.reactive.Observable[E2] } )#Main[E1]
    <: ({ type Main[+E2] = monix.reactive.Observable[E2] } )#Main[E1]
 
+extension [E1](src : AsyncAlgebraicMonad[E1] )
+{
+
+   /**
+    * 
+    * analogously to `force` in `LazyList`,
+    * enforces the evaluation of the whole path/chain, and then return `this`
+    * 
+    * requires a *given* `monix.execution.Scheduler`
+    * 
+    */
+   def force(using monix.execution.Scheduler )
+   : AsyncAlgebraicMonad[E1]
+   = {
+
+      src.subscribe() /* use the `given` */
+
+      src
+   }
+
+} // AsyncAlgebraicMonad.force
+
 type AsyncAlgebrMonad[E1]
    = AsyncAlgebraicMonad[E1]
 
