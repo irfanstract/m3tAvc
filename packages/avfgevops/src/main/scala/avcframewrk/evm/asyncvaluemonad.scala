@@ -87,7 +87,8 @@ def newAlgebrPipe[E1](
  * 
  */
 type MonixMulticastStrategy[+E]
-   = monix.reactive.MulticastStrategy[E]
+   >: monix.reactive.MulticastStrategy[E]
+   <: monix.reactive.MulticastStrategy[E]
 
 
 
