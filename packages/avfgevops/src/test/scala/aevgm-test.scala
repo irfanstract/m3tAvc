@@ -48,7 +48,7 @@ def runAevgmCallbackTest1() : Unit
          .map(m => {
             println(s"[$projectId] msg: '$m'")
          })
-         .subscribe(monix.reactive.observers.Subscriber.empty ) /* otherwise the callbacks will never be executed */
+         .force /* otherwise the callbacks will never be executed */
          
       }
       
