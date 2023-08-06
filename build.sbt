@@ -17,7 +17,7 @@
 // System.err.println("SBT scalac version: " + scala)
 
 val suggestedScalaVersionV: String
-= "3.3.0"
+= "3.3.1-RC4"
 
 ThisBuild / scalaVersion := suggestedScalaVersionV
 
