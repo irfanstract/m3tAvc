@@ -26,7 +26,9 @@ object Promptibility {
             =>
             (rf0: XDispatchTimePrereqsImpl[? >: m.type] )
             ?=>
-            DeferredReturn[(
+            (xdr: avcframewrk.forms.math.events.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ] )
+            ?=>
+            xdr.MainByReturnValue[(
                // TODO wait until the first cand no longer crash the compiler, and switch back to it
                
                rf0.ItsRfdXValue[m.type]

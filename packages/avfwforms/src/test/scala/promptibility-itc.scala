@@ -42,70 +42,70 @@ extension (dispatcher: Promptibility.XDispatcher.Impl)
             
          }
 
-         e1.hello()
+         // e1.hello()
 
       }
 
       ()
    }
 
-   def applyXdpERTest(e1 : Product )( using
-      //
+   // def applyXdpERTest(e1 : Product )( using
+   //    //
 
-      xdp
-      : (
-         Question.AcceptableResponseFormatDescExtractorAlgebraic[e1.type]
-         {
-            type ItsAcceptableResponseFormatDesc[+c]
-               >: ResponseFormat.ofBoolean.type
-               <: ResponseFormat.ofBoolean.type
-         }
-      )
-      ,
-   )
-   = {
+   //    xdp
+   //    : (
+   //       Question.AcceptableResponseFormatDescExtractorAlgebraic[e1.type]
+   //       {
+   //          type ItsAcceptableResponseFormatDesc[+c]
+   //             >: ResponseFormat.ofBoolean.type
+   //             <: ResponseFormat.ofBoolean.type
+   //       }
+   //    )
+   //    ,
+   // )
+   // = {
 
-      ({ val ef = xdp.responseFormat _ })
+   //    ({ val ef = xdp.responseFormat _ })
 
-      ({ val ef = println(xdp) })
+   //    ({ val ef = println(xdp) })
 
-      {
-         summon[xdp.ItsAcceptableResponseFormatDesc[e1.type] <:< ResponseFormat.ofBoolean.type ]
-      }
+   //    {
+   //       summon[xdp.ItsAcceptableResponseFormatDesc[e1.type] <:< ResponseFormat.ofBoolean.type ]
+   //    }
 
-      {
+   //    {
 
-         val xdpc = summon[Promptibility.XDispatchTimePrereqsImpl[e1.type] ]
+   //       val xdpc = summon[Promptibility.XDispatchTimePrereqsImpl[e1.type] ]
 
-         summon[xdpc.ItsAcceptableResponseFormatDesc[e1.type] <:< ResponseFormat.ofBoolean.type ]
+   //       summon[xdpc.ItsAcceptableResponseFormatDesc[e1.type] <:< ResponseFormat.ofBoolean.type ]
 
-         summon[xdpc.rfExtractor.type <:< xdp.type ]
+   //       // summon[xdpc.rfExtractor.type <:< xdp.type ]
 
-         val xdpcWasGiven
-            = summon[Promptibility.XDispatchTimePrereqsImpl[e1.type] ]
-         ({ val ef = xdpc.responseFormat _ })
-         val rF = e1.responseFormat
-         // val rF = (e1 : e1.type).responseFormat
-      }
+   //       val xdpcWasGiven
+   //          = summon[Promptibility.XDispatchTimePrereqsImpl[e1.type] ]
+   //       ({ val ef = xdpc.responseFormat _ })
+   //       // val rF = e1.responseFormat
+   //       // val rF = (e1 : e1.type).responseFormat
+   //    }
 
-      {
+   //    {
 
-         ({ val ef = xdp.responseFormat _ })
-         val rf = e1.responseFormat
-      }
+   //       ({ val ef = xdp.responseFormat _ })
+   //       // val rf = e1.responseFormat
+   //    }
 
-      ()
+   //    ()
 
-      {
-         val r0 = dispatcher.apply(e1) 
+   //    {
+   //       val r0 = dispatcher.apply(e1) 
 
-         summon[r0.type <:< ResponseFormat.ofBoolean.XValue ]
+   //       summon[r0.type <:< ResponseFormat.ofBoolean.XValue ]
 
-      } : Unit
+   //    } : Unit
 
-      ()
+   //    ()
 
-   }
+   // }
 
    def applyXdpERTestAlt10(e1 : Product )( using
       //
