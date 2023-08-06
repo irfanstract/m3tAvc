@@ -19,48 +19,13 @@ object Promptibility {
    object XDispatcher
    {
 
-      trait Impl
-      {
+      type Ops
+         <: AnyRef
 
-         /**
-          * 
-          * .
-          * 
-          * 
-          * @param main the main action item
-          * @param manager
-          * @param expectedAsynchronicity
-          * 
-          */
-         def apply
-            [M]
-            (
-               main
-               : M
-               ,
-            )
-            (using
-               manager: XDispatchTimePrereqsImpl[? >: main.type]
-               ,
-            )
-            (using
-               expectedAsynchronicity
-               : avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ]
-               ,
-            )
-            : (
-               ([R] =>> (
-                  expectedAsynchronicity.MainByReturnValue[R]
-               ))
-               [(
-                  // TODO wait until the first cand no longer crash the compiler, and switch back to it
-
-                  manager.ItsRfdXValue[main.type]
-               ) ]
-
-            ) // r
-
-      } // Impl
+      @annotation.experimental
+      given OpsCiad
+         : Conversion[Ops, clauseInterweavedActionItemDispatcherImpl.Main ]
+         = (_: AnyRef).asInstanceOf[clauseInterweavedActionItemDispatcherImpl.Main ]
 
    } /* `XDispatcher$` */
 
