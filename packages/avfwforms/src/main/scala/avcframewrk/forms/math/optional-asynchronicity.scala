@@ -58,6 +58,18 @@ object LexicalImperativeSynchronicityGiven {
     * thus simulating by-name thunks
     * 
     */
+   @deprecated("this is a misnomer.")
+   final
+   lazy val byDmCf
+   : forByNameAlikeSem.type
+   = forByNameAlikeSem
+
+   /**
+    * 
+    * for `DummyImplicit ?=> R`s ,
+    * thus simulating by-name thunks
+    * 
+    */
    final
    lazy val forByNameAlikeSem
    : ByCc[[R] =>> (DummyImplicit ?=> R ) ]
