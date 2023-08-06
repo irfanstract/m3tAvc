@@ -75,6 +75,8 @@ object Promptibility {
          <:< ResponseFormat.XAlgebraicCaseOps
       ) ]
 
+      export rfExtractor.responseFormat
+
       /**
        * 
        * `(arg : XReceiver ).responseType.XValue`.
