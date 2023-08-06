@@ -62,11 +62,14 @@ object Promptibility {
       XRfExtractor <: Singleton & Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
       
    ] (using 
-      rfExtractor: XRfExtractor ,
+      rfExtractor0: XRfExtractor ,
    )
    :
    AnyRef
    with {
+
+      val rfExtractor : rfExtractor0.type
+         = rfExtractor0
 
       export rfExtractor.ItsAcceptableResponseFormatDesc
 
