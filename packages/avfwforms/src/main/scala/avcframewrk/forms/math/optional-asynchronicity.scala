@@ -52,6 +52,44 @@ object LexicalImperativeSynchronicityGiven {
 
    } // Impl
 
+   /**
+    * 
+    * for `DummyImplicit ?=> R`s ,
+    * thus simulating by-name thunks
+    * 
+    */
+   final
+   lazy val forByNameAlikeSem
+   : ByCc[[R] =>> (DummyImplicit ?=> R ) ]
+   = {
+
+      type DummyImplicitReturn[R]
+         = (DummyImplicit ?=> R )
+
+      new Impl[
+         [R] =>> DummyImplicitReturn[R] ,
+      ]
+      {
+
+         override
+         type MainByReturnValue[+R]
+            >: DummyImplicitReturn[R]
+            <: DummyImplicitReturn[R]
+
+         override
+         def mainByEv[R](f: => R )
+         = {
+
+            (_ : DummyImplicit) ?=> {
+               f
+            }
+         }
+
+         //
+
+      }
+   } // forByNameAlikeSem$
+
 } // LexicalImperativeSynchronicityGiven$
 
 
