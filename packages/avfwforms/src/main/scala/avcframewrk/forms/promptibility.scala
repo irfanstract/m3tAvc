@@ -19,21 +19,48 @@ object Promptibility {
    object XDispatcher
    {
 
-      type Impl
-         <: (
-            [M <: Singleton] =>
-            (m: M )
-            =>
-            (rf0: XDispatchTimePrereqsImpl[? >: m.type] )
-            ?=>
-            DeferredReturn[(
-               // TODO wait until the first cand no longer crash the compiler, and switch back to it
-               
-               rf0.ItsRfdXValue[m.type]
-               // rf0.ItsRfdXValue[? ]
-               // Any
-            ) ]
-         )
+      trait Impl
+      {
+
+         /**
+          * 
+          * .
+          * 
+          * 
+          * @param main the main action item
+          * @param manager
+          * @param expectedAsynchronicity
+          * 
+          */
+         def apply
+            [M]
+            (
+               main
+               : M
+               ,
+            )
+            (using
+               manager: XDispatchTimePrereqsImpl[? >: main.type]
+               ,
+            )
+            (using
+               expectedAsynchronicity
+               : avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ]
+               ,
+            )
+            : (
+               ([R] =>> (
+                  expectedAsynchronicity.MainByReturnValue[R]
+               ))
+               [(
+                  // TODO wait until the first cand no longer crash the compiler, and switch back to it
+
+                  manager.ItsRfdXValue[main.type]
+               ) ]
+
+            ) // r
+
+      } // Impl
 
    } /* `XDispatcher$` */
 
