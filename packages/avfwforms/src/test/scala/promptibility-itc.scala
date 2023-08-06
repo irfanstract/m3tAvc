@@ -11,7 +11,7 @@ import avcframewrk.forms.*
 
 
 
-extension (dispatcher: Promptibility.XDispatcher.Impl)
+extension (dispatcher: Promptibility.XDispatcher.Ops)
 {
 
    def applyXdpERTestPre(e1 : Product )
@@ -42,7 +42,7 @@ extension (dispatcher: Promptibility.XDispatcher.Impl)
             
          }
 
-         e1.hello()
+         // e1.hello()
 
       }
 
@@ -79,27 +79,35 @@ extension (dispatcher: Promptibility.XDispatcher.Impl)
 
          summon[xdpc.ItsAcceptableResponseFormatDesc[e1.type] <:< ResponseFormat.ofBoolean.type ]
 
-         summon[xdpc.rfExtractor.type <:< xdp.type ]
+         // summon[xdpc.rfExtractor.type <:< xdp.type ]
 
          val xdpcWasGiven
             = summon[Promptibility.XDispatchTimePrereqsImpl[e1.type] ]
          ({ val ef = xdpc.responseFormat _ })
-         val rF = e1.responseFormat
+         (xdp).responseFormat(e1)
+         // val rF = e1.responseFormat
          // val rF = (e1 : e1.type).responseFormat
       }
 
+      // {
+
+      //    ({ val ef = xdp.responseFormat _ })
+      //    // val rf = e1.responseFormat
+      // }
+
+      // ()
+
       {
+         ()
 
-         ({ val ef = xdp.responseFormat _ })
-         val rf = e1.responseFormat
-      }
+         implicit val as
+         = avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.byDmCf
+         
+         val r0Aw = dispatcher.apply(e1) 
 
-      ()
+         val r0 = r0Aw(using summon[DummyImplicit] )
 
-      {
-         val r0 = dispatcher.apply(e1) 
-
-         summon[r0.type <:< ResponseFormat.ofBoolean.XValue ]
+         // summon[r0.type <:< ResponseFormat.ofBoolean.XValue ]
 
       } : Unit
 
