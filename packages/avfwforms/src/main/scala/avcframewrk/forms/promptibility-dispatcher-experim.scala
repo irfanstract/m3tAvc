@@ -20,13 +20,6 @@ final
 lazy val &&&%! : clauseInterweavedActionItemDispatcherImpl.type
    = clauseInterweavedActionItemDispatcherImpl
 
-@annotation.experimental
-protected
-final
-lazy val clauseInterweavedActionItemDispatcherImpl
-   : avcframewrk.forms.advanced.clauseInterweavedActionItemDispatcherImpl.type
-   = avcframewrk.forms.advanced.clauseInterweavedActionItemDispatcherImpl
-
 
 
 

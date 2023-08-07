@@ -124,6 +124,13 @@ object Promptibility {
 
 }
 
+@annotation.experimental
+protected
+final
+lazy val clauseInterweavedActionItemDispatcherImpl
+   : avcframewrk.forms.advanced.clauseInterweavedActionItemDispatcherImpl.type
+   = avcframewrk.forms.advanced.clauseInterweavedActionItemDispatcherImpl
+
 type HeadlineInspectiveExtension[-C]
    = HeadlineInspectiveExtensiveOps[? >: C]
 
