@@ -89,9 +89,24 @@ lazy val avFwHeadlessUtilityLibProject
   (project in (packagesParentDir / "avfservergenerics" ) )
   .aggregate(
 
+    avFwAlgebLibProject ,
+
     avcEvLibProject ,
     
   )
+
+lazy val avFwAlgebLibProject
+=
+  (project in (packagesParentDir / "avfwalgeb" ) )
+  .settings(
+
+    computeNecessaryProjectSettings() ,
+
+    //
+  )
+  .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
+  .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelKittens )
+  // .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
 
 lazy val avcEvLibProject
 =
@@ -102,6 +117,7 @@ lazy val avcEvLibProject
 
     //
   )
+  .dependsOn(avFwAlgebLibProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
 
 // lazy val amf
@@ -121,6 +137,7 @@ lazy val avcFormsProject
     //
   )
   // .dependsOn(avFwHeadlessUtilityLibProject ) /* this pattern is prone to making dependency cycles, and SBT f*c*ed the resol up ☹ */
+  .dependsOn(avFwAlgebLibProject )
   .dependsOn(avcEvLibProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
