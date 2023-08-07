@@ -70,9 +70,7 @@ object Promptibility {
    ] (using 
       rfExtractor0: XRfExtractor ,
    )
-   :
-   AnyRef
-   with {
+   : AnyRef with {
 
       val rfExtractor : rfExtractor0.type
          = rfExtractor0
