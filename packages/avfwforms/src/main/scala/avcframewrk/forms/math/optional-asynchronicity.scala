@@ -72,7 +72,13 @@ object LexicalImperativeSynchronicityGiven {
     */
    final
    lazy val forByNameAlikeSem
-   : ByCc[[R] =>> (DummyImplicit ?=> R ) ]
+   : (
+      ByCc[[R] =>> (DummyImplicit ?=> R ) ]
+      {
+         type MainByReturnValue[+R]
+            = (DummyImplicit ?=> R )
+      }
+   )
    = {
 
       type DummyImplicitReturn[R]
@@ -85,8 +91,7 @@ object LexicalImperativeSynchronicityGiven {
 
          override
          type MainByReturnValue[+R]
-            >: DummyImplicitReturn[R]
-            <: DummyImplicitReturn[R]
+            = (DummyImplicit ?=> R )
 
          override
          def mainByEv[R](f: => R )
