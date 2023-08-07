@@ -17,6 +17,18 @@ extension (dispatcher: Promptibility.XDispatcher.Ops)
    def applyXdpERTestPre(e1 : Product )
    = {
 
+      ()
+
+      identity[(
+         (apply : (ctx: Product) => [E] => (e: E) ?=> Unit )
+         =>
+         Unit
+      ) ] {
+         case apply1 =>
+            val r = apply1(("s", "c" ) )
+            println(r)
+      }
+
       {
 
          extension (receiver : e1.type) {
@@ -97,7 +109,8 @@ extension (dispatcher: Promptibility.XDispatcher.Ops)
 
       // ()
 
-      {
+      { @annotation.experimental val === = {
+         
          ()
 
          implicit val as
@@ -105,11 +118,15 @@ extension (dispatcher: Promptibility.XDispatcher.Ops)
          
          val r0Aw = dispatcher.apply(e1) 
 
-         val r0 = r0Aw(using summon[DummyImplicit] )
+         val r0 = r0Aw
+
+         ()
 
          // summon[r0.type <:< ResponseFormat.ofBoolean.XValue ]
 
-      } : Unit
+         ()
+
+      } : Unit }
 
       ()
 
