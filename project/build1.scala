@@ -38,6 +38,9 @@ object Build {
       lazy val orgTypelevelCatsCore
          = identity[ModuleID]("org.typelevel" %% "cats-core" % "2.9.0" )
 
+      lazy val orgTypelevelKittens
+         = identity[ModuleID]( "org.typelevel" %% "kittens" % "3.0.0" )
+
       lazy val orgTypelevelCatsEffects
          = identity[ModuleID]( "org.typelevel" %% "cats-effect" % "3.5.1" )
 
