@@ -112,6 +112,46 @@ type MonixMulticastStrategy[+E]
    >: monix.reactive.MulticastStrategy[E]
    <: monix.reactive.MulticastStrategy[E]
 
+object MonixMulticastStrategy {
+
+   /**
+    * 
+    * for async sequencing with high latency
+    * 
+    */
+   def forAsyncEnum[E]
+   = monix.reactive.MulticastStrategy.replay[BTA[E] ]
+
+   /**
+    * 
+    * for async sequencing with high latency
+    * 
+    */
+   val ForAsyncEnum
+   : monix.reactive.MulticastStrategy.Replay.type
+   = monix.reactive.MulticastStrategy.Replay
+
+   /**
+    * 
+    * for async sequencing with high latency,
+    * bounded to certain quantity
+    * 
+    */
+   val ForAsyncEnumLimited
+   : monix.reactive.MulticastStrategy.ReplayLimited.type
+   = monix.reactive.MulticastStrategy.ReplayLimited
+
+   def forUpdates[E]
+   = monix.reactive.MulticastStrategy.replayLimited[BTA[E] ](capacity = 1 )
+
+   def whichRestrictsToSubscription[E]
+   = monix.reactive.MulticastStrategy.publish[BTA[E] ]
+
+   type BTA[+E]
+      <: Nothing
+
+} // MonixMulticastStrategy$
+
 
 
 
