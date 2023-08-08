@@ -20,6 +20,15 @@ extends
 AnyRef
 {
 
+   extension (receiver: C ) {
+
+      private
+      def impl = { cats.syntax.all.catsSyntaxSemigroup(receiver)(using peer ) }
+
+      export impl.{self as _, typeClassInstance as _, TypeClassType as _, * }
+
+   }
+
    transparent inline /* needs to be `transparent` to avoid the need for explicit (re)ovd/def */
    def reverse
    = peer.reverse
@@ -30,6 +39,15 @@ trait ConcatenabilityK[C[_] ](using peer : cats.SemigroupK[C] )
 extends
 AnyRef
 {
+
+   extension [E](receiver: C[E] ) {
+
+      private
+      def impl = { cats.syntax.all.toSemigroupKOps(receiver)(using peer ) }
+
+      export impl.{self as _, typeClassInstance as _, TypeClassType as _, * }
+
+   }
 
    transparent inline /* needs to be `transparent` to avoid the need for explicit (re)ovd/def */
    def reverse
@@ -51,6 +69,15 @@ with Concatenability[C ]
    def empty
    = peer.empty
 
+   extension (receiver: C ) {
+
+      private
+      def impl = { cats.syntax.all.catsSyntaxMonoid(receiver)(using peer ) }
+
+      export impl.{self as _, typeClassInstance as _, TypeClassType as _, * }
+
+   }
+
 }
 
 trait CBCK[C[_] ](using peer : cats.MonoidK[C] )
@@ -62,6 +89,15 @@ with ConcatenabilityK[C ]
    transparent inline /* needs to be `transparent` to avoid the need for explicit (re)ovd/def */
    def empty[E]
    = peer.empty[E]
+
+   // extension [E](receiver: C[E] ) {
+
+   //    private
+   //    def impl = { cats.syntax.all.toSemigroupKOps(receiver)(using peer ) }
+
+   //    export impl.{self as _, typeClassInstance as _, TypeClassType as _, * }
+
+   // }
 
 }
 

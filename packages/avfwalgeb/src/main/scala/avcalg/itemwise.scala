@@ -28,6 +28,15 @@ extends
 AnyRef
 {
 
+   extension [E](e: CC[E] ) {
+
+      private
+      def toFunctorOps = { cats.syntax.all.toFunctorOps(e)(using catsFunctorCc ) }
+
+      export toFunctorOps.{self as _, typeClassInstance as _, TypeClassType as _, * }
+
+   }
+   
 }
 
 trait ItemWiseUnfoldability[CC[_] ](using catsMonadCc : cats.Monad[CC] )
@@ -35,6 +44,17 @@ extends
 AnyRef
 with ItemWiseTransformability[CC]
 {
+
+   extension [E](e: CC[E] ) {
+
+      private
+      def toFlatMapOps = { cats.syntax.all.toFlatMapOps(e)(using catsMonadCc ) }
+
+      export toFlatMapOps.{self as _, typeClassInstance as _, TypeClassType as _, * }
+
+      //
+
+   }
 
 }
 
@@ -59,6 +79,17 @@ trait ListFoldability[CC[_] ](using catsFoldableCc : cats.Foldable[CC] )
 extends
 AnyRef
 {
+
+   extension [E](e: CC[E] ) {
+
+      private
+      def toFoldableOps = { cats.syntax.all.toFoldableOps(e)(using catsFoldableCc) }
+
+      export toFoldableOps.{self as _, typeClassInstance as _, TypeClassType as _, * }
+
+      //
+
+   }
 
 }
 
