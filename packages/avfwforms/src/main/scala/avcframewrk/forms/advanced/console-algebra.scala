@@ -56,7 +56,7 @@ object clauseInterweavedActionItemDispatcherImpl
             )
             ,
          )
-         [M >: main.type <: Any ]
+         [M >: main.type <: A ]
          (using
             manager: XDispatchTimePrereqsImpl[M]
             ,
