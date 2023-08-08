@@ -58,6 +58,7 @@ object Promptibility {
       = XDispatchTimePrereqsImplImpl[
          XReceiver,
          ? ,
+         ? ,
       ]
 
    /**
@@ -69,14 +70,19 @@ object Promptibility {
    given XDispatchTimePrereqsImplImpl[
       XReceiver ,
       XRfExtractor <: Singleton & Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
+      XHeadlExtractor <: Singleton & Question.HeadlineExtractor[XReceiver] ,
       
    ] (using 
       rfExtractor0: XRfExtractor ,
+      headlExtractor0: XHeadlExtractor ,
    )
    : AnyRef with {
 
       val rfExtractor : rfExtractor0.type
          = rfExtractor0
+
+      val headlExtractor : headlExtractor0.type
+         = headlExtractor0
 
       export rfExtractor.ItsAcceptableResponseFormatDesc
 
