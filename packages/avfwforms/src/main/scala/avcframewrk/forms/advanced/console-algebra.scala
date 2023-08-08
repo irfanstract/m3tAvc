@@ -80,4 +80,10 @@ object clauseInterweavedActionItemDispatcherImpl
 
    }
 
+   object Main {
+
+      //
+
+   } // Main$
+
 } // `&&&%!`
