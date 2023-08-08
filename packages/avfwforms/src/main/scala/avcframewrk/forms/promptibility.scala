@@ -55,7 +55,10 @@ object Promptibility {
     * 
     */
    type XDispatchTimePrereqsImpl[XReceiver]
-      = XDispatchTimePrereqsImplImpl[XReceiver, ? ]
+      = XDispatchTimePrereqsImplImpl[
+         XReceiver,
+         ? ,
+      ]
 
    /**
     * 
