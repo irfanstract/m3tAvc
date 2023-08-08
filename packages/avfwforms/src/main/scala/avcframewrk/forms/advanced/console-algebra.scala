@@ -45,10 +45,13 @@ object clauseInterweavedActionItemDispatcherImpl
        * 
        */
       def apply
+         [
+            A <: Product ,
+         ]
          (
             main
             : (
-               Product
+               A
                // Any
             )
             ,
