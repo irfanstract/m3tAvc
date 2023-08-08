@@ -48,8 +48,8 @@ object clauseInterweavedActionItemDispatcherImpl
          (
             main
             : (
-               // Product
-               Any
+               Product
+               // Any
             )
             ,
          )
