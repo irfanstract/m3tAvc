@@ -74,6 +74,11 @@ extension (dispatcher: Promptibility.XDispatcher.Ops)
          }
       )
       ,
+      xhe
+      : (
+         Question.HeadlineExtractor[e1.type]
+      )
+      ,
    )
    = {
 
