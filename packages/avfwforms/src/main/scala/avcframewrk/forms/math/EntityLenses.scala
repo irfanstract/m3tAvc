@@ -19,7 +19,7 @@ package avcframewrk.forms.math
  * 
  */
 type CSingleton[C]
-   = Singleton & C
+   = avcalg.CSingleton[C]
 
 /**
  * 
@@ -27,8 +27,7 @@ type CSingleton[C]
  * 
  */
 type InstanceOf[+C]
-   >: Singleton & C
-   <: Singleton & C
+   = avcalg.InstanceOf[C]
 
 /**
  * 
