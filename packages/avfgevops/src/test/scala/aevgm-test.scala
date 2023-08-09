@@ -67,6 +67,67 @@ org.scalatest.funsuite.AnyFunSuite
 
    }
 
+   def newAsyncEnumPipe[E](typingFunc : E => Unit )
+   = {
+
+      newAlgebrPipe(
+         typingFnc = typingFunc ,
+         multicastStrategy = monix.reactive.MulticastStrategy.replay ,
+         scheduler = sameThreadScheduler ,
+      )
+   }
+
+   test("test 1") {
+      //
+
+      val pipe1 = {
+         newAsyncEnumPipe(typingFunc = identity[DummyImplicit ?=> String ] )
+      }
+
+      //
+
+      pipe1._1.onNext("hi")
+      pipe1._1.onNext("welcome to the testing workflow")
+      pipe1._1.onNext("END")
+
+      {
+
+         given monix.execution.Scheduler
+            = sameThreadScheduler
+
+         ;
+
+         var c: String = ""
+
+         pipe1._2
+         /* enforce the dispatch of the ContextFnc */
+         .map(value => value )
+         /* concatenate all, with line-break */
+         .reduce(_ + "\r\n" + _ )
+         /* assign as the value of `c` */
+         .map(value => { require(c.isEmpty(), "unexpected reassignment") ; c = value } )
+         /* ensure the actual dispatch */
+         .force
+
+         /** apply this check */
+         assert(c.nonEmpty && c.contains("END") )
+
+         ()
+
+      }
+
+      awaitDuration(3.second )
+
+      // {
+      //    given monix.execution.Scheduler
+      //       = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+      //    ???
+      // }
+
+      awaitDuration(3.second )
+
+   }
+
 }
 
 
