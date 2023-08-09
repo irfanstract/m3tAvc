@@ -48,7 +48,7 @@ object LexicalImperativeSynchronicityGiven {
        * 
        */
       def mainByEv[R](f: => R )
-      : CC[R]
+      : MainByReturnValue[R]
 
    } // Impl
 
