@@ -33,6 +33,8 @@ object clauseInterweavedActionItemDispatcherImpl
    trait Main
    {
 
+      import Main.LexicalAsynchronicity
+
       /**
        * 
        * .
@@ -63,7 +65,7 @@ object clauseInterweavedActionItemDispatcherImpl
          )
          (using
             expectedAsynchronicity
-            : avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ]
+            : LexicalAsynchronicity
             ,
          )
          : (
@@ -83,6 +85,15 @@ object clauseInterweavedActionItemDispatcherImpl
    object Main {
 
       //
+
+      type LexicalAsynchronicity
+         = avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ]
+
+      object LexicalAsynchronicity {
+
+         //
+         
+      } // LexicalAsynchronicity$
 
    } // Main$
 
