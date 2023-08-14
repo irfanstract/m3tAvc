@@ -209,18 +209,19 @@ object clauseInterweavedActionItemDispatcherImpl
                   <:<
                   manager.ItsRfdXValue[e.type]
                ) = (
-                  summon[(
-                     responseFmt.XValue
-                     <:<
-                     Promptibility.RfXAcoXValue[responseFmt.type ]
-                  )]
-                  andThen
-                  summon[(
-                     Promptibility.RfXAcoXValue[responseFmt.type ]
-                     <:<
-                     manager.ItsRfdXValue[e.type]
-                  )]
-                  // ???
+                  /* can't write this safely without bringing it into exception :( */
+                  // summon[(
+                  //    responseFmt.XValue
+                  //    <:<
+                  //    Promptibility.RfXAcoXValue[responseFmt.type ]
+                  // )]
+                  // andThen
+                  // summon[(
+                  //    Promptibility.RfXAcoXValue[responseFmt.type ]
+                  //    <:<
+                  //    manager.ItsRfdXValue[e.type]
+                  // )]
+                  ???
                )
 
                summon[(

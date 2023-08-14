@@ -104,6 +104,12 @@ object Promptibility {
 
          val m : m$
 
+         // type mResponseTypeDesc$ = ItsAcceptableResponseFormatDesc[m.type ]
+
+         // type mResponseTypeXValue = (
+         //    mResponseTypeDesc$#XValue
+         // )
+
          val mResponseType : ItsAcceptableResponseFormatDesc[m.type ]
 
          type mResponseTypeXValue = (
@@ -114,6 +120,74 @@ object Promptibility {
          #mResponseTypeXValue
          )
       
+      /**
+       * 
+       * relevant to the above defs -
+       * supposed to compile given all that
+       * 
+       */
+      locally[(e: XReceiver ) => Unit ]((e) => {
+
+         val eRf = e.responseFormat
+
+         summon[(
+            eRf.type
+            <:<
+            ItsAcceptableResponseFormatDesc[e.type ]
+         ) ]
+
+         summon[(
+            eRf.type
+            <:< ResponseFormat.XAlgebraicCaseOps
+         ) ]
+
+         summon[(
+            ({ val m : e.type ; type m$ = m.type })#m$
+            =:= e.type
+         ) ]
+
+         // TODO
+         // summon[(
+         //    ItsRfdXValue[e.type ]
+         //    =:= eRf.XValue
+         // ) ]
+
+      } )
+
+      /**
+       * 
+       * relevant to `RfXAcoXValue` --
+       * supposed to compile given all that
+       * 
+       */
+      locally[(e: XReceiver ) => Unit ]((e) => {
+
+         val eRf = e.responseFormat
+
+         summon[(
+            eRf.type
+            <:<
+            ItsAcceptableResponseFormatDesc[e.type ]
+         ) ]
+
+         summon[(
+            eRf.type
+            <:< ResponseFormat.XAlgebraicCaseOps
+         ) ]
+
+         summon[(
+            ({ val m : e.type ; type m$ = m.type })#m$
+            =:= e.type
+         ) ]
+
+         summon[(
+            RfXAcoXValue[eRf.type ]
+            =:=
+            eRf.XValue
+         ) ]
+
+      } )
+
    }
 
    /**
