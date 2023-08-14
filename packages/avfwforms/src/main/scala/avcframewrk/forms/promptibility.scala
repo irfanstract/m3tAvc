@@ -98,14 +98,21 @@ object Promptibility {
        * `(arg : XReceiver ).responseType.XValue`.
        * 
        */
-      type ItsRfdXValue[+m <: InstanceOf[XReceiver] ]
-         = RfXAcoXValue[(
-            // TODO wait until the first cand no longer crash the compiler, and switch back to it
-            
-            ItsAcceptableResponseFormatDesc[m ]
-            // InstanceOf[ResponseFormat.XAlgebraicCaseOps ]
-            // ResponseFormat.XAlgebraicCaseOps
-         ) ]
+      type ItsRfdXValue[+m$ <: InstanceOf[XReceiver] ]
+         = (
+         ({
+
+         val m : m$
+
+         val mResponseType : ItsAcceptableResponseFormatDesc[m.type ]
+
+         type mResponseTypeXValue = (
+            mResponseType.XValue
+         )
+
+         })
+         #mResponseTypeXValue
+         )
       
    }
 
@@ -114,22 +121,42 @@ object Promptibility {
     * `(arg : ResponseFormat.XAlgebraicCaseOps ).XValue`.
     * 
     */
+   @deprecated("this is a misnomer.") /* merely looking at this method's name will not make one properly understand the intent/purpose of it. */
    type RfXAcoXValue[
-      +Fmt <: InstanceOf[ResponseFormat.XAlgebraicCaseOps] ,
+      +fmt$ <: InstanceOf[ResponseFormat.XAlgebraicCaseOps] ,
    ]
          = (
             ({
-               val t1
-                  : Fmt
+               val fmt
+                  : fmt$
                   // : { type XValue }
-               type R
-                  = t1.XValue 
+               type AcceptableValue
+                  = fmt.XValue 
                   // = Any
-            })#R
+            })#AcceptableValue
          )
 
    given LolAyRef101[M] : AnyRef with {}
    given LolAyRef102[M](using i: DummyImplicit) : AnyRef with {}
+
+   @deprecated("this is a misnomer.")
+   def approduct[
+      A0 >: Product <: Product ,
+   ](
+      //
+      runImpl: (
+         [A <: A0 ]
+         =>
+         (e: A)
+         =>
+         (manager: XDispatchTimePrereqsImpl[? >: A] )
+         ?=>
+         (expectedAsynchronicity: avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ] )
+         ?=>
+         expectedAsynchronicity.MainByReturnValue[manager.ItsRfdXValue[e.type] ]
+      ) ,
+   )
+   = runImpl
 
 }
 
