@@ -119,6 +119,16 @@ object Promptibility {
          })
          #mResponseTypeXValue
          )
+
+      //
+      locally[(e: (Product, Product) ) => Unit ](e => {
+
+         // summon[(
+         //    ({ val m : e.type ; type m$ = m.type })#m$
+         //    =:= e.type
+         // ) ]
+
+      } )
       
       /**
        * 
@@ -141,10 +151,10 @@ object Promptibility {
             <:< ResponseFormat.XAlgebraicCaseOps
          ) ]
 
-         summon[(
-            ({ val m : e.type ; type m$ = m.type })#m$
-            =:= e.type
-         ) ]
+         // summon[(
+         //    ({ val m : e.type ; type m$ = m.type })#m$
+         //    =:= e.type
+         // ) ]
 
          // TODO
          // summon[(
@@ -175,16 +185,16 @@ object Promptibility {
             <:< ResponseFormat.XAlgebraicCaseOps
          ) ]
 
-         summon[(
-            ({ val m : e.type ; type m$ = m.type })#m$
-            =:= e.type
-         ) ]
+         // summon[(
+         //    ({ val m : e.type ; type m$ = m.type })#m$
+         //    =:= e.type
+         // ) ]
 
-         summon[(
-            RfXAcoXValue[eRf.type ]
-            =:=
-            eRf.XValue
-         ) ]
+         // summon[(
+         //    RfXAcoXValue[eRf.type ]
+         //    =:=
+         //    eRf.XValue
+         // ) ]
 
       } )
 
@@ -213,24 +223,24 @@ object Promptibility {
    given LolAyRef101[M] : AnyRef with {}
    given LolAyRef102[M](using i: DummyImplicit) : AnyRef with {}
 
-   @deprecated("this is a misnomer.")
-   def approduct[
-      A0 >: Product <: Product ,
-   ](
-      //
-      runImpl: (
-         [A <: A0 ]
-         =>
-         (e: A)
-         =>
-         (manager: XDispatchTimePrereqsImpl[? >: A] )
-         ?=>
-         (expectedAsynchronicity: avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ] )
-         ?=>
-         expectedAsynchronicity.MainByReturnValue[manager.ItsRfdXValue[e.type] ]
-      ) ,
-   )
-   = runImpl
+   // @deprecated("this is a misnomer.")
+   // def approduct[
+   //    A0 >: Product <: Product ,
+   // ](
+   //    //
+   //    runImpl: (
+   //       [A <: A0 ]
+   //       =>
+   //       (e: A)
+   //       =>
+   //       (manager: XDispatchTimePrereqsImpl[? >: A] )
+   //       ?=>
+   //       (expectedAsynchronicity: avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ] )
+   //       ?=>
+   //       expectedAsynchronicity.MainByReturnValue[manager.ItsRfdXValue[e.type] ]
+   //    ) ,
+   // )
+   // = runImpl
 
 }
 
