@@ -128,17 +128,18 @@ object Promptibility {
 
          val m : m$
 
-         // type mResponseTypeDesc$ = ItsAcceptableResponseFormatDesc[m.type ]
-
-         // type mResponseTypeXValue = (
-         //    mResponseTypeDesc$#XValue
-         // )
-
-         val mResponseType : ItsAcceptableResponseFormatDesc[m.type ]
+         type mResponseTypeDesc$ = ItsAcceptableResponseFormatDesc[m.type ]
 
          type mResponseTypeXValue = (
-            mResponseType.XValue
+            // mResponseTypeDesc$#XValue
+            RfXAcoXValue[mResponseTypeDesc$ ]
          )
+
+         // val mResponseType : ItsAcceptableResponseFormatDesc[m.type ]
+
+         // type mResponseTypeXValue = (
+         //    mResponseType.XValue
+         // )
 
          })
          #mResponseTypeXValue
