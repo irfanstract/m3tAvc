@@ -76,13 +76,37 @@ object Promptibility {
       rfExtractor0: XRfExtractor ,
       headlExtractor0: XHeadlExtractor ,
    )
-   : AnyRef with {
+   : AnyRef
+   with XDtpiOps[
+      XReceiver ,
+   ]
+   with {
 
       val rfExtractor : rfExtractor0.type
          = rfExtractor0
 
       val headlExtractor : headlExtractor0.type
          = headlExtractor0
+
+   }
+   /**
+    * 
+    * the implementation of the methods of `XDispatchTimePrereqsImplImpl`.
+    * avoids the `val bar: A` (where `A` is an opaque type) idiom .
+    * 
+    */
+   private[Promptibility]
+   sealed
+   trait XDtpiOps[
+      XReceiver ,
+   ]
+   {
+
+      val rfExtractor
+      : Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
+
+      val headlExtractor
+      : Question.HeadlineExtractor[XReceiver]
 
       export rfExtractor.ItsAcceptableResponseFormatDesc
 
