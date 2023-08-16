@@ -96,6 +96,70 @@ object Question {
       : IResponseFormat.type
       = IResponseFormat
 
+   /**
+    * 
+    * this `implicit class`
+    * would
+    * avoid the need to list each child/individual `given`s separately and
+    * enforce these contract(s) across/between them
+    * 
+    * the "sum-it-all" view of this instance of a user-selected struct
+    * 
+    * the itc defined in `XDispatcher`
+    * on each call expects/requires `given` `Promptibility.XDispatchTimePrereqsImpl[reqInf.type]`.
+    * the `given def`
+    * would
+    * bundle these relevant set of `given` instances of these `type`s defined here in `promptibility.scala`,
+    * taking care of the contract(s) between those TC instances and
+    * providing some functionality based on those TC instances
+    * 
+    * - `Question.AcceptableResponseFormatDescExtractorAlgebraic`,
+    *   to serve as the `.headline` impl
+    * 
+    * - `Question.HeadlineExtractor`,
+    *   to serve as the `.responseFormat` impl
+    * 
+    */
+   type XSummedAllView[
+      XReceiver
+         <: Product
+      ,
+   ]
+      = (
+         XSummedAllViewImpl[
+            XReceiver ,
+            ? ,
+            ? ,
+         ]
+      )
+
+   implicit class XSummedAllViewImpl[
+      XReceiver
+         <: Product
+      ,
+      XRfExtractor <: Singleton & Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
+      ,
+      XHeadlExtractor <: Singleton & Question.HeadlineExtractor[XReceiver]
+      ,
+      
+   ]
+   (val _1 : XReceiver )
+   (using 
+      val rfExtractor0: XRfExtractor ,
+      val headlExtractor0: XHeadlExtractor ,
+   )
+   {
+
+      //
+      
+      val responseFormat
+      = _1.responseFormat
+
+      val headline
+      = _1.headline
+
+   }
+
 }
 
 /**
