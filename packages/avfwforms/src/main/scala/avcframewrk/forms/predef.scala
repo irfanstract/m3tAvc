@@ -36,6 +36,32 @@ export avcframewrk.forms.math.CSingleton
 
 export avcframewrk.forms.math.InstanceOf
 
+@deprecated("you should avoid doing it.")
+final
+lazy val PretendNonExperimental
+: PNE.type
+= PNE
+
+protected
+object PNE {
+
+   def apply[R](c: NoArgCallbackOps[R] )
+   : R
+   = {
+      (c.asInstanceOf[{ def apply(): R }] )
+      match { case cb => import reflect.Selectable.reflectiveSelectable ; cb.apply() : R }
+   }
+
+   trait NoArgCallbackOps[+R] {
+
+      @annotation.experimental
+      def apply()
+      : R
+
+   }
+
+}
+
 
 
 
