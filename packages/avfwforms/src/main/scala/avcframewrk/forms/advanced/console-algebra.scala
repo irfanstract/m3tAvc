@@ -65,11 +65,7 @@ object clauseInterweavedActionItemDispatcherImpl
             ,
          )
          : (
-            ({
-               type R = expectedAsynchronicity.MainByReturnValue[RVal]
-               type RVal = main.responseFormat.XValue
-            })
-            #R
+            expectedAsynchronicity.MainByReturnValue[main.responseFormat.XValue ]
 
          ) // r
 
