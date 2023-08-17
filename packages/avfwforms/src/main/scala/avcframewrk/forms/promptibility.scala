@@ -138,25 +138,59 @@ object Question {
 
    // TODO the actual implicit-view impl
 
-   // given [
-   //    XReceiver
-   //       <: Product
-   //    ,
-   //    XRfExtractor <: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
-   //    ,
-   //    XHeadlExtractor <: Question.HeadlineExtractor[XReceiver]
-   //    ,
-      
-   // ] (using 
-   //    rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
-   //    headlExtractor: Question.HeadlineExtractor[XReceiver] ,
-   // )
-   // : Conversion[Product, XSummedAllView[Product] ] with {
-
-   //    def apply(p: Product)
-   //    = XSummedAllViewImpl(p)
-      
+   // given [C1, C2 >: C1] : AnyRef with {
+   //    summon[(
+   //       Question.AcceptableResponseFormatDescExtractorAlgebraic[C2]
+   //       <:<
+   //       Question.AcceptableResponseFormatDescExtractorAlgebraic[C1]
+   //    )]
    // }
+
+   /**
+    * 
+    * the actual impl for
+    * the automatic conv to `XSummedAllView[_1.type]`
+    * 
+    */
+   given [
+      XReceiver
+         <: Product
+      ,
+      XRfExtractor <: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
+      ,
+      XHeadlExtractor <: Question.HeadlineExtractor[XReceiver]
+      ,
+      
+   ] (using
+      rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
+      headlExtractor: Question.HeadlineExtractor[XReceiver] ,
+   )
+   : (
+      Conversion[XReceiver, (
+         XSummedAllViewImpl[
+            XReceiver ,
+            ? ,
+            ? ,
+         ]
+      ) ]
+   ) with {
+
+      protected 
+      object impl {
+
+         def apply(p: XReceiver)
+         = {
+            XSummedAllViewImpl[p.type ](p)(using
+               rfExtractor = rfExtractor ,
+               headlExtractor = headlExtractor ,
+            )
+         }
+
+      }
+
+      export impl.{apply => apply }
+      
+   }
 
    protected[Question]
    object XSummedAllViewImpl {
