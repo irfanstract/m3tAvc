@@ -27,6 +27,18 @@ object LexicalImperativeSynchronicityGiven {
 
    /**
     * 
+    * intended to (but i'm not sure it really does the thing)
+    * select all possible instances,
+    * by being `ByCc[[_] =>> Any ]`
+    * 
+    * see also `collection.IterableOnceOps`
+    * 
+    */
+   type ByCcBeingAny
+      = ByCc[[_] =>> Any ]
+
+   /**
+    * 
     * for `DummyImplicit ?=> R`s
     * 
     */
