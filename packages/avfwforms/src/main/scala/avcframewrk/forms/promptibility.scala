@@ -19,6 +19,9 @@ object Promptibility {
    object XDispatcher
    {
 
+      type ByNoSpec
+         = advanced.clauseInterweavedActionItemDispatcherImpl.Main
+
    } /* `XDispatcher$` */
 
    type DeferredReturn[+R]
@@ -95,6 +98,116 @@ object Question {
    lazy val ResponseFormat
       : IResponseFormat.type
       = IResponseFormat
+
+   /**
+    * 
+    * this `implicit class`
+    * would
+    * avoid the need to list each child/individual `given`s separately and
+    * enforce these contract(s) across/between them
+    * 
+    * the "sum-it-all" view of this instance of a user-selected struct
+    * 
+    * the itc defined in `XDispatcher`
+    * on each call expects/requires `given` `Promptibility.XDispatchTimePrereqsImpl[reqInf.type]`.
+    * the `given def`
+    * would
+    * bundle these relevant set of `given` instances of these `type`s defined here in `promptibility.scala`,
+    * taking care of the contract(s) between those TC instances and
+    * providing some functionality based on those TC instances
+    * 
+    * - `Question.AcceptableResponseFormatDescExtractorAlgebraic`,
+    *   to serve as the `.headline` impl
+    * 
+    * - `Question.HeadlineExtractor`,
+    *   to serve as the `.responseFormat` impl
+    * 
+    */
+   type XSummedAllView[
+      XReceiver
+         <: Product
+      ,
+   ]
+      = (
+         XSummedAllViewImpl[
+            Singleton & XReceiver ,
+            ? ,
+            ? ,
+         ]
+      )
+
+   // TODO the actual implicit-view impl
+
+   // given [
+   //    XReceiver
+   //       <: Product
+   //    ,
+   //    XRfExtractor <: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
+   //    ,
+   //    XHeadlExtractor <: Question.HeadlineExtractor[XReceiver]
+   //    ,
+      
+   // ] (using 
+   //    rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
+   //    headlExtractor: Question.HeadlineExtractor[XReceiver] ,
+   // )
+   // : Conversion[Product, XSummedAllView[Product] ] with {
+
+   //    def apply(p: Product)
+   //    = XSummedAllViewImpl(p)
+      
+   // }
+
+   protected[Question]
+   object XSummedAllViewImpl {
+
+      def apply[
+         XReceiver
+            <: Product
+         ,
+         
+      ](_1: XReceiver)
+      (using 
+         rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
+         headlExtractor: Question.HeadlineExtractor[XReceiver] ,
+      )
+      = {
+
+         new XSummedAllViewImpl(_1 = _1)(using
+            rfExtractor = rfExtractor ,
+            headlExtractor = headlExtractor ,
+         )
+      }
+
+   }
+
+   protected[Question]
+   class XSummedAllViewImpl[
+      +XReceiver
+         <: Singleton & Product
+      ,
+      +XRfExtractor <: Singleton & Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
+      ,
+      +XHeadlExtractor <: Singleton & Question.HeadlineExtractor[XReceiver]
+      ,
+      
+   ]
+   (val _1 : XReceiver )
+   (using 
+      val rfExtractor: XRfExtractor ,
+      val headlExtractor: XHeadlExtractor ,
+   )
+   {
+
+      //
+      
+      val responseFormat
+      = _1.responseFormat
+
+      val headline
+      = _1.headline
+
+   }
 
 }
 
