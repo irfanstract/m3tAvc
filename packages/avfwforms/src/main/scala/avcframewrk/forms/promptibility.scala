@@ -173,7 +173,12 @@ object Question {
       )
       = {
 
-         new XSummedAllViewImpl(_1 = _1)(using
+         new XSummedAllViewImpl[
+            _1.type ,
+            rfExtractor.type ,
+            headlExtractor.type ,
+            
+         ](_1 = _1)(using
             rfExtractor = rfExtractor ,
             headlExtractor = headlExtractor ,
          )
@@ -184,11 +189,11 @@ object Question {
    protected[Question]
    class XSummedAllViewImpl[
       +XReceiver
-         <: Singleton & Product
+         <: Product
       ,
-      +XRfExtractor <: Singleton & Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
+      +XRfExtractor <: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
       ,
-      +XHeadlExtractor <: Singleton & Question.HeadlineExtractor[XReceiver]
+      +XHeadlExtractor <: Question.HeadlineExtractor[XReceiver]
       ,
       
    ]
