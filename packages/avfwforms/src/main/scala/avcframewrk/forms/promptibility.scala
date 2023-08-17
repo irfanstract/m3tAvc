@@ -20,7 +20,55 @@ object Promptibility {
    {
 
       type ByNoSpec
-         = advanced.clauseInterweavedActionItemDispatcherImpl.Main
+         >: ByTAndSubjectAndBlockingnessImpl
+         <: ByTAndSubjectAndBlockingnessImpl
+
+      /**
+       * 
+       * of this form
+       * ```
+       * [A] -> (subject: Question.XSummedAllView[A ] ) -> (using expectedAsynchronicity: LexicalAsynchronicity)
+       * &nbsp;=>
+       * expectedAsynchronicity.MainByReturnValue[subject.responseFormat.XValue ]
+       * ```
+       * 
+       */
+      trait ByTAndSubjectAndBlockingnessImpl {
+
+         /**
+          * 
+          * `apply`
+          * 
+          * 
+          * @param main the main action item
+          * @param expectedAsynchronicity `LexicalImperativeSynchronicityGiven`
+          * 
+          */
+         def apply
+            [
+               A <: Product
+               ,
+            ]
+            (
+               main
+               : (
+                  // A
+                  Question.XSummedAllView[A ]
+                  // Any
+               )
+               ,
+            )
+            (using
+               expectedAsynchronicity
+               : LexicalAsynchronicity
+               ,
+            )
+            : (
+               expectedAsynchronicity.MainByReturnValue[main.responseFormat.XValue ]
+
+            ) // r
+
+      }
 
    } /* `XDispatcher$` */
 
