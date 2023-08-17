@@ -75,14 +75,7 @@ object clauseInterweavedActionItemDispatcherImpl
 
       //
 
-      type LexicalAsynchronicity
-         = avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCc[[_] =>> Any ]
-
-      object LexicalAsynchronicity {
-
-         //
-
-      } // LexicalAsynchronicity$
+      export avcframewrk.forms.{LexicalAsynchronicity as LexicalAsynchronicity }
 
    } // Main$
 

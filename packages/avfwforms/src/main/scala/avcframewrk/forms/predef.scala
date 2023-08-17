@@ -62,6 +62,17 @@ object PNE {
 
 }
 
+protected[forms]
+type LexicalAsynchronicity
+   = avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCcBeingAny
+
+protected[forms]
+object LexicalAsynchronicity {
+
+   //
+
+} // LexicalAsynchronicity$
+
 
 
 
