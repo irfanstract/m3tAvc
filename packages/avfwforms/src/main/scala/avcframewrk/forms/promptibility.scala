@@ -371,6 +371,8 @@ object IResponseFormat
 
       type XValue
 
+      given given_Typeable_XValue: reflect.Typeable[XValue]
+
       extension (value: XValue ) {
 
          def isPositive
@@ -509,6 +511,7 @@ object IResponseFormat
       toEither : XPositivityWindow
       ,
    )
+   (using val given_Typeable_XValue : reflect.Typeable[E] = { /* don't try this at work */ summon[reflect.Typeable[Any] ].asInstanceOf[reflect.Typeable[E] ] } )
    extends 
    AnyRef
    with XAlgebraicCaseOps
