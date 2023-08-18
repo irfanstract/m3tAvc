@@ -194,54 +194,33 @@ object Question {
    //    )]
    // }
 
-   /**
-    * 
-    * the actual impl for
-    * the automatic conv to `XSummedAllView[_1.type]`
-    * 
-    */
-   given [
-      XReceiver
-         <: Product
-      ,
-      XRfExtractor <: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
-      ,
-      XHeadlExtractor <: Question.HeadlineExtractor[XReceiver]
-      ,
-      
-   ] (using
-      rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
-      headlExtractor: Question.HeadlineExtractor[XReceiver] ,
-   )
-   : (
-      Conversion[XReceiver, (
-         XSummedAllViewImpl[
-            XReceiver ,
-            ? ,
-            ? ,
-         ]
-      ) ]
-   ) with {
-
-      protected 
-      object impl {
-
-         def apply(p: XReceiver)
-         = {
-            XSummedAllViewImpl[p.type ](p)(using
-               rfExtractor = rfExtractor ,
-               headlExtractor = headlExtractor ,
-            )
-         }
-
-      }
-
-      export impl.{apply => apply }
-      
-   }
-
-   protected[Question]
+   // protected[Question]
    object XSummedAllViewImpl {
+
+      implicit
+      transparent inline
+      def applyGvInline[
+         XReceiver
+            <: Product
+         ,
+
+      ](_1: XReceiver)
+      : XSummedAllViewImpl[
+            _1.type ,
+            ? ,
+            ? ,
+            
+         ]
+      = {
+
+         given Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
+         = compiletime.summonInline[Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver ] ]
+
+         given Question.HeadlineExtractor[XReceiver]
+         = compiletime.summonInline[Question.HeadlineExtractor[XReceiver] ]
+
+         apply[_1.type](_1 )
+      }
 
       def apply[
          XReceiver
