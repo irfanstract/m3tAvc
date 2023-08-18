@@ -62,6 +62,19 @@ object PNE {
 
 }
 
+/**
+ * 
+ * `summonInlineForAutoBundling`
+ * 
+ */
+private[forms]
+transparent inline
+def summonInlineForAutoBundling[R]
+: R
+= {
+   compiletime.summonFrom { case op : R => op ; case _ => compiletime.error("failed to resolve ; make sure the 'given' exists in-scope . " + compiletime.codeOf(??? : R ) ) }
+}
+
 protected[forms]
 type LexicalAsynchronicity
    = avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.ByCcBeingAny

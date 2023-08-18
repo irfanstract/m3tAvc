@@ -194,66 +194,27 @@ object Question {
    //    )]
    // }
 
-   /**
-    * 
-    * the actual impl for
-    * the automatic conv to `XSummedAllView[_1.type]`
-    * 
-    */
-   given [
-      XReceiver
-         <: Product
-      ,
-      XRfExtractor <: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver]
-      ,
-      XHeadlExtractor <: Question.HeadlineExtractor[XReceiver]
-      ,
-      
-   ] (using
-      rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
-      headlExtractor: Question.HeadlineExtractor[XReceiver] ,
-   )
-   : (
-      Conversion[XReceiver, (
-         XSummedAllViewImpl[
-            XReceiver ,
-            ? ,
-            ? ,
-         ]
-      ) ]
-   ) with {
-
-      protected 
-      object impl {
-
-         def apply(p: XReceiver)
-         = {
-            XSummedAllViewImpl[p.type ](p)(using
-               rfExtractor = rfExtractor ,
-               headlExtractor = headlExtractor ,
-            )
-         }
-
-      }
-
-      export impl.{apply => apply }
-      
-   }
-
-   protected[Question]
+   // protected[Question]
    object XSummedAllViewImpl {
 
+      implicit
+      transparent inline
       def apply[
          XReceiver
             <: Product
          ,
-         
+
       ](_1: XReceiver)
-      (using 
-         rfExtractor: Question.AcceptableResponseFormatDescExtractorAlgebraic[XReceiver] ,
-         headlExtractor: Question.HeadlineExtractor[XReceiver] ,
-      )
+      : XSummedAllViewImpl[
+            _1.type ,
+            ? ,
+            ? ,
+            
+         ]
       = {
+
+         val rfExtractor = summonInlineForAutoBundling[Question.AcceptableResponseFormatDescExtractorAlgebraic[_1.type ] ]
+         val headlExtractor = summonInlineForAutoBundling[Question.HeadlineExtractor[_1.type ] ]
 
          new XSummedAllViewImpl[
             _1.type ,
