@@ -29,9 +29,6 @@ def runStdIoWelcomeDemo(): Unit
    given Promptibility.XDispatcher.ByNoSpec
    = stdIoPromptibility.dispatcher
 
-   given LexicalAsynchronicity
-   = avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.forByNameAlikeSem
-
    {
       //
 
@@ -40,12 +37,41 @@ def runStdIoWelcomeDemo(): Unit
       {
          //
 
+         given LexicalAsynchronicity
+         = avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.forByNameAlikeSem
+
          import EmeHeadlinedEnumQuestionImpl.{given AnyRef }
 
          Question.XSummedAllViewImpl.apply({ q1 })
 
-         summon[Promptibility.XDispatcher.ByNoSpec ]
-         .apply({ q1 })
+         val answ = {
+
+            summon[Promptibility.XDispatcher.ByNoSpec ]
+            .apply({ q1 })
+
+         }
+
+      }
+
+   }
+
+   {
+      //
+
+      val q1 = EmeHeadlinedEnumQuestionImpl(messageImpl = "hello again", responseFormatImpl = Question.ResponseFormat.ofUnit )
+
+      {
+         //
+
+         given avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.forByNameAlikeSem.type
+         = avcframewrk.forms.math.LexicalImperativeSynchronicityGiven.forByNameAlikeSem
+
+         val answ = {
+
+            summon[Promptibility.XDispatcher.ByNoSpec ]
+            .apply({ q1 })
+
+         }
 
       }
 
