@@ -68,6 +68,192 @@ object Build {
       sbt.Configuration.of("XCompilerPluginBc", "plugin->default(compile)")
    }
 
+   object mainly
+   {
+      //
+
+      import sbt._
+      import sbt.Keys._
+
+      import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
+
+      import sbtcrossproject.CrossProject
+      import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType, _}
+
+      import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+
+      import scalajscrossproject.ScalaJSCrossPlugin.autoImport._
+
+      //
+
+      /**
+       * 
+       * the parent dir of every of these packages.
+       * follows that of the React dev repo.
+       * 
+       */
+      lazy val packagesParentDir
+      = file("packages")
+
+      lazy val suggestedScalaVersionV: String
+      = "3.3.1-RC4"
+
+      ThisBuild / scalaVersion := suggestedScalaVersionV
+
+      def computeNecessaryProjectSrcCodeManifest() =
+        Seq(
+          //
+
+          /* TITLE */
+
+          name := { s"${name.value } for ${ crossProjectPlatform.value.identifier }" } ,
+
+          /* SCALAC OPTIONS */
+
+          scalaVersion := suggestedScalaVersionV ,
+
+          scalacOptions += "-Yexplicit-nulls" ,
+          scalacOptions += "-Ysafe-init" ,
+
+          scalacOptions += "-feature" ,
+          scalacOptions += "-deprecation" ,
+          scalacOptions += "-unchecked" ,
+          scalacOptions += "-language:implicitConversions" ,
+
+          /* RESOURCE PATHS */
+
+          Compile / resourceDirectories += (
+            baseDirectory.value / "src" / "main" / "resources"
+          )
+          ,
+
+          /* STD LIB DEPENDENCIES */
+
+          libraryDependencies ++= Seq(
+            "org.scalatest" %% "scalatest" % "3.2.9" % Test
+          )
+          ,
+
+        )
+
+      lazy val xCompileAllTaskKey = {
+
+        taskKey[Any]("compile all")
+      }
+
+      libraryDependencies ++= {
+
+        println(s"PATH: '${java.lang.System.getenv("PATH") }'")
+
+        Seq()
+      }
+
+      //
+
+      /* see also [https://github.com/portable-scala/sbt-crossproject](`sbt-crossproject`) */
+      val suggestedTargetPlatforms: Seq[sbtcrossproject.Platform ]
+      = Seq(JVMPlatform, JSPlatform)
+
+      implicit class XCrossProjectBuilderSuggestedSettingsOps(receiver: CrossProject.Builder ) {
+
+        def withSuggestedSettings()
+        : CrossProject.Builder
+        = {
+          receiver
+          .withoutSuffixFor(JVMPlatform )
+          .crossType(CrossType.Pure )
+        }
+
+      }
+
+      implicit class XCrossProjectSuggestedPlatformSpecificSettingsOps(receiver: CrossProject ) {
+         //
+
+         def withSuggestedPlatformSpecifics()
+         : CrossProject
+         = {
+            receiver
+            .jsSettings(
+            //
+
+            // /** 
+            //  * 
+            //  * Depend on the scalajs library.
+            //  * 
+            //  * repeated here.
+            //  * work-around for Bloop
+            //  * 
+            //  */
+            // libraryDependencies += (
+            //   scalaJsStdLibDepSpec
+            // )
+            // ,
+
+            // Tell Scala.js that this is an application with a main method
+            scalaJSUseMainModuleInitializer := true
+            ,
+
+            /* Configure Scala.js to emit modules in the optimal way to
+            * connect to Vite's incremental reload.
+            * - emit ECMAScript modules
+            * - emit as many small modules as possible for classes in the "livechart" package
+            * - emit as few (large) modules as possible for all other classes
+            *   (in particular, for the standard library)
+            */
+            scalaJSLinkerConfig ~= {
+
+               import org.scalajs.linker.interface.ModuleSplitStyle
+
+               _.withModuleKind(ModuleKind.ESModule)
+                  .withModuleSplitStyle(
+                  ModuleSplitStyle.SmallModulesFor(List("scm2023021")))
+            },
+
+            // /**
+            //  * Bloop
+            //  * refuses to fully evaluate the std fields, citing the issues with side-effects, and instead
+            //  * evaluates the "proxy" fields, in this case `bloopScalaJSModuleKind`
+            //  */
+            // bloopScalaJSModuleKind := Some("ESModule")
+            // ,
+            // bloopScalaJSStage := Some("fastopt")
+            // ,
+
+            /* Depend on the scalajs-dom library.
+            * It provides static types for the browser DOM APIs.
+            */
+            libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.4.0"
+            ,
+
+            //
+
+            // bloop.integrations.sbt.ScalaJsKeys.scalaJSEmitSourceMaps := true
+            // ,
+
+            )
+         }
+
+      }
+
+      implicit class XCrossProjectSuggestedSourceArtefactSettingsOps(receiver: CrossProject ) {
+
+        def asLeafProjectWithNecessarySettings()
+        : CrossProject
+        = {
+          receiver
+          .settings(
+
+            computeNecessaryProjectSrcCodeManifest() ,
+
+            //
+          )
+          .withSuggestedPlatformSpecifics()
+        }
+
+      }
+
+   }
+
 }
 
 
