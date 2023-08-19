@@ -27,6 +27,7 @@ dist-ssr
 # Python
 __pycache__
 # Scala Metals
+.bsp/
 .bloop/
 .metals/
 .ammonite/
