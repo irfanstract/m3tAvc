@@ -86,6 +86,44 @@ object LexicalAsynchronicity {
 
 } // LexicalAsynchronicity$
 
+/**
+ * 
+ * UTF data repr
+ * 
+ */
+opaque type Utf
+   <: AnyRef & Matchable
+   = String
+
+object Utf
+{
+
+   //
+
+   /**
+    * 
+    * from given String.
+    * 
+    * to be called automatically when given plain String literals.
+    * 
+    */
+   implicit 
+   def apply(value: String )
+   : Utf
+   = value
+
+   extension (c: Utf )
+      /**
+       * 
+       * the full-length content
+       * 
+       */
+      def toString1
+      : String
+      = c
+
+} // Utf$
+
 
 
 
