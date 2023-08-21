@@ -76,14 +76,85 @@ lazy val avcFormsProject
 
 lazy val mainSjs
 =
+  //
   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "main-sjs" ) )
   .asLeafProjectWithNecessarySettings()
+  .withDbp(mainClassNames = Some("runSMain") )
   // .dependsOn(avFwHeadlessUtilityLibProject ) /* this pattern is prone to making dependency cycles, and SBT f*c*ed the resol up ☹ */
   .dependsOn(avFwAlgebLibProject )
   .dependsOn(avcEvLibProject )
   .dependsOn(avcFormsProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
+
+// TODO remove this
+lazy val mainSjsg
+= {
+  //
+  (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "main-sjsg" ) )
+  .asLeafProjectWithNecessarySettings()
+  // .settings(
+  //   Compile / compile := {
+  //     //
+
+  //     val value = (Compile / compile).value
+  //     kPrintln(s"done Compile:Compile")
+  //     value
+  //   }
+  //   ,
+  //   Compile / bspBuildTargetCompile := {
+  //     //
+
+  //     val value = (Compile / bspBuildTargetCompile).evaluated
+  //     kPrintln(s"done Compile:bspBuildTargetCompile")
+  //     value
+  //   }
+  //   ,
+  // )
+  // .jsSettings(
+  //   //
+
+  //   Compile / bspBuildTargetCompile := {
+  //     //
+
+  //     val value = (Compile / bspBuildTargetCompile).evaluated
+  //     kPrintln(s"done Compile:bspBuildTargetCompile")
+  //     locally {
+  //       kPrintln(s"invoking FastLinkJs")
+  //       val fjsv = (Compile / fastLinkJS).value
+  //       kPrintln(s"fjsv: ${fjsv}")
+  //     }
+  //     value
+  //   }
+  //   , 
+  //   (Compile / mainClass) := Some("runSMain")
+  //   ,
+  //   // (Compile / sourceGenerators) += {
+  //   //   //
+
+  //   //   Def.task[Seq[File] ] ({
+  //   //     kPrintln(s"invoking FastLinkJs")
+  //   //     val fjsv = (Compile / fastLinkJS).value
+  //   //     kPrintln(s"fjsv: ${fjsv}")
+  //   //     Seq()
+  //   //   })
+  //   //   .triggeredBy((Compile / fastLinkJS) )
+  //   // }
+  //   // ,
+  //   (Compile / sourceGenerators) += {
+  //     //
+
+  //     Def.task[Seq[File] ] ({
+  //       runSge()
+  //       Seq()
+  //     })
+  //     // .triggeredBy((Compile / fastLinkJS) )
+  //   }
+  //   ,
+
+  // )
+  .withDbp(mainClassNames = Some("runSMain") )
+}
 
 
 
