@@ -78,12 +78,23 @@ lazy val mainSjs
 =
   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "main-sjs" ) )
   .asLeafProjectWithNecessarySettings()
+  .withDbp(mainClassNames = Some("runSMain") )
   // .dependsOn(avFwHeadlessUtilityLibProject ) /* this pattern is prone to making dependency cycles, and SBT f*c*ed the resol up ☹ */
   .dependsOn(avFwAlgebLibProject )
   .dependsOn(avcEvLibProject )
   .dependsOn(avcFormsProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
+
+// TODO remove this
+lazy val mainSjsg
+= {
+  //
+  
+  (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "main-sjsg" ) )
+  .asLeafProjectWithNecessarySettings()
+  .withDbp(mainClassNames = Some("runSMain") )
+}
 
 
 
