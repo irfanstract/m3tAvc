@@ -6,6 +6,7 @@
 
 
 # cached dependencies
+/sbt-launch.jar
 node_modules
 .node_modules/
 /.pnp
