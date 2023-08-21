@@ -141,6 +141,12 @@ object Build {
         taskKey[Any]("compile all")
       }
 
+      // TODO
+      case class OfInputTask[R](peer : InputKey[R]) {
+        // def value
+        // = peer.evaluated
+      }
+
       libraryDependencies ++= {
 
         println(s"PATH: '${java.lang.System.getenv("PATH") }'")
@@ -149,6 +155,11 @@ object Build {
       }
 
       //
+
+      lazy val bci = {
+
+        settingKey[Seq[Task[Any] ] ]("")
+      }
 
       /* see also [https://github.com/portable-scala/sbt-crossproject](`sbt-crossproject`) */
       val suggestedTargetPlatforms: Seq[sbtcrossproject.Platform ]
@@ -248,6 +259,205 @@ object Build {
             //
           )
           .withSuggestedPlatformSpecifics()
+        }
+
+      }
+
+      /* (with)in-chain utils */
+
+      /**
+       * 
+       * runs `println(value)`.
+       * 
+       * */
+      def kPrintln(value: Any)
+      = println(value)
+
+      lazy val bscc
+      = {
+        //
+
+        /*  
+         * https://github.com/sbt/sbt/blob/ecfb0624e911798a6d2bdf1f6a7c45acb1c59b1e/main/src/main/scala/sbt/internal/server/BuildServerProtocol.scala#L270C16-L270C16 .
+         * .
+         */
+        Global / bspBuildTargetCompile
+      }
+
+      /**
+       * 
+       * ```
+       * new Exception(s"sourceGenerators evaluated")
+       * .printStackTrace()
+       * ```
+       * 
+       * */
+      def runSge()
+      : Unit
+      = {
+        //
+
+        new Exception(s"sourceGenerators evaluated")
+        .printStackTrace()
+      }
+
+      def fjsHighLevelTaskIn(Phase1 : Configuration)
+      : Def.Initialize[Task[Seq[File] ] ]
+      = {
+        //
+
+        Def.task[Seq[File] ] ({
+          kPrintln(s"invoking FastLinkJs")
+          val fjsv = (Phase1 / fastLinkJS).value
+          kPrintln(s"fjsv: ${fjsv}")
+          Seq()
+        })
+      }
+
+      @deprecated
+      private[mainly]
+      def fjsHighLevelTask
+      = fjsHighLevelTaskIn(Phase1 = Compile )
+
+      implicit class CrossProjectDbpOPs(receiver: CrossProject)
+      {
+
+        //
+
+        def withDbp(mainClassNames: Option[String])
+        : CrossProject
+        = {
+          //
+          
+          receiver
+
+          .settings(
+            // libraryDependencies ++= {
+            //   //
+
+            //   Def.task({
+            //     val value = (Compile / compile).value
+            //     kPrintln(s"done Compile:Compile")
+            //     fjsHighLevelTask.value
+            //     value
+            //   })
+            //   .triggeredBy(Compile / compile )
+
+            //   Seq()
+            // }
+            // (Compile / sourceGenerators) += {
+            //   //
+
+            //   fjsHighLevelTask
+            //   .triggeredBy((Compile / fastLinkJS) )
+            // }
+            Compile / compile := {
+              //
+
+              val value = (Compile / compile).value
+              kPrintln(s"done Compile:Compile")
+              value
+            }
+            ,
+            Compile / compileIncremental := {
+              //
+
+              val value = (Compile / compileIncremental).value
+              kPrintln(s"done Compile:compileIncremental")
+              value
+            }
+            , 
+            // bspBuildTargetCompile := {
+            //   //
+
+            //   val value = (bspBuildTargetCompile).evaluated
+            //   kPrintln(s"done bspBuildTargetCompile")
+            //   value
+            // }
+            // // ,
+            // mainClass := mainClassNames
+            // ,
+            bscc := {
+              //
+
+              val value = (bscc ).evaluated
+              kPrintln(s"done Compile:${bscc }")
+              value
+            }
+            , 
+            Compile / bspBuildTargetCompileItem := {
+              //
+
+              val value = (Compile / bspBuildTargetCompileItem).value
+              kPrintln(s"done Compile:bspBuildTargetCompileItem ; exit-code ${value } ")
+              value
+            }
+            ,
+            (Compile / sourceGenerators) += {
+              //
+
+              Def.task[Seq[File] ] ({
+                runSge()
+                Seq()
+              })
+              .taskValue
+              // .triggeredBy((Compile / fastLinkJS) )
+            }
+            ,
+            bci += {
+              Def.task[Any ] ({
+                println(s"bci in Settings")
+                runSge()
+                Seq()
+              })
+              .triggeredBy(Compile / compile )
+              .taskValue
+            }
+            ,
+          )
+          .jsSettings(
+            //
+
+            bscc := {
+              //
+
+              val value = (bscc ).evaluated
+              kPrintln(s"done Compile:${bscc.toString }")
+              fjsHighLevelTask.value
+              value
+            }
+            ,
+            (Compile / sourceGenerators) += {
+              //
+
+              Def.task[Seq[File] ] ({
+                runSge()
+                Seq()
+              })
+              .taskValue
+              // .triggeredBy((Compile / fastLinkJS) )
+            }
+            , 
+            (Compile / mainClass) := mainClassNames
+            ,
+
+            //
+
+            bspSbtEnabled := true
+            ,
+
+            bci += {
+              Def.task[Any ] ({
+                println(s"bci in JsSettings")
+                runSge()
+                Seq()
+              })
+              .triggeredBy(Compile / compile )
+              .taskValue
+            }
+            ,
+
+          )
         }
 
       }
