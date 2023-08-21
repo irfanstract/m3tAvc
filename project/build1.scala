@@ -68,6 +68,22 @@ object Build {
       sbt.Configuration.of("XCompilerPluginBc", "plugin->default(compile)")
    }
 
+   /** 
+    * 
+    * to avoid spurious "not found" complaints,
+    * we needed to move the affected things away from `/build.sbt` into here,
+    * which means we needed to bring most the other things along.
+    * 
+    * to do both things at once -- developing for JVM and developing for JS, the so-called "cross-compilation" --
+    * we needed to put `sbt-crossproject` into play here.
+    * - https://www.scala-js.org/doc/project/cross-build.html
+    * - https://github.com/portable-scala/sbt-crossproject
+    * 
+    * we disabled the line `import sbt.Keys._` since
+    * the ident(s) of the defs within `sbt.Keys$`
+    * conflicts with the fact that the values (of the defs) are `sbt.YyyKey`s rather than their values.
+    * 
+    */
    object mainly
    {
       //
@@ -227,6 +243,20 @@ object Build {
                   .withModuleSplitStyle(
                   ModuleSplitStyle.SmallModulesFor(List("scm2023021")))
             },
+
+            /* 
+             * 
+             * otherwise, one'll get `Error` when it needs to be `RuntimeException` instead.
+             * https://www.scala-js.org/doc/semantics.html .
+             * 
+             */
+            scalaJSLinkerConfig ~= (c => (
+               c.withSemantics(s => (
+                  s
+                  .withAsInstanceOfs(org.scalajs.linker.interface.CheckedBehavior.Compliant )
+               ) )
+            ) )
+            ,
 
             // /**
             //  * Bloop
