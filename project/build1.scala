@@ -73,7 +73,8 @@ object Build {
       //
 
       import sbt._
-      import sbt.Keys._
+      // import sbt.Keys.{compile => _, sourceGenerators => _, _} /* has naming issues */
+      import sbt.Keys.{libraryDependencies }
 
       import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
@@ -98,9 +99,12 @@ object Build {
       lazy val suggestedScalaVersionV: String
       = "3.3.1-RC4"
 
-      ThisBuild / scalaVersion := suggestedScalaVersionV
+      ThisBuild / Keys.scalaVersion := suggestedScalaVersionV
 
-      def computeNecessaryProjectSrcCodeManifest() =
+      def computeNecessaryProjectSrcCodeManifest()
+      = {
+        import sbt.Keys._
+
         Seq(
           //
 
@@ -135,10 +139,19 @@ object Build {
           ,
 
         )
+      }
 
       lazy val xCompileAllTaskKey = {
 
         taskKey[Any]("compile all")
+      }
+
+      // TODO
+      case class OfInputTask[R](peer : InputKey[R]) {
+
+        // def value
+        // = peer.evaluated
+
       }
 
       libraryDependencies ++= {
@@ -149,6 +162,12 @@ object Build {
       }
 
       //
+
+      @deprecated("this is a misnomer.")
+      lazy val bci = {
+
+        settingKey[Seq[Task[Any] ] ]("")
+      }
 
       /* see also [https://github.com/portable-scala/sbt-crossproject](`sbt-crossproject`) */
       val suggestedTargetPlatforms: Seq[sbtcrossproject.Platform ]
@@ -248,6 +267,233 @@ object Build {
             //
           )
           .withSuggestedPlatformSpecifics()
+        }
+
+      }
+
+      /* (with)in-chain utils */
+
+      /**
+       * 
+       * runs `println(value)`.
+       * 
+       * */
+      def kPrintln(value: Any)
+      = println(value)
+
+      /*  
+       * https://github.com/sbt/sbt/blob/ecfb0624e911798a6d2bdf1f6a7c45acb1c59b1e/main/src/main/scala/sbt/internal/server/BuildServerProtocol.scala
+       * .
+       */
+      object bspConfigs
+      {
+
+        //
+
+        /** 
+         * 
+         * `bspBuildTargetCompile`.
+         * scoped at `Global`.
+         * 
+         * an `InputKey` rather than a `TaskKey` !!!
+         * 
+         */
+        lazy val forBuildTargetCompile
+        = {
+          //
+
+          Global / Keys.bspBuildTargetCompile
+        }
+
+        /** 
+         * 
+         * `bspBuildTargetCompileItem`.
+         * scoped at `phase`, which will need to be one of `Compile`, `Test`, `IntegrationTest`.
+         * 
+         */
+        def forBuildTargetCompileItemAt(phase: Configuration)
+        = {
+          //
+
+          phase / Keys.bspBuildTargetCompileItem
+        }
+
+      }
+
+      object sJsTasks
+      {
+
+        //
+
+        def fastLinkDuring(Phase1 : Configuration)
+        : Def.Initialize[Task[Seq[File] ] ]
+        = {
+          //
+
+          Def.task[Seq[File] ] ({
+            kPrintln(s"invoking FastLinkJs")
+            val fjsv = (Phase1 / fastLinkJS).value
+            kPrintln(s"fjsv: ${fjsv}")
+            Seq()
+          })
+        }
+
+      }
+
+      /**
+       * 
+       * ```
+       * new Exception(s"sourceGenerators evaluated")
+       * .printStackTrace()
+       * ```
+       * 
+       * */
+      @deprecated("use 'new Exception(....).printStackTrace()' directly.")
+      def runSge()
+      : Unit
+      = {
+        //
+
+        new Exception(s"sourceGenerators evaluated")
+        .printStackTrace()
+      }
+
+      @deprecated("renamed into 'sJsTasks.fastLinkDuring(Phase1 = Phase1 )'.")
+      def fjsHighLevelTaskIn(Phase1 : Configuration)
+      : Def.Initialize[Task[Seq[File] ] ]
+      = {
+        //
+
+        sJsTasks.fastLinkDuring(Phase1 = Phase1)
+      }
+
+      @deprecated("renamed into 'fjsHighLevelTaskIn(Phase1 = Compile )'.")
+      private[mainly]
+      def fjsHighLevelTask
+      = fjsHighLevelTaskIn(Phase1 = Compile )
+
+      implicit class CrossProjectDbpOPs(receiver: CrossProject)
+      {
+
+        //
+
+        def withDbp(mainClassNames: Option[String])
+        : CrossProject
+        = {
+          //
+          
+          receiver
+
+          .settings(
+            //
+
+            Compile / Keys.compile := {
+              //
+
+              val value = (Compile / Keys.compile).value
+              kPrintln(s"done Compile:Compile")
+              value
+            }
+            ,
+
+            Compile / Keys.compileIncremental := {
+              //
+
+              val value = (Compile / Keys.compileIncremental).value
+              kPrintln(s"done Compile:compileIncremental")
+              value
+            }
+            , 
+
+            bspConfigs.forBuildTargetCompile := {
+              //
+
+              val value = (bspConfigs.forBuildTargetCompile ).evaluated
+              kPrintln(s"done ${bspConfigs.forBuildTargetCompile }")
+              value
+            }
+            , 
+
+            bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) := {
+              //
+
+              val value = (bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) ).value
+              kPrintln(s"done ${bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) } ; exit-code ${value } ")
+              value
+            }
+            ,
+
+            (Compile / Keys.sourceGenerators) += {
+              //
+
+              Def.task[Seq[File] ] ({
+                runSge()
+                Seq()
+              })
+              .taskValue
+              // .triggeredBy((Compile / fastLinkJS) )
+            }
+            ,
+
+            /* etc */
+
+            // bci += {
+            //   Def.task[Any ] ({
+            //     println(s"bci in Settings")
+            //     runSge()
+            //     Seq()
+            //   })
+            //   .triggeredBy(Compile / Keys.compile )
+            //   .taskValue
+            // }
+            // ,
+
+          )
+          .jsSettings(
+            //
+
+            bspConfigs.forBuildTargetCompile := {
+              //
+
+              val value = (bspConfigs.forBuildTargetCompile ).evaluated
+              kPrintln(s"done Compile:${bspConfigs.forBuildTargetCompile.toString }")
+              fjsHighLevelTask.value
+              value
+            }
+            ,
+
+            (Compile / Keys.sourceGenerators) += {
+              //
+
+              Def.task[Seq[File] ] ({
+                runSge()
+                Seq()
+              })
+              .taskValue
+              // .triggeredBy((Compile / fastLinkJS) )
+            }
+            , 
+            
+            (Compile / Keys.mainClass) := mainClassNames
+            ,
+
+            /* etc */
+
+            // Keys.bspSbtEnabled := true
+            // ,
+
+            // bci += {
+            //   Def.task[Any ] ({
+            //     println(s"bci in JsSettings")
+            //     runSge()
+            //     Seq()
+            //   })
+            //   .triggeredBy(Compile / Keys.compile )
+            //   .taskValue
+            // }
+            // ,
+
+          )
         }
 
       }
