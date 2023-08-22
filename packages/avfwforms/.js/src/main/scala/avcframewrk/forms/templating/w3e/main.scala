@@ -32,6 +32,10 @@ val allDefsSjsImpl
 
    }
 
+   type ElementBase
+      >: org.scalajs.dom.Element /* `class`, not `trait` */
+      <: org.scalajs.dom.Element /* `class`, not `trait` */
+
    trait ClassReconcilingOps[ComparableSpawnedElement](
       //
    )
@@ -51,11 +55,10 @@ val allDefsSjsImpl
       //
 
       type ComparableSpawnedElement
-         // <: jsWindow.Element
-         <: org.scalajs.dom.Element /* `class`, not `trait` */
+         <: ElementBase
 
       given ttComparableSpawnedElement
-      : reflect.TypeTest[org.scalajs.dom.Element, ComparableSpawnedElement ]
+      : reflect.TypeTest[ElementBase, ComparableSpawnedElement ]
 
       val reconciler
       : AnyRef & ClassReconcilingOps[ComparableSpawnedElement]
@@ -72,6 +75,8 @@ val allDefsSjsImpl
       //
    )
    {
+
+      //
 
       val class1
       : SjsEClassOps
@@ -99,12 +104,53 @@ val allDefsSjsImpl
       def updateAndSelf(e: ComparableSpawnedElement )
       : e.type
 
+      /**
+       * 
+       * try to generate HTML (it's not always possibly).
+       * 
+       * defaults to `spawn().outerHTML`.
+       * 
+       */
+      @deprecated
+      def toHTML()
+      : String
+      = spawn().outerHTML
+
       //
 
    }
 
+   extension (c: SjsEOps ) {
+
+      def tryUpdateAndSelf(e: ElementBase )
+      : Either[Unit, e.type]
+      = {
+
+         e match {
+
+            case e1 : c.ComparableSpawnedElement =>
+               c updateAndSelf(e1)
+               Right(e )
+
+            case _ =>
+               Left(() )
+               
+         }
+      }
+      
+   }
+
    val typeableSde
-   = summon[reflect.Typeable[org.scalajs.dom.Element] ]
+   = summon[reflect.Typeable[ElementBase ] ]
+   
+   def newClickEvent()
+   : AnyRef & Product
+   = {
+
+      case object clickEvent extends
+         AnyRef
+      clickEvent
+   }
 
    {
       //
@@ -135,8 +181,39 @@ val allDefsSjsImpl
 
       }
 
+      case class Edsb[S, +T]
+      (
+         //
+         stateOption: avcframewrk.evm.AsyncAlgebraicMonad[S]
+         ,
+         protected val
+         stateCheck: S => (0 | 0.5 | 1)
+         ,
+         baseTitle: T
+         ,
+         private val
+         stateTitle: (baseTitle: T @annotation.unchecked.uncheckedVariance, state: S ) => T
+         ,
+      )
+      {
+
+         val stateCheckedOption
+         = {
+            stateOption
+            .map[0 | 0.5 | 1 ](stateCheck )
+         }
+
+         val stateTitleOption
+         = {
+            stateOption
+            .map(s => stateTitle(baseTitle, s) )
+         }
+
+      }
+
       case class ButtonOrAHrefDesc(
-         headline : SjsEOps ,
+         edsb: Edsb[?, SjsEOps] ,
+         callback: (evt: AnyRef & Product) => util.Try[Unit] ,
       )
       extends 
       AnyRef
@@ -144,6 +221,9 @@ val allDefsSjsImpl
       {
 
          //
+
+         val headlineDescr
+         = edsb.baseTitle
 
          override
          val class1
@@ -165,6 +245,11 @@ val allDefsSjsImpl
          = {
             // TODO
             val e = org.scalajs.dom.document.createElement("button")
+            edsb.stateCheckedOption
+            .map((vl) => {
+               e.setAttribute("disabled", vl match { case 0 => "disabled" ; case _ => "" } )
+            } )
+            .countL
             updateAndSelf(e)
             e
          }
@@ -178,10 +263,38 @@ val allDefsSjsImpl
          def updateAndSelf(e: ComparableSpawnedElement )
          : e.type
          = {
-            // TODO
-            e.innerHTML = ""
-            e append(headline.spawn() )
+            
+            /**
+             * 
+             * `tryUpdateAndSelf`
+             * 
+             */
+            this.tryUpdateAndSelf(e)
+            .getOrElse[e.type ]({
+               //
+
+               /** manually clear and (re)populate */
+               {
+                  e.innerHTML = ""
+                  e append(headlineDescr.spawn() )
+               }
+               
+               e
+            })
+            
             e
+         }
+
+         @deprecated
+         override
+         def toHTML()
+         : String
+         = {
+            
+            import language.unsafeNulls
+
+            spawn().outerHTML
+            .replaceAll("\\A[<](?:button|a|anchor|input)\\b", "$0 onclick=\"[native code]\" ")
          }
 
       }
