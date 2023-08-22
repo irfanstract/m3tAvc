@@ -228,6 +228,20 @@ object Build {
                   ModuleSplitStyle.SmallModulesFor(List("scm2023021")))
             },
 
+            /* 
+             * 
+             * otherwise, one'll get `Error` when it needs to be `RuntimeException` instead.
+             * https://www.scala-js.org/doc/semantics.html .
+             * 
+             */
+            scalaJSLinkerConfig ~= (c => (
+               c.withSemantics(s => (
+                  s
+                  .withAsInstanceOfs(org.scalajs.linker.interface.CheckedBehavior.Compliant )
+               ) )
+            ) )
+            ,
+
             // /**
             //  * Bloop
             //  * refuses to fully evaluate the std fields, citing the issues with side-effects, and instead
