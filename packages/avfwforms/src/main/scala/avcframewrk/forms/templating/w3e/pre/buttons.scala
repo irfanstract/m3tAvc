@@ -26,10 +26,14 @@ with Articles
    val Action
    : (
       AnyRef
+      & AcsfLabelledCallbackTranslator[Action]
    )
 
    type ButtonArt
       <: Article
+
+   def describeButtonByAction(action: Action)
+   : ButtonArt
 
 }
 
