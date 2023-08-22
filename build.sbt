@@ -73,6 +73,7 @@ lazy val avcFormsProject
   .dependsOn(avcEvLibProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
+  .withDevLaminar()
 
 lazy val mainSjs
 =
@@ -85,6 +86,7 @@ lazy val mainSjs
   .dependsOn(avcFormsProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
+  .withDevLaminar()
 
 // TODO remove this
 lazy val mainSjsg
