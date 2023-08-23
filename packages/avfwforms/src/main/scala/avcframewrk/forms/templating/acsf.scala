@@ -96,6 +96,16 @@ object AcsfReadinessIndCodings1
     * 
     * a default implementation which coerces into enum of three FP values `0`, `0.5`, `1`
     * 
+    * your code can simply `export` everything from here:
+    * ```
+    * trait Action .........
+    * 
+    * object Action extends AcsfReadinessIndCodings1 {
+    *    export AcsfReadinessIndCodings1.ReturnCoding
+    *    export AcsfReadinessIndCodings1.{given }
+    * }
+    * ```
+    * 
     */
    object whichTranslatesToHalfs
    extends
