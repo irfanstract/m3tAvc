@@ -59,6 +59,97 @@ object AcsfLabelledCallbackTranslator
 
    //
 
+   private[AcsfLabelledCallbackTranslator]
+   trait XAllApcGivens extends
+   AnyRef
+   with AcsfTitleIndependentCodings1
+   with AcsfReadinessIndCodings1
+   with AcsfDispatchTimeCtxIndependentCodings1
+   with AcsfReturnIndependentCodings1
+   {
+      //
+
+      // TODO
+      override
+      opaque type TitleCoding[-Value]
+         /* made a refinement of `Tuple2` introducing dependent-typing (eg the adapter's param-type is set to `this._1.CAP` ) */
+         /* the keyword `CAP` was inspired by the (internal) API `scala.runtime.TypeBox`, which Scala 3 relied on */
+         <: ({ type CAP                       <: String            }, Nothing => String ) { val _2 : (value: _1.CAP) => value.type }
+         =  ({ type CAP >: String & Value     <: String            }, Nothing => String ) { val _2 : (value: _1.CAP) => value.type }
+      override
+      implicit
+      def stringAcTitling[Value <: String]
+      = {
+         val tb1 = new AnyRef().asInstanceOf[{ type CAP >: String & Value <: String }]
+         identity[(tb1.type, (value: tb1.CAP) => value.type )]((
+            tb1 ,
+            (e) => e ,
+         ))
+      }
+
+      export AcsfReadinessIndCodings1.whichTranslatesToHalfs.{*, given}
+
+      export AcCallbackCtxIndependentCodings1.ofOpcev.{*, given}
+
+      export AcReturnIndependentCodings1.whichTranslatesToEitheres.{*, given}
+
+   }
+
+   given AcsfLabelledCallbackTranslator[() => Either[Unit | Throwable, Unit] ]
+   with XAllApcGivens
+   with {
+      //
+
+      ;
+
+      ;
+
+      override
+      def apply
+         [
+            //
+            AcModelState ,
+            IsReady : CReadinessCoding ,
+            Title : TitleCoding ,
+            P : CallbackCtxCoding ,
+            R : ReturnCoding ,
+
+         ]
+         (
+            //
+            internalStateOption : avcframewrk.evm.AsyncAlgebraicMonad[AcModelState]
+            ,
+            isReadyState : AcModelState => IsReady
+            ,
+            baseTitle: Title
+            ,
+            updatedTitle: (baseTitle: Title, internalState: AcModelState ) => Title
+            ,
+         )
+         (doTheMainThing: PartialFunction[P, R] )
+      = {
+         // TODO
+         identity[() => Either[Unit | Throwable, Unit] ](() => {
+            //
+
+            val evtInfo
+            = (summon[CallbackCtxCoding[P] ] ).apply()
+
+            val returnValue
+            = {
+               doTheMainThing
+               .lift
+               .andThen[Either[MatchError, R] ](o => o.toRight(new MatchError(s"rejected event") ) )
+               .andThen(o => o.flatMap((r: R) => (summon[ReturnCoding[R] ] ).translate(r ) ) )
+               .apply(evtInfo )
+            }
+
+            returnValue
+         })
+      }
+      
+   } // given AcsfLabelledCallbackTranslator[() => Either[Unit | Throwable, Unit] ]
+
 } // AcsfLabelledCallbackTranslator$
 
 type AcsfTitleIndependentCodings1
