@@ -87,6 +87,62 @@ AnyRef
 
 } // AcsfReadinessIndCodings1
 
+object AcsfReadinessIndCodings1
+{
+
+   //
+
+   /**
+    * 
+    * a default implementation which coerces into enum of three FP values `0`, `0.5`, `1`
+    * 
+    */
+   object whichTranslatesToHalfs
+   extends
+   AcsfReadinessIndCodings1
+   {
+
+      //
+
+      trait CReadinessCoding[-P ]
+      { def translate(value0: P ): 0 | 0.5 | 1 }
+
+      /** one states, always "totally ready" */
+      override
+      given cRdnssu
+      : CReadinessCoding[Unit]
+      with { override def translate(value: Unit ): 1 = 1 }
+
+      /** two states -- "not ready" and "totally ready" */
+      override
+      given cRdnsBi
+      : CReadinessCoding[Boolean]
+      with {
+
+         type Translated[V <: Boolean]
+            <: 0 | 1
+            = V match { case true => 1 case false => 0 }
+
+         override
+         def translate(value: Boolean )
+         : Translated[value.type]
+         = {
+            (value match { case true => 1 ; case false => 0 } )
+            .asInstanceOf[Translated[value.type] ] // TODO remove this LOC if possible
+         }
+
+      }
+
+      /** three states -- "not ready" and "partially ready" and "totally ready" */
+      override
+      given cRdnsFrc
+      : CReadinessCoding[0 | 0.5 | 1 ]
+      with { override def translate(value: 0 | 0.5 | 1 ): value.type = value }
+
+   }
+
+} // AcsfReadinessIndCodings1$
+
 // trait AcsfReadinessListenability1
 // extends
 // AnyRef
