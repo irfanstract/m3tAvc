@@ -92,11 +92,12 @@ AnyRef
     */
    type CallbackCtxCoding[+CbCtx ]
 
-   given unitValuedCaseApc
+   /* made not `given` as it didn't play well with type-inference */
+   def unitValuedCaseApc
    : CallbackCtxCoding[Unit]
 
-   // given productValuedCaseApc
-   // : CallbackCtxCoding[Product]
+   given productValuedCaseApc
+   : CallbackCtxCoding[Product ]
 
 } // AcCallbackCtxIndependentCodings1
 
@@ -104,6 +105,25 @@ object AcCallbackCtxIndependentCodings1
 {
 
    //
+
+   object ofOpcev extends
+   AcCallbackCtxIndependentCodings1
+   {
+
+      //
+
+      trait CallbackCtxCoding[+Evt ]
+      { type Instance <: Evt ; def apply() : Evt }
+
+      given unitValuedCaseApc
+      : CallbackCtxCoding[Unit]
+      with { opaque type Instance <: Unit = Unit ; def apply() = {} }
+
+      given productValuedCaseApc
+      : CallbackCtxCoding[Product & Equals ]
+      with { opaque type Instance <: Product & Equals = Product & Equals ; def apply() = { case object clickEventInfo ; clickEventInfo } }
+
+   } // ofOpcev$
 
 } // AcCallbackCtxIndependentCodings1$
 
@@ -164,6 +184,19 @@ object AcReturnIndependentCodings1
 
    //
 
+   /**
+    * 
+    * a default implementation which coerces into `Either`s
+    * 
+    * your code can simply `export` everything in here:
+    * ```
+    * new extends AcReturnIndependentCodings1 {
+    *    export AcReturnIndependentCodings1.ReturnCoding
+    *    export AcReturnIndependentCodings1.{given }
+    * }
+    * ```
+    * 
+    */
    object whichTranslatesToEitheres
    extends
    AcReturnIndependentCodings1
