@@ -32,12 +32,11 @@ trait EbAndReconcilability
       >: org.scalajs.dom.Element /* `class`, not `trait` */
       <: org.scalajs.dom.Element /* `class`, not `trait` */
 
-   // TODO
-   trait ToHtml {
-
-      def apply() : String
-
-   }
+   //   trait ToHtml {
+   //
+   //      def apply() : String
+   //
+   //   }
 
    object SjsEOps
    {
@@ -395,13 +394,59 @@ trait EbAndReconcilability
          val reconciler
          : PerSampleSpawningAndReconcilingOps[this.ComparableSpawnedElement]
          = {
-            // TODO
-            ???
+            buttonReconciler(desc)
+            match { case r => r }
          }
 
       }
 
    }
+
+}
+
+class &@@!
+   [
+      +Receiver ,
+      State ,
+   ]
+   (val e: Receiver, key: String, dSrc : avcframewrk.evm.AsyncAlgebraicMonad[State] )
+   (runPerRefreshCalls: (receiver: Receiver, state: State) => Unit )
+{
+
+   ;
+
+   e.asJsDynamic.updateDynamic(key )(( ) => {
+      dSrc
+      /*
+       * to avoid infinite-looping, a latency will be necessary
+       *
+       */
+      .delayOnNext({ import concurrent.duration.* ; 500.milliseconds })
+      /*
+       * "subscribe for only the first next item"
+       *
+       */
+      .firstL
+      /*
+       * run the main callback
+       *
+       */
+      .map((vl) => {
+         runPerRefreshCalls(e, vl )
+      } )
+      /*
+       * reschedule
+       *
+       */
+      .map(v => {
+         ;
+
+         e.asJsDynamic.applyDynamic(key)( )
+
+         ()
+      })
+   })
+   e.asJsDynamic.applyDynamic(key)( )
 
 }
 

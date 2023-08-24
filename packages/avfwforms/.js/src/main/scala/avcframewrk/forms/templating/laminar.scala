@@ -59,8 +59,8 @@ object LaminarBasedNativeElementRef
 
    extension [R](e: R) {
 
-      private
       def asJsDynamic
+      : scalajs.js.Dynamic
       = {
          ;
          e.asInstanceOf[scalajs.js.Dynamic]

@@ -291,15 +291,25 @@ trait EbButtons
             .getOrElse[headlineDescr.ComparableSpawnedElement ]({
                //
 
-               /** manually clear and (re)populate */
-               val newHeadlineSpawnedE = {
-                  ;
-
-                  recreateHeading(e)
-               } : headlineDescr.SpawnedElement
-
-               newHeadlineSpawnedE
+               recreateHeading(e)
             })
+
+         }
+
+         private[impl1]
+         def scheduleLoopedUpdateOfEnabledness(e: ComparableSpawnedElement )
+         : Unit
+         = {
+            ;
+
+            new `&@@!`(e = e, key = "scheduleNextUpdateOfEnabledness", dSrc = edsb.stateCheckedOption )((e, vl) => {
+               // TODO
+               
+               e.devLaminarWrapperEH
+               .amend(laminar.api.L.disabled := !(0.25 < vl.asInstanceOf[java.lang.Number].doubleValue() ) )
+
+               ()
+            } )
 
          }
 
@@ -354,12 +364,7 @@ trait EbButtons
                 * init automatic s
                 *
                 */
-               edsb.stateCheckedOption
-               .map((vl) => {
-                  // TODO
-                  e.setAttribute("disabled", vl match { case 0 => "disabled" ; case _ => "" } )
-               } )
-               .countL
+               scheduleLoopedUpdateOfEnabledness(e)
 
                // TODO
                updateAndSelf(e)
