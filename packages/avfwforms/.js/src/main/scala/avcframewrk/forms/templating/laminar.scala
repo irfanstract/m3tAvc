@@ -68,6 +68,13 @@ object LaminarBasedNativeElementRef
 
    }
 
+   @deprecated
+   def init
+      [R <: org.scalajs.dom.Node ]
+      (e: com.raquo.laminar.nodes.ReactiveNode[R] )
+   : e.ref.type & LlNessAs[R]
+   = e.setupBackreferenceAndGetReferent()
+
    extension [R <: org.scalajs.dom.Node](e: com.raquo.laminar.nodes.ReactiveNode[R] ) {
 
       def setupBackreference
@@ -133,6 +140,88 @@ object LaminarBasedNativeElementRef
 val Airstream
 : laminarReExports.api.A.type
 = laminarReExports.api.A
+
+object AirstreamFromMonix
+{
+
+   def apply[Item](src : monix.reactive.Observable[Item])
+   : Airstream.Observable[Item]
+   = {
+      ;
+
+      // TODO
+      ;
+
+      var subscriptionsMap
+      : Map[Int, AnyRef & monix.execution.Cancelable ]
+      = Map.empty
+
+      def unsubscribeFor(sI: Int)
+      = {
+         ;
+
+         subscriptionsMap =
+            subscriptionsMap
+            .tapEach({ case (`sI`, s) => s.cancel() ; case _ => })
+            .removed(sI)
+      }
+
+      val frontEnd = {
+         ;
+         Airstream.EventStream.fromCustomSource[Item](
+            //
+
+            //
+            shouldStart = sI => true ,
+
+            //
+            start = {
+               case (fireValue, fireError, getSI, _ ) =>
+                  ;
+
+                  val sI = getSI()
+
+                  subscriptionsMap = {
+                     subscriptionsMap.updatedWith(sI)({
+                        case None =>
+                           ;
+
+                           val s = {
+                              given sameThreadMonicScheduler.type = sameThreadMonicScheduler
+                              src
+                              .map(fireValue)
+                              .onErrorHandle(fireError )
+                              .subscribe()
+                           }
+
+                           Some(s)
+
+                        case Some(s) =>
+                           /* can't Subscribe more than once */
+                           throw new IllegalStateException(s"for i=${sI} ")
+                     })
+                  }
+
+            },
+
+            //
+            stop = (sI) => {
+               unsubscribeFor(sI)
+            } ,
+
+            //
+         )
+      }
+
+      frontEnd
+   }
+
+   final
+   lazy val sameThreadMonicScheduler
+   : monix.execution.Scheduler
+   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+
+} // AirstreamFromMonix$
 
 
 
