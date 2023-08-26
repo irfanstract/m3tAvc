@@ -68,6 +68,13 @@ object LaminarBasedNativeElementRef
 
    }
 
+   @deprecated
+   def init
+      [R <: org.scalajs.dom.Node ]
+      (e: com.raquo.laminar.nodes.ReactiveNode[R] )
+   : e.ref.type & LlNessAs[R]
+   = e.setupBackreferenceAndGetReferent()
+
    extension [R <: org.scalajs.dom.Node](e: com.raquo.laminar.nodes.ReactiveNode[R] ) {
 
       def setupBackreference
