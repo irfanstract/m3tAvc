@@ -29,7 +29,10 @@ def typeable[T]
 
 object ParentChildRelationship {
 
-   object Cio {
+   object Cio
+   extends
+   RelatorOps
+   {
 
       trait ClassOps
          [
@@ -37,7 +40,7 @@ object ParentChildRelationship {
             +C <:  ClassInstanceOps[P, C],
          ]
       {
-         // this : P =>
+         this : P =>
 
          //
 
@@ -63,7 +66,7 @@ object ParentChildRelationship {
             +C <: ClassInstanceOps[P, C],
          ]
       {
-         // this : C =>
+         this : C =>
 
          //
 
@@ -83,6 +86,19 @@ object ParentChildRelationship {
 
    } // Cio$
    
+   trait RelatorOps
+   {
+
+      //
+
+      type ClassOps
+      <: AnyKind
+
+      type ClassInstanceOps
+      <: AnyKind
+
+   } // RelatorOps
+
 } // ParentChildRelationship$
 
 
