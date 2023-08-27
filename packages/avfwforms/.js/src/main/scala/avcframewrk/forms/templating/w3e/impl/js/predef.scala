@@ -85,7 +85,7 @@ object ParentChildRelationship {
       } // ClassInstanceOps
 
    } // Cio$
-   
+
    trait RelatorOps
    {
 
@@ -100,6 +100,53 @@ object ParentChildRelationship {
    } // RelatorOps
 
 } // ParentChildRelationship$
+
+@deprecated
+class &@@!
+   [
+      +Receiver ,
+      Src <: avcframewrk.evm.AsyncAlgebraicMonad[Any] ,
+   ]
+   (val e: Receiver, key: String, val dSrc : Src )
+   (runPerRefreshCalls: (receiver: Receiver, state: ({ type Main[T <: Src ] = T match { case avcframewrk.evm.AsyncAlgebraicMonad[t] => t } })#Main[Src ] ) => Unit )
+{
+
+   ;
+
+   e.asJsDynamic.updateDynamic(key )(( ) => {
+      dSrc
+      /*
+       * to avoid infinite-looping, a latency will be necessary
+       *
+       */
+      .delayOnNext({ import concurrent.duration.* ; 500.milliseconds })
+      /*
+       * "subscribe for only the first next item"
+       *
+       */
+      .firstL
+      /*
+       * run the main callback
+       *
+       */
+      .map((vl) => {
+         runPerRefreshCalls(e, vl )
+      } )
+      /*
+       * reschedule
+       *
+       */
+      .map(v => {
+         ;
+
+         e.asJsDynamic.applyDynamic(key)( )
+
+         ()
+      })
+   })
+   e.asJsDynamic.applyDynamic(key)( )
+
+} // &@@!
 
 
 
