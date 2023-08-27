@@ -47,6 +47,27 @@ type AsyncAlgebrMonad[E1]
 type AsyncAlgMonad[E1]
    = AsyncAlgebraicMonad[E1]
 
+@deprecated
+// export AsyncAlgebraicItemStream.{newPipe => newAlgebrPipe } /* cannot use this idiom; it discarded the default args */
+def newAlgebrPipe[E1](
+   typingFnc: E1 => Unit ,
+
+   multicastStrategy
+   : MonixMulticastStrategy[E1]
+   ,
+
+   scheduler
+   : monix.execution.Scheduler
+   = monix.execution.Scheduler.Implicits.global
+   ,
+   
+)
+= AsyncAlgebraicItemStream.newPipe[E1](typingFnc = typingFnc, multicastStrategy = multicastStrategy, scheduler = scheduler)
+
+object AsyncAlgebraicItemStream
+{
+;
+
 /**
  * 
  * a fresh/independent/new pipe (`AsyncAlgebraicMonad`) ;
@@ -64,7 +85,7 @@ type AsyncAlgMonad[E1]
  * @param scheduler `monix.execution.Scheduler`
  * 
  */
-def newAlgebrPipe[E1](
+def newPipe[E1](
    typingFnc: E1 => Unit ,
 
    multicastStrategy
@@ -101,7 +122,9 @@ def newAlgebrPipe[E1](
    }
 
    (core1, core1 )
-}
+} // newPipe
+
+} // AsyncAlgebraicItemStream$
 
 /**
  * 
