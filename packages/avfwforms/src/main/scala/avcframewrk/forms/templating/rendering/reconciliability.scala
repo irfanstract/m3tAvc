@@ -182,6 +182,64 @@ object reconciliabilityC
          }
       } // bySpawnabilityAndReconciliability
 
+      /**
+       * `bySpawnabilityAndReconciliabilityFnc`
+       * 
+       * the "spawn" method(s)
+       * will first run `spwImpl1` and then run, with the returned handle, `reconcImpl1`.
+       * the "reconcile" method(s)
+       * will solely run `reconcImpl1`
+       * 
+       * this treatment
+       * avoids the need to first name the "reconcile" fnc in the user-land, as
+       * now it will happen automatically
+       * 
+       */
+      def bySpawnabilityAndReconciliabilityFnc
+         [ButtonContentModel, SpawnedButton, U ]
+         (
+            //
+            spwImpl1 : (mdl: ButtonContentModel ) => SpawnedButton
+            ,
+            reconcImpl1 : (SpawnedButton, ButtonContentModel) => U
+            ,
+         )
+      = {
+         ;
+
+         val reconcImpl = {
+            new Reconciliability[SpawnedButton, ButtonContentModel, Unit]
+            {
+               extension (this1: SpawnedButton)
+                  def model_=(newModel: ButtonContentModel )
+                  = {
+                     reconcImpl1(this1, newModel )
+                  }
+            }
+         } // reconcImpl$
+
+         val spwImpl = {
+            new SpawnabilityNoArg[ButtonContentModel, SpawnedButton ]
+            {
+               extension (mdl: ButtonContentModel)
+                  def spawn()
+                  = {
+                     val this1 = spwImpl1(mdl)
+                     reconcImpl1(this1, mdl)
+                     this1
+                  }
+            }
+         } // spwImpl$
+
+         SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliability(
+            //
+            spwImpl = spwImpl
+            ,
+            reconcImpl = reconcImpl
+            ,
+         )
+      } // bySpawnabilityAndReconciliabilityFnc
+
       ;
    } // SpawnabilityAndReconciliabilityNoArg$
 
