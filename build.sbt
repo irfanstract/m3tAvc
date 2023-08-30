@@ -56,6 +56,7 @@ lazy val avcEvLibProject
   .asLeafProjectWithNecessarySettings()
   .dependsOn(avFwAlgebLibProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
+  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % "3.4.1" ) // https://www.scala-js.org/doc/project/linking-errors.html .
 
 // lazy val amf
 // =
@@ -73,6 +74,7 @@ lazy val avcFormsProject
   .dependsOn(avcEvLibProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
+  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % "3.4.1" ) // https://www.scala-js.org/doc/project/linking-errors.html .
   .withDevLaminar()
 
 lazy val mainSjs
@@ -86,17 +88,19 @@ lazy val mainSjs
   .dependsOn(avcFormsProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
+  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % "3.4.1" ) // https://www.scala-js.org/doc/project/linking-errors.html .
+  .jsSettings(libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.2.0" ) // https://www.scala-js.org/doc/project/linking-errors.html .
   .withDevLaminar()
 
-// TODO remove this
-lazy val mainSjsg
-= {
-  //
+// // TODO remove this
+// lazy val mainSjsg
+// = {
+//   //
   
-  (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "main-sjsg" ) )
-  .asLeafProjectWithNecessarySettings()
-  .withDbp(mainClassNames = Some("runSMain") )
-}
+//   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "main-sjsg" ) )
+//   .asLeafProjectWithNecessarySettings()
+//   .withDbp(mainClassNames = Some("runSMain") )
+// }
 
 
 
