@@ -144,7 +144,8 @@ def newValueUpdateRepipe[R](
    ;
 
    implicit val scheduler
-   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+   // = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+   = monix.execution.Scheduler.global
 
    avcframewrk.evm.AsyncAlgebraicItemStream.newReroutiblePipe[R ]()
 } // newValueUpdateRepipe
@@ -171,7 +172,8 @@ def newCallbackImplUpdateRepipe
    = (argOrCtx: A) => R
 
    implicit val scheduler
-   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+   // = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+   = monix.execution.Scheduler.global
 
    avcframewrk.evm.AsyncAlgebraicItemStream.newReroutiblePipe[A => R ]()
    match { case (_1, _2) => {
