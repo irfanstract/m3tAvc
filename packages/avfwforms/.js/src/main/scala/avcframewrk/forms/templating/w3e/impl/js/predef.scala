@@ -101,6 +101,84 @@ object ParentChildRelationship {
 
 } // ParentChildRelationship$
 
+/* a hack, to make the `close()` ing of each sub unconditional */
+def closeAllOf
+   (resources : Seq[monix.reactive.Observer[?] ] )
+: Unit
+= {
+   ;
+
+   ;
+
+   util.Using.Manager(m => {
+      ;
+
+      given util.Using.Releasable[monix.reactive.Observer[?] ]
+      = _.onComplete()
+
+      for (r <- resources ) {
+         m(r)
+      }
+   })
+
+   ;
+} // closeAllOf
+
+def newValueUpdateRepipe[R](
+   //
+   prototype
+      : (value: R) => Any
+   ,
+)
+= {
+   ;
+
+   implicit val scheduler
+   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+
+   avcframewrk.evm.AsyncAlgebraicItemStream.newReroutiblePipe[R ]()
+} // newValueUpdateRepipe
+
+def newCallbackImplUpdateRepipe
+   [
+      A,
+      R,
+   ]
+   (
+      //
+      prototype
+         : (arg: A) => R
+      ,
+      initialImpl
+         : A => R
+      = (_: Any) => { throw new IllegalStateException(s"no initial impl") }
+      ,
+   )
+= {
+   ;
+
+   type F
+   = (argOrCtx: A) => R
+
+   implicit val scheduler
+   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+
+   avcframewrk.evm.AsyncAlgebraicItemStream.newReroutiblePipe[A => R ]()
+   match { case (_1, _2) => {
+      ;
+
+      var vle
+      : F
+      = initialImpl
+
+      _2
+      .map(c => { vle = c } )
+      .subscribe()
+
+      locally[(_1.type, F )](_1, { (arg: A) => vle.apply(arg) } )
+   } }
+} // newCallbackImplUpdatePipe
+
 
 
 
