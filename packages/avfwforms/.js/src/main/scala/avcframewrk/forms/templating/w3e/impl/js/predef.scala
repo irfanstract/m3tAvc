@@ -101,6 +101,35 @@ object ParentChildRelationship {
 
 } // ParentChildRelationship$
 
+/**
+ * 
+ * "close" all the specified "resource"s, by iterating over them in reverse and "close"ing each
+ * 
+ */
+def closeAllOf
+   [
+      Res
+      : util.Using.Releasable
+      ,
+   ]
+   (resources : Seq[Res ] )
+: Unit
+= {
+   ;
+
+   ;
+
+   util.Using.Manager(m => {
+      ;
+
+      for (r <- resources.reverse ) {
+         m(r)
+      }
+   })
+
+   ;
+} // closeAllOf
+
 
 
 
