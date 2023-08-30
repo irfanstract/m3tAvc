@@ -85,7 +85,7 @@ object ParentChildRelationship {
       } // ClassInstanceOps
 
    } // Cio$
-   
+
    trait RelatorOps
    {
 
@@ -100,6 +100,61 @@ object ParentChildRelationship {
    } // RelatorOps
 
 } // ParentChildRelationship$
+
+def newValueUpdateRepipe[R](
+   //
+   prototype
+      : (value: R) => Any
+   ,
+)
+= {
+   ;
+
+   implicit val scheduler
+   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+
+   avcframewrk.evm.AsyncAlgebraicItemStream.newReroutiblePipe[R ]()
+}
+
+def newCallbackImplUpdateRepipe
+   [
+      A,
+      R,
+   ]
+   (
+      //
+      prototype
+         : (arg: A) => R
+      ,
+      initialImpl
+         : A => R
+      = (_: Any) => { throw new IllegalStateException(s"no initial impl") }
+      ,
+   )
+= {
+   ;
+
+   type F
+   = (argOrCtx: A) => R
+
+   implicit val scheduler
+   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+
+   avcframewrk.evm.AsyncAlgebraicItemStream.newReroutiblePipe[A => R ]()
+   match { case (_1, _2) => {
+      ;
+
+      var vle
+      : F
+      = initialImpl
+
+      _2
+      .map(c => { vle = c } )
+      .subscribe()
+
+      locally[(_1.type, F )](_1, { (arg: A) => vle.apply(arg) } )
+   } }
+} // newCallbackImplUpdatePipe
 
 
 
