@@ -124,6 +124,47 @@ def newPipe[E1](
    (core1, core1 )
 } // newPipe
 
+/**
+ * 
+ * a fresh/independent/new re-routible pipe (`AsyncAlgebraicMonad`) ;
+ * the first itc being for the producer-side,
+ * the second itc being for the consumer-side
+ * 
+ * 
+ * @param typingFnc a work-around to programmers forgetting to define `E1` explicitly
+ * 
+ * @param scheduler `monix.execution.Scheduler`
+ * 
+ */
+def newReroutiblePipe[S](
+   //
+
+   scheduler
+   : monix.execution.Scheduler
+   = monix.execution.Scheduler.Implicits.global
+   ,
+   
+)
+= {
+   ;
+
+   val (input, outputPre) = {
+      newPipe[AsyncAlgebraicMonad[S] ](
+         //
+         typingFnc = (_) => {} ,
+         multicastStrategy = MonixMulticastStrategy.whichRestrictsToSubscription,
+         scheduler = scheduler ,
+      )
+   }
+
+   val output = {
+      outputPre
+      .switch
+   }
+
+   (input, output)
+} // newReroutiblePipe
+
 } // AsyncAlgebraicItemStream$
 
 /**
