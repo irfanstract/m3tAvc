@@ -142,7 +142,7 @@ given [T0]
  */
 def trySameThreadScheduler()
 : monix.execution.Scheduler
-= monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+= monix.execution.Scheduler.global
 
 /**
  * like "pipe"s, but
