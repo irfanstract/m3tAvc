@@ -63,11 +63,11 @@ object AirstreamFromMonix
       frontEnd
    } // apply[Item](src : monix.reactive.Observable[Item])
 
-   private[AirstreamFromMonix]
-   final
-   lazy val sameThreadMonixScheduler
-   : monix.execution.Scheduler
-   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+   // private[AirstreamFromMonix]
+   // final
+   // lazy val sameThreadMonixScheduler
+   // : monix.execution.Scheduler
+   // = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
 
 } // AirstreamFromMonix$
 
