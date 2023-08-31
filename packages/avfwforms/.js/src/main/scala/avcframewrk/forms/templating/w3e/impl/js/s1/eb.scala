@@ -462,6 +462,7 @@ extends
                   import laminar.api.L
                   L.child <-- {
                      statePipe._2
+                     // .delayExecution({ import concurrent.duration.* ; 2.second })
                      .scan[Option[C1] ](None )((s, v) => (f(s, v) match { case c => Some(c) } ) )
                      .flatMapIterable(c => c.toList )
                      .toLaminarEventStream()
