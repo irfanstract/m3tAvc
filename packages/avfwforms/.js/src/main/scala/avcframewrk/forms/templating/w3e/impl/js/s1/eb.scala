@@ -482,6 +482,7 @@ extends
                   import laminar.api.L
                   L.child <-- {
                      statePipe._2
+                     // .delayExecution({ import concurrent.duration.* ; 2.second })
                      .scanLeft[C1 ](v => f(None, v) )((s, v) => (f(Some(s), v) ) )
                   }
                })
