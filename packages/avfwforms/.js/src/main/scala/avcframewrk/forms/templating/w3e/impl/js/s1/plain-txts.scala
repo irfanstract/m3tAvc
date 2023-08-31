@@ -29,12 +29,14 @@ extends
    with ELaminarQckPlainStringContsReconc
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Articles
+   with w3e.pre.PlainTxtContents
    /* a temporary treat necessary to prevent the compiler from hanging */
    // with ELaminarQckCoreHtml
 {
    this : (
       AnyRef
       with w3e.pre.Articles
+      with w3e.pre.PlainTxtContents
       with ELaminarQckCoreHtml
       with ELaminarQckPlainStringContsReconc
    ) =>
@@ -46,7 +48,7 @@ extends
 
    ;
 
-   // override
+   override
    val PlainLocaleStringPlainTxtArticle
    : (locale: java.util.Locale, txt: String) => Article
    = (
