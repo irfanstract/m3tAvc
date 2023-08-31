@@ -22,6 +22,12 @@ AnyRef
 
    type Article
 
+   implicit val articleConcatenability
+   : (
+      // avcalg.CBC[? >: Article]
+      avcalg.CBC[Article]
+   )
+
 }
 
 
