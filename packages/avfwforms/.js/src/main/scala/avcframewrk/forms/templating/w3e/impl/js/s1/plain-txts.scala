@@ -190,6 +190,7 @@ extends
                locally[() => com.raquo.laminar.nodes.ReactiveHtmlElement[?] ](() => {
                   import language.unsafeNulls
                   L.span(
+                     // { L.styleAttr := s"background: green ; " } ,
                      L.lang := { m.locale match { case java.util.Locale.ROOT => "" ; case l => l.getISO3Language() } } ,
                      { import L.* ; m.d } ,
                   )
