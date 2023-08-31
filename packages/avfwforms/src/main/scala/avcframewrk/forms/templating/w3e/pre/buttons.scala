@@ -35,6 +35,20 @@ with Articles
    def describeButtonByAction(action: Action)
    : ButtonArt
 
+   extension (mainLineContents: Article) {
+
+      /**
+       * with clickability leading to the specified Action
+       * 
+       */
+      def asHavingDirectAction(action: Action)
+      : Article
+      = {
+         (mainLineContents ++ describeButtonByAction(action ) )
+      }
+
+   } // (mainLineContents: Article) asHavingDirectAction(action: Action)
+
 }
 
 
