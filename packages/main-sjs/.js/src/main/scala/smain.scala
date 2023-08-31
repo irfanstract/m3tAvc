@@ -27,12 +27,17 @@ def runSMain(): Unit
       L.renderOnDomContentLoaded(dom.document.querySelector("#app") match { case e => e.innerHTML = "" ; e } , {
          val a
          = {
-            eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = "hello from SJS" )
+            eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"hello from SJS" )
             match { case e => e ++ e ++ e }
             // match { case e => e }
          }
          // identity { import L.* ; img(src := "/vite.svg", className := "logo", alt := "Vite logo") }
-         (a ++ eb.describeButtonByAction(eb.Action(baseTitle = "click here" )((_: Product) => { println(s"a click ") } ) ) ).spawn()
+         (
+            a
+            ++
+            eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"to do it" )
+            .asHavingDirectAction(eb.Action(baseTitle = "click here" )((_: Product) => { println(s"a click ") } ) ) 
+         ).spawn()
       } )
    }
 }
