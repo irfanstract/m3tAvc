@@ -30,6 +30,28 @@ AnyRef
 
 }
 
+trait TitledArticles
+extends
+AnyRef
+{
+   this : (
+      AnyRef
+      & Articles
+   ) =>
+   ;
+
+   def describeTitledArticle
+      (title: Article )
+      (body: Article )
+   : Article
+
+   extension (body: Article )
+      transparent
+      inline
+      def asTitled(title: Article )
+      = describeTitledArticle(title = title )(body = body )
+
+}
 
 
 

@@ -103,6 +103,9 @@ object AirstreamFromMonix
 
             //
             stop = (sI: StartIndex) => {
+
+               org.scalajs.dom.console.log(new Exception(s"end for $sI"))
+
                unsubscribeFor(sI)
             } ,
 
