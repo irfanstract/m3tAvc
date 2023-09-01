@@ -113,24 +113,45 @@ extends
     * 
     */
    // transparent inline
-   given [
-      //
-      HL <: ln.ReactiveElement[HD & dom.Element],
-      HD <: dom.Node ,
-      M ,
-   ]
-   : SpawnabilityNoArg[LaminarSpawnable[HL, HD], LElemPlusPossibleData[HL] ]
-   with {
+   implicit def given_SpawnabilityNoArg_LaminarSpawnable_LElemPlusPossibleData
+      [
+         //
+         HL <: ln.ReactiveElement[HD & dom.Element],
+         HD <: dom.Node ,
+         M ,
+      ]
+   : (
+      SpawnabilityAndReconciliabilityNoArg[
+         //
+         LaminarSpawnable[HL, HD],
+         LElemPlusPossibleData[HL],
+         Unit ,
+      ]
+   )
+   = {
       ;
 
-      extension (s: LaminarSpawnable[HL, HD])
-         override
-         // transparent inline
-         def spawn()
-         = {
-            s.spawnThisSpiwmTwos()
-         }
+      ;
 
+      SpawnabilityAndReconciliabilityNoArg
+      .bySpawnabilityAndReconciliabilityFnc(
+         //
+
+         spwImpl1 =
+            (mdl: LaminarSpawnable[HL, HD]) =>
+               mdl.spawnThisSpiwmTwos()
+
+         ,
+
+         reconcImpl1 =
+            (this1, mdl) => {
+               ;
+
+               mdl.doSpiwmTwoReconciliationOf(this1 )
+            }
+         ,
+
+      )
    }
 
    ;
