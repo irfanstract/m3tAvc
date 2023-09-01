@@ -113,24 +113,45 @@ extends
     * 
     */
    // transparent inline
-   given [
-      //
-      HL <: ln.ReactiveElement[HD & dom.Element],
-      HD <: dom.Node ,
-      M ,
-   ]
-   : SpawnabilityNoArg[LaminarSpawnable[HL, HD], LElemPlusPossibleData[HL] ]
-   with {
+   implicit def given_SpawnabilityNoArg_LaminarSpawnable_LElemPlusPossibleData
+      [
+         //
+         HL <: ln.ReactiveElement[HD & dom.Element],
+         HD <: dom.Node ,
+         M ,
+      ]
+   : (
+      SpawnabilityAndReconciliabilityNoArg[
+         //
+         LaminarSpawnable[HL, HD],
+         LElemPlusPossibleData[HL],
+         Unit ,
+      ]
+   )
+   = {
       ;
 
-      extension (s: LaminarSpawnable[HL, HD])
-         override
-         // transparent inline
-         def spawn()
-         = {
-            s.spawnThisSpiwmTwos()
-         }
+      ;
 
+      SpawnabilityAndReconciliabilityNoArg
+      .bySpawnabilityAndReconciliabilityFnc(
+         //
+
+         spwImpl1 =
+            (mdl: LaminarSpawnable[HL, HD]) =>
+               mdl.spawnThisSpiwmTwos()
+
+         ,
+
+         reconcImpl1 =
+            (this1, mdl) => {
+               ;
+
+               mdl.doSpiwmTwoReconciliationOf(this1 )
+            }
+         ,
+
+      )
    }
 
    ;
@@ -223,10 +244,10 @@ type SpiwmTwos[+Mdl, Sp, +R]
 
 extension [
    //
-   HL ,
-   HD   ,
-   M ,
-](s: SpiwmTwos[HL, HD, Any])
+   Mdl ,
+   Spawned   ,
+   U ,
+](s: SpiwmTwos[Mdl, Spawned, U ])
    //
 
    // transparent inline
@@ -236,6 +257,15 @@ extension [
       val sp: s._1.type = s._1
       /* needed to desugar this `extension` dispatch, to avoid the ambiguity risking an infinite-looping */
       sp.spawn(s._2)( )
+   }
+
+   // transparent inline
+   def doSpiwmTwoReconciliationOf(target: Spawned )
+   = {
+      implicit
+      val sp: s._1.type = s._1
+      /* needed to desugar this `extension` dispatch, to avoid the ambiguity risking an infinite-looping */
+      sp.model_=(target)(s._2 )
    }
 
 val _ = {
