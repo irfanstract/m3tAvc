@@ -134,6 +134,10 @@ given [T0]
 : util.Using.Releasable[monix.reactive.Observer[?] ]
 = r => r.onComplete()
 
+given given_Releasable_Laminar_Observer[T0]
+: util.Using.Releasable[com.raquo.airstream.core.Observer[?] ]
+= r => { } // TODO
+
 /**
  * strives for `monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )`, but
  * since the factory overload was unavailable/missing in the JS build of Monix
