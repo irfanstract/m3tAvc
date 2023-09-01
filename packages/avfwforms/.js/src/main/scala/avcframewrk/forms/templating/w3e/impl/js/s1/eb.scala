@@ -308,6 +308,11 @@ extends
             e.ref.asJsDynamic
             .updateDynamic(nativityKey )(this1 )
 
+            (avfwBackreferent1 : Any )
+            match { case e => if { e == scalajs.js.undefined } then { throw new AssertionError(s"[setup] error ; state not properly initialised . was (${e}.referent_= ${this1 })") } ; e }
+
+            ""
+
             e
          }
 
@@ -326,12 +331,13 @@ extends
           * the backreferent,
           * `asInstanceOf`ed to `R`
           */
-         def avfwBackreferent[R]
+         def avfwBackreferent[R <: AnyVal | AnyRef ]
             (using reflect.Typeable[R] )
          : R
          = {
-            ((v: Any) => v.asInstanceOf[R] )
-            .apply(avfwBackreferent1 )
+            (avfwBackreferent1 : Any )
+            // match { case returnValue => if { returnValue == scalajs.js.undefined } then { org.scalajs.dom.console.info("erroneous:", e, returnValue ) ; throw new IllegalStateException(s"state not properly initialised") } ; returnValue }
+            match { case e => e.asInstanceOf[R] }
 
          }
 
@@ -416,6 +422,24 @@ extends
           */
          ;
 
+         protected[XEAndStateBag ]
+         def handleReconciliativeException
+            [R]
+            (mn: => String )
+            (z: Throwable)
+         : Nothing & R
+         = {
+            throw
+               new RuntimeException(s"exception in reconciliation @ ${mn} @ ${XEAndStateBag.this } ; ${z.toString() }", z )
+               {} /* put our name on it `^___^` */
+         }
+
+         protected[avcframewrk]
+         def handledlyAlt1
+            [R](what: => String )(c: => R )
+         : R
+         = { util.Try({ c }).recover({ case util.control.NonFatal(z) => handleReconciliativeException(what )(z) }).get }
+
          // def applyAttrRefresh[V](target)
          // extensioon [V](target: com.raquo.laminar.receivers.ChildReceiver )
 
@@ -493,7 +517,7 @@ extends
                   L.child <-- {
                      statePipe._2
                      // .delayExecution({ import concurrent.duration.* ; 2.second })
-                     .scan[Option[C1] ](None )((s, v) => (f(s, v) match { case c => Some(c) } ) )
+                     .scan[Option[C1] ](None )((s, v) => handledlyAlt1(s"children frag reconc") (f(s, v) match { case c => Some(c) } ) )
                      .flatMapIterable(c => c.toList )
                      .toLaminarEventStream()
                   }

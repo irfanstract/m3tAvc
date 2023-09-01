@@ -184,8 +184,11 @@ extends
             ,
             reconcImpl1 = (this1 : SpawnedButton, newModel) => {
                ;
-               this1.avfwBackreferent[XEAndStateBag]
-               .model_=(newModel )
+               (this1.avfwBackreferent1 : Any )
+               match {
+                  case s: XEAndStateBag =>
+                     s model_=(newModel )
+               }
             }
             ,
          )

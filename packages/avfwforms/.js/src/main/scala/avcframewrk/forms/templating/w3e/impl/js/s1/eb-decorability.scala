@@ -105,15 +105,20 @@ extends
             spwImpl1 = (mdl: AugList) => {
                ;
 
+               val sp0
+               = { mdl.operand.spawn() } match { case e : HL => e : HL }
+
                mdl.toList
 
-               .foldLeft[HL]({ mdl.operand.spawn() } match { case e : HL => e } )({
+               .foldLeft[HL](sp0 )({
 
                   case (operand, dec) =>
                      ;
 
                      /** apply it to the operand */
                      dec.apply(operand)
+                        // necessary. needs sync here
+                        .avfwBackreferent_=(sp0.avfwBackreferent1 ) // TODO
 
                })
             }
