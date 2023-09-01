@@ -27,6 +27,20 @@ with Articles
    : (
       AnyRef
       & AcsfLabelledCallbackTranslator[Action]
+      // & AcsfLabelledUrlTranslator     [Action]
+   )
+
+   /** 
+    * `URLAction`
+    * 
+    * needs to be a separate NS since
+    * the default-parameterisations prevent overloading `-____-`
+    * 
+    */
+   val URLAction
+   : (
+      AnyRef
+      & AcsfLabelledUrlTranslator[Action]
    )
 
    type ButtonArt
