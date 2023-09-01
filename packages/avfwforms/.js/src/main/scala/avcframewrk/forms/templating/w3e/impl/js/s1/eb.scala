@@ -423,6 +423,24 @@ extends
           */
          ;
 
+         protected[XEAndStateBag ]
+         def handleLocalReconciliativeException
+            [R]
+            (mn: => String )
+            (z: Throwable)
+         : Nothing & R
+         = {
+            throw
+               new RuntimeException(s"exception in reconciliation @ ${mn} @ ${XEAndStateBag.this } ; ${z.toString() }", z )
+               {} /* put our name on it `^___^` */
+         }
+
+         protected[avcframewrk]
+         def asLocalReconciliativeRun1
+            [R](what: => String )(c: => R )
+         : R
+         = { util.Try({ c }).recover({ case util.control.NonFatal(z) => handleLocalReconciliativeException(what )(z) }).get }
+
          // def applyAttrRefresh[V](target)
          // extensioon [V](target: com.raquo.laminar.receivers.ChildReceiver )
 
@@ -442,13 +460,15 @@ extends
          extension [V](target: com.raquo.laminar.keys.HtmlProp[V, V] ) {
             //
 
-            def startAttribNow[V0](m: (value0: V0) => V = identity[V] _ )
+            def startAttribNow
+               [V0]
+               (m: (value0: V0) => V = identity[V] _ )
             = {
                ;
 
                val statePipe = newValueUpdateRepipe(prototype = (_: V0) => {} )
 
-               ({ target <-- statePipe._2.map(m).toLaminarEventStream() })
+               ({ target <-- statePipe._2.map(v => asLocalReconciliativeRun1("attrib value anim - mapping") { m(v) } ).toLaminarEventStream() })
                .startNow()
 
                statePipe._1
@@ -489,25 +509,50 @@ extends
                   C1 <: ([A] =>> A )[com.raquo.laminar.nodes.ChildNode[?] & com.raquo.laminar.nodes.ReactiveElement.Base ]
                   ,
                ]
-               (f: (existingNodeOption: Option[C1], newValue: V) => C1 )
+               (doCReconciliation: (existingNodeOption: Option[C1], newValue: V) => C1 )
             = {
                ;
 
-               val statePipe = newValueUpdateRepipe(prototype = (value: V) => {} )
+               val pipe1
+               = newValueUpdateRepipe(prototype = (value: V) => {} )
 
                ({
+
                   import laminar.api.L
+
                   L.child <-- {
-                     statePipe._2
+
+                     pipe1._2
+
                      // .delayExecution({ import concurrent.duration.* ; 2.second })
-                     .scan[Option[C1] ](None )((s, v) => (f(s, v) match { case c => Some(c) } ) )
-                     .flatMapIterable(c => c.toList )
+
+                     .scan[Option[C1] ](None )({
+                        //
+
+                        case (s, v) =>
+                           ;
+
+                           asLocalReconciliativeRun1(s"child node anim") {
+                              doCReconciliation(s, v)
+                           }
+
+                           match { case c => Some(c) }
+
+                     })
+                     .collect({
+                        case Some(c) =>
+                           c : com.raquo.laminar.nodes.ReactiveElement[?]
+                           c
+
+                     })
+
+                     /** it wasn't an Airstream one, it was a Monix one ; */
                      .toLaminarEventStream()
                   }
                })
                .startNow()
 
-               statePipe._1
+               pipe1._1
             }
             
          }
