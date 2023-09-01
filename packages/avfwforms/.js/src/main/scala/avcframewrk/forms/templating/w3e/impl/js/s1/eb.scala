@@ -268,7 +268,7 @@ extends
          //
 
          /**
-          * needs to set-up the back-reference
+          * to set-up the back-reference
           */
          def avfwBackreferent_=(this1 : scalajs.js.Any )
          : e.type
@@ -281,6 +281,9 @@ extends
             e
          }
 
+         /**
+          * the backreferent
+          */
          def avfwBackreferent1
          : scalajs.js.Dynamic
          = {
@@ -289,6 +292,10 @@ extends
 
          }
 
+         /**
+          * the backreferent,
+          * `asInstanceOf`ed to `R`
+          */
          def avfwBackreferent[R]
             (using reflect.Typeable[R] )
          : R
@@ -304,7 +311,7 @@ extends
          //
 
          /**
-          * needs to set-up the back-reference
+          * necessary to set-up the back-reference
           * 
           * 
           * @param backreferent the intended backreferent
@@ -323,6 +330,23 @@ extends
          }
       }
 
+      /**
+       * 
+       * the spawn-and-reconcile-er
+       * needs to
+       * maintain, for each SpawnedElement (would be a Laminar Node),
+       * exactly one instance of an ad-hoc class to take-care of the diffing-and-reconciliation
+       * 
+       * this ctor does these seq of things
+       * 1) run `ec.constructWithBackref(this)`,
+       *    and then
+       * 2) maintain the returned `HtmlTag` for later-time retrieval
+       * 3) define `wrappedLaminarElement` as a public method to retrieve that
+       * 4) define `startAttribNow` and friends these ways
+       * 
+       * 
+       * 
+       */
       abstract
       class XEAndStateBag
          [+NativeE <: org.scalajs.dom.HTMLElement]
@@ -458,6 +482,7 @@ extends
                   import laminar.api.L
                   L.child <-- {
                      statePipe._2
+                     // .delayExecution({ import concurrent.duration.* ; 2.second })
                      .scanLeft[C1 ](v => f(None, v) )((s, v) => (f(Some(s), v) ) )
                   }
                })
