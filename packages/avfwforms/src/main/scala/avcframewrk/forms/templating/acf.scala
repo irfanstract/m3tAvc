@@ -159,6 +159,38 @@ AnyRef
 
 }
 
+object AcReturnIndependentCodings1
+{
+
+   //
+
+   object whichTranslatesToEitheres
+   extends
+   AcReturnIndependentCodings1
+   {
+
+      trait ReturnCoding[-Value ] { def translate(value: Value) : Either[Unit | Throwable, Unit ] }
+
+      given acRcUnit
+      : ReturnCoding[Unit]
+      with { override def translate(value: Unit): Right[Nothing, Unit] = Right(value ) }
+
+      given acRcOfBoolean[R <: Boolean]
+      : ReturnCoding[R]
+      with { override transparent inline def translate(value: R) = { if value then Right(() ) else Left(new Exception ) } }
+
+      given acRcOfEitherRElseUnit[R : ReturnCoding ]
+      : ReturnCoding[Either[Unit, R] ]
+      with { override def translate(value: Either[Unit, R] ) = value map (_ => {} ) }
+
+      given acRcOfAttemptForR[R : ReturnCoding ]
+      : ReturnCoding[scala.util.Try[R] ]
+      with { override def translate(value: scala.util.Try[R]) = { ; value.toEither.flatMap((summon[ReturnCoding[R] ] ).translate _ ) } }
+
+   }
+
+} // AcReturnIndependentCodings1$
+
 
 
 
