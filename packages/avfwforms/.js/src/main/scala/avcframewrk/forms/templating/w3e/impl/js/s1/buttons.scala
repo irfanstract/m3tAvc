@@ -84,6 +84,7 @@ extends
    /* a temporary treat necessary to prevent the compiler from hanging */
    with ELaminarQckButtonsReconc
    // with ELaminarQckCoreHtml
+   with ELaminarQckCoreHtmlArticleDecorsExt
 {
    this : (
       AnyRef
@@ -91,6 +92,7 @@ extends
       with ELaminarQckCoreHtml
       with ELaminarQckButtonsReconc
       with ELaminarQckPlainStringConts
+      with ELaminarQckCoreHtmlArticleDecorsExt
    ) =>
    ;
 
@@ -99,6 +101,24 @@ extends
    import org.scalajs.dom
 
    ;
+
+   extension (mainLineContents: Article) {
+
+      override
+      def asHavingDirectAction(action: Action)
+      : Article
+      = {
+         // (mainLineContents ++ describeButtonByAction(action ) )
+         mainLineContents
+         .withDecor((e: ln.ReactiveHtmlElement[?] ) => { import laminar.api.L ; L.a(L.href := "javascript:console.error(\"not supported\")", e ) } )
+         // ; ???
+      }
+
+      // ({
+      //    implicit val s = summon[EbDecorativityOf[Article, ([HL] =>> ((e: HL ) => HL ) )[ln.ReactiveHtmlElement[dom.HTMLElement ] ] ] ]
+      // })
+
+   } // (mainLineContents: Article) asHavingDirectAction(action: Action)
 
    def describeButtonByAction(a: Action)
    : ButtonArt
