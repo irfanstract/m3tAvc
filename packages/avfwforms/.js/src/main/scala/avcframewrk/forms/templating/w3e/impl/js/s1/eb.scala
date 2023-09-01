@@ -326,12 +326,19 @@ extends
           * the backreferent,
           * `asInstanceOf`ed to `R`
           */
-         def avfwBackreferent[R]
+         def avfwBackreferent
+            [R]
+            (using util.NotGiven[R <:< (Null | AnyVal ) ] )
             (using reflect.Typeable[R] )
          : R
          = {
-            ((v: Any) => v.asInstanceOf[R] )
-            .apply(avfwBackreferent1 )
+            (avfwBackreferent1 : Any )
+            match { case returnValue => {
+               if { returnValue == scalajs.js.undefined }
+               then { throw new IllegalStateException(s"'returnValue' is '${returnValue}' ; please check that 'avfwBackreferent_=' has been run on it! ") { final val mRv = returnValue } }
+               returnValue
+            } }
+            match { case e => e.asInstanceOf[R] }
 
          }
 
