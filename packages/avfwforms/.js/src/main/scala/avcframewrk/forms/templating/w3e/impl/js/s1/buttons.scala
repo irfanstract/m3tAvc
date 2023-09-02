@@ -107,20 +107,22 @@ extends
       override
       def asHavingDirectAction(action: Action)
       : Article
-      = {
-         // (mainLineContents ++ describeButtonByAction(action ) )
-         mainLineContents
-         .withDecor((e: ln.ReactiveHtmlElement[?] ) => { import laminar.api.L ; L.a(L.href := "javascript:console.error(\"not supported\")", e ) } )
-         // ; ???
-      }
-
-      // ({
-      //    implicit val s = summon[EbDecorativityOf[Article, ([HL] =>> ((e: HL ) => HL ) )[ln.ReactiveHtmlElement[dom.HTMLElement ] ] ] ]
-      // })
+      = asHavingDirectActionImpl(mainLineContents )(action )
 
    } // (mainLineContents: Article) asHavingDirectAction(action: Action)
 
    def describeButtonByAction(a: Action)
+   : ButtonArt
+   = {
+      given BfSnaConfig
+      = BfSnaConfig(expectInlineHeadline = false )
+      describeButtonByActionGiven1(a)
+   }
+
+   private[avcframewrk]
+   def describeButtonByActionGiven1
+      (a: Action)
+      (using BfSnaConfig )
    : ButtonArt
    = {
       (summon[SpawnabilityAndReconciliabilityNoArg[Action, ?, ?] ] , a )
@@ -161,6 +163,42 @@ extends
    //       def model_=(newM : ButtonArt )
    // }
 
+   extension (mainLineContents: Article) {
+
+      private
+      def asHavingDirectActionImpl(action: Action)
+      : Article
+      = {
+         ;
+
+         given BfSnaConfig
+         = BfSnaConfig(expectInlineHeadline = true )
+
+         ;
+         action
+         match { case a : Edsb[t1, t2] => a }
+         match { case a : Edsb[t1, t2] => {
+            a
+            .copy[t1, Article](stateTitle = (_, _) => mainLineContents )
+            .copy(baseTitle = mainLineContents )
+         } }
+         match { case a => describeButtonByActionGiven1(a) }
+      }
+
+   } // (mainLineContents: Article) asHavingDirectActionImpl(action: Action)
+
+   locally {
+      ;
+
+      avcframewrk.forms.addGlobalCss({
+         ;
+
+         s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
+      })
+
+      ;
+   }
+
    ;
 } // ELaminarQckButtons
 
@@ -188,9 +226,17 @@ extends
 
    ;
 
+   private[avcframewrk]
+   case class BfSnaConfig(
+      //
+      expectInlineHeadline : Boolean
+      ,
+   )
+
    // TODO
    private[avcframewrk]
    given [T0]
+      (using config : BfSnaConfig)
    : (
       SpawnabilityAndReconciliabilityNoArg[
          Action ,
@@ -331,6 +377,10 @@ extends
                      e
                      .amend(child <-- m.stateTitleOption.map(_.spawn() ) )
                      // .amend("non title")
+                  } }
+                  match { case e => {
+                     e
+                     .amend((if config.expectInlineHeadline then Seq(L.className := "avfw-inline" ) else Seq() ) : _* )
                   } }
                })
             })
