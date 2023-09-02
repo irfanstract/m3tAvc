@@ -107,25 +107,28 @@ extends
       override
       def asHavingDirectAction(action: Action)
       : Article
-      = {
-         // (mainLineContents ++ describeButtonByAction(action ) )
-         mainLineContents
-         .withDecor((e: ln.ReactiveHtmlElement[?] ) => { import laminar.api.L ; L.a(L.href := "javascript:console.error(\"not supported\")", e ) } )
-         // ; ???
-      }
-
-      // ({
-      //    implicit val s = summon[EbDecorativityOf[Article, ([HL] =>> ((e: HL ) => HL ) )[ln.ReactiveHtmlElement[dom.HTMLElement ] ] ] ]
-      // })
+      = asHavingDirectActionImpl(mainLineContents )(action )
 
    } // (mainLineContents: Article) asHavingDirectAction(action: Action)
 
-   def describeButtonByAction(a: Action)
+   private[avcframewrk]
+   def describeButtonByActionGiven1
+      (a: Action)
+      (using BfSnaConfig )
    : ButtonArt
    = {
       (summon[SpawnabilityAndReconciliabilityNoArg[Action, ?, ?] ] , a )
-      match { case r => r : ([NativeE <: dom.HTMLButtonElement ] =>> LaminarSpawnable[ln.ReactiveHtmlElement[NativeE], NativeE ] )[dom.HTMLButtonElement] }
+      match { case r => r : ([NativeE <: dom.HTMLElement ] =>> LaminarSpawnable[ln.ReactiveHtmlElement[NativeE], NativeE ] )[dom.HTMLElement] }
       // ; ???
+   }
+
+   override
+   def describeButtonByAction(a: Action)
+   : ButtonArt
+   = {
+      given BfSnaConfig
+      = BfSnaConfig(expectInlineHeadline = false )
+      describeButtonByActionGiven1(a)
    }
 
    override
@@ -137,7 +140,7 @@ extends
          ln.ReactiveHtmlElement[? <: dom.HTMLElement] &
          SpawnedButtonL
          ,
-         dom.HTMLButtonElement
+         dom.HTMLElement
          ,
       ]
    )
@@ -145,7 +148,7 @@ extends
    protected[avcframewrk]
    opaque
    type SpawnedButtonL
-   = ln.ReactiveHtmlElement[dom.HTMLButtonElement]
+   = ln.ReactiveHtmlElement[dom.HTMLElement]
 
    protected[avcframewrk]
    opaque
@@ -160,6 +163,44 @@ extends
    //    extension (this1: SpawnedButton)
    //       def model_=(newM : ButtonArt )
    // }
+
+   extension (mainLineContents: Article) {
+
+      private
+      def asHavingDirectActionImpl(action: Action)
+      : Article
+      = {
+         ;
+
+         given BfSnaConfig
+         = BfSnaConfig(expectInlineHeadline = true )
+
+         ;
+         action
+         match { case a : Edsb[t1, t2] => a }
+         match { case a : Edsb[t1, t2] => {
+            a
+            .copy[t1, Article](stateTitle = (_, _) => mainLineContents )
+            .copy(baseTitle = mainLineContents )
+         } }
+         match { case a => describeButtonByActionGiven1(a) }
+      }
+
+   } // (mainLineContents: Article) asHavingDirectActionImpl(action: Action)
+
+   locally {
+      ;
+
+      import org.scalajs.dom
+
+      val c = dom.document.createElement("style")
+      dom.document.head
+      .appendChild(c )
+
+      c.textContent = s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
+
+      ;
+   }
 
    ;
 } // ELaminarQckButtons
@@ -188,13 +229,21 @@ extends
 
    ;
 
+   private[avcframewrk]
+   case class BfSnaConfig(
+      //
+      expectInlineHeadline : Boolean
+      ,
+   )
+
    // TODO
    private[avcframewrk]
    given [T0]
+      (using config : BfSnaConfig)
    : (
       SpawnabilityAndReconciliabilityNoArg[
          Action ,
-         ln.ReactiveHtmlElement[org.scalajs.dom.HTMLButtonElement ],
+         ln.ReactiveHtmlElement[org.scalajs.dom.HTMLElement ],
          Unit,
       ]
    )
@@ -202,8 +251,8 @@ extends
       ;
 
       type SpawnedButton
-         >: ln.ReactiveHtmlElement[dom.HTMLButtonElement]
-         <: ln.ReactiveHtmlElement[dom.HTMLButtonElement]
+         >: ln.ReactiveHtmlElement[dom.HTMLElement]
+         <: ln.ReactiveHtmlElement[dom.HTMLElement]
 
       type ButtonContentModel
          >: Action
@@ -218,7 +267,7 @@ extends
       = summon[aBackreferencings.type ]
 
       class XEAndStateBag() extends
-      aBackreferencings1.XEAndStateBag(ec = { laminar.api.L.button })
+      aBackreferencings1.XEAndStateBag(ec = { laminar.api.L.span })
       {
          // this : aBackreferencings1.XEAndStateBag[org.scalajs.dom.HTMLButtonElement ] =>
          ;
@@ -232,9 +281,7 @@ extends
             /* a hack, to make the `close()` ing of each sub unconditional */
             closeAllOf((
                Seq()
-               :+ labelRendPipe1
-               :+ enablednessSetter1
-               :+ callbackImplSetter1
+               :+ cRendPipe1
             ))
 
             ;
@@ -250,28 +297,29 @@ extends
          ;
 
          // TODO
-         val labelRendPipe1
+         val cRendPipe1
          = {
             ;
             L.child
-            .startChildrenListUpdateNow(((_: Any, item: Article ) => {
+            .startChildrenListUpdateNow(((_: Any, item: () => ln.ReactiveHtmlElement[dom.HTMLElement] ) => {
                item
-               .spawn()
-            }) , initialDataValue = articleConcatenability.empty )
+               .apply()
+            }) , initialDataValue = () => L.span() )
          }
 
-         val enablednessSetter1
-         = {
-            L.disabled
-            .startAttribNow(((v: 0 | 0.5 | 1 ) => {
-               v
-               match { case v : java.lang.Number => v.doubleValue() }
-               match { case v => 0.33 < v }
-            }) , initialValue = 0 )
-         }
+         // val enablednessSetter1
+         // = {
+         //    L.disabled
+         //    .startAttribNow(((v: 0 | 0.5 | 1 ) => {
+         //       v
+         //       match { case v : java.lang.Number => v.doubleValue() }
+         //       match { case v => 0.33 < v }
+         //    }) , initialValue = 0 )
+         // }
 
-         val callbackImplSetter1
-         = { L.onClick.startCallbackUpdateNow() }
+         // // TODO
+         // val callbackImplSetter1
+         // = { L.onClick.startCallbackUpdateNow() }
 
          def model_=(m: ButtonContentModel )
          : Unit
@@ -280,14 +328,85 @@ extends
 
             ;
 
-            labelRendPipe1
-            .onNext(m.stateTitleOption )
+            // labelRendPipe1
+            // .onNext(m.stateTitleOption )
 
-            enablednessSetter1
-            .onNext(m.stateCheckedOption )
+            // enablednessSetter1
+            // .onNext(m.stateCheckedOption )
 
-            callbackImplSetter1
-            .onNext(m.stateSpecificCallbackOption1 )
+            // callbackImplSetter1
+            // .onNext(m.stateSpecificCallbackOption1 map({ case e : Function1[t1, t2] => e }) )
+
+            cRendPipe1
+            .onNext({
+               ;
+
+               case class A(hrefOption: Option[java.net.URI] )
+               case class B(callbackOption: Option[org.scalajs.dom.Event => Unit ] )
+
+               ;
+               m.stateSpecificCallbackOption1
+               .map({
+                  case (Some(s) ) =>
+                     Some {
+                        s match {
+                           case (run : Function1[evt$, rv$] ) => B(Some(run) )
+                           case (href: java.net.URI ) => A(Some(href) )
+                        }
+                     }
+                  case None =>
+                     None
+               })
+               .scanLeft[([T] =>> T )[A | B] ](e => e.getOrElse(A(None) ) )({
+                  case (_, Some(v)) =>
+                     v
+                  case (v0, None ) =>
+                     v0 match {
+                        case _ : A => A(None)
+                        case _ : B => B(None)
+                     }
+               })
+               .map(urlOption => () => {
+                  ;
+                  import L.{href as _, * }
+                  urlOption
+                  match {
+                     case B(callbackOption) =>
+                        button()
+                        .amend((
+                           callbackOption match {
+                              //
+
+                              case Some(run : Function1[evt$, rv$] ) =>
+                                 (onClick --> run )
+                              case None =>
+                                 (disabled := true )
+                           }
+                        ))
+                     case A(urlOption) =>
+                        a()
+                        .amend((
+                           urlOption match {
+                              //
+
+                              case Some(href : java.net.URI ) =>
+                                 (L.href := href.toASCIIString().nn )
+                              case None =>
+                                 (disabled := true )
+                           }
+                        ))
+                  }
+                  match { case e => {
+                     e
+                     .amend(child <-- m.stateTitleOption.map(_.spawn() ) )
+                     // .amend("non title")
+                  } }
+                  match { case e => {
+                     e
+                     .amend((if config.expectInlineHeadline then Seq(L.className := "avfw-inline" ) else Seq() ) : _* )
+                  } }
+               })
+            })
 
             // TODO more
          }
@@ -343,6 +462,113 @@ extends
       >: Edsb[?, Article]
       <: Edsb[?, Article]
 
+   /* a mixin which overrides these methods */
+   private[ELaminarQckButtonsActionModelling]
+   sealed
+   trait CallbackOrUrlActionFactoryCommonGivens
+   extends
+   AnyRef
+   with AcsfTitleIndependentCodings1
+   with AcsfReadinessIndCodings1
+   with AcsfDispatchTimeCtxIndependentCodings1
+   with AcsfReturnIndependentCodings1
+   {
+
+      ;
+
+      export given_AcTitleIndependentCodings1.{*, given}
+
+      export AcsfReadinessIndCodings1.whichTranslatesToHalfs.{*, given}
+
+      export AcCallbackCtxIndependentCodings1.ofOpcev.{*, given}
+
+      export AcReturnIndependentCodings1.whichTranslatesToEitheres.{*, given}
+
+      protected
+      def elementFromTitle
+         [Title : TitleCoding]
+         (title: Title)
+      = {
+         ;
+
+         summon[TitleCoding[Title] ]
+         .apply(title )
+      }
+
+   }
+
+   // TODO
+   override
+   val URLAction
+   : (
+      AnyRef
+      & AcsfLabelledUrlTranslator[Action]
+   )
+   = {
+      ;
+
+      new
+         AnyRef
+         with AcsfLabelledUrlTranslator[Action]
+         with CallbackOrUrlActionFactoryCommonGivens
+      {
+         ;
+
+         override
+         def apply
+            [
+               //
+               AcModelState ,
+               Title : TitleCoding ,
+               R <: java.net.URI ,
+
+            ]
+            (
+               //
+               internalStateOption : AsyncStateChangeMonad[AcModelState]
+               ,
+               baseTitle: Title
+               ,
+               updatedTitle: AcsfBaseTitleAndInternalStateCallback[Title, AcModelState, Title ]
+               ,
+            )
+            (byS: PartialFunction[AcModelState, R] )
+         = {
+
+            Edsb[AcModelState, Article ](
+               //
+
+               stateOption = internalStateOption
+               ,
+               // stateCheck = isReadyState.andThen(summon[CReadinessCoding[IsReady ] ].translate _ )
+               // ,
+               baseTitle = elementFromTitle(baseTitle)
+               ,
+               stateTitle = {
+                  case (baseTitleR, newState) =>
+                     elementFromTitle({
+                        updatedTitle({
+                           // elementAsT(e)
+                           baseTitle
+                        }, newState)
+                     } )
+               }
+               ,
+               stateSpecificCallback =
+                  (s: AcModelState ) => {
+                     ;
+
+                     byS.lift
+                     .apply(s )
+                  }
+               ,
+            )
+         }
+
+         ;
+      }
+   }
+
    // TODO
    override
    val Action
@@ -356,20 +582,13 @@ extends
       new
          AnyRef
          with AcsfLabelledCallbackTranslator[Action]
+         with CallbackOrUrlActionFactoryCommonGivens
       {
          ;
 
          ;
 
          ;
-
-         export given_AcTitleIndependentCodings1.{*, given}
-
-         export AcsfReadinessIndCodings1.whichTranslatesToHalfs.{*, given}
-
-         export AcCallbackCtxIndependentCodings1.ofOpcev.{*, given}
-
-         export AcReturnIndependentCodings1.whichTranslatesToEitheres.{*, given}
 
          ;
 
@@ -398,8 +617,6 @@ extends
             (doTheMainThing: PartialFunction[P, R] )
          = {
             ;
-
-            val elementFromTitle = summon[TitleCoding[Title] ].apply _
 
             extension (s: AcModelState ) {
                //
@@ -501,7 +718,7 @@ trait Edsbs
       stateTitle: (baseTitle: T @annotation.unchecked.uncheckedVariance, state: S ) => T
       ,
       // TODO
-      stateSpecificCallback: S => Option[(() => Unit )]
+      stateSpecificCallback: S => Option[(() => Unit ) | java.net.URI ]
       ,
    )
    {
@@ -531,12 +748,16 @@ trait Edsbs
       def stateSpecificCallbackOption1
       = {
          stateSpecificCallbackOption
-         .map[org.scalajs.dom.Event => Unit ]({
-            case Some(cb) =>
-               (e) =>
-                  cb()
+         .map[Option[(org.scalajs.dom.Event => Unit ) | java.net.URI ] ]({
+            case Some(cb : Function0[t1]) =>
+               Some((
+                  (e) =>
+                     cb()
+               ))
+            case Some(cb : (java.net.URI )) =>
+               Some(cb)
             case None =>
-               (_) => { throw new IllegalStateException(s"not available") }
+               None
          })
       }
 
