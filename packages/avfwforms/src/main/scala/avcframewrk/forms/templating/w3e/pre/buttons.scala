@@ -69,6 +69,176 @@ with Articles
 
 }
 
+trait VarEditingActionsProv
+extends
+AnyRef
+with StdGsps
+{
+   this : (
+      AnyRef
+      & Buttons
+      & StdGsps
+   ) =>
+   ;
+
+   ;
+
+   import laminar.api.L
+
+   ;
+
+   /**
+    * `Action`s which each updates the `Var`.
+    * 
+    */
+   val VarEditingAction
+   : (
+      AnyRef
+
+      & (
+         /** 
+          * `[Value given GivenSpinner] -> (varLike : VarLike[Value] ) -> Action`
+          * 
+          * anticipating some 3rd party libs which provides "mapped var(s)" which `extends` both these `trait`s yet does not `extends` `Var#`.
+          * `Var[type A]#` `extends` both `SignalSource[A]#` and `Sink[A]#`
+          * 
+          */
+         [Value] =>
+         (baseTitle: String | Article ) =>
+         (operand: L.SignalSource[Value] & L.Sink[Value] ) =>
+         (GivenSpinner[Value] ) ?=>
+            Action
+      )
+
+   )
+   lazy val _ = {
+      val f = VarEditingAction
+      f.apply("")(??? : L.Var["5"] )
+   }
+
+   ;
+
+   ;
+} // VarEditingActionsProv#
+
+/**
+ * 
+ * defs specifically for properly implementing `VarEditingAction` in `VarEditingActionsProv`
+ * 
+ * every instance of `GivenSpinner[type Value]#`
+ * shall serve the minimums to spin/edit values each an instance of `Value#`
+ * 
+ */
+trait StdGsps
+extends
+AnyRef
+{
+   this : (
+      AnyRef
+   ) =>
+   ;
+
+   ;
+
+   /**
+    * support for editor for `Value#`
+    * 
+    * `Value#` is contra-variant
+    * 
+    */
+   type GivenSpinner[-Value]
+
+   given given_GivenSpinner_String
+   : GivenSpinner[String]
+
+   type GivenSpinnerNumerical[-Value <: AnyVal | java.lang.Number ]
+   = GivenSpinner[Value]
+
+   given given_GivenSpinner_Number
+      [Value <: (
+         java.lang.Number
+         | BigDecimal
+         | (Double | Float )
+         | (java.math.BigInteger | BigInt | Long | Int | Short | Byte )
+      )]
+      (using Numeric[Value ] )
+   : GivenSpinnerNumerical[Value ]
+
+   given given_GivenSpinner_Boolean
+   : GivenSpinner[Boolean]
+
+   ;
+} // StdGsps#
+
+/**
+ * 
+ * `StdGsps`
+ * 
+ * there's an impl, `ofSnb` ;
+ * simply `export StdGsps.ofSnb.{*, given }` in a sub-class
+ * 
+ */
+object StdGsps
+{
+   ;
+   
+   ;
+
+   /**
+    * 
+    * an impl of `StdGsps` based on `Numeric#parseString` and `PartialFunction`
+    * 
+    */
+   final
+   lazy val ofSnb
+   = {
+      new StdGsps
+      {
+         ;
+
+         opaque type GivenSpinner[-Value]
+         <: PartialFunction[String, Value @annotation.unchecked.uncheckedVariance ]
+         =  PartialFunction[String, Value @annotation.unchecked.uncheckedVariance ]
+
+         ;
+
+         given given_GivenSpinner_String
+         : GivenSpinner[String]
+         = v => v
+
+         ;
+
+         override
+         def given_GivenSpinner_Number
+            [Value <: (
+               java.lang.Number
+               | BigDecimal
+               | (Double | Float )
+               | (java.math.BigInteger | BigInt | Long | Int | Short | Byte )
+            )]
+            (using Numeric[Value ] )
+         = (
+            // TODO
+            (summon[Numeric[Value ] ].parseString _ )
+            match { case f => f.unlift }
+            match { case f => f }
+         )
+
+         ;
+
+         given given_GivenSpinner_Boolean
+         : GivenSpinner[Boolean]
+         = ???
+
+         ;
+      }
+   }
+
+   ;
+
+   ;
+} // StdGsps.
+
 
 
 
