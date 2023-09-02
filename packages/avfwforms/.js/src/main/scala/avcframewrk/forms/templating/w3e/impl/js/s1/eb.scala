@@ -423,6 +423,24 @@ extends
           */
          ;
 
+         protected[XEAndStateBag ]
+         def handleLocalReconciliativeException
+            [R]
+            (mn: => String )
+            (z: Throwable)
+         : Nothing & R
+         = {
+            throw
+               new RuntimeException(s"exception in reconciliation @ ${mn} @ ${XEAndStateBag.this } ; ${z.toString() }", z )
+               {} /* put our name on it `^___^` */
+         }
+
+         protected[avcframewrk]
+         def asLocalReconciliativeRun1
+            [R](what: => String )(c: => R )
+         : R
+         = { util.Try({ c }).recover({ case util.control.NonFatal(z) => handleLocalReconciliativeException(what )(z) }).get }
+
          // def applyAttrRefresh[V](target)
          // extensioon [V](target: com.raquo.laminar.receivers.ChildReceiver )
 
@@ -458,7 +476,7 @@ extends
                   newValueUpdateRepipe(prototype = (_: V0) => {} , initialValue = initialValue )
                }
 
-               ({ target <-- statePipe._2.map(m) })
+               ({ target <-- statePipe._2.map(v => asLocalReconciliativeRun1("attrib value anim - mapping") { m(v) } ) })
                .startNow()
 
                statePipe._1
@@ -500,13 +518,14 @@ extends
                   ,
                ]
                (
-                  f: (existingNodeOption: Option[C1], newValue: V) => C1 ,
+                  doCReconciliation: (existingNodeOption: Option[C1], newValue: V) => C1 ,
                   initialDataValue: V ,
                )
             = {
                ;
 
-               val statePipe = {
+               val pipe1
+               = {
 
                   newValueUpdateRepipe(
                      
@@ -516,16 +535,43 @@ extends
                }
 
                ({
+
                   import laminar.api.L
+
                   L.child <-- {
-                     statePipe._2
+
+                     pipe1._2
+
                      // .delayExecution({ import concurrent.duration.* ; 2.second })
-                     .scanLeft[C1 ](v => f(None, v) )((s, v) => (f(Some(s), v) ) )
+
+                     .scanLeft[Option[C1] ](None )({
+                        //
+
+                        case (s, v) =>
+                           ;
+
+                           asLocalReconciliativeRun1(s"child node anim") {
+                              doCReconciliation(s, v)
+                           }
+
+                           match { case c => Some(c) }
+
+                     })
+                     .map({
+                        case Some(c) =>
+                           c : com.raquo.laminar.nodes.ReactiveElement[?]
+                           c
+
+                        case None =>
+                           L.commentNode(" ")
+
+                     })
+
                   }
                })
                .startNow()
 
-               statePipe._1
+               pipe1._1
             }
             
          }
