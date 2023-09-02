@@ -47,6 +47,12 @@ object AsyncStateChangeMonad
       /* `scanLeft` was excluded above ; exposing it here renamed */
       export this11.{scanLeft as scanLeftAdapted0 }
 
+      def scanLeft[State](seed: => State )(doDigest: (State, A) => State )
+      : AsyncStateChangeMonad[State]
+      = {
+         this10.scanLeftAdapted0[State](_ => seed)(doDigest )
+      }
+
       def toLaminarObservable
       : com.raquo.airstream.core.Signal[A]
       = this11
