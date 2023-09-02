@@ -172,7 +172,7 @@ def newValueUpdateRepipe[R](
    match { case pipe => {
       (pipe.writer, {
          pipe.signal
-         .flatten
+         .flatMap(_.toLaminarObservable )
       } )
    } }
 } // newValueUpdateRepipe
