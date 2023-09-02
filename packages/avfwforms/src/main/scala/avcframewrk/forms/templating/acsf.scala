@@ -45,7 +45,7 @@ with AcsfReturnIndependentCodings1
          ,
          baseTitle: Title
          ,
-         updatedTitle: (baseTitle: Title, internalState: AcModelState ) => Title
+         updatedTitle: AcsfBaseTitleAndInternalStateCallback[Title, AcModelState, Title ]
          = (baseTitle: Title, s: AcModelState ) => baseTitle
          ,
       )
@@ -60,6 +60,16 @@ object AcsfLabelledCallbackTranslator
    //
 
 } // AcsfLabelledCallbackTranslator$
+
+/**
+ * 
+ * a callback with those two param-val(s) -
+ * `baseTitle: Title`, `internalState: AcModelState`
+ * 
+ */
+type AcsfBaseTitleAndInternalStateCallback
+   [-Title, -AcModelState, +R ]
+= (baseTitle: Title, internalState: AcModelState ) => R
 
 type AcsfTitleIndependentCodings1
 = AcTitleIndependentCodings1
