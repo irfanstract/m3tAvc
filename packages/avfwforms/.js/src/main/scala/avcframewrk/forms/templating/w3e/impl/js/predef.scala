@@ -173,6 +173,7 @@ def newValueUpdateRepipe[R](
       (pipe.writer, {
          pipe.signal
          .flatMap(_.toLaminarObservable )
+         match { case e => e : AsyncStateChangeMonad[R] }
       } )
    } }
 } // newValueUpdateRepipe
