@@ -520,7 +520,16 @@ extends
                   L.child <-- {
                      statePipe._2
                      // .delayExecution({ import concurrent.duration.* ; 2.second })
-                     .scanLeft[C1 ](v => f(None, v) )((s, v) => (f(Some(s), v) ) )
+                     .scanLeft[Option[C1] ](None )((s, v) => (f(s, v) ) match { case r => Some(r) } )
+                     .map({
+                        case Some(c) =>
+                           c : com.raquo.laminar.nodes.ReactiveElement[?]
+                           c
+
+                        case None =>
+                           L.commentNode(" ")
+
+                     })
                   }
                })
                .startNow()
