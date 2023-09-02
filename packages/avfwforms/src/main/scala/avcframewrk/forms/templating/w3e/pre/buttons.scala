@@ -69,6 +69,45 @@ with Articles
 
 }
 
+object VarEditingActionsProv
+{
+   ;
+
+   ;
+
+} // VarEditingActionsProv$
+
+trait VarEditingActionsProv
+extends
+AnyRef
+{
+   this : (
+      AnyRef
+      & Buttons
+   ) =>
+   ;
+
+   ;
+
+   import laminar.api.L
+
+   ;
+
+   /**
+    * `Action`s which each updates the `Var`.
+    * 
+    */
+   val VarEditingAction
+   : (
+      AnyRef
+
+   )
+
+   ;
+
+   ;
+} // VarEditingActionsProv#
+
 
 
 
