@@ -439,7 +439,7 @@ extends
 
          // avcframewrk.evm.AsyncAlgebraicItemStream.newReroutiblePipe[Article ]()
 
-         extension [V](target: com.raquo.laminar.keys.HtmlProp[V, V] ) {
+         extension [V](target: com.raquo.laminar.keys.HtmlAttr[V] | com.raquo.laminar.keys.HtmlProp[V, V] ) {
             //
 
             def startAttribNow
@@ -458,7 +458,12 @@ extends
                   newValueUpdateRepipe(prototype = (_: V0) => {} , initialValue = initialValue )
                }
 
-               ({ target <-- statePipe._2.map(m) })
+               (target match {
+                  case target : com.raquo.laminar.keys.HtmlProp[v1, v2] =>
+                     target <-- statePipe._2.map(m)
+                  case target : com.raquo.laminar.keys.HtmlAttr[v1] =>
+                     target <-- statePipe._2.map(m)
+               } )
                .startNow()
 
                statePipe._1
