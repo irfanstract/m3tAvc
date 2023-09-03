@@ -247,6 +247,44 @@ extends
 
    ;
 
+   private
+   def aHrefDifferentiator
+   = {
+      ;
+
+      ;
+
+      class XEAndStateBag() extends
+      aBackreferencings.XEAndStateBag(ec = { laminar.api.L.a })
+      {
+         //
+
+         import laminar.api.L
+
+         override def close(): Unit = {
+            // closeAllOf
+            ;
+            ;
+            ???
+         }
+         
+         val forHref = (L.href).startAttribNow(initialValue = "" )
+         val forEnabledness = (L.href).startAttribNow(initialValue = "" )
+
+         // def
+
+         ;
+
+      }
+      
+      // SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+      //    //
+      //    spwImpl1 = (mdl: Unit ) => {}
+      //    ,
+      // )
+      ???
+   }
+
    // TODO
    private[avcframewrk]
    given [T0]
@@ -315,18 +353,26 @@ extends
       object CallbackTypeL {
          ;
 
+         /** `anchor` */
          case class A(hrefOption: Option[java.net.URI] )
+         
+         /** `button` */
          case class B(callbackOption: Option[org.scalajs.dom.Event => Unit ] )
+         
+         /** following `A` and `B`, is `C` . `BInputFunc` */
          case class C(edTypeOption: Option[BInputFunc[?] ] ) { export edTypeOption.{get => edType } }
 
       }
 
-      ;
-
-      extension (m: ButtonContentModel ) {
+      extension (src : AsyncStateChangeMonad[Option[(org.scalajs.dom.Event => Unit ) | java.net.URI ] ] ) {
          //
 
-         def renderLaminar()
+         /** 
+          * 
+          * unlifts the `Signal[Option[Function1 | URI ] ]` into being `Signal[A | B | C ]`
+          * 
+          */
+         def unlifted
          = {
             ;
 
@@ -334,10 +380,10 @@ extends
 
             ;
 
-            import CallbackTypeL.*
+            import CallbackTypeL.{A, B, C }
 
-            // TODO
-            m.stateSpecificCallbackAnim1
+            src
+
             .map({
                case (Some(s) ) =>
                   Some {
@@ -363,9 +409,32 @@ extends
                      case _ : C => C(None)
                   }
             })
-            .map({
+         }
+
+         //
+      }
+
+      ;
+
+      extension (m: ButtonContentModel ) {
+         //
+
+         def renderLaminar()
+         = {
+            ;
+
+            import laminar.api.L
+
+            ;
+
+            import CallbackTypeL.{A, B, C }
+
+            object abcdCallbackRenderablility1
+            {
                ;
 
+               ;
+               
                ;
                import L.{
                   href as _,
@@ -480,6 +549,17 @@ extends
                   } }
                }
 
+               ;
+            }
+
+            // TODO
+            m.stateSpecificCallbackAnim1
+            .unlifted
+            .map({
+               ;
+
+               import abcdCallbackRenderablility1.renderFromScratch
+
                urlOption => () => renderFromScratch(urlOption = urlOption )
             })
          }
@@ -491,11 +571,8 @@ extends
 
       val _ = {}
 
-      val aBackreferencings1
-      = summon[aBackreferencings.type ]
-
       class XEAndStateBag() extends
-      aBackreferencings1.XEAndStateBag(ec = { laminar.api.L.span })
+      aBackreferencings.XEAndStateBag(ec = { laminar.api.L.span })
       {
          // this : aBackreferencings1.XEAndStateBag[org.scalajs.dom.HTMLButtonElement ] =>
          ;
