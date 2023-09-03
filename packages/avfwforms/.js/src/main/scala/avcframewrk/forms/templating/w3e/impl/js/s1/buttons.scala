@@ -79,8 +79,10 @@ trait ELaminarQckButtons
 extends
    AnyRef
    with ELaminarQckButtonsActionModelling
+   with ELaminarQckButtonsActionModellingTwo
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Buttons
+   with w3e.pre.VarEditingActionsProv
    /* a temporary treat necessary to prevent the compiler from hanging */
    with ELaminarQckButtonsReconc
    // with ELaminarQckCoreHtml
@@ -187,18 +189,6 @@ extends
 
    } // (mainLineContents: Article) asHavingDirectActionImpl(action: Action)
 
-   locally {
-      ;
-
-      avcframewrk.forms.addGlobalCss({
-         ;
-
-         s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
-      })
-
-      ;
-   }
-
    ;
 } // ELaminarQckButtons
 
@@ -215,6 +205,7 @@ extends
       with w3e.pre.Articles
       with ELaminarQckCoreHtml
       with ELaminarQckButtonsActionModelling
+      with ELaminarQckButtonsActionModellingTwo
    ) =>
    ;
 
@@ -254,6 +245,120 @@ extends
       type ButtonContentModel
          >: Action
          <: Action
+
+      object CallbackTypeL {
+         ;
+
+         case class A(hrefOption: Option[java.net.URI] )
+         case class B(callbackOption: Option[org.scalajs.dom.Event => Unit ] )
+         case class C(edTypeOption: Option[GivenSpinner1[?] ] ) { export edTypeOption.{get => edType } }
+
+      }
+
+      extension (m: ButtonContentModel ) {
+         //
+
+         def renderLaminar()
+         = {
+            ;
+
+            import laminar.api.L
+
+            ;
+
+            import CallbackTypeL.*
+
+            // TODO
+            m.stateSpecificCallbackOption1
+            .map({
+               case (Some(s) ) =>
+                  Some {
+                     s match {
+                        case (edType : GspAsEventFnc[t1] ) =>
+                           C(edTypeOption = Some(edType.peer ) )
+                        case (run : Function1[evt$, rv$] ) =>
+                           B(Some(run) )
+                        case (href: java.net.URI ) =>
+                           A(Some(href) )
+                     }
+                  }
+               case None =>
+                  None
+            })
+            .scanLeft[([T] =>> T )[A | B | C ] ](e => e.getOrElse(A(None) ) )({
+               case (_, Some(v)) =>
+                  v
+               case (v0, None ) =>
+                  v0 match {
+                     case _ : A => A(None)
+                     case _ : B => B(None)
+                     case _ : C => C(None)
+                  }
+            })
+            .map(urlOption => () => {
+               ;
+
+               ;
+               import L.{
+                  href as _,
+                  input as _,
+                  a as _ ,
+                  button ,
+                  disabled ,
+                  * ,
+                  given ,
+               }
+
+               ;
+               urlOption
+               match {
+                  case C(edTypeOption ) =>
+                     edTypeOption match {
+                        case Some(edType : given_GivenSpinner_Boolean.type ) =>
+                           L.input(disabled := true )
+                        case _ =>
+                           button(disabled := true )
+                     }
+                  case B(callbackOption) =>
+                     button() /* never, never use `<a>` for call-back buttons */
+                     .amend(L.typ := "button" ) /* necessary, as `<form>`s set the default to `submit` */
+                     .amend((
+                        callbackOption match {
+                           //
+
+                           case Some(run : Function1[evt$, rv$] ) =>
+                              (onClick --> run )
+                           case None =>
+                              (disabled := true )
+                        }
+                     ))
+                  case A(urlOption) =>
+                     L.a()
+                     .amend((
+                        urlOption match {
+                           //
+
+                           case Some(href : java.net.URI ) =>
+                              (L.href := href.toASCIIString().nn )
+                           case None =>
+                              (disabled := true )
+                        }
+                     ))
+               }
+               match { case e => {
+                  e
+                  .amend(child <-- m.stateTitleOption.map(_.spawn() ) )
+                  // .amend("non title")
+               } }
+               match { case e => {
+                  ebAvfwInlineBtnCssInit
+                  e
+                  .amend((if config.expectInlineHeadline then Seq(L.className := "avfw-inline" ) else Seq() ) : _* )
+               } }
+            })
+         }
+
+      }
 
       // { given_Conversion_LElemPlusPossibleData1_HL_D[SpawnedButtonL, Any ] }
       // { val s = summon[Conversion[LElemPlusPossibleData1[SpawnedButtonL, Any ] , ? ] ] }
@@ -318,71 +423,8 @@ extends
             .onNext({
                ;
 
-               case class A(hrefOption: Option[java.net.URI] )
-               case class B(callbackOption: Option[org.scalajs.dom.Event => Unit ] )
-
-               ;
-               m.stateSpecificCallbackOption1
-               .map({
-                  case (Some(s) ) =>
-                     Some {
-                        s match {
-                           case (run : Function1[evt$, rv$] ) => B(Some(run) )
-                           case (href: java.net.URI ) => A(Some(href) )
-                        }
-                     }
-                  case None =>
-                     None
-               })
-               .scanLeft[([T] =>> T )[A | B] ](e => e.getOrElse(A(None) ) )({
-                  case (_, Some(v)) =>
-                     v
-                  case (v0, None ) =>
-                     v0 match {
-                        case _ : A => A(None)
-                        case _ : B => B(None)
-                     }
-               })
-               .map(urlOption => () => {
-                  ;
-                  import L.{href as _, * }
-                  urlOption
-                  match {
-                     case B(callbackOption) =>
-                        button()
-                        .amend((
-                           callbackOption match {
-                              //
-
-                              case Some(run : Function1[evt$, rv$] ) =>
-                                 (onClick --> run )
-                              case None =>
-                                 (disabled := true )
-                           }
-                        ))
-                     case A(urlOption) =>
-                        a()
-                        .amend((
-                           urlOption match {
-                              //
-
-                              case Some(href : java.net.URI ) =>
-                                 (L.href := href.toASCIIString().nn )
-                              case None =>
-                                 (disabled := true )
-                           }
-                        ))
-                  }
-                  match { case e => {
-                     e
-                     .amend(child <-- m.stateTitleOption.map(_.spawn() ) )
-                     // .amend("non title")
-                  } }
-                  match { case e => {
-                     e
-                     .amend((if config.expectInlineHeadline then Seq(L.className := "avfw-inline" ) else Seq() ) : _* )
-                  } }
-               })
+               m
+               .renderLaminar()
             })
 
             // TODO more
@@ -671,8 +713,151 @@ extends
    ;
 } // ELaminarQckButtonsActionModelling
 
+private
+trait ELaminarQckButtonsActionModellingTwo
+extends
+   AnyRef
+   /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
+   with w3e.pre.VarEditingActionsProv
+   /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
+   // with ELaminarQckCoreHtml
+{
+   sgvs : (
+      AnyRef
+      with w3e.pre.Articles
+      with w3e.pre.Buttons
+      with w3e.pre.PlainTxtContents
+      // with ELaminarQckCoreHtml
+      with ELaminarQckButtonsActionModelling
+   ) =>
+   ;
+
+   import com.raquo.laminar.{nodes as ln}
+
+   import org.scalajs.dom
+
+   ;
+
+   ;
+
+   ;
+
+   export w3e.pre.StdGsps.ofSnb.{*, given}
+
+   ;
+
+   val VarEditingAction
+   : (
+      AnyRef
+      & (
+         [Value] =>
+         (baseTitle: String | Article ) =>
+         (operand: ({ val L : laminar.api.L.type ; type LSS = L.SignalSource[Value] & L.Sink[Value] })#LSS ) =>
+         (GivenSpinner[Value] ) ?=>
+            Action
+      )
+   )
+   = {
+      ;
+
+      (
+
+         [Value] =>
+         (baseTitle: String | Article ) =>
+         (operand: ({ val L : laminar.api.L.type ; type LSS = L.SignalSource[Value] & L.Sink[Value] })#LSS ) =>
+         (spn: GivenSpinner[Value] ) ?=>
+         {
+            ;
+
+            val headline
+            = {
+               ;
+
+               baseTitle
+               match {
+                  case baseTitle : String =>
+                     PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn , baseTitle )
+                  case baseTitle : Article =>
+                     baseTitle
+               }
+               match { case e => e : Article }
+            }
+
+            val a = {
+               BInputFunc[Value](
+                  //
+                  onShallEditStart = { case _ => ??? } ,
+                  src = operand ,
+                  t = spn ,
+               )
+            }
+
+            Edsb(
+               stateOption = laminar.api.L.Val(() ) ,
+               baseTitle = headline ,
+               stateTitle = { case _ => headline } ,
+               stateSpecificCallback = { case _ => Some(a) } ,
+            )
+         }
+      )
+   }
+
+   ;
+
+   private[w3e]
+   case class BInputFunc
+      [Value]
+      (
+         //
+         onShallEditStart : (
+            (lastValue: Value, host: BInputFunc[Value] ) =>
+               Unit
+         )
+         ,
+         src : (
+            ([V] =>> (laminar.api.L.SignalSource[V] ) )[Value]
+            & laminar.api.L.Sink[Value]
+         )
+         ,
+         t : sgvs.GivenSpinner[Value]
+         ,
+      )
+   extends
+      AnyRef
+      with (() => Unit )
+   {
+      ;
+
+      def valueAnim
+      = src.toObservable
+
+      ;
+
+      def apply(): Unit
+      = {
+         ;
+
+         onShallEditStart
+         .apply(
+            //
+            src.toObservable
+            match { case s : laminar.api.L.StrictSignal[t] => (s.now() : t ).asInstanceOf[Value] }
+            match { case s => s }
+            ,
+            BInputFunc.this
+            ,
+         )
+      }
+
+      ;
+   }
+
+   ;
+} // ELaminarQckButtonsActionModellingTwo
+
 // TODO
 export edsbs.Edsb
+export edsbs.GspAsEventFnc
 
 private[avcframewrk]
 final
@@ -725,7 +910,9 @@ trait Edsbs
       def stateSpecificCallbackOption1
       = {
          stateSpecificCallbackOption
-         .map[Option[(org.scalajs.dom.Event => Unit ) | java.net.URI ] ]({
+         .map[Option[(org.scalajs.dom.Event => Unit ) | java.net.URI | GspAsEventFnc[?] ] ]({
+            case Some(cb : w3e.pre.StdGsps.ofSnb.GivenSpinner1[t1]) =>
+               Some(GspAsEventFnc(cb ) )
             case Some(cb : Function0[t1]) =>
                Some((
                   (e) =>
@@ -740,6 +927,16 @@ trait Edsbs
 
    }
 
+   final
+   case class GspAsEventFnc[Value](val peer: w3e.pre.StdGsps.ofSnb.GivenSpinner1[Value] )
+   extends
+   AnyRef
+   {
+      ;
+
+      ;
+   }
+
 }
 
 type BHA
@@ -752,6 +949,23 @@ type BHA
          | org.scalajs.dom.html.Input
          | org.scalajs.dom.html.Select
 )
+
+given ebAvfwInlineBtnCssInit
+: AnyRef
+with {
+   ;
+
+   ;
+
+   org.scalajs.dom.console.log(s"[ebAvfwInlineBtnCssInit]")
+
+   avcframewrk.forms.addGlobalCss({
+      ;
+
+      s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
+   })
+
+}
 
 
 

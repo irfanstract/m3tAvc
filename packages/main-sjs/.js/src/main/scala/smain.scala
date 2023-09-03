@@ -51,6 +51,21 @@ def runSMain(): Unit
                   eb.describeButtonByAction(action )
                } }
             })
+            ++
+            ({
+               val var1 = com.raquo.laminar.api.L.Var[String]("hello")
+               val label = {
+                  ;
+                  eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"progress" )
+               }
+               locally {
+                  ;
+                  val action = {
+                     eb.VarEditingAction(baseTitle = label )(var1 )
+                  }
+                  eb.describeButtonByAction(action )
+               }
+            })
          ).spawn()
       } )
    }
