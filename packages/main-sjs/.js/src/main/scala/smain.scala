@@ -37,6 +37,20 @@ def runSMain(): Unit
             ++
             eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"to do it" )
             .asHavingDirectAction(eb.Action(baseTitle = "click here" )((_: Product) => { println(s"a click ") } ) ) 
+            ++
+            eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"like that" )
+            .asHavingDirectAction(eb.URLAction(baseTitle = "click here" )(PartialFunction.fromFunction((_: Any) => { import language.unsafeNulls ; new java.net.URI("javascript", s"""console.info("5 from the button")""" , null ) } ) ) ) 
+            ++
+            eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"(really?)" )
+            .asHavingDirectAction(eb.Action(baseTitle = "click here" )(PartialFunction.empty[Product, Unit] ) )  
+            ++
+            ({
+               eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"do no thing" )
+               match { case label => {
+                  val action = eb.Action(baseTitle = "click here" )(PartialFunction.empty[Product, Unit] )
+                  eb.describeButtonByAction(action )
+               } }
+            })
          ).spawn()
       } )
    }
