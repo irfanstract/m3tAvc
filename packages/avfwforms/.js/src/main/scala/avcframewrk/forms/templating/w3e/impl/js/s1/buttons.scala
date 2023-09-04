@@ -675,11 +675,30 @@ with {
       (
          //
 
-         ""
-         + s"button.avfw-inline, a.avfw-inline, input.avfw-inline { display: inline ; padding-block: 0 ; text-decoration: underline ; } "
-         + s"button.avfw-inline { color: #40A000 ; padding-inline: 0.5ex ; } "
-         + s"button.avfw-offtopic, a.avfw-inline { user-select: none !important ; } "
+         Seq()
+
+         :+ s"button, input { padding-block: 0.75ex ; } "
+
+         :+ s"button.avfw-inline, a.avfw-inline, input.avfw-inline { display: inline ; } "
+
+         :+ s"button.avfw-inline, a.avfw-inline, input.avfw-inline { padding-block: 0.7ex ; padding-block-end: 1.5ex ; margin-block: -0.4ex ; } "
+         :+ s"button.avfw-inline, input.avfw-inline { margin-block-end: -1ex ; } "
+
+         :+ s"button.avfw-inline { padding-inline: 1ex ; } "
+
+         :+ s"button.avfw-inline { background: transparent ; background: rgba(0, 0, 0, 0.02) ; } "
+
+         :+ s"button.avfw-inline { margin-inline: -1ex ; } "
+
+         // :+ s"button.avfw-inline { font-weight: bolder ; } "
+
+         :+ s"button, a { text-decoration: underline ; } "
+
+         :+ s"button.avfw-inline { text-decoration-style: double ; } "
+
+         :+ s"button.avfw-offtopic { user-select: none !important ; } "
       )
+      .mkString("\r\n\r\n")
    })
    
 } // ebAvfwInlineBtnCssInit$
