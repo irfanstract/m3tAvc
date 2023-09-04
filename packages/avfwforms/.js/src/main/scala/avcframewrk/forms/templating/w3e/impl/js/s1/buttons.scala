@@ -79,8 +79,10 @@ trait ELaminarQckButtons
 extends
    AnyRef
    with ELaminarQckButtonsActionModelling
+   with ELaminarQckButtonsActionModellingTwo
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Buttons
+   with w3e.pre.VarEditingActionsProv
    /* a temporary treat necessary to prevent the compiler from hanging */
    with ELaminarQckButtonsReconc
    // with ELaminarQckCoreHtml
@@ -205,6 +207,7 @@ extends
       with w3e.pre.Articles
       with ELaminarQckCoreHtml
       with ELaminarQckButtonsActionModelling
+      with ELaminarQckButtonsActionModellingTwo
    ) =>
    ;
 

@@ -284,6 +284,152 @@ extends
    ;
 } // ELaminarQckButtonsActionModelling
 
+private
+trait ELaminarQckButtonsActionModellingTwo
+extends
+   AnyRef
+   /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
+   with w3e.pre.VarEditingActionsProv
+   /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
+   // with ELaminarQckCoreHtml
+{
+   sgvs : (
+      AnyRef
+      with w3e.pre.Articles
+      with w3e.pre.Buttons
+      with w3e.pre.PlainTxtContents
+      // with ELaminarQckCoreHtml
+      with ELaminarQckButtonsActionModelling
+   ) =>
+   ;
+
+   import com.raquo.laminar.{nodes as ln}
+
+   import org.scalajs.dom
+
+   ;
+
+   ;
+
+   ;
+
+   export w3e.pre.StdGsps.ofSnb.{*, given}
+
+   ;
+
+   val VarEditingAction
+   : (
+      AnyRef
+      & (
+         [Value] =>
+         (baseTitle: String | Article ) =>
+         (operand: ({ val L : laminar.api.L.type ; type LSS = L.SignalSource[Value] & L.Sink[Value] })#LSS ) =>
+         (GivenSpinner[Value] ) ?=>
+            Action
+      )
+   )
+   = {
+      ;
+
+      (
+
+         [Value] =>
+         (baseTitle: String | Article ) =>
+         (operand: ({ val L : laminar.api.L.type ; type LSS = L.SignalSource[Value] & L.Sink[Value] })#LSS ) =>
+         (spn: GivenSpinner[Value] ) ?=>
+         {
+            ;
+
+            val headline
+            = {
+               ;
+
+               baseTitle
+               match {
+                  case baseTitle : String =>
+                     PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn , baseTitle )
+                  case baseTitle : Article =>
+                     baseTitle
+               }
+               match { case e => e : Article }
+            }
+
+            val a = {
+               BInputFunc[Value](
+                  //
+                  onShallEditStart = { case _ => ??? } ,
+                  src = operand ,
+                  t = spn ,
+               )
+            }
+
+            Edsb(
+               stateAnim = laminar.api.L.Val(() ) ,
+               baseTitle = headline ,
+               stateTitle = { case _ => headline } ,
+               stateSpecificCallback = { case _ => Some(a) } ,
+            )
+         }
+      )
+   }
+
+   ;
+
+   private[w3e]
+   case class BInputFunc
+      [Value]
+      (
+         //
+         onShallEditStart : (
+            (lastValue: Value, host: BInputFunc[Value] ) =>
+               Unit
+         )
+         ,
+         src : (
+            ([V] =>> (laminar.api.L.SignalSource[V] ) )[Value]
+            & laminar.api.L.Sink[Value]
+         )
+         ,
+         t : sgvs.GivenSpinner1[Value]
+         ,
+      )
+   extends
+      AnyRef
+      with (() => Unit )
+      with ((org.scalajs.dom.Event) => Unit )
+   {
+      ;
+
+      def valueAnim
+      = src.toObservable
+
+      ;
+
+      def apply(clickEvt: org.scalajs.dom.Event )
+      = apply()
+
+      def apply(): Unit
+      = {
+         ;
+
+         onShallEditStart
+         .apply(
+            //
+            src.toObservable
+            match { case s : laminar.api.L.StrictSignal[t] => (s.now() : t ).asInstanceOf[Value] }
+            match { case s => s }
+            ,
+            BInputFunc.this
+            ,
+         )
+      }
+
+      ;
+   }
+
+   ;
+} // ELaminarQckButtonsActionModellingTwo
+
 // TODO
 export edsbs.Edsb
 
