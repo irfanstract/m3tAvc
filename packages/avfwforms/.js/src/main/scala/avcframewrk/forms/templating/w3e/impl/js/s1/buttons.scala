@@ -198,6 +198,8 @@ private
 trait ELaminarQckButtonsReconc
 extends
    AnyRef
+   /* */
+   with ENativeElementsD1
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with w3e.pre.Articles
@@ -208,6 +210,7 @@ extends
       with ELaminarQckCoreHtml
       with ELaminarQckButtonsActionModelling
       with ELaminarQckButtonsActionModellingTwo
+      with ENativeElementsD1
    ) =>
    ;
 
