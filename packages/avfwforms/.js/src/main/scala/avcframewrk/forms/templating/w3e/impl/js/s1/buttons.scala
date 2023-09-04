@@ -530,7 +530,7 @@ extends
                   match { case e => {
                      ebAvfwInlineBtnCssInit
                      e
-                     .amend((if config.expectInlineHeadline then Seq(L.className := "avfw-inline" ) else Seq() ) : _* )
+                     .amend(L.className := (if config.expectInlineHeadline then ("avfw-inline" ) else ("avfw-offtopic") ) )
                   } }
                }
 
@@ -671,8 +671,15 @@ with {
    
    avcframewrk.forms.addGlobalCss({
       ;
-      
-      s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
+
+      (
+         //
+
+         ""
+         + s"button.avfw-inline, a.avfw-inline, input.avfw-inline { display: inline ; padding-block: 0 ; text-decoration: underline ; } "
+         + s"button.avfw-inline { color: #40A000 ; padding-inline: 0.5ex ; } "
+         + s"button.avfw-offtopic, a.avfw-inline { user-select: none !important ; } "
+      )
    })
    
 } // ebAvfwInlineBtnCssInit$
