@@ -487,6 +487,9 @@ trait Edsbs
          .map[Option[((editStartReq: org.scalajs.dom.Event) => Unit ) | java.net.URI ] ]({
             //
 
+            case Some(cb : ELaminarQckButtonsActionModellingTwo#BInputFunc[v]) =>
+               Some(cb)
+
             case Some(cb : Function0[t1]) =>
                Some({
                   cb
