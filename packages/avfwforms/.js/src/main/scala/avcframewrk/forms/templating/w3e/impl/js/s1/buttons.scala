@@ -187,17 +187,7 @@ extends
 
    } // (mainLineContents: Article) asHavingDirectActionImpl(action: Action)
 
-   locally {
-      ;
-
-      avcframewrk.forms.addGlobalCss({
-         ;
-
-         s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
-      })
-
-      ;
-   }
+   ebAvfwInlineBtnCssInit
 
    ;
 } // ELaminarQckButtons
@@ -752,6 +742,21 @@ type BHA
          | org.scalajs.dom.html.Input
          | org.scalajs.dom.html.Select
 )
+
+given ebAvfwInlineBtnCssInit
+: AnyRef
+with {
+   ;
+   
+   org.scalajs.dom.console.log(s"[ebAvfwInlineBtnCssInit]")
+   
+   avcframewrk.forms.addGlobalCss({
+      ;
+      
+      s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
+   })
+   
+} // ebAvfwInlineBtnCssInit$
 
 
 
