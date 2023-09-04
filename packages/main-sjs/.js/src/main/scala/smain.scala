@@ -51,6 +51,66 @@ def runSMain(): Unit
                   eb.describeButtonByAction(action )
                } }
             })
+            ++
+            ({
+               val var1 = com.raquo.laminar.api.L.Var[String]("hello! after the input box has entered this, this this has entered this this after has entered this this, this after has entered this this")
+               val label = {
+                  ;
+                  eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"progress" )
+               }
+               locally {
+                  ;
+                  val action = {
+                     eb.VarEditingAction(baseTitle = label )(var1 )
+                  }
+                  eb.describeButtonByAction(action )
+               }
+            })
+            ++
+            ({
+               val var1 = com.raquo.laminar.api.L.Var[Boolean ]({ true })
+               val label = {
+                  ;
+                  eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"encouraged" )
+               }
+               locally {
+                  ;
+                  val action = {
+                     eb.VarEditingAction(baseTitle = label )(var1 )
+                  }
+                  eb.describeButtonByAction(action )
+               }
+            })
+            ++
+            ({
+               val var1 = com.raquo.laminar.api.L.Var[BigDecimal ](1.25 )
+               val label = {
+                  ;
+                  eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"amt" )
+               }
+               locally {
+                  ;
+                  val action = {
+                     eb.VarEditingAction(baseTitle = label )(var1 )
+                  }
+                  eb.describeButtonByAction(action )
+               }
+            })
+            ++
+            ({
+               val var1 = com.raquo.laminar.api.L.Var[avcframewrk.forms.templating.w3e.pre.StdGsps.DateTime ]({ "2023-09-03" match { case e => ([A] => () => e.asInstanceOf[A] ).apply() } })
+               val label = {
+                  ;
+                  eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"date" )
+               }
+               locally {
+                  ;
+                  val action = {
+                     eb.VarEditingAction(baseTitle = label )(var1 )
+                  }
+                  eb.describeButtonByAction(action )
+               }
+            })
          ).spawn()
       } )
    }
