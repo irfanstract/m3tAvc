@@ -34,18 +34,26 @@ object AsyncStateChangeMonad
    = identity[com.raquo.airstream.core.Signal[A] ] _
 
    extension [A] (this10: AsyncStateChangeMonad[A] ) {
-      def this11
+      //
+
+      private
+      def thisAscm
       /* widen the type, to build on the opaque alias */
-      : com.raquo.airstream.core.Signal[A] & com.raquo.airstream.core.BaseObservable[AsyncStateChangeMonad, A]
+      : com.raquo.airstream.core.BaseObservable[AsyncStateChangeMonad, A]
       = this10
 
-      export this11.{
+      private
+      def thisS
+      : com.raquo.airstream.core.Signal[A]
+      = this10
+
+      export thisAscm.{
          scanLeft as _,
          *, given ,
       }
 
       /* `scanLeft` was excluded above ; exposing it here renamed */
-      export this11.{scanLeft as scanLeftAdapted0 }
+      export thisS.{scanLeft as scanLeftAdapted0 }
 
       def scanLeft[State](seed: => State )(doDigest: (State, A) => State )
       : AsyncStateChangeMonad[State]
@@ -55,7 +63,7 @@ object AsyncStateChangeMonad
 
       def toLaminarObservable
       : com.raquo.airstream.core.Signal[A]
-      = this11
+      = thisS
 
    }
 
