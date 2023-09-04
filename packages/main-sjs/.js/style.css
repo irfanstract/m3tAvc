@@ -74,6 +74,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  transition: all 0.5s ease-out;
 }
 button:hover {
   border-color: #646cff;
@@ -81,6 +82,27 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/**
+ * automatically hide buttons if the enclosing "app div" no longer focused nor hovered
+ */
+button ,
+#-------e {
+  opacity: 1 ;
+}
+button:not(.avfw-inline ) ,
+#-------e {
+  opacity: var(--avf-button-visibility) ;
+}
+#app ,
+#-------e {
+  --avf-button-visibility: 0 ;
+}
+#app:focus-within ,
+#app:hover ,
+#-------e {
+  --avf-button-visibility: 1 ;
 }
 
 @media (prefers-color-scheme: light) {
