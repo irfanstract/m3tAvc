@@ -229,6 +229,29 @@ extends
       ,
    )
 
+   ;
+
+   /**
+    * 
+    * a locally-adjusted itc for scan-left (see `IterableOnceOps`) reconciliation
+    * 
+    */
+   private
+   trait XScanLeftReconciliativeOps[ContentModel]
+   {
+      ;
+
+      val lE
+      : ln.ReactiveHtmlElement[dom.HTMLElement]
+
+      def tryUpdateTo
+         (m : ContentModel )
+      : Either[XScanLeftReconciliativeOps[ContentModel] , Unit]
+
+   }
+
+   ;
+
    // TODO
    private[avcframewrk]
    given [T0]
