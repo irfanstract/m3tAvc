@@ -460,9 +460,10 @@ extends
 
                (target match {
                   case target : com.raquo.laminar.keys.HtmlProp[v1, v2] =>
-                     target <-- statePipe._2.map(m)
+                     target <-- statePipe._2.map(m).toLaminarObservable
                   case target : com.raquo.laminar.keys.HtmlAttr[v1] =>
-                     target <-- statePipe._2.map(m)
+                     target <-- statePipe._2.map(m).toLaminarObservable
+                  /* it was our own wrapper ; now, however, we need compile-time conformance */
                } )
                .startNow()
 
@@ -535,6 +536,8 @@ extends
                            L.commentNode(" ")
 
                      })
+                     /* it was our own wrapper ; now, however, we need compile-time conformance */
+                     .toLaminarObservable
                   }
                })
                .startNow()
