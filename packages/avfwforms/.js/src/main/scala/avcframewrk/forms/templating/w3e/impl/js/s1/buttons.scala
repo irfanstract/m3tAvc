@@ -334,7 +334,7 @@ extends
                   case None =>
                      None
                })
-               .scanLeft[([T] =>> T )[A | B] ](e => e.getOrElse(A(None) ) )({
+               .scanLeftAdapted0[([T] =>> T )[A | B] ](e => e.getOrElse(A(None) ) )({
                   case (_, Some(v)) =>
                      v
                   case (v0, None ) =>
@@ -375,7 +375,7 @@ extends
                   }
                   match { case e => {
                      e
-                     .amend(child <-- m.stateTitleOption.map(_.spawn() ) )
+                     .amend(child <-- m.stateTitleOption.map(_.spawn() ).toLaminarObservable )
                      // .amend("non title")
                   } }
                   match { case e => {
