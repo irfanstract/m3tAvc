@@ -312,7 +312,7 @@ extends
                case class B(callbackOption: Option[org.scalajs.dom.Event => Unit ] )
 
                ;
-               m.stateSpecificCallbackOption1
+               m.stateSpecificCallbackAnim1
                .map({
                   case (Some(s) ) =>
                      Some {
@@ -365,7 +365,7 @@ extends
                   }
                   match { case e => {
                      e
-                     .amend(child <-- m.stateTitleOption.map(_.spawn() ).toLaminarObservable )
+                     .amend(child <-- m.stateTitleAnim.map(_.spawn() ).toLaminarObservable )
                      // .amend("non title")
                   } }
                   match { case e => {
