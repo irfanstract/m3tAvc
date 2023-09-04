@@ -134,6 +134,10 @@ given [T0]
 : util.Using.Releasable[monix.reactive.Observer[?] ]
 = r => r.onComplete()
 
+given given_Releasable_Laminar_Observer[T0]
+: util.Using.Releasable[com.raquo.airstream.core.Observer[?] ]
+= r => { } // TODO
+
 /**
  * strives for `monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )`, but
  * since the factory overload was unavailable/missing in the JS build of Monix
@@ -142,7 +146,7 @@ given [T0]
  */
 def trySameThreadScheduler()
 : monix.execution.Scheduler
-= monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+= monix.execution.Scheduler.global
 
 /**
  * like "pipe"s, but
@@ -168,7 +172,8 @@ def newValueUpdateRepipe[R](
    match { case pipe => {
       (pipe.writer, {
          pipe.signal
-         .flatten
+         .flatMap(_.toLaminarObservable )
+         match { case e => e : AsyncStateChangeMonad[R] }
       } )
    } }
 } // newValueUpdateRepipe

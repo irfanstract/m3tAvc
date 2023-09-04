@@ -41,82 +41,33 @@ object AirstreamFromMonix
       // TODO
       ;
 
-      type StartIndex
-         >: com.raquo.airstream.custom.CustomSource.StartIndex
-         <: com.raquo.airstream.custom.CustomSource.StartIndex
-
-      var subscriptionsMap
-      : Map[StartIndex, AnyRef & monix.execution.Cancelable ]
-      = Map.empty
-
-      def unsubscribeFor(sI: StartIndex )
+      val pv
       = {
-         ;
-
-         subscriptionsMap =
-            subscriptionsMap
-            .tapEach({ case (`sI`, s) => s.cancel() ; case _ => })
-            .removed(sI)
+         laminar.api.L.Var[Option[Item] ](None )
       }
 
       val frontEnd = {
          ;
-         Airstream.EventStream.fromCustomSource[Item](
-            //
-
-            //
-            shouldStart = {
-               case _ =>
-                  true
-            } ,
-
-            //
-            start = {
-               case (fireValue, fireError, getSI, _ ) =>
-                  ;
-
-                  val sI = getSI() : StartIndex
-
-                  subscriptionsMap = {
-                     subscriptionsMap.updatedWith(sI)({
-                        case None =>
-                           ;
-
-                           val s = {
-                              given sameThreadMonixScheduler.type = sameThreadMonixScheduler
-                              src
-                              .map(fireValue)
-                              .onErrorHandle(fireError )
-                              .subscribe()
-                           }
-
-                           Some(s)
-
-                        case Some(s) =>
-                           /* can't Subscribe more than once */
-                           throw new IllegalStateException(s"for i=${sI} ")
-                     })
-                  }
-
-            },
-
-            //
-            stop = (sI: StartIndex) => {
-               unsubscribeFor(sI)
-            } ,
-
-            //
-         )
+         pv.signal
+         .changes
+         .collect({
+            case Some(v) =>
+               v
+         })
       }
+  
+      src
+      .map(v => { pv.writer.onNext(Some(v) ) } )
+      .subscribe()(using monix.execution.Scheduler.global )
 
       frontEnd
    } // apply[Item](src : monix.reactive.Observable[Item])
 
-   private[AirstreamFromMonix]
-   final
-   lazy val sameThreadMonixScheduler
-   : monix.execution.Scheduler
-   = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
+   // private[AirstreamFromMonix]
+   // final
+   // lazy val sameThreadMonixScheduler
+   // : monix.execution.Scheduler
+   // = monix.execution.Scheduler(concurrent.ExecutionContext.parasitic )
 
 } // AirstreamFromMonix$
 
