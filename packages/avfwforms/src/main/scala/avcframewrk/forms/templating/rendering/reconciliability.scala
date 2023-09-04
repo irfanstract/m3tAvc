@@ -208,7 +208,7 @@ object reconciliabilityC
          ;
 
          val reconcImpl = {
-            new Reconciliability[SpawnedButton, ButtonContentModel, Unit]
+            new Reconciliability[SpawnedButton, ButtonContentModel, U]
             {
                extension (this1: SpawnedButton)
                   def model_=(newModel: ButtonContentModel )
