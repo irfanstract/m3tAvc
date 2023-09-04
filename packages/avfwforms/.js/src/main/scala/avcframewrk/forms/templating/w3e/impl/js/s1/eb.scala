@@ -549,6 +549,37 @@ extends
 
       }
 
+      trait XEAndStateBagCm[-M, +R]
+      extends
+      XEAndStateBag[?]
+      {
+         ;
+
+         def model_=(newMdl: M )
+         : R
+
+         ;
+      } // XEAndStateBagCm
+
+      object XEAndStateBagCm {
+         ;
+
+         ;
+
+         ;
+      } // XEAndStateBagCm$
+
+      @deprecated("this auto-conv is presently experimental.")
+      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg[M, R, C <: XEAndStateBagCm[M, R] ]
+      : Conversion[() => C, SpawnabilityAndReconciliabilityNoArg[M, C, R ] ]
+      = (constructDefaulted) => {
+         SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+            //
+            spwImpl1 = (mdl: M) => { val c = constructDefaulted() ; c.model_=(mdl) ; c } ,
+            reconcImpl1 = (this1, newMdl) => { this1.model_=(newMdl ) } ,
+         )
+      }
+
    }
 
 }
