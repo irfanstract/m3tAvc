@@ -570,8 +570,13 @@ extends
       } // XEAndStateBagCm$
 
       @deprecated("this auto-conv is presently experimental.")
-      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg[M, R, C <: XEAndStateBagCm[M, R] ]
-      : Conversion[() => C, SpawnabilityAndReconciliabilityNoArg[M, C, R ] ]
+      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg
+         [
+            M,
+            ReconciliativeRunReturnVal,
+            C <: XEAndStateBagCm[M, ReconciliativeRunReturnVal] ,
+         ]
+      : Conversion[() => C, SpawnabilityAndReconciliabilityNoArg[M, C, ReconciliativeRunReturnVal ] ]
       = (constructDefaulted) => {
          SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
             //
