@@ -585,6 +585,37 @@ extends
          )
       }
 
+      @deprecated("this auto-conv is presently experimental.")
+      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg_1
+         [
+            M,
+            ReconciliativeRunReturnVal,
+            HL <: com.raquo.laminar.nodes.ReactiveElement[HD & org.scalajs.dom.Element],
+            HD <: org.scalajs.dom.Node ,
+            // C <: XEAndStateBagCm[M, ReconciliativeRunReturnVal] ,
+         ]
+         (using reflect.Typeable[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ] )
+      : Conversion[() => HL, SpawnabilityAndReconciliabilityNoArg[M, HL, ReconciliativeRunReturnVal ] ]
+      = (constructDefaulted) => {
+         SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+            //
+            spwImpl1 = (mdl: M) => {
+               val c = constructDefaulted()
+               c
+               .avfwBackreferent[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ]
+               .model_=(mdl)
+               c
+            }
+            ,
+            reconcImpl1 = (this1, newMdl) => {
+               this1
+               .avfwBackreferent[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ]
+               .model_=(newMdl )
+            }
+            ,
+         )
+      }
+
    }
 
 }
