@@ -530,7 +530,7 @@ extends
                   match { case e => {
                      ebAvfwInlineBtnCssInit
                      e
-                     .amend((if config.expectInlineHeadline then Seq(L.className := "avfw-inline" ) else Seq() ) : _* )
+                     .amend(L.className := (if config.expectInlineHeadline then ("avfw-inline" ) else ("avfw-offtopic") ) )
                   } }
                }
 
@@ -671,8 +671,34 @@ with {
    
    avcframewrk.forms.addGlobalCss({
       ;
-      
-      s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
+
+      (
+         //
+
+         Seq()
+
+         :+ s"button, input { padding-block: 0.75ex ; } "
+
+         :+ s"button.avfw-inline, a.avfw-inline, input.avfw-inline { display: inline ; } "
+
+         :+ s"button.avfw-inline, a.avfw-inline, input.avfw-inline { padding-block: 0.7ex ; padding-block-end: 1.5ex ; margin-block: -0.4ex ; } "
+         :+ s"button.avfw-inline, input.avfw-inline { margin-block-end: -1ex ; } "
+
+         :+ s"button.avfw-inline { padding-inline: 1ex ; } "
+
+         :+ s"button.avfw-inline { background: transparent ; background: rgba(0, 0, 0, 0.02) ; } "
+
+         :+ s"button.avfw-inline { margin-inline: -1ex ; } "
+
+         // :+ s"button.avfw-inline { font-weight: bolder ; } "
+
+         :+ s"button, a { text-decoration: underline ; } "
+
+         :+ s"button.avfw-inline { text-decoration-style: double ; } "
+
+         :+ s"button.avfw-offtopic { user-select: none !important ; } "
+      )
+      .mkString("\r\n\r\n")
    })
    
 } // ebAvfwInlineBtnCssInit$
