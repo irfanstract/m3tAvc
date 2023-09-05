@@ -30,101 +30,45 @@ extends
    ) =>
    ;
 
-   import com.raquo.laminar.{nodes as ln}
-
    import org.scalajs.dom
 
-   ;
+   import com.raquo.laminar.{nodes as ln}
+
+   import laminar.api.L
 
    ;
 
-   given given_SpawnabilityAndReconciliability_Laspa[XModel <: Laspa]
-   : SpawnabilityAndReconciliabilityNoArg[XModel, ?, Unit ]
+   ;
+
+   given given_SpawnabilityAndReconciliability_Laspa[XModel <: LaspaStatic]
+   : SpawnabilityAndReconciliabilityNoArg[Option[LaspaStatic], ?, Unit ]
    = {
       ;
 
       ;
 
-      class XEAndStateBag1() extends
-      aBackreferencings.XEAndStateBag(ec = { laminar.api.L.a })
-      with aBackreferencings.XEAndStateBagCm[XModel, Unit]
-      {
+      import given_SpawnabilityAndReconciliability_CaseClassGeneralised1.SrcLensAndDestAttrPair
+
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         Option[LaspaStatic]
+         ,
+         dom.HTMLAnchorElement
+         ,
+      ](
          //
+         prov => prov((_ ).flatMap(_.href ).map(_.toASCIIString().nn ).getOrElse("") , "" )(laminar.api.L.href )
+         ,
+         prov => prov((_ ).isEmpty, false )(laminar.api.L.disabled )
+         ,
 
-         import laminar.api.L
-
-         override
-         def close(): Unit
-         = {
-            closeAllOf((
-               Seq()
-               :+ forHref
-               :+ forEnabledness
-            ))
-         }
-
-         val forHref
-         = {
-            (L.href).startAttribNow(initialValue = "" )
-         }
-
-         val forEnabledness
-         = {
-            (L.disabled).startAttribNow(initialValue = false )
-            .contramap((v: AsyncStateChangeMonad[Boolean]) => v.map(_.unary_! ) )
-         }
-
-         override
-         def model_=(newMdl: XModel): Unit
-         = {
-            forEnabledness.onNext((newMdl.enablednessAnim ) )
-            forHref.onNext((newMdl.hrefStringAnim ) )
-         }
-
-         // def
-
-         ;
-
-      }
-
-      ({
-         import aBackreferencings.{given Conversion[?, ?] }
-
-         summon[Conversion[() => XEAndStateBag1 , ? ] ]
-         .apply(() => new XEAndStateBag1() )
-      })
+      )(nativeElemLCtor = L.a )
    }
 
-   case class Laspa(
+   case class LaspaStatic(
       //
-      private val
-      destOptionAnim : AsyncStateChangeMonad[Option[java.net.URI] ]
+      href : ([A] =>> A )[Option[java.net.URI] ]
       ,
    )
-   {
-      ;
-
-      def enablednessAnim
-      = hrefOptionAnim.map(_.nonEmpty )
-
-      def hrefOptionAnim
-      : AsyncStateChangeMonad[Option[java.net.URI] ]
-      = destOptionAnim
-
-      def hrefStringOptionAnim
-      = {
-         hrefOptionAnim
-         .map(o => o.map(_.toASCIIString().nn ) )
-      }
-
-      def hrefStringAnim
-      = {
-         hrefStringOptionAnim
-         .map(o => o.getOrElse[String ]("") )
-      }
-
-      ;
-   }
 
    ;
 
