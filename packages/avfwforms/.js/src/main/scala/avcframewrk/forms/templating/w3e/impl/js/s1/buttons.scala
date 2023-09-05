@@ -401,6 +401,135 @@ extends
 
       ;
 
+      object abcdCallbackRenderablility1
+      {
+         ;
+
+         import laminar.api.L
+
+         ;
+
+         import CallbackTypeL.{A, B, C }
+
+         ;
+
+         ;
+         import L.{
+            href as _,
+            input as _,
+            a as _ ,
+            button ,
+            disabled ,
+            // * ,
+            given ,
+         }
+
+         def renderFromScratch(urlOption : A | B | C, title: Article )
+         = {
+            ;
+
+            ;
+
+            ;
+            urlOption
+            match {
+               case C(edTypeOption ) =>
+                  ;
+                  edTypeOption
+                  .map(e => (e, e.t, true ) )
+                  match {
+
+                     case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_Boolean.type, enabled ) =>
+                        L.input( L.typ := "checkbox" )
+                        .amend(disabled := !enabled  )
+                        // .amend(L.value <-- ed.valueAnim.map(_.toString() ) )
+                        .amend(
+                           //
+                           L.checked <-- ed.valueAnim.map(_.asInstanceOf[Boolean ] ) 
+                           ,
+                           L.onChange.mapToChecked.map(_.asInstanceOf[acv1$] ) --> (ed.src.toObserver.onNext _ )
+                           ,
+                        )
+
+                     case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type , enabled ) =>
+                        L.input( L.typ := "date" )
+                        .amend(disabled := !enabled  )
+                        .amend((
+                           ed.llc()
+                        ))
+
+                     case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] , enabled ) =>
+                        L.input( L.typ := "number" )
+                        .amend(disabled := !enabled  )
+                        .amend((
+                           ed.llc()
+                        ))
+
+                     case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_String.type, enabled ) =>
+                        L.input( )
+                        .amend(disabled := !enabled  )
+                        .amend((
+                           ed.llc()
+                        ))
+
+                     case _ =>
+                        L.input(disabled := true )
+                  }
+                  match {
+                     case e =>
+
+                        L.label(e, (
+                           L.span(L.child <-- L.Val(title.spawn() ) )
+                           .amend(":" )
+                           .amend((
+                              L.span()
+                              .amend(L.styleAttr := (
+                                 ""
+                                 + s"display: inline-block ; position: relative ; inline-size: 11em ; vertical-align: text-top ;"
+                                 + s"background: rgba(255, 255, 0, 0.15 ) ; "
+                              ) )
+                              .amend(edTypeOption.fold(Seq() )(e => Seq[com.raquo.laminar.modifiers.Inserter.Base ](L.span(L.child <-- e.src.toObservable.map(_.toString() ) ) ) ) : _* )
+                           ))
+                        ) )
+                  }
+               case B(callbackOption) =>
+                  button() /* never, never use `<a>` for call-back buttons */
+                  .amend(L.typ := "button" ) /* necessary, as `<form>`s set the default to `submit` */
+                  .amend((
+                     callbackOption match {
+                        //
+
+                        case Some(run : Function1[evt$, rv$] ) =>
+                           (L.onClick --> run )
+                        case None =>
+                           (disabled := true )
+                     }
+                  ))
+                  .amend(L.child <-- L.Val(title.spawn() ) )
+               case A(urlOption) =>
+                  L.a()
+                  .amend((
+                     urlOption match {
+                        //
+
+                        case Some(href : java.net.URI ) =>
+                           (L.href := href.toASCIIString().nn )
+                        case None =>
+                           (disabled := true )
+                     }
+                  ))
+                  .amend(L.child <-- L.Val(title.spawn() ) )
+            }
+            match { case e => {
+               ebAvfwInlineBtnCssInit
+               e
+               .amend(L.className := (if config.expectInlineHeadline then ("avfw-inline" ) else ("avfw-offtopic") ) )
+            } }
+         }
+
+         ;
+      }
+
       extension (m: ButtonContentModel ) {
          //
 
@@ -414,138 +543,14 @@ extends
 
             import CallbackTypeL.{A, B, C }
 
-            object abcdCallbackRenderablility1
-            {
-               ;
-
-               ;
-               
-               ;
-               import L.{
-                  href as _,
-                  input as _,
-                  a as _ ,
-                  button ,
-                  disabled ,
-                  // * ,
-                  given ,
-               }
-
-               def renderFromScratch(urlOption : A | B | C )
-               = {
-                  ;
-                  
-                  ;
-
-                  ;
-                  urlOption
-                  match {
-                     case C(edTypeOption ) =>
-                        ;
-                        edTypeOption
-                        .map(e => (e, e.t, true ) )
-                        match {
-
-                           case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_Boolean.type, enabled ) =>
-                              L.input( L.typ := "checkbox" )
-                              .amend(disabled := !enabled  )
-                              // .amend(L.value <-- ed.valueAnim.map(_.toString() ) )
-                              .amend(
-                                 //
-                                 L.checked <-- ed.valueAnim.map(_.asInstanceOf[Boolean ] ) 
-                                 ,
-                                 L.onChange.mapToChecked.map(_.asInstanceOf[acv1$] ) --> (ed.src.toObserver.onNext _ )
-                                 ,
-                              )
-
-                           case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type , enabled ) =>
-                              L.input( L.typ := "date" )
-                              .amend(disabled := !enabled  )
-                              .amend((
-                                 ed.llc()
-                              ))
-
-                           case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] , enabled ) =>
-                              L.input( L.typ := "number" )
-                              .amend(disabled := !enabled  )
-                              .amend((
-                                 ed.llc()
-                              ))
-
-                           case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_String.type, enabled ) =>
-                              L.input( )
-                              .amend(disabled := !enabled  )
-                              .amend((
-                                 ed.llc()
-                              ))
-
-                           case _ =>
-                              L.input(disabled := true )
-                        }
-                        match {
-                           case e =>
-
-                              L.label(e, (
-                                 L.span(L.child <-- m.stateTitleAnim.map(_.spawn() ).toLaminarObservable)
-                                 .amend(":" )
-                                 .amend((
-                                    L.span()
-                                    .amend(L.styleAttr := (
-                                       ""
-                                       + s"display: inline-block ; position: relative ; inline-size: 11em ; vertical-align: text-top ;"
-                                       + s"background: rgba(255, 255, 0, 0.15 ) ; "
-                                    ) )
-                                    .amend(edTypeOption.fold(Seq() )(e => Seq[com.raquo.laminar.modifiers.Inserter.Base ](L.span(L.child <-- e.src.toObservable.map(_.toString() ) ) ) ) : _* )
-                                 ))
-                              ) )
-                        }
-                     case B(callbackOption) =>
-                        button() /* never, never use `<a>` for call-back buttons */
-                        .amend(L.typ := "button" ) /* necessary, as `<form>`s set the default to `submit` */
-                        .amend((
-                           callbackOption match {
-                              //
-
-                              case Some(run : Function1[evt$, rv$] ) =>
-                                 (L.onClick --> run )
-                              case None =>
-                                 (disabled := true )
-                           }
-                        ))
-                        .amend(L.child <-- m.stateTitleAnim.map(_.spawn() ).toLaminarObservable )
-                     case A(urlOption) =>
-                        L.a()
-                        .amend((
-                           urlOption match {
-                              //
-
-                              case Some(href : java.net.URI ) =>
-                                 (L.href := href.toASCIIString().nn )
-                              case None =>
-                                 (disabled := true )
-                           }
-                        ))
-                        .amend(L.child <-- m.stateTitleAnim.map(_.spawn() ).toLaminarObservable )
-                  }
-                  match { case e => {
-                     ebAvfwInlineBtnCssInit
-                     e
-                     .amend(L.className := (if config.expectInlineHeadline then ("avfw-inline" ) else ("avfw-offtopic") ) )
-                  } }
-               }
-
-               ;
-            }
-
             // TODO
-            m.stateSpecificCallbackAnim1
-            .unlifted
+            (m.stateSpecificCallbackAnim1.unlifted combineWith m.stateTitleAnim.toLaminarObservable )
             .map({
                ;
 
                import abcdCallbackRenderablility1.renderFromScratch
 
-               urlOption => () => renderFromScratch(urlOption = urlOption )
+               { case (urlOption, title) => () => renderFromScratch(urlOption = urlOption, title = title ) }
             })
          }
 
