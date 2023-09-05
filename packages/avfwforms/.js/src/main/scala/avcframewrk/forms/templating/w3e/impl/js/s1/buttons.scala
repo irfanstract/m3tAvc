@@ -677,6 +677,14 @@ with {
    avcframewrk.forms.addGlobalCss({
       ;
 
+      enum Hoverffect {
+         case OnBorder()
+         case ToIncreaseUnderline()
+      }
+
+      val hoverEffect
+      = Hoverffect.OnBorder()
+
       (
          //
 
@@ -697,11 +705,42 @@ with {
 
          // :+ s"button.avfw-inline { font-weight: bolder ; } "
 
+         :++ (hoverEffect match {
+
+            case Hoverffect.OnBorder() => 
+
+               (Seq()
+
+               :+ s"button { border: 0.1ex solid transparent ; } "
+
+               :+ { def sel(sc: String ) = s"#app${sc } button " ; s"${sel(":hover") }, ${sel(":focus-within") } { border-color: currentColor ; } " }
+
+               )
+
+            case _ =>
+               Seq()
+
+         } )
+
          :+ s"button, a { text-decoration: underline ; } "
 
-         :+ s"button.avfw-inline { text-decoration-style: double ; } "
+         :++ (hoverEffect match {
+
+            case Hoverffect.ToIncreaseUnderline() => 
+
+               (Seq()
+
+         :+ { def sel(sc: String ) = s"#app${sc } button.avfw-inline " ; s"${sel(":hover") }, ${sel(":focus-within") } { text-decoration-style: double ; } " }
+
+               )
+
+            case _ =>
+               Seq()
+
+         } )
 
          :+ s"button.avfw-offtopic { user-select: none !important ; } "
+
       )
       .mkString("\r\n\r\n")
    })
