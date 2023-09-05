@@ -36,6 +36,60 @@ export avcframewrk.forms.math.CSingleton
 
 export avcframewrk.forms.math.InstanceOf
 
+/**
+ * 
+ * a *safe* factory for imperative-style `TypeTest`(s)
+ * 
+ */
+object ReopaquativeTypeTest
+{
+   ;
+
+   def apply
+      [BaseT <: Matchable : reflect.Typeable ]
+      (implConforms: BaseT => Boolean )
+   = {
+      ;
+
+      object I {
+         ;
+
+         opaque type Instance
+         <: Matchable & BaseT
+         = BaseT
+
+         def unapply(v: BaseT )
+         : Option[v.type & Instance]
+         = {
+            Some[v.type](v)
+            .filter(v => implConforms(v) )
+         }
+
+      }
+
+      {
+         ;
+
+         new reflect.TypeTest[Any, I.Instance]
+         {
+            ;
+
+            override
+            def unapply(x: Any)
+            : Option[x.type & I.Instance ]
+            = {
+               Some[x.type ](x)
+               .collect({ case I(x1: x.type) => x1 })
+            }
+
+            ;
+         }
+      }
+   }
+
+   ;
+} // ReopaquativeTypeTest$
+
 @deprecated("you should avoid doing it.")
 final
 lazy val PretendNonExperimental
