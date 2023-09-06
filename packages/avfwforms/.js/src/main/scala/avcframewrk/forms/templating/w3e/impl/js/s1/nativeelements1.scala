@@ -114,14 +114,32 @@ with ELaminarQckCoreABackreferencings
    = SrcLensAndDestAttrPairRawFuncInvar[XModel @annotation.unchecked.uncheckedVariance ]
    type SrcLensAndDestAttrPairRawFuncInvar[XModel]
    = (
-      (f: (
-         [V] =>
-         (targetedAttr: com.raquo.laminar.keys.HtmlAttr[V] | com.raquo.laminar.keys.HtmlProp[V, V] ) =>
-         (distill: (mdl: XModel) => V, defaultValue: V ) =>
-            SrcLensAndDestAttrPair[XModel, V ] 
-      ) ) =>
-         SrcLensAndDestAttrPair[XModel, ? ] 
+      (f: SrcLensAndDestAttrPairRawSelInvar[XModel] ) =>
+         laminar.api.L.Observer[XModel]
    )
+   trait SrcLensAndDestAttrPairRawSelInvar[XModel]
+   {
+      ;
+
+      def apply
+         [V]
+         (targetedAttr: com.raquo.laminar.keys.HtmlAttr[V] | com.raquo.laminar.keys.HtmlProp[V, V] )
+         (distill: (mdl: XModel) => V, defaultValue: V )
+         : laminar.api.L.Observer[XModel]
+
+      def apply
+         [
+            E <: dom.Event ,
+            V ,
+         ]
+         (targetedAttr: com.raquo.laminar.keys.EventProp[E] )
+         (distill: (mdl: XModel) => V, defaultValue: V )
+         (propagate: (evtInfo: E, cv: V ) => Unit )
+         : laminar.api.L.Observer[XModel]
+
+      ;
+
+   }
 
    def apply
       [
@@ -165,32 +183,76 @@ with ELaminarQckCoreABackreferencings
                   (f.apply((
                      //
 
-                     [V] =>
-                     (targetedAttr: com.raquo.laminar.keys.HtmlAttr[V] | com.raquo.laminar.keys.HtmlProp[V, V] ) =>
-                     (distill: (mdl: XModel) => V, defaultValue: V ) =>
+                     new SrcLensAndDestAttrPairRawSelInvar[XModel]
                      {
                         ;
-                        ((distill, defaultValue, targetedAttr ) )
-                        match { case p => p : SrcLensAndDestAttrPairRaw[XModel, V ] }
-                        match { case p => SrcLensAndDestAttrPair(p) }
+
+                        ;
+
+                        override
+                        def apply
+                           [V]
+                           (targetedAttr: com.raquo.laminar.keys.HtmlAttr[V] | com.raquo.laminar.keys.HtmlProp[V, V] )
+                           (distill: (mdl: XModel) => V, defaultValue: V )
+                           = {
+                              ;
+
+                              ((distill, defaultValue, targetedAttr ) )
+
+                              match { case p => p : SrcLensAndDestAttrPairRaw[XModel, V ] }
+                              match { case p => SrcLensAndDestAttrPair(p) }
+                              match { case p => p }
+
+                              match { case f: SrcLensAndDestAttrPair[md, v ] => {
+                              ;
+
+                              ;
+                              val aPiper
+                              = (f.dest ).startAttribNow(initialValue = f.initialValue )
+                              ;
+                              ({
+                                 ;
+
+                                 aPiper
+                                 .contramap((src: md ) => L.Val(f.distillMdl(src) ) )
+                              } )
+                              } }
+
+                              match { case p => p }
+                           }
+
+                        override
+                        def apply
+                           [
+                              E <: dom.Event ,
+                              V ,
+                           ]
+                           (targetedAttr: com.raquo.laminar.keys.EventProp[E] )
+                           (distill: (mdl: XModel) => V, defaultValue: V )
+                           (propagate: (evtInfo: E, cv: V ) => Unit )
+                           = {
+                              ;
+
+                              import laminar.api.L
+
+                              import L.{given }
+
+                              val vr1 = L.Var[V](defaultValue )
+
+                              wrappedLaminarElement
+                              .amend(targetedAttr --> (e => propagate(e, vr1.now() ) ) )
+
+                              vr1.writer
+                              .contramap(distill )
+                           }
+
+
+                        ;
                      }
                   ) ) )
-                  match { case f1 => (f1 : SrcLensAndDestAttrPair[XModel, ? ] ) }
+                  match { case p => p }
                })
-               match { case f: SrcLensAndDestAttrPair[md, v ] => {
-               ;
-               
-               ;
-               val aPiper
-               = (f.dest ).startAttribNow(initialValue = f.initialValue )
-               ;
-               ({
-                  ;
-
-                  aPiper
-                  .contramap((src: md ) => L.Val(f.distillMdl(src) ) )
-               } )
-               } }
+               match { case p => p }
             }
          } : Seq[L.Observer[XModel ] ]
 
