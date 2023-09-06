@@ -84,6 +84,36 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+button.avfw-inline ,
+#-------e {
+}
+
+button:not(.avfw-inline ) ,
+button.avfw-offtopic ,
+#-------e {
+  font-variant-caps: small-caps ;
+  font-weight: 700 ;
+}
+
+button:not(.avfw-inline ) ,
+button.avfw-offtopic ,
+#-------e {
+  display: block;
+  min-inline-size: calc(min(80%, 100% ) );
+  text-align: start;
+  margin-block: 1ex;
+}
+
+/**
+ * unless a `<button>` is also `.avfw-inline`,
+ * selection ranges shall not pass thru it
+ */
+button:not(.avfw-inline ) ,
+button.avfw-offtopic ,
+#-------e {
+  user-select: none ;
+}
+
 /**
  * automatically hide buttons if the enclosing "app div" no longer focused nor hovered
  */
