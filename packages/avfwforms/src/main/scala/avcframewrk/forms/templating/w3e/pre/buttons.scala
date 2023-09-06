@@ -205,13 +205,27 @@ object StdGsps
    
    ;
 
-   opaque type CSSColorValue
-   <: Matchable
-   =  String
+   type CSSColorValue
+   >: ({ type Main[T] = T match { case reflect.TypeTest[?, t] => t } })#Main[given_TypeTest_CSSColorValue.type ]
+   <: ({ type Main[T] = T match { case reflect.TypeTest[?, t] => t } })#Main[given_TypeTest_CSSColorValue.type ]
 
-   opaque type DateTime
-   <: Matchable
-   =  String
+   given given_TypeTest_CSSColorValue
+   : reflect.TypeTest[Any, ? <: Matchable]
+   = {
+      ;
+      ReopaquativeTypeTest.apply((v: String) => { v.matches("(?:\\w+\\(.*)|\\#\\w+") } )
+   }
+
+   type DateTime
+   >: ({ type Main[T] = T match { case reflect.TypeTest[?, t] => t } })#Main[given_TypeTest_DateTime.type ]
+   <: ({ type Main[T] = T match { case reflect.TypeTest[?, t] => t } })#Main[given_TypeTest_DateTime.type ]
+
+   given given_TypeTest_DateTime
+   : reflect.TypeTest[Any, ? <: Matchable]
+   = {
+      ;
+      ReopaquativeTypeTest.apply((v: String) => { v.matches("\\w+(\\-\\w+)*") } )
+   }
 
    ;
 

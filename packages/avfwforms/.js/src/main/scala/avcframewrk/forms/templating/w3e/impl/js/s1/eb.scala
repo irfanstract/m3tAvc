@@ -570,13 +570,49 @@ extends
       } // XEAndStateBagCm$
 
       @deprecated("this auto-conv is presently experimental.")
-      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg[M, R, C <: XEAndStateBagCm[M, R] ]
-      : Conversion[() => C, SpawnabilityAndReconciliabilityNoArg[M, C, R ] ]
+      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg
+         [
+            M,
+            ReconciliativeRunReturnVal,
+            C <: XEAndStateBagCm[M, ReconciliativeRunReturnVal] ,
+         ]
+      : Conversion[() => C, SpawnabilityAndReconciliabilityNoArg[M, C, ReconciliativeRunReturnVal ] ]
       = (constructDefaulted) => {
          SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
             //
             spwImpl1 = (mdl: M) => { val c = constructDefaulted() ; c.model_=(mdl) ; c } ,
             reconcImpl1 = (this1, newMdl) => { this1.model_=(newMdl ) } ,
+         )
+      }
+
+      @deprecated("this auto-conv is presently experimental.")
+      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg_1
+         [
+            M,
+            ReconciliativeRunReturnVal,
+            HL <: com.raquo.laminar.nodes.ReactiveElement[HD & org.scalajs.dom.Element],
+            HD <: org.scalajs.dom.Node ,
+            // C <: XEAndStateBagCm[M, ReconciliativeRunReturnVal] ,
+         ]
+         (using reflect.Typeable[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ] )
+      : Conversion[() => HL, SpawnabilityAndReconciliabilityNoArg[M, HL, ReconciliativeRunReturnVal ] ]
+      = (constructDefaulted) => {
+         SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+            //
+            spwImpl1 = (mdl: M) => {
+               val c = constructDefaulted()
+               c
+               .avfwBackreferent[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ]
+               .model_=(mdl)
+               c
+            }
+            ,
+            reconcImpl1 = (this1, newMdl) => {
+               this1
+               .avfwBackreferent[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ]
+               .model_=(newMdl )
+            }
+            ,
          )
       }
 
