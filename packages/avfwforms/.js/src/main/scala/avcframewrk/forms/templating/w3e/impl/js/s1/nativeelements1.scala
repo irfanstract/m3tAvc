@@ -68,6 +68,43 @@ extends
       ,
    )
 
+   given given_SpawnabilityAndReconciliability_Btna[XModel <: BtnaStatic]
+   : (
+      //
+      SpawnabilityAndReconciliabilityNoArg[
+         Option[BtnaStatic]
+         ,
+         ln.ReactiveHtmlElement[dom.HTMLButtonElement]
+         ,
+         Unit ,
+      ]
+   )
+   = {
+      ;
+
+      ;
+
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         Option[BtnaStatic]
+         ,
+         dom.HTMLButtonElement
+         ,
+      ](
+         
+         prov => prov(laminar.api.L.onClick )((_ ).map(_.onClick ).getOrElse(_ => {} ) , (_: Any) => {} )((evt, dispatch) => dispatch(evt) )
+         ,
+         prov => prov(laminar.api.L.disabled )((_ ).flatMap(d => Some(d.onClick) ).isEmpty , true )
+         ,
+
+      )(nativeElemLCtor = L.button )
+   }
+
+   case class BtnaStatic(
+      //
+      onClick : (evtInfo: dom.Event) => Unit
+      ,
+   )
+
    ;
 
    ;
