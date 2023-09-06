@@ -30,9 +30,11 @@ extends
    ) =>
    ;
 
+   import org.scalajs.dom
+
    import com.raquo.laminar.{nodes as ln}
 
-   import org.scalajs.dom
+   import laminar.api.L
 
    ;
 
