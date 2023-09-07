@@ -167,13 +167,15 @@ extends
       = {
          typ
          match {
-            case given_GivenSpinner_DateTime =>
+            case `given_GivenSpinner_DateTime` =>
                ("2023-09-06" ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
+               // (0.25 ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
+               // (0.25, 0.5, 0.75, { org.scalajs.dom.console.log("did compare:", typ, given_GivenSpinner_DateTime ) } ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
             case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] =>
                edType.apply("0")
-            case given_GivenSpinner_Boolean =>
+            case `given_GivenSpinner_Boolean` =>
                (false ).asInstanceOf[Value]
-            case given_GivenSpinner_String =>
+            case `given_GivenSpinner_String` =>
                ("" ).asInstanceOf[Value]
             // case _ : DateTime =>
             //    ("" ).asInstanceOf[Value]
