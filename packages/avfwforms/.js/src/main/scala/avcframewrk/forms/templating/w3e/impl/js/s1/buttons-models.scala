@@ -287,6 +287,61 @@ extends
 } // ELaminarQckButtonsActionModelling
 
 private[avcframewrk]
+trait EActionDescImpls
+extends
+   AnyRef
+   with EdGlobalEventInfoItcUni
+{
+   this : (
+      AnyRef
+      & ELaminarQckButtonsActionModellingTwo
+   ) =>
+   ;
+
+   ;
+
+   case class ActionDescImpl[S, +T]
+   (
+      //
+      stateAnim: AsyncStateChangeMonad[S]
+      ,
+      baseTitle: T
+      ,
+      private val
+      stateTitle: (baseTitle: T @annotation.unchecked.uncheckedVariance, state: S ) => T
+      ,
+      // TODO
+      stateSpecificCallback: S => Option[(() => Unit ) | java.net.URI ]
+      ,
+   )
+   {
+
+      def stateTitleAnim
+      = {
+         stateAnim
+         .map(s => stateTitle(baseTitle, s) )
+      }
+
+      def stateSpecificCallbackAnim
+      = {
+         stateAnim
+         .map(s => stateSpecificCallback(s) )
+      }
+
+      def stateCheckedAnim
+      = {
+         stateSpecificCallbackAnim
+         .map[0 | 1 ]({
+            case None => 0
+            case Some(_) => 1
+         })
+      }
+
+   }
+
+}
+
+private[avcframewrk]
 trait ELaminarQckButtonsActionModellingTwo
 extends
    AnyRef
@@ -433,62 +488,14 @@ extends
       ;
    }
 
-   ;
-} // ELaminarQckButtonsActionModellingTwo
-
-private[avcframewrk]
-trait EActionDescImpls
-extends
-   AnyRef
-   with EdGlobalEventInfoItcUni
-{
-   this : (
-      AnyRef
-      & ELaminarQckButtonsActionModellingTwo
-   ) =>
-   ;
-
-   ;
-
-   case class ActionDescImpl[S, +T]
-   (
-      //
-      stateAnim: AsyncStateChangeMonad[S]
-      ,
-      baseTitle: T
-      ,
-      private val
-      stateTitle: (baseTitle: T @annotation.unchecked.uncheckedVariance, state: S ) => T
-      ,
-      // TODO
-      stateSpecificCallback: S => Option[(() => Unit ) | java.net.URI ]
-      ,
-   )
+   implicit class ActionDescImplSsca1 [S, T] (val this1: ActionDescImpl[S, T] )
    {
+      ;
 
-      def stateTitleAnim
-      = {
-         stateAnim
-         .map(s => stateTitle(baseTitle, s) )
-      }
+      import this1.*
 
-      def stateSpecificCallbackAnim
-      = {
-         stateAnim
-         .map(s => stateSpecificCallback(s) )
-      }
+      ;
 
-      def stateCheckedAnim
-      = {
-         stateSpecificCallbackAnim
-         .map[0 | 1 ]({
-            case None => 0
-            case Some(_) => 1
-         })
-      }
-
-      summon[ELaminarQckButtonsActionModellingTwo#BInputFunc[?] <:< Function1[?, ?] ]
-      // summon[ELaminarQckButtonsActionModellingTwo#BInputFunc[?] <:< Function1[EdsbEventInfo, ?] ]
 
       // TODO
       def stateSpecificCallbackAnim1
@@ -518,9 +525,11 @@ extends
          })
       }
 
-   }
+      //
+   } // ActionDescImplSsca1
 
-}
+   ;
+} // ELaminarQckButtonsActionModellingTwo
 
 private[avcframewrk]
 trait EdGlobalEventInfoItcUni
