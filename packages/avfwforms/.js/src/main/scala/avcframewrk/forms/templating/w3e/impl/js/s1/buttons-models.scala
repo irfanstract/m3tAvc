@@ -264,22 +264,8 @@ extends
 
    protected[avcframewrk]
    given given_AcTitleIndependentCodings1
-   : AcTitleIndependentCodings1
-   with {
-      ;
-
-      opaque type TitleCoding[-Title ]
-         <: (value: Title @annotation.unchecked.uncheckedVariance ) => Article
-         =  (value: Title @annotation.unchecked.uncheckedVariance ) => Article
-
-      implicit def stringAcTitling[Title <: String]
-      = {
-         identity[(value: Title) => Article ](vl => {
-            PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn, vl )
-         })
-      }
-
-   }
+   : w3e.pre.given_AcTitleIndependentCodings1[this.type]
+   = w3e.pre.given_AcTitleIndependentCodings1(this)
 
    ;
 } // ELaminarQckButtonsActionModelling
