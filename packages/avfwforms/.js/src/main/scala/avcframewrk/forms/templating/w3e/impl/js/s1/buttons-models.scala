@@ -31,7 +31,7 @@ private
 trait ELaminarQckButtonsActionModelling
 extends
    AnyRef
-   with Edsbs
+   with EActionDescImpls
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Buttons
    /* a temporary treat necessary to prevent the compiler from hanging */
@@ -51,8 +51,8 @@ extends
 
    override
    type Action
-      >: Edsb[?, Article]
-      <: Edsb[?, Article]
+      >: ActionDescImpl[?, Article]
+      <: ActionDescImpl[?, Article]
 
    /* a mixin which overrides these methods */
    private[ELaminarQckButtonsActionModelling]
@@ -127,7 +127,7 @@ extends
             (byS: PartialFunction[AcModelState, R] )
          = {
 
-            Edsb[AcModelState, Article ](
+            ActionDescImpl[AcModelState, Article ](
                //
 
                stateAnim = internalStateOption
@@ -222,7 +222,7 @@ extends
 
             }
 
-            Edsb[AcModelState, Article ](
+            ActionDescImpl[AcModelState, Article ](
                //
 
                stateAnim = internalStateOption
@@ -269,7 +269,7 @@ extends
    : w3e.pre.given_AcTitleIndependentCodings1[this.type]
    = w3e.pre.given_AcTitleIndependentCodings1(this)
 
-   extension [t1, t2] (a: Edsb[t1, t2] ) {
+   extension [t1, t2] (a: ActionDescImpl[t1, t2] ) {
       //
 
       def withGivenConstantTitle(mainLineContents: Article )
@@ -286,11 +286,13 @@ extends
    ;
 } // ELaminarQckButtonsActionModelling
 
-private
+private[avcframewrk]
 trait ELaminarQckButtonsActionModellingTwo
 extends
    AnyRef
-   with Edsbs
+   with EActionDescImpls
+   with ELaminarQckButtonsActionModelling
+   with EdGlobalEventInfoItcUni
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.VarEditingActionsProv
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
@@ -298,11 +300,12 @@ extends
 {
    sgvs : (
       AnyRef
+      with ELaminarQckButtonsActionModelling
       with w3e.pre.Articles
       with w3e.pre.Buttons
       with w3e.pre.PlainTxtContents
       // with ELaminarQckCoreHtml
-      with ELaminarQckButtonsActionModelling
+      with ELaminarQckPlainStringConts
    ) =>
    ;
 
@@ -366,7 +369,7 @@ extends
                )
             }
 
-            Edsb(
+            ActionDescImpl(
                stateAnim = laminar.api.L.Val(() ) ,
                baseTitle = headline ,
                stateTitle = { case _ => headline } ,
@@ -434,7 +437,10 @@ extends
 } // ELaminarQckButtonsActionModellingTwo
 
 private[avcframewrk]
-trait Edsbs
+trait EActionDescImpls
+extends
+   AnyRef
+   with EdGlobalEventInfoItcUni
 {
    this : (
       AnyRef
@@ -444,7 +450,7 @@ trait Edsbs
 
    ;
 
-   case class Edsb[S, +T]
+   case class ActionDescImpl[S, +T]
    (
       //
       stateAnim: AsyncStateChangeMonad[S]
@@ -514,8 +520,28 @@ trait Edsbs
 
    }
 
+}
+
+private[avcframewrk]
+trait EdGlobalEventInfoItcUni
+{
+   ;
+
+   ;
+
+   /**
+    * would have pointed to W3's `Event`, but
+    * apart from Scala JS
+    * there's no other def left
+    * 
+    */
    type EdsbEventInfo
 
+   ;
+
+   ;
+
+   ;
 }
 
 

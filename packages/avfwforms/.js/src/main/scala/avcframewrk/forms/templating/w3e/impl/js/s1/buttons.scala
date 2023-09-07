@@ -178,8 +178,8 @@ extends
 
          ;
          action
-         match { case a : Edsb[t1, t2] => a }
-         match { case a : Edsb[t1, t2] => a.withGivenConstantTitle(mainLineContents ) }
+         match { case a : ActionDescImpl[t1, t2] => a }
+         match { case a : ActionDescImpl[t1, t2] => a.withGivenConstantTitle(mainLineContents ) }
          match { case a => describeButtonByActionGiven1(a) }
       }
 
