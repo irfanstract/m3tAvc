@@ -286,12 +286,12 @@ extends
       //    given ,
       // }
 
-      extension [acv1$] (ed: BInputFunc[acv1$] ) {
+      extension [DT] (ed: BInputFunc[DT] ) {
          //
 
          // @annotation.experimental
          def scanL
-            [DT]
+            [T0]
             (using reflect.Typeable[DT])
             (using SpawnabilityAndReconciliabilityNoArg[Option[InpfaStatic[DT ] ], ? <: ln.ReactiveHtmlElement[?], Unit ] )
          = {
@@ -302,13 +302,14 @@ extends
 
          // private
          def scanLImpl
-            [DT, H <: ln.ReactiveHtmlElement[?] ]
+            [H <: ln.ReactiveHtmlElement[?] ]
             (using reflect.Typeable[DT])
             (using SpawnabilityAndReconciliabilityNoArg[Option[InpfaStatic[DT ] ], H, Unit ] )
+         : laminar.api.L.Signal[H]
          = {
             ;
 
-            def r(c: acv1$ ) = {
+            def r(c: DT ) = {
                ;
 
                Some((
