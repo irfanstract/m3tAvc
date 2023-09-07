@@ -56,14 +56,14 @@ extends
       case class A(hrefOption: Option[java.net.URI] )
 
       /** `button` */
-      case class B(callbackOption: Option[org.scalajs.dom.Event => Unit ] )
+      case class B(callbackOption: Option[EdsbEventInfo => Unit ] )
 
       /** following `A` and `B`, is `C` . `BInputFunc` */
       case class C(edTypeOption: Option[BInputFunc[?] ] ) { export edTypeOption.{get => edType } }
 
    }
 
-   extension (src : AsyncStateChangeMonad[Option[(org.scalajs.dom.Event => Unit ) | java.net.URI ] ] ) {
+   extension (src : AsyncStateChangeMonad[Option[(EdsbEventInfo => Unit ) | java.net.URI ] ] ) {
       //
 
       /** 
