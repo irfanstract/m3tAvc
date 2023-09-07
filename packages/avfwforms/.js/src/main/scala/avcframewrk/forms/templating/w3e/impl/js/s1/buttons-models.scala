@@ -31,6 +31,7 @@ private
 trait ELaminarQckButtonsActionModelling
 extends
    AnyRef
+   with Edsbs
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Buttons
    /* a temporary treat necessary to prevent the compiler from hanging */
@@ -38,6 +39,7 @@ extends
 {
    this : (
       AnyRef
+      with ELaminarQckButtonsActionModellingTwo
       with w3e.pre.Buttons
       with w3e.pre.Articles
       // with ELaminarQckCore
@@ -288,6 +290,7 @@ private
 trait ELaminarQckButtonsActionModellingTwo
 extends
    AnyRef
+   with Edsbs
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.VarEditingActionsProv
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
@@ -430,18 +433,15 @@ extends
    ;
 } // ELaminarQckButtonsActionModellingTwo
 
-// TODO
-export edsbs.Edsb
-export edsbs.EdsbEventInfo
-
-private[avcframewrk]
-final
-lazy val edsbs
-= new AnyRef with Edsbs
-
 private[avcframewrk]
 trait Edsbs
 {
+   this : (
+      AnyRef
+      & ELaminarQckButtonsActionModellingTwo
+   ) =>
+   ;
+
    ;
 
    case class Edsb[S, +T]
@@ -481,6 +481,9 @@ trait Edsbs
          })
       }
 
+      summon[ELaminarQckButtonsActionModellingTwo#BInputFunc[?] <:< Function1[?, ?] ]
+      // summon[ELaminarQckButtonsActionModellingTwo#BInputFunc[?] <:< Function1[EdsbEventInfo, ?] ]
+
       // TODO
       def stateSpecificCallbackAnim1
       = {
@@ -488,7 +491,7 @@ trait Edsbs
          .map[Option[((editStartReq: EdsbEventInfo ) => Unit ) | java.net.URI ] ]({
             //
 
-            case Some(cb : ELaminarQckButtonsActionModellingTwo#BInputFunc[v]) =>
+            case Some(cb : BInputFunc[v]) =>
                Some(cb)
 
             case Some(cb : Function0[t1]) =>
@@ -512,8 +515,6 @@ trait Edsbs
    }
 
    type EdsbEventInfo
-   >: org.scalajs.dom.Event
-   <: org.scalajs.dom.Event
 
 }
 
