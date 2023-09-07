@@ -267,6 +267,20 @@ extends
    : w3e.pre.given_AcTitleIndependentCodings1[this.type]
    = w3e.pre.given_AcTitleIndependentCodings1(this)
 
+   extension [t1, t2] (a: Edsb[t1, t2] ) {
+      //
+
+      def withGivenConstantTitle(mainLineContents: Article )
+      = {
+         ;
+         a
+         .copy(stateTitle = identity[(Any, Any) => mainLineContents.type ]((_, _) => mainLineContents ) )
+         .copy(baseTitle = mainLineContents )
+      }
+
+      //
+   }
+
    ;
 } // ELaminarQckButtonsActionModelling
 
@@ -382,7 +396,7 @@ extends
    extends
       AnyRef
       with (() => Unit )
-      with ((org.scalajs.dom.Event) => Unit )
+      with ((EdsbEventInfo) => Unit )
    {
       ;
 
@@ -391,7 +405,7 @@ extends
 
       ;
 
-      def apply(clickEvt: org.scalajs.dom.Event )
+      def apply(clickEvt: EdsbEventInfo )
       = apply()
 
       def apply(): Unit
@@ -418,6 +432,7 @@ extends
 
 // TODO
 export edsbs.Edsb
+export edsbs.EdsbEventInfo
 
 private[avcframewrk]
 final
@@ -445,6 +460,12 @@ trait Edsbs
    )
    {
 
+      def stateTitleAnim
+      = {
+         stateAnim
+         .map(s => stateTitle(baseTitle, s) )
+      }
+
       def stateSpecificCallbackAnim
       = {
          stateAnim
@@ -460,17 +481,11 @@ trait Edsbs
          })
       }
 
-      def stateTitleAnim
-      = {
-         stateAnim
-         .map(s => stateTitle(baseTitle, s) )
-      }
-
       // TODO
       def stateSpecificCallbackAnim1
       = {
          stateSpecificCallbackAnim
-         .map[Option[((editStartReq: org.scalajs.dom.Event) => Unit ) | java.net.URI ] ]({
+         .map[Option[((editStartReq: EdsbEventInfo ) => Unit ) | java.net.URI ] ]({
             //
 
             case Some(cb : ELaminarQckButtonsActionModellingTwo#BInputFunc[v]) =>
@@ -481,7 +496,7 @@ trait Edsbs
                   cb
                   match {
                      case _ =>
-                        (e: org.scalajs.dom.Event ) => cb()
+                        (e: EdsbEventInfo ) => cb()
                   }
                })
 
@@ -495,6 +510,10 @@ trait Edsbs
       }
 
    }
+
+   type EdsbEventInfo
+   >: org.scalajs.dom.Event
+   <: org.scalajs.dom.Event
 
 }
 
