@@ -116,6 +116,38 @@ extends
 
    }
 
+   extension [HL, Md, UOpR] (this1: SpawnabilityAndReconciliabilityNoArg[Md, HL, UOpR ] ) {
+      //
+
+      def spawnAsXsr
+         (v: Md)
+         (using reflect.Typeable[Md] )
+      : XScanLeftReconciliativeOps[HL, Md, UOpR ]
+      = {
+         val e = this1.spawn(v)()
+         ;
+         ;
+         new XScanLeftReconciliativeOps[HL, Md, UOpR ] { val lE: e.type = e ; def updateTo(m: Md) = this1.model_=(lE)(m) }
+      }
+
+      //
+   }
+
+   // def given_XScanLeftReconciliativeOps
+   //    [
+   //       HL ,
+   //       ContentModel1 : reflect.Typeable,
+   //       UOpR ,
+   //    ]
+   // : XScanLeftReconciliativeOps[HL, ContentModel1, UOpR ]
+   // with {
+   //    ;
+
+   //    ;
+
+   //    ;
+   // }
+
    extension [HL] (this1: XScanLeftReconciliativeOps[HL, ?, ?] ) {
       //
 
@@ -129,15 +161,109 @@ extends
 
    def llrConv
       [
-         HL ,
-         ContentModelBase,
-         ContentModel1 <: ContentModelBase : reflect.Typeable,
+         Sc <: XScanLeftReconciliativeOps[? <: ln.ReactiveHtmlElement[?], ContentModel1, UOpR ]
+         ,
+         ContentModel1 <: ContentModelBase : reflect.Typeable
+         ,
+         ContentModelBase
+         ,
+         ContainerNative <: org.scalajs.dom.HTMLElement ,
          UOpR ,
       ]
-      (impl: XScanLeftReconciliativeOps[? <: HL, ContentModel1, UOpR ] )
+      (container : com.raquo.laminar.tags.HtmlTag[ContainerNative] )
+      (impl0: (mdl: ContentModelBase ) => Sc)
+   : SpawnabilityAndReconciliabilityNoArg[ContentModelBase, ? <: ln.ReactiveHtmlElement[ContainerNative], UOpR]
    = {
-      // (src: Option[HL] )
-      ???
+      ;
+
+      import laminar.api.L
+
+      ;
+
+      class XEAndStateBag1() extends
+      aBackreferencings.XEAndStateBag(ec = { container })
+      with aBackreferencings.XEAndStateBagCm[ContentModelBase, Unit ]
+      {
+         ;
+
+         ;
+
+         override
+         def close(): Unit
+         = {
+            closeAllOf(Seq() :+ cL )
+         }
+
+         val cL
+         = {
+            ;
+            val vr1
+            = L.Var[Option[(ContentModelBase) ] ](None)
+            ;
+            wrappedLaminarElement
+            .amend((
+               L.child
+               .<--({
+                  vr1.signal
+                  .changes
+                  .collect({ case Some(v) => v })
+                  .scanLeft[Option[Sc] ](None)({
+                     //
+
+                     case (impl1, mdl) =>
+                        ;
+                        (for {
+                           impl <- impl1
+                           o <- Some(impl.lE)
+                           m1 <- Some(mdl).collect({ case m : impl.ContentModel => m })
+                        } yield { impl.updateTo(m1) ; impl } )
+                        .orElse(Some {
+                           impl0
+                           .apply(mdl )
+                        })
+
+                     //
+                  })
+                  .map(o => (o.map(_.wrappedLaminarElem) getOrElse L.span() ) )
+                  .map(e => e )
+               })
+            ))
+            ;
+            vr1.writer
+            .contramap((e: ContentModelBase ) => Some(e) )
+         }
+
+         // val cL
+         // = {
+         //    ;
+            
+         //    L.child
+         //    .startChildrenListUpdateNow(identity[({ type HL = ln.ReactiveHtmlElement[?] & ln.ReactiveElement.Base ; type Mdl = ContentModelBase ; type HLF = (Option[HL], Mdl) => HL })#HLF ]({
+         //       case (o, mdl) =>
+         //          (for { c <- o ; m1 <- Some(mdl).collect({ case m : impl.ContentModel => m }) } yield { impl.updateTo(m1) } )
+         //          .toRight({
+         //             impl.reRenderFromScratch()
+         //          })
+         //    }) , initialDataValue = ??? )
+         // }
+
+         override
+         def model_=(newMdl: ContentModelBase)
+         : Unit
+         = {
+            cL
+            .onNext(newMdl )
+         }
+
+         ;
+      }
+
+      ({
+         ;
+
+         aBackreferencings.given_Conversion_C_SpawnabilityAndReconciliabilityNoArg_1[ContentModelBase, UOpR, ln.ReactiveHtmlElement[ContainerNative], ContainerNative ]
+         .apply(() => new XEAndStateBag1().wrappedLaminarElement )
+      })
    }
 
    object abcdCallbackRenderablility1
