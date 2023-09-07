@@ -55,7 +55,7 @@ object ReopaquativeTypeTest
          ;
 
          opaque type Instance
-         <: Matchable & BaseT
+         <: Matchable
          = BaseT
 
          def unapply(v: BaseT )
