@@ -147,6 +147,21 @@ with ELaminarQckCoreABackreferencings
       )
    )
 
+   type SrcLensAndDestContainmenrPairRaw[
+      -XModel,
+      V,
+      +C <: (com.raquo.laminar.receivers.ChildReceiver.type | com.raquo.laminar.receivers.ChildOptionReceiver.type ) ,
+   ] =  (
+      (
+         (mdl: XModel) => V
+         ,
+         V
+         ,
+         C
+         ,
+      )
+   ) //
+
    type SrcLensAndDestAttrPairRawFunc[-XModel]
    = SrcLensAndDestAttrPairRawFuncInvar[XModel @annotation.unchecked.uncheckedVariance ]
    type SrcLensAndDestAttrPairRawFuncInvar[XModel]
@@ -157,6 +172,18 @@ with ELaminarQckCoreABackreferencings
    trait SrcLensAndDestAttrPairRawSelInvar[XModel]
    {
       ;
+
+      def apply
+         [V, RC ]
+         (
+            //
+            targetedAttr: 
+               com.raquo.laminar.receivers.ChildReceiver.type
+            ,
+         )
+         (distill: (mdl: XModel) => V, defaultValue: V )
+         (lNodeFromState: (reconciled: RC) => ln.ChildNode[?] , rc1: (reconcilee: Option[RC], newDataValue: V ) => RC )
+         : laminar.api.L.Observer[XModel]
 
       def apply
          [V]
@@ -258,6 +285,63 @@ with ELaminarQckCoreABackreferencings
                               match { case p => p }
                            }
 
+                        def apply
+                           [V, RC ]
+                           (
+                              //
+                              targetedAttr: 
+                                 com.raquo.laminar.receivers.ChildReceiver.type
+                              ,
+                           )
+                           (distill: (mdl: XModel) => V, defaultValue: V )
+                           (lNodeFromState: (reconciled: RC) => ln.ChildNode[?] , rc1: (reconcilee: Option[RC], newDataValue: V ) => RC )
+                           : laminar.api.L.Observer[XModel]
+                           = {
+                              ;
+
+                              ((distill, defaultValue, targetedAttr ) : (distill.type, defaultValue.type, targetedAttr.type ) )
+
+                              match { case p => p : SrcLensAndDestContainmenrPairRaw[XModel, V, targetedAttr.type ] }
+                              match { case p => SrcLensAndDestContainmentPair(p) }
+                              match { case p => p }
+
+                              match { case f: SrcLensAndDestContainmentPair[md, v, tr ] => {
+                              ;
+
+                              ;
+                              val aPiper
+                              = L.Var[Option[V] ](None )
+                              ;
+                              f.dest match {
+                              //
+                              case com.raquo.laminar.receivers.ChildReceiver =>
+                                 ;
+                                 wrappedLaminarElement
+                                 .amend(L.child <-- (
+                                    aPiper.signal
+                                    .changes.collect({ case Some(v) => v })
+                                    .scanLeft[Option[RC] ](None )((reconcilee, newItem) => { rc1(reconcilee, newItem) match { case r => Some(r) } } )
+                                    .map({
+                                       case Some(v) => lNodeFromState(v)
+                                       case None => L.commentNode("--")
+                                    })
+                                 ) )
+                                 ;
+                                 ({
+                                    ;
+
+                                    aPiper.writer
+                                    .contramap((v: V ) => Some(v) )
+                                    .contramap((src: XModel ) => distill(src) )
+                                    // ;
+                                    // ???
+                                 } )
+                              }
+                              } }
+
+                              match { case p => p }
+                           }
+
                         override
                         def apply
                            [
@@ -319,6 +403,28 @@ with ELaminarQckCoreABackreferencings
 
    case class SrcLensAndDestAttrPair[-XModel, V](impl : (
       SrcLensAndDestAttrPairRaw[XModel, V ]
+   ) )
+   {
+      ;
+
+      export impl.{_3 as dest }
+
+      export impl.{_2 as initialValue }
+      export impl._1.{apply as distillMdl }
+
+      private[w3e]
+      type ImplG
+      = impl.type
+
+      ;
+   }
+
+   case class SrcLensAndDestContainmentPair[
+      -XModel,
+      V,
+      +C <: (com.raquo.laminar.receivers.ChildReceiver.type | com.raquo.laminar.receivers.ChildOptionReceiver.type ) ,
+   ](impl : (
+      SrcLensAndDestContainmenrPairRaw[XModel, V, C ]
    ) )
    {
       ;
@@ -402,6 +508,23 @@ val _ = {
          ,
 
       )(nativeElemLCtor = laminar.api.L.a )
+   }
+
+   locally {
+      ;
+
+      import com.raquo.laminar.{nodes as ln}
+
+      import laminar.api.L
+
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         Tuple3[Boolean, java.net.URI, BigInt] ,
+         dom.HTMLElement ,
+      ] (
+         cf => cf(L.child )((_ )._2, ??? )((s: (ln.ReactiveHtmlElement[?], java.net.URI) ) => s._1 , { case ((Some(reconcilee, _), newUrl) ) => (reconcilee, newUrl ) ; case (None, newUrl) => (L.span(), newUrl ) } )
+         ,
+
+      )(nativeElemLCtor = L.span )
    }
 
 } // "actually test the type-ing"
