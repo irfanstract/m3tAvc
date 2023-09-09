@@ -24,7 +24,25 @@ def runSMain(): Unit
       import org.scalajs.dom
       val eb = avcframewrk.forms.templating.w3e.impl.js.s1.ebAll
       import com.raquo.laminar.api.L
-      L.renderOnDomContentLoaded(dom.document.querySelector("#app") match { case e => e.innerHTML = "" ; e } , {
+      (if true then {
+         val prz = {
+            Iterator.fill(3)((z: Throwable) => {
+               org.scalajs.dom.console.error(z)
+            } )
+            .concat({ org.scalajs.dom.console.error(s"too many exceptions logged ; no more will be emitted") ; Iterator.continually((z: Throwable) => {} ) } )
+         }
+         import  com.raquo.airstream.core.AirstreamError
+         AirstreamError.unregisterUnhandledErrorCallback(AirstreamError.consoleErrorCallback )
+         AirstreamError.registerUnhandledErrorCallback(z => { prz.next().apply(z) } )
+      })
+      def renderOnDomContentLoadedAlt[I](e: => dom.Element, run1: => com.raquo.laminar.nodes.ReactiveElement.Base )
+      : Unit
+      = {
+         // scalajs.js.timers.setTimeout(3 * 1000 )(new com.raquo.laminar.nodes.RootNode(e , run1).mount() )
+         L.renderOnDomContentLoaded(e, run1 )
+      }
+      // renderOnDomContentLoaded
+      renderOnDomContentLoadedAlt(dom.document.querySelector("#app") match { case e => e.innerHTML = "" ; e } , {
          val a
          = {
             eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"hello from SJS" )
@@ -98,7 +116,7 @@ def runSMain(): Unit
             })
             ++
             ({
-               val var1 = com.raquo.laminar.api.L.Var[avcframewrk.forms.templating.w3e.pre.StdGsps.DateTime ]({ "2023-09-03" match { case e => ([A] => () => e.asInstanceOf[A] ).apply() } })
+               val var1 = com.raquo.laminar.api.L.Var[avcframewrk.forms.templating.w3e.pre.StdGsps.DateTime ]({ "2023-09-07" match { case e => ([A] => () => e.asInstanceOf[A] ).apply() } })
                val label = {
                   ;
                   eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"date" )

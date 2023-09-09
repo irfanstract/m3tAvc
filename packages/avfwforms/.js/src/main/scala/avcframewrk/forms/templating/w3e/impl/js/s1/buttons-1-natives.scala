@@ -38,6 +38,8 @@ extends
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with ELaminarQckButtonsReconcCtls
+   with w3e.pre.Articles
+   with ELaminarQckCore
 {
    this : (
       AnyRef
@@ -46,6 +48,9 @@ extends
       with ELaminarQckButtonsActionModellingTwo
       with ELaminarQckButtonsReconcCtls
       with ENativeElementsD1
+      with w3e.pre.Articles
+      with ELaminarQckCore
+      with ELaminarQckCoreHtml
    ) =>
    ;
 
@@ -331,6 +336,99 @@ extends
 
       ;
    }
+
+   given given_SpawnabilityAndReconciliability_Laspa[XModel <: LaspaStatic]
+   : SpawnabilityAndReconciliabilityNoArg[(Article, Option[LaspaStatic] ), ln.ReactiveHtmlElement[dom.HTMLAnchorElement], Unit ]
+   = {
+      ;
+
+      import laminar.api.L
+
+      ;
+
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         (Article, Option[LaspaStatic] )
+         ,
+         dom.HTMLAnchorElement
+         ,
+      ](
+         //
+         prov => (
+
+            prov
+
+               (L.child )
+               ({ case (title, m) => title } , articularZero )
+
+               ((s: ([A] =>> A )[ln.ReactiveHtmlElement[?] ] ) => s , (
+
+                  (existingNodeOption, newDataValue) => (
+
+                     existingNodeOption
+                     .fold(newDataValue.spawn() )(e => {
+                        e.model_=(newDataValue )
+                        e
+                     })
+                  )
+               ) )
+
+         )
+         ,
+         prov => prov(L.href )((_ )._2.flatMap(_.href ).map(_.toASCIIString().nn ).getOrElse("") , "" )
+         ,
+         prov => prov(L.disabled )((_ )._2.isEmpty, false )
+         ,
+
+      )(nativeElemLCtor = L.a )
+   }
+
+   case class LaspaStatic(
+      //
+      href : ([A] =>> A )[Option[java.net.URI] ]
+      ,
+   )
+
+   given given_SpawnabilityAndReconciliability_Btna[XModel <: BtnaStatic]
+   : (
+      //
+      SpawnabilityAndReconciliabilityNoArg[
+         (Article, Option[BtnaStatic] )
+         ,
+         ln.ReactiveHtmlElement[dom.HTMLButtonElement]
+         ,
+         Unit ,
+      ]
+   )
+   = {
+      ;
+
+      ;
+
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         (Article, Option[BtnaStatic] )
+         ,
+         dom.HTMLButtonElement
+         ,
+      ](
+
+         prov => prov(laminar.api.L.onClick )((_ )._2.map(_.onClick ).getOrElse(_ => {} ) , (_: Any) => {} )((evt, dispatch) => dispatch(evt) )
+         ,
+         prov => prov(laminar.api.L.disabled )((_ )._2.flatMap(d => Some(d.onClick) ).isEmpty , true )
+         ,
+
+      )(nativeElemLCtor = L.button )
+   }
+
+   case class BtnaStatic(
+      //
+      onClick : (evtInfo: dom.Event) => Unit
+      ,
+   )
+
+   private 
+   def articularZero
+   : Article
+   = summon[avcalg.CBC[Article] ].empty
 
    transparent inline
    def nativeTypStrFor(edType: GivenSpinner1[?] )

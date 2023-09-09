@@ -42,6 +42,22 @@ with {
 
 } // given_TypeTest_Any_Option
 
+extension (console: org.scalajs.dom.Console ) {
+   //
+
+   def infoExceptionCollapsed(z: Throwable, headline: String = "the exception was:" )
+   = {
+      ;
+
+      util.Using.resource({
+         console.groupCollapsed(headline )
+         locally[java.io.Closeable](() => {
+            console.groupEnd()
+         } )
+      })(_ => console.info(z) )
+   }
+}
+
 object ParentChildRelationship {
 
    object Cio
@@ -237,10 +253,50 @@ def newCallbackImplUpdateRepipe
 
       _2
       .map(c => { vle = c } )
+      .toLaminarObservable
+      .replaceAllExceptionsWithConstException()
 
       locally[(_1.type, F )](_1, { (arg: A) => vle.apply(arg) } )
    } }
 } // newCallbackImplUpdatePipe
+
+extension [A](s: com.raquo.airstream.core.Signal[A] ) {
+   //
+
+   transparent inline
+   def replaceAllExceptionsWithConstException(z2 : Throwable = rcszeImpl() )
+   = {
+      z2
+      def handleImpl(z: Throwable)
+      : Nothing
+      = {
+         object z1 extends RuntimeException(s"replaceAllExceptionsWithConstException: ${z}") ; org.scalajs.dom.console.warn(z) ; throw z2
+      }
+      s
+      .recoverToTry
+      .map({
+         case util.Failure(z) => handleImpl(z)
+         case util.Success(e) => e
+      })
+   }
+
+   //
+}
+
+def rcszeImpl(): Throwable = RuntimeException(s"replaceAllExceptionsWithConstException")
+
+extension [A](s: com.raquo.airstream.core.Observer[A] ) {
+   //
+
+   @deprecated
+   transparent inline
+   def replaceAllExceptionsWithConstException()
+   = {
+      s.debugBreakErrors(_ => false )
+   }
+
+   //
+}
 
 
 

@@ -198,6 +198,21 @@ extends
 
          ;
 
+         def summonInpfaForPv
+            [Pv]
+            (using impl : (
+               //
+
+               SpawnabilityAndReconciliabilityNoArg[
+                  Option[InpfaStatic[Pv] ]
+                  ,
+                  ?,
+                  ?,
+               ]
+            ))
+         : impl.type
+         = impl
+
          ;
          urlOption
          match {
@@ -230,26 +245,33 @@ extends
                   //    // )
                   //    ???
 
-                  // case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type , enabled ) =>
-                  //    // L.input( L.typ := "date" )
-                  //    // .amend(disabled := !enabled  )
-                  //    // .amend((
-                  //    //    ed.llc()
-                  //    // ))
+                  case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type , enabled ) =>
+                     ;
 
-                  //    summon[(
-                  //       //
+                     type Pv
+                        >: w3e.pre.StdGsps.DateTime
+                        <: w3e.pre.StdGsps.DateTime
 
-                  //       SpawnabilityAndReconciliabilityNoArg[
-                  //          Option[InpfaStatic[w3e.pre.StdGsps.DateTime ] ]
-                  //          ,
-                  //          // ln.ReactiveHtmlElement[dom.HTMLInputElement]
-                  //          // ,
-                  //          // Unit ,
-                  //          ?,
-                  //          ?,
-                  //       ]
-                  //    )]
+                     summonInpfaForPv[Pv]
+                     .compose((eOption : Option[BInputFunc[?] ] ) => {
+                        // TODO
+
+                        ({
+                           for {
+                              e <- eOption
+                              case src : L.Var[t] <- Some(e.src )
+                           }
+                           yield {
+                              InpfaStaticInvar(
+                                 //
+                                 value = src.now() match { case e => e.asInstanceOf[Pv] } ,
+                                 propagate1 = { case _ => } ,
+                              )
+                           }
+                        })
+
+                     } )
+                     .spawnAsXsr(edTypeOption)
 
                   // case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] , enabled ) =>
                   //    // L.input( L.typ := "number" )
@@ -279,30 +301,28 @@ extends
                   case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_String.type, enabled ) =>
                      ;
 
-                     // // L.input( )
-                     // // .amend(disabled := !enabled  )
-                     // // .amend((
-                     // //    ed.llc()
-                     // // ))
-
-                     summon[(
-                        //
-
-                        SpawnabilityAndReconciliabilityNoArg[
-                           Option[InpfaStatic[String] ]
-                           ,
-                           // ln.ReactiveHtmlElement[dom.HTMLInputElement]
-                           // ,
-                           // Unit ,
-                           ?,
-                           ?,
-                        ]
-                     )]
-                     .compose((e : Option[BInputFunc[?] ] ) => {
+                     type Pv
+                        >: String
+                        <: String
+                        
+                     summonInpfaForPv[Pv]
+                     .compose((eOption : Option[BInputFunc[?] ] ) => {
                         // TODO
-                        e.map(e => InpfaStaticInvar(value = e.src match { case src : L.Var[t] => src.now() } match { case e => e.asInstanceOf[String] } , propagate1 = { case _ => } ) )
-                        // ;
-                        // None
+
+                        ({
+                           for {
+                              e <- eOption
+                              case src : L.Var[t] <- Some(e.src )
+                           }
+                           yield {
+                              InpfaStaticInvar(
+                                 //
+                                 value = src.now() match { case e => e.asInstanceOf[Pv] } ,
+                                 propagate1 = { case _ => } ,
+                              )
+                           }
+                        })
+                        
                      } )
                      .spawnAsXsr(edTypeOption)
 
@@ -315,25 +335,58 @@ extends
                         case e =>
 
                            val xNothing = None
-                           new XScanLeftReconciliativeOps[e.type, xNothing.type, Unit ](lE = e ) {
-                              override
-                              def updateTo(m: xNothing.type )
-                              : Unit
-                              = {
-                                 // no-op
+
+                           /* can't use anon-classes, when subclassing, in Sc JS */
+                           ({
+                              ;
+
+                              object emn extends
+                                 AnyRef
+                                 with XScanLeftReconciliativeOps[e.type, xNothing.type, Unit ](lE = e )
+                              {
+
+                                 override
+                                 def updateTo(m: xNothing.type )
+                                 : Unit
+                                 = {
+                                    // no-op
+                                 }
+
                               }
-                           }
+                              emn
+                           })
                      }
                }
-               // match {
-               //    case e =>
 
-               //       L.label(e, (
-               //          ???
-               //       ) )
+               // TODO remove this test LOC
+               // match { case e => {
+               //    // assert((e : XScanLeftReconciliativeOps[?, ?, ?] ).wrappedLaminarElem.nn match { case e => e != scalajs.js.undefined && e != null }, (
+               //    //    s"assertion failed: ain't ('e.wrappedLaminarElem' non-null ) for ${e} "
+               //    // ) )
+               //    try {
+               //       ;
 
-               //       // ???
-               // }
+               //       e.wrappedLaminarElem
+               //       .ref
+               //       .parentNode
+               //    }
+               //    catch { case z : ClassCastException => {
+               //       ;
+
+               //       e.wrappedLaminarElemLst
+               //       .ref
+               //       .parentNode
+               //    } }
+               //    e
+               // } }
+               match { case e => {
+                  ;
+
+                  e.wrappedLaminarElemLst
+                  .ref
+                  .parentNode
+                  e
+               } }
             }
             def renderHeadline(edTypeOption: Option[BInputFunc[?] ] )
             : ln.ReactiveHtmlElement[dom.HTMLElement ]
@@ -369,19 +422,27 @@ extends
             .compose((md: C) => md.edTypeOption )
             .spawnAsXsr(md )
 
+            // TODO remove this test LOC
+            match { case e => {
+               e.wrappedLaminarElem
+               .ref
+               .parentNode
+               e
+            } }
+
             //
             case md @ B(_) =>
                ;
 
-               summon[SpawnabilityAndReconciliabilityNoArg[Option[BtnaStatic], ?, ? ] ]
+               summon[SpawnabilityAndReconciliabilityNoArg[(Article, Option[BtnaStatic] ), ?, ? ] ]
                .compose((
                   //
 
-                  (_ : B )
-                  .callbackOption
-                  .map(f => {
-                     BtnaStatic(onClick = f.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
-                  } )
+                  (m : B ) =>
+                     (title, {
+                        for { callback <- m.callbackOption }
+                        yield BtnaStatic(onClick = callback.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
+                     } )
 
                ) )
                .spawnAsXsr(md )
@@ -389,15 +450,15 @@ extends
             case md @ A(_) =>
                ;
 
-               summon[SpawnabilityAndReconciliabilityNoArg[Option[LaspaStatic], ?, ? ] ]
+               summon[SpawnabilityAndReconciliabilityNoArg[(Article, Option[LaspaStatic] ), ?, ? ] ]
                .compose((
                   //
 
-                  (_ : A )
-                  .hrefOption
-                  .map(f => {
-                     LaspaStatic(href = Some(f) )
-                  } )
+                  (m : A ) =>
+                     (title, {
+                        for { href <- m.hrefOption }
+                        yield LaspaStatic(href = Some(href) )
+                     } )
 
                ) )
                .spawnAsXsr(md )

@@ -154,6 +154,14 @@ extends
       )
    }
 
+   def lebControlledly[R]
+      (
+         runMain: => R ,
+         doCatch: Throwable => (Nothing & R ) = { case util.control.NonFatal(z) => throw new RuntimeException(s"LebControlledCode Exception: ${z}", z ) ; case z => throw z } ,
+      )
+   : R
+   = { util.Try({ runMain }).fold(doCatch, e => e ) }
+
    ;
 }
 
@@ -352,6 +360,13 @@ extends
          : e.type
          = e
 
+         // TODO
+         protected
+         def unmountIfFailure
+            [R](v: util.Try[?] )
+         : Boolean
+         = { v.isFailure match { case v => if v then wrappedLaminarElement.ref.remove() ; v } }
+
          /**
           * Laminar doesn't provide native support for re-routings of `Observable`s,
           * so
@@ -398,9 +413,9 @@ extends
 
                (target match {
                   case target : com.raquo.laminar.keys.HtmlProp[v1, v2] =>
-                     target <-- statePipe._2.map(m).toLaminarObservable
+                     target <-- statePipe._2.map(m).toLaminarObservable.replaceAllExceptionsWithConstException()
                   case target : com.raquo.laminar.keys.HtmlAttr[v1] =>
-                     target <-- statePipe._2.map(m).toLaminarObservable
+                     target <-- statePipe._2.map(m).toLaminarObservable.replaceAllExceptionsWithConstException()
                   /* it was our own wrapper ; now, however, we need compile-time conformance */
                } )
                .startNow()
@@ -476,6 +491,7 @@ extends
                      })
                      /* it was our own wrapper ; now, however, we need compile-time conformance */
                      .toLaminarObservable
+                     .replaceAllExceptionsWithConstException()
                   }
                })
                .startNow()
