@@ -111,6 +111,45 @@ extension [Item] (dest: laminar.api.L.Observer[? >: AsyncStateChangeMonad[Item] 
    //
 } // (Observer AsyncStateChangeMonad) contraconst
 
+extension [A](s: com.raquo.airstream.core.Signal[A] ) {
+   //
+
+   @deprecated
+   transparent inline
+   def replaceAllExceptionsWithConstException(z2 : Throwable = rcszeImpl() )
+   = {
+      z2
+      def handleImpl(z: Throwable)
+      : Nothing
+      = {
+         object z1 extends RuntimeException(s"replaceAllExceptionsWithConstException: ${z}") ; org.scalajs.dom.console.warn(z) ; throw z2
+      }
+      s
+      .recoverToTry
+      .map({
+         case util.Failure(z) => handleImpl(z)
+         case util.Success(e) => e
+      })
+   }
+
+   //
+}
+
+def rcszeImpl(): Throwable = RuntimeException(s"replaceAllExceptionsWithConstException")
+
+extension [A](s: com.raquo.airstream.core.Observer[A] ) {
+   //
+
+   @deprecated
+   transparent inline
+   def replaceAllExceptionsWithConstException()
+   = {
+      s.debugBreakErrors(_ => false )
+   }
+
+   //
+}
+
 
 
 
