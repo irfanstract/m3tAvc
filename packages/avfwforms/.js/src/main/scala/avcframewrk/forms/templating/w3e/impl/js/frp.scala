@@ -99,6 +99,18 @@ def newCallbackImplUpdateRepipe
    } }
 } // newCallbackImplUpdatePipe
 
+extension [Item] (dest: laminar.api.L.Observer[? >: AsyncStateChangeMonad[Item] ] ) {
+   //
+
+   def contraconst()
+   = {
+      dest
+      .contramap((v: Item) => laminar.api.L.Val(v) )
+   }
+
+   //
+} // (Observer AsyncStateChangeMonad) contraconst
+
 extension [A](s: com.raquo.airstream.core.Signal[A] ) {
    //
 
