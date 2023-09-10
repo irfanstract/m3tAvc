@@ -27,6 +27,21 @@ def typeable[T]
    summon[reflect.Typeable[T] ]
 }
 
+given given_TypeTest_AnyToOptionOfT[T2]
+   (using reflect.TypeTest[Any, T2] )
+: reflect.TypeTest[Any , Option[T2] ]
+with {
+
+   override
+   def unapply(e: Any )
+   = {
+      Some[e.type ](e)
+      .collect({ case e1 @ (None | Some(_ : T2) ) => e1 })
+      .map[e.type & Option[T2] ](_ => e.asInstanceOf[e.type & Option[T2] ] )
+   }
+
+} // given_TypeTest_Any_Option
+
 object ParentChildRelationship {
 
    object Cio
