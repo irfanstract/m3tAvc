@@ -31,6 +31,7 @@ private
 trait ELaminarQckButtonsActionModelling
 extends
    AnyRef
+   with EActionDescImpls
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Buttons
    /* a temporary treat necessary to prevent the compiler from hanging */
@@ -38,6 +39,7 @@ extends
 {
    this : (
       AnyRef
+      with ELaminarQckButtonsActionModellingTwo
       with w3e.pre.Buttons
       with w3e.pre.Articles
       // with ELaminarQckCore
@@ -49,8 +51,8 @@ extends
 
    override
    type Action
-      >: Edsb[?, Article]
-      <: Edsb[?, Article]
+      >: ActionDescImpl[?, Article]
+      <: ActionDescImpl[?, Article]
 
    /* a mixin which overrides these methods */
    private[ELaminarQckButtonsActionModelling]
@@ -125,7 +127,7 @@ extends
             (byS: PartialFunction[AcModelState, R] )
          = {
 
-            Edsb[AcModelState, Article ](
+            ActionDescImpl[AcModelState, Article ](
                //
 
                stateAnim = internalStateOption
@@ -220,7 +222,7 @@ extends
 
             }
 
-            Edsb[AcModelState, Article ](
+            ActionDescImpl[AcModelState, Article ](
                //
 
                stateAnim = internalStateOption
@@ -264,30 +266,88 @@ extends
 
    protected[avcframewrk]
    given given_AcTitleIndependentCodings1
-   : AcTitleIndependentCodings1
-   with {
-      ;
+   : w3e.pre.given_AcTitleIndependentCodings1[this.type]
+   = w3e.pre.given_AcTitleIndependentCodings1(this)
 
-      opaque type TitleCoding[-Title ]
-         <: (value: Title @annotation.unchecked.uncheckedVariance ) => Article
-         =  (value: Title @annotation.unchecked.uncheckedVariance ) => Article
+   extension [t1, t2] (a: ActionDescImpl[t1, t2] ) {
+      //
 
-      implicit def stringAcTitling[Title <: String]
+      def withGivenConstantTitle(mainLineContents: Article )
       = {
-         identity[(value: Title) => Article ](vl => {
-            PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn, vl )
-         })
+         ;
+         a
+         .copy(stateTitle = identity[(Any, Any) => mainLineContents.type ]((_, _) => mainLineContents ) )
+         .copy(baseTitle = mainLineContents )
       }
 
+      //
    }
 
    ;
 } // ELaminarQckButtonsActionModelling
 
-private
+private[avcframewrk]
+trait EActionDescImpls
+extends
+   AnyRef
+   with EdGlobalEventInfoItcUni
+{
+   this : (
+      AnyRef
+      & ELaminarQckButtonsActionModellingTwo
+   ) =>
+   ;
+
+   ;
+
+   case class ActionDescImpl[S, +T]
+   (
+      //
+      stateAnim: AsyncStateChangeMonad[S]
+      ,
+      baseTitle: T
+      ,
+      private val
+      stateTitle: (baseTitle: T @annotation.unchecked.uncheckedVariance, state: S ) => T
+      ,
+      // TODO
+      stateSpecificCallback: S => Option[(() => Unit ) | java.net.URI ]
+      ,
+   )
+   {
+
+      def stateTitleAnim
+      = {
+         stateAnim
+         .map(s => stateTitle(baseTitle, s) )
+      }
+
+      def stateSpecificCallbackAnim
+      = {
+         stateAnim
+         .map(s => stateSpecificCallback(s) )
+      }
+
+      def stateCheckedAnim
+      = {
+         stateSpecificCallbackAnim
+         .map[0 | 1 ]({
+            case None => 0
+            case Some(_) => 1
+         })
+      }
+
+   }
+
+}
+
+private[avcframewrk]
 trait ELaminarQckButtonsActionModellingTwo
 extends
    AnyRef
+   with EActionDescImpls
+   with ELaminarQckButtonsActionModelling
+   with EdGlobalEventInfoItcUni
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.VarEditingActionsProv
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
@@ -295,11 +355,12 @@ extends
 {
    sgvs : (
       AnyRef
+      with ELaminarQckButtonsActionModelling
       with w3e.pre.Articles
       with w3e.pre.Buttons
       with w3e.pre.PlainTxtContents
       // with ELaminarQckCoreHtml
-      with ELaminarQckButtonsActionModelling
+      with ELaminarQckPlainStringConts
    ) =>
    ;
 
@@ -363,7 +424,7 @@ extends
                )
             }
 
-            Edsb(
+            ActionDescImpl(
                stateAnim = laminar.api.L.Val(() ) ,
                baseTitle = headline ,
                stateTitle = { case _ => headline } ,
@@ -396,7 +457,7 @@ extends
    extends
       AnyRef
       with (() => Unit )
-      with ((org.scalajs.dom.Event) => Unit )
+      with ((EdsbEventInfo) => Unit )
    {
       ;
 
@@ -405,7 +466,7 @@ extends
 
       ;
 
-      def apply(clickEvt: org.scalajs.dom.Event )
+      def apply(clickEvt: EdsbEventInfo )
       = apply()
 
       def apply(): Unit
@@ -427,67 +488,23 @@ extends
       ;
    }
 
-   ;
-} // ELaminarQckButtonsActionModellingTwo
-
-// TODO
-export edsbs.Edsb
-
-private[avcframewrk]
-final
-lazy val edsbs
-= new AnyRef with Edsbs
-
-private[avcframewrk]
-trait Edsbs
-{
-   ;
-
-   case class Edsb[S, +T]
-   (
-      //
-      stateAnim: AsyncStateChangeMonad[S]
-      ,
-      baseTitle: T
-      ,
-      private val
-      stateTitle: (baseTitle: T @annotation.unchecked.uncheckedVariance, state: S ) => T
-      ,
-      // TODO
-      stateSpecificCallback: S => Option[(() => Unit ) | java.net.URI ]
-      ,
-   )
+   implicit class ActionDescImplSsca1 [S, T] (val this1: ActionDescImpl[S, T] )
    {
+      ;
 
-      def stateSpecificCallbackAnim
-      = {
-         stateAnim
-         .map(s => stateSpecificCallback(s) )
-      }
+      import this1.*
 
-      def stateCheckedAnim
-      = {
-         stateSpecificCallbackAnim
-         .map[0 | 1 ]({
-            case None => 0
-            case Some(_) => 1
-         })
-      }
+      ;
 
-      def stateTitleAnim
-      = {
-         stateAnim
-         .map(s => stateTitle(baseTitle, s) )
-      }
 
       // TODO
       def stateSpecificCallbackAnim1
       = {
          stateSpecificCallbackAnim
-         .map[Option[((editStartReq: org.scalajs.dom.Event) => Unit ) | java.net.URI ] ]({
+         .map[Option[((editStartReq: EdsbEventInfo ) => Unit ) | java.net.URI ] ]({
             //
 
-            case Some(cb : ELaminarQckButtonsActionModellingTwo#BInputFunc[v]) =>
+            case Some(cb : BInputFunc[v]) =>
                Some(cb)
 
             case Some(cb : Function0[t1]) =>
@@ -495,7 +512,7 @@ trait Edsbs
                   cb
                   match {
                      case _ =>
-                        (e: org.scalajs.dom.Event ) => cb()
+                        (e: EdsbEventInfo ) => cb()
                   }
                })
 
@@ -508,8 +525,32 @@ trait Edsbs
          })
       }
 
-   }
+      //
+   } // ActionDescImplSsca1
 
+   ;
+} // ELaminarQckButtonsActionModellingTwo
+
+private[avcframewrk]
+trait EdGlobalEventInfoItcUni
+{
+   ;
+
+   ;
+
+   /**
+    * would have pointed to W3's `Event`, but
+    * apart from Scala JS
+    * there's no other def left
+    * 
+    */
+   type EdsbEventInfo
+
+   ;
+
+   ;
+
+   ;
 }
 
 

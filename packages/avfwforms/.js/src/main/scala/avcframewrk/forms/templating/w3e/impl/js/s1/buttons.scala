@@ -178,12 +178,8 @@ extends
 
          ;
          action
-         match { case a : Edsb[t1, t2] => a }
-         match { case a : Edsb[t1, t2] => {
-            a
-            .copy[t1, Article](stateTitle = (_, _) => mainLineContents )
-            .copy(baseTitle = mainLineContents )
-         } }
+         match { case a : ActionDescImpl[t1, t2] => a }
+         match { case a : ActionDescImpl[t1, t2] => a.withGivenConstantTitle(mainLineContents ) }
          match { case a => describeButtonByActionGiven1(a) }
       }
 
@@ -200,6 +196,9 @@ extends
    AnyRef
    /* */
    with ENativeElementsD1
+   with ELaminarQckButtonsReconcNatives
+   with ELaminarQckButtonsReconcAbcdCbRenderability
+   with ELaminarQckButtonsReconcCtls
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with w3e.pre.Articles
@@ -221,13 +220,6 @@ extends
    ;
 
    ;
-
-   private[avcframewrk]
-   case class BfSnaConfig(
-      //
-      expectInlineHeadline : Boolean
-      ,
-   )
 
    ;
 
@@ -276,264 +268,13 @@ extends
 
       ;
 
-      extension [acv1$] (ed: BInputFunc[?]) {
-         //
-
-         def valueAnim
-         = ed.src.toObservable
-
-         def llc[ExpectedValue1]()
-         = {
-            ;
-
-            import laminar.api.L
-
-            import L.{given}
-
-            L.controlled(
-               //
-               L.value <-- ed.valueAnim.map(_.toString() )
-               ,
-               (
-                  L.onInput
-                  .mapToValue
-                  // .map(v => {
-                  //    org.scalajs.dom.console.log("inputed value raw: ", v )
-                  //    v
-                  // } )
-                  .map(ed.t.parse.lift ).collect({ case Some(v) => v })
-                  .map(v => {
-                     if v.isInstanceOf[Boolean] then {
-                        org.scalajs.dom.console.log("inputed value parsed: ", v )
-                     }
-                     v
-                  } )
-                  -->
-                  (ed.src.toObserver.onNext _ )
-               ) ,
-            ) 
-         }
-
-         //
-      }
-
-      object CallbackTypeL {
-         ;
-
-         /** `anchor` */
-         case class A(hrefOption: Option[java.net.URI] )
-         
-         /** `button` */
-         case class B(callbackOption: Option[org.scalajs.dom.Event => Unit ] )
-         
-         /** following `A` and `B`, is `C` . `BInputFunc` */
-         case class C(edTypeOption: Option[BInputFunc[?] ] ) { export edTypeOption.{get => edType } }
-
-      }
-
-      extension (src : AsyncStateChangeMonad[Option[(org.scalajs.dom.Event => Unit ) | java.net.URI ] ] ) {
-         //
-
-         /** 
-          * 
-          * unlifts the `Signal[Option[Function1 | URI ] ]` into being `Signal[A | B | C ]`
-          * 
-          */
-         def unlifted
-         = {
-            ;
-
-            import laminar.api.L
-
-            ;
-
-            import CallbackTypeL.{A, B, C }
-
-            src
-
-            .map({
-               case (Some(s) ) =>
-                  Some {
-                     //
-
-                     /** 
-                      * NOTE -
-                      * there's some overlap between these case(s)
-                      * (eg `BInputFunc` `extends` `Function0` as well )
-                      * , so
-                      * case-ordering is significant here
-                      * 
-                      */
-                     s match {
-
-                        //
-                        case (edType : BInputFunc[t1] ) =>
-                           C(edTypeOption = Some(edType ) )
-
-                        //
-                        case (run : Function1[evt$, rv$] ) =>
-                           B(Some(run) )
-                        
-                        //
-                        case (href: java.net.URI ) =>
-                           A(Some(href) )
-
-                        //
-                     }
-                  }
-               case None =>
-                  None
-            })
-            .scanLeftAdapted0[([T] =>> T )[A | B | C ] ](e => e.getOrElse(A(None) ) )({
-               case (_, Some(v)) =>
-                  v
-               case (v0, None ) =>
-                  v0 match {
-                     case _ : A => A(None)
-                     case _ : B => B(None)
-                     case _ : C => C(None)
-                  }
-            })
-         }
-
-         //
-      }
-
       ;
-
-      object abcdCallbackRenderablility1
-      {
-         ;
-
-         import laminar.api.L
-
-         ;
-
-         import CallbackTypeL.{A, B, C }
-
-         ;
-
-         ;
-         import L.{
-            href as _,
-            input as _,
-            a as _ ,
-            button ,
-            disabled ,
-            // * ,
-            given ,
-         }
-
-         def renderFromScratch(urlOption : A | B | C, title: Article )
-         = {
-            ;
-
-            ;
-
-            ;
-            urlOption
-            match {
-               case C(edTypeOption ) =>
-                  ;
-                  edTypeOption
-                  .map(e => (e, e.t, true ) )
-                  match {
-
-                     case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_Boolean.type, enabled ) =>
-                        L.input( L.typ := "checkbox" )
-                        .amend(disabled := !enabled  )
-                        // .amend(L.value <-- ed.valueAnim.map(_.toString() ) )
-                        .amend(
-                           //
-                           L.checked <-- ed.valueAnim.map(_.asInstanceOf[Boolean ] ) 
-                           ,
-                           L.onChange.mapToChecked.map(_.asInstanceOf[acv1$] ) --> (ed.src.toObserver.onNext _ )
-                           ,
-                        )
-
-                     case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type , enabled ) =>
-                        L.input( L.typ := "date" )
-                        .amend(disabled := !enabled  )
-                        .amend((
-                           ed.llc()
-                        ))
-
-                     case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] , enabled ) =>
-                        L.input( L.typ := "number" )
-                        .amend(disabled := !enabled  )
-                        .amend((
-                           ed.llc()
-                        ))
-
-                     case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_String.type, enabled ) =>
-                        L.input( )
-                        .amend(disabled := !enabled  )
-                        .amend((
-                           ed.llc()
-                        ))
-
-                     case _ =>
-                        L.input(disabled := true )
-                  }
-                  match {
-                     case e =>
-
-                        L.label(e, (
-                           L.span(L.child <-- L.Val(title.spawn() ) )
-                           .amend(":" )
-                           .amend((
-                              L.span()
-                              .amend(L.styleAttr := (
-                                 ""
-                                 + s"display: inline-block ; position: relative ; inline-size: 11em ; vertical-align: text-top ;"
-                                 + s"background: rgba(255, 255, 0, 0.15 ) ; "
-                              ) )
-                              .amend(edTypeOption.fold(Seq() )(e => Seq[com.raquo.laminar.modifiers.Inserter.Base ](L.span(L.child <-- e.src.toObservable.map(_.toString() ) ) ) ) : _* )
-                           ))
-                        ) )
-                  }
-               case B(callbackOption) =>
-                  button() /* never, never use `<a>` for call-back buttons */
-                  .amend(L.typ := "button" ) /* necessary, as `<form>`s set the default to `submit` */
-                  .amend((
-                     callbackOption match {
-                        //
-
-                        case Some(run : Function1[evt$, rv$] ) =>
-                           (L.onClick --> run )
-                        case None =>
-                           (disabled := true )
-                     }
-                  ))
-                  .amend(L.child <-- L.Val(title.spawn() ) )
-               case A(urlOption) =>
-                  L.a()
-                  .amend((
-                     urlOption match {
-                        //
-
-                        case Some(href : java.net.URI ) =>
-                           (L.href := href.toASCIIString().nn )
-                        case None =>
-                           (disabled := true )
-                     }
-                  ))
-                  .amend(L.child <-- L.Val(title.spawn() ) )
-            }
-            match { case e => {
-               ebAvfwInlineBtnCssInit
-               e
-               .amend(L.className := (if config.expectInlineHeadline then ("avfw-inline" ) else ("avfw-offtopic") ) )
-            } }
-         }
-
-         ;
-      }
 
       extension (m: ButtonContentModel ) {
          //
 
          def renderLaminar()
+         : laminar.api.L.Signal[() => ln.ReactiveHtmlElement[dom.HTMLElement ] ]
          = {
             ;
 
@@ -654,6 +395,12 @@ extends
       )
    }
 
+   ;
+
+   ;
+
+   ;
+
 } // ELaminarQckButtonsReconc
 
 type BHA
@@ -666,86 +413,6 @@ type BHA
          | org.scalajs.dom.html.Input
          | org.scalajs.dom.html.Select
 )
-
-given ebAvfwInlineBtnCssInit
-: AnyRef
-with {
-   ;
-   
-   org.scalajs.dom.console.log(s"[ebAvfwInlineBtnCssInit]")
-   
-   avcframewrk.forms.addGlobalCss({
-      ;
-
-      enum Hoverffect {
-         case OnBorder()
-         case ToIncreaseUnderline()
-      }
-
-      val hoverEffect
-      = Hoverffect.OnBorder()
-
-      (
-         //
-
-         Seq()
-
-         :+ s"button, input { padding-block: 0.75ex ; } "
-
-         :+ s"button.avfw-inline, a.avfw-inline, input.avfw-inline { display: inline ; } "
-
-         :+ s"button.avfw-inline, a.avfw-inline, input.avfw-inline { padding-block: 0.7ex ; padding-block-end: 1.5ex ; margin-block: -0.4ex ; } "
-         :+ s"button.avfw-inline, input.avfw-inline { margin-block-end: -1ex ; } "
-
-         :+ s"button.avfw-inline { padding-inline: 1ex ; } "
-
-         :+ s"button.avfw-inline { background: transparent ; background: rgba(0, 0, 0, 0.02) ; } "
-
-         :+ s"button.avfw-inline { margin-inline: -1ex ; } "
-
-         // :+ s"button.avfw-inline { font-weight: bolder ; } "
-
-         :++ (hoverEffect match {
-
-            case Hoverffect.OnBorder() => 
-
-               (Seq()
-
-               :+ s"button { border: 0.1ex solid transparent ; } "
-
-               :+ { def sel(sc: String ) = s"#app${sc } button " ; s"${sel(":hover") }, ${sel(":focus-within") } { border-color: currentColor ; } " }
-
-               )
-
-            case _ =>
-               Seq()
-
-         } )
-
-         :+ s"button, a { text-decoration: underline ; } "
-
-         :++ (hoverEffect match {
-
-            case Hoverffect.ToIncreaseUnderline() => 
-
-               (Seq()
-
-         :+ { def sel(sc: String ) = s"#app${sc } button.avfw-inline " ; s"${sel(":hover") }, ${sel(":focus-within") } { text-decoration-style: double ; } " }
-
-               )
-
-            case _ =>
-               Seq()
-
-         } )
-
-         :+ s"button.avfw-offtopic { user-select: none !important ; } "
-
-      )
-      .mkString("\r\n\r\n")
-   })
-   
-} // ebAvfwInlineBtnCssInit$
 
 
 
