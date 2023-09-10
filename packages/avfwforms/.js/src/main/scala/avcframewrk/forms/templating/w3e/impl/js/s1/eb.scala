@@ -398,9 +398,9 @@ extends
 
                (target match {
                   case target : com.raquo.laminar.keys.HtmlProp[v1, v2] =>
-                     target <-- statePipe._2.map(m).toLaminarObservable
+                     target <-- statePipe._2.map(m).toLaminarObservable.replaceAllExceptionsWithConstException()
                   case target : com.raquo.laminar.keys.HtmlAttr[v1] =>
-                     target <-- statePipe._2.map(m).toLaminarObservable
+                     target <-- statePipe._2.map(m).toLaminarObservable.replaceAllExceptionsWithConstException()
                   /* it was our own wrapper ; now, however, we need compile-time conformance */
                } )
                .startNow()
@@ -476,6 +476,7 @@ extends
                      })
                      /* it was our own wrapper ; now, however, we need compile-time conformance */
                      .toLaminarObservable
+                     .replaceAllExceptionsWithConstException()
                   }
                })
                .startNow()
