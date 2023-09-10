@@ -42,6 +42,22 @@ with {
 
 } // given_TypeTest_Any_Option
 
+extension (console: org.scalajs.dom.Console ) {
+   //
+
+   def infoExceptionCollapsed(z: Throwable, headline: String = "the exception was:" )
+   = {
+      ;
+
+      util.Using.resource({
+         console.groupCollapsed(headline )
+         locally[java.io.Closeable](() => {
+            console.groupEnd()
+         } )
+      })(_ => console.info(z) )
+   }
+} // infoExceptionCollapsed$
+
 object ParentChildRelationship {
 
    object Cio
