@@ -251,6 +251,7 @@ with ELaminarQckCoreABackreferencings
                                  ;
 
                                  aPiper
+                                 .replaceAllExceptionsWithConstException()
                                  .contramap((src: md ) => L.Val(f.distillMdl(src) ) )
                               } )
                               } }
@@ -280,6 +281,7 @@ with ELaminarQckCoreABackreferencings
                               .amend(targetedAttr --> (e => propagate(e, vr1.now() ) ) )
 
                               vr1.writer
+                              .replaceAllExceptionsWithConstException()
                               .contramap(distill )
                            }
 
