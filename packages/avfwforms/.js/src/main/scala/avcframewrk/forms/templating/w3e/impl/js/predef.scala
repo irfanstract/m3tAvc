@@ -179,6 +179,34 @@ def trySameThreadScheduler()
 : monix.execution.Scheduler
 = monix.execution.Scheduler.global
 
+/**
+ * translates the `GivenSpinner1` into
+ * the corresponding value which
+ * , when used as a `&lt;button>`'s `type`, will make the elem an editor for the data-type
+ * 
+ */
+transparent inline
+def nativeTypStrFor(edType: w3e.pre.StdGsps.ofSnb.GivenSpinner1[?] )
+: org.scalajs.dom.AvfwHTMLButtonType
+= {
+   ;
+
+   edType
+
+   match {
+      //
+      case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type =>
+         "date"
+      case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] =>
+         "number"
+      case _ =>
+         ""
+      //
+   }
+
+   match { case v => org.scalajs.dom.AvfwHTMLButtonType(v) }
+} // nativeTypStrFor
+
 
 
 
