@@ -211,68 +211,6 @@ extends
    ;
 }
 
-/**
- * a pair, which's
- * a `SpawnabilityAndReconciliabilityNoArg` and a "data-model"
- * 
- * refines the tuple-type to achieve that 'dependent-typing' of `_1`
- * 
- */
-private[avcframewrk]
-type SpiwmTwos[+Mdl, Sp, +R]
-= (
-   /**
-    * to avoid the "unreducible applic with wildcard args" complaint,
-    * 
-    * we
-    * make it a conjunction of two,
-    * one being a refined-type, leaving those type-param(s) wildcards, and
-    * the next one being the one instantiating them as we demand
-    * 
-    */
-
-   (
-      (SpawnabilityAndReconciliabilityNoArg[?, ?, ? ], Any )
-      {
-         //
-         val _1 : SpawnabilityAndReconciliabilityNoArg[_2.type, ?, ? ]
-      }
-   )
-   & /* the not-so-interesting part */
-   (SpawnabilityAndReconciliabilityNoArg[?, Sp, R], Mdl )
-)
-
-extension [
-   //
-   Mdl ,
-   Spawned   ,
-   U ,
-](s: SpiwmTwos[Mdl, Spawned, U ])
-   //
-
-   // transparent inline
-   def spawnThisSpiwmTwos()
-   = {
-      implicit
-      val sp: s._1.type = s._1
-      /* needed to desugar this `extension` dispatch, to avoid the ambiguity risking an infinite-looping */
-      sp.spawn(s._2)( )
-   }
-
-   // transparent inline
-   def doSpiwmTwoReconciliationOf(target: Spawned )
-   = {
-      implicit
-      val sp: s._1.type = s._1
-      /* needed to desugar this `extension` dispatch, to avoid the ambiguity risking an infinite-looping */
-      sp.model_=(target)(s._2 )
-   }
-
-val _ = {
-   ((arg : SpiwmTwos[1, 2, 3] ) => {})
-   .nn
-}
-
 trait ELaminarQckCoreABackreferencings
 extends
    AnyRef
@@ -460,9 +398,10 @@ extends
 
                (target match {
                   case target : com.raquo.laminar.keys.HtmlProp[v1, v2] =>
-                     target <-- statePipe._2.map(m)
+                     target <-- statePipe._2.map(m).toLaminarObservable
                   case target : com.raquo.laminar.keys.HtmlAttr[v1] =>
-                     target <-- statePipe._2.map(m)
+                     target <-- statePipe._2.map(m).toLaminarObservable
+                  /* it was our own wrapper ; now, however, we need compile-time conformance */
                } )
                .startNow()
 
@@ -535,6 +474,8 @@ extends
                            L.commentNode(" ")
 
                      })
+                     /* it was our own wrapper ; now, however, we need compile-time conformance */
+                     .toLaminarObservable
                   }
                })
                .startNow()
@@ -544,6 +485,73 @@ extends
             
          }
 
+      }
+
+      trait XEAndStateBagCm[-M, +R]
+      extends
+      XEAndStateBag[?]
+      {
+         ;
+
+         def model_=(newMdl: M )
+         : R
+
+         ;
+      } // XEAndStateBagCm
+
+      object XEAndStateBagCm {
+         ;
+
+         ;
+
+         ;
+      } // XEAndStateBagCm$
+
+      @deprecated("this auto-conv is presently experimental.")
+      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg
+         [
+            M,
+            ReconciliativeRunReturnVal,
+            C <: XEAndStateBagCm[M, ReconciliativeRunReturnVal] ,
+         ]
+      : Conversion[() => C, SpawnabilityAndReconciliabilityNoArg[M, C, ReconciliativeRunReturnVal ] ]
+      = (constructDefaulted) => {
+         SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+            //
+            spwImpl1 = (mdl: M) => { val c = constructDefaulted() ; c.model_=(mdl) ; c } ,
+            reconcImpl1 = (this1, newMdl) => { this1.model_=(newMdl ) } ,
+         )
+      }
+
+      @deprecated("this auto-conv is presently experimental.")
+      given given_Conversion_C_SpawnabilityAndReconciliabilityNoArg_1
+         [
+            M,
+            ReconciliativeRunReturnVal,
+            HL <: com.raquo.laminar.nodes.ReactiveElement[HD & org.scalajs.dom.Element],
+            HD <: org.scalajs.dom.Node ,
+            // C <: XEAndStateBagCm[M, ReconciliativeRunReturnVal] ,
+         ]
+         (using reflect.Typeable[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ] )
+      : Conversion[() => HL, SpawnabilityAndReconciliabilityNoArg[M, HL, ReconciliativeRunReturnVal ] ]
+      = (constructDefaulted) => {
+         SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+            //
+            spwImpl1 = (mdl: M) => {
+               val c = constructDefaulted()
+               c
+               .avfwBackreferent[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ]
+               .model_=(mdl)
+               c
+            }
+            ,
+            reconcImpl1 = (this1, newMdl) => {
+               this1
+               .avfwBackreferent[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ]
+               .model_=(newMdl )
+            }
+            ,
+         )
       }
 
    }

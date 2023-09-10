@@ -208,7 +208,7 @@ object reconciliabilityC
          ;
 
          val reconcImpl = {
-            new Reconciliability[SpawnedButton, ButtonContentModel, Unit]
+            new Reconciliability[SpawnedButton, ButtonContentModel, U]
             {
                extension (this1: SpawnedButton)
                   def model_=(newModel: ButtonContentModel )
@@ -239,6 +239,44 @@ object reconciliabilityC
             ,
          )
       } // bySpawnabilityAndReconciliabilityFnc
+
+      extension [HL, MdAfter, UOpR] (spawnerOriginal: SpawnabilityAndReconciliabilityNoArg[MdAfter, HL, UOpR ] ) {
+         //
+
+         /**
+          * pre-`map`-ed version of the `SpawnabilityAndReconciliabilityNoArg`,
+          * very much what `Function1#compose` and `com.raquo.airstream.Observer#contraMap` does
+          * 
+          */
+         def compose
+            [MdPre]
+            (f: MdPre => MdAfter )
+         : SpawnabilityAndReconciliabilityNoArg[MdPre, HL, UOpR]
+         = {
+
+            val adaptMdlAsNecessary
+            : f.type
+            = f
+
+            SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+               //
+               spwImpl1 = (mdl: MdPre) => (
+                  mdl
+                  match { case mdl => adaptMdlAsNecessary(mdl) }
+                  match { case mdl => spawnerOriginal.spawn(mdl)( ) }
+               )
+               ,
+               reconcImpl1 = (spawnedThis, mdl) => (
+                  mdl
+                  match { case mdl => adaptMdlAsNecessary(mdl) }
+                  match { case mdl => spawnerOriginal.model_=(spawnedThis )(mdl ) } 
+               )
+               ,
+            )
+         }
+
+         //
+      } // extension compose
 
       ;
    } // SpawnabilityAndReconciliabilityNoArg$

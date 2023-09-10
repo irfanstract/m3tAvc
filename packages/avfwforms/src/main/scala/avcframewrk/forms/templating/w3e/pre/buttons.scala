@@ -69,6 +69,32 @@ with Articles
 
 }
 
+// TODO
+case class given_AcTitleIndependentCodings1
+   [+C <: Articles & PlainTxtContents ]
+   (ctx: C )
+extends
+   AcTitleIndependentCodings1
+{
+   ;
+
+   import ctx.{*, given}
+
+   ;
+
+   opaque type TitleCoding[-Title ]
+      <: (value: Title @annotation.unchecked.uncheckedVariance ) => Article
+      =  (value: Title @annotation.unchecked.uncheckedVariance ) => Article
+
+   implicit def stringAcTitling[Title <: String]
+   = {
+      identity[(value: Title) => Article ](vl => {
+         PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn, vl )
+      })
+   }
+
+} // given_AcTitleIndependentCodings1
+
 object VarEditingActionsProv
 {
    ;
@@ -205,13 +231,27 @@ object StdGsps
    
    ;
 
-   opaque type CSSColorValue
-   <: Matchable
-   =  String
+   type CSSColorValue
+   >: ({ type Main[T] = T match { case reflect.TypeTest[?, t] => t } })#Main[given_TypeTest_CSSColorValue.type ]
+   <: ({ type Main[T] = T match { case reflect.TypeTest[?, t] => t } })#Main[given_TypeTest_CSSColorValue.type ]
 
-   opaque type DateTime
-   <: Matchable
-   =  String
+   given given_TypeTest_CSSColorValue
+   : reflect.TypeTest[Any, ? <: Matchable]
+   = {
+      ;
+      ReopaquativeTypeTest.apply((v: String) => { v.matches("(?:\\w+\\(.*)|\\#\\w+") } )
+   }
+
+   type DateTime
+   >: ({ type Main[T] = T match { case reflect.TypeTest[?, t] => t } })#Main[given_TypeTest_DateTime.type ]
+   <: ({ type Main[T] = T match { case reflect.TypeTest[?, t] => t } })#Main[given_TypeTest_DateTime.type ]
+
+   given given_TypeTest_DateTime
+   : reflect.TypeTest[Any, ? <: Matchable]
+   = {
+      ;
+      ReopaquativeTypeTest.apply((v: String) => { v.matches("\\w+(\\-\\w+)*") } )
+   }
 
    ;
 

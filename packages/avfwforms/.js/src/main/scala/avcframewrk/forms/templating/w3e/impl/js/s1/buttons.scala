@@ -79,8 +79,10 @@ trait ELaminarQckButtons
 extends
    AnyRef
    with ELaminarQckButtonsActionModelling
+   with ELaminarQckButtonsActionModellingTwo
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Buttons
+   with w3e.pre.VarEditingActionsProv
    /* a temporary treat necessary to prevent the compiler from hanging */
    with ELaminarQckButtonsReconc
    // with ELaminarQckCoreHtml
@@ -176,28 +178,14 @@ extends
 
          ;
          action
-         match { case a : Edsb[t1, t2] => a }
-         match { case a : Edsb[t1, t2] => {
-            a
-            .copy[t1, Article](stateTitle = (_, _) => mainLineContents )
-            .copy(baseTitle = mainLineContents )
-         } }
+         match { case a : ActionDescImpl[t1, t2] => a }
+         match { case a : ActionDescImpl[t1, t2] => a.withGivenConstantTitle(mainLineContents ) }
          match { case a => describeButtonByActionGiven1(a) }
       }
 
    } // (mainLineContents: Article) asHavingDirectActionImpl(action: Action)
 
-   locally {
-      ;
-
-      avcframewrk.forms.addGlobalCss({
-         ;
-
-         s"button.avfw-inline { display: inline ; border: 0 ; padding: 0 ; background: none ; margin: 0.5ex ; text-decoration: underline ; color: #40A000 ; } "
-      })
-
-      ;
-   }
+   ebAvfwInlineBtnCssInit
 
    ;
 } // ELaminarQckButtons
@@ -206,6 +194,11 @@ private
 trait ELaminarQckButtonsReconc
 extends
    AnyRef
+   /* */
+   with ENativeElementsD1
+   with ELaminarQckButtonsReconcNatives
+   with ELaminarQckButtonsReconcAbcdCbRenderability
+   with ELaminarQckButtonsReconcCtls
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with w3e.pre.Articles
@@ -215,6 +208,8 @@ extends
       with w3e.pre.Articles
       with ELaminarQckCoreHtml
       with ELaminarQckButtonsActionModelling
+      with ELaminarQckButtonsActionModellingTwo
+      with ENativeElementsD1
    ) =>
    ;
 
@@ -226,12 +221,28 @@ extends
 
    ;
 
-   private[avcframewrk]
-   case class BfSnaConfig(
-      //
-      expectInlineHeadline : Boolean
-      ,
-   )
+   ;
+
+   /**
+    * 
+    * a locally-adjusted itc for scan-left (see `IterableOnceOps`) reconciliation
+    * 
+    */
+   private
+   trait XScanLeftReconciliativeOps[ContentModel]
+   {
+      ;
+
+      val lE
+      : ln.ReactiveHtmlElement[dom.HTMLElement]
+
+      def tryUpdateTo
+         (m : ContentModel )
+      : Either[XScanLeftReconciliativeOps[ContentModel] , Unit]
+
+   }
+
+   ;
 
    // TODO
    private[avcframewrk]
@@ -255,16 +266,44 @@ extends
          >: Action
          <: Action
 
+      ;
+
+      ;
+
+      extension (m: ButtonContentModel ) {
+         //
+
+         def renderLaminar()
+         : laminar.api.L.Signal[() => ln.ReactiveHtmlElement[dom.HTMLElement ] ]
+         = {
+            ;
+
+            import laminar.api.L
+
+            ;
+
+            import CallbackTypeL.{A, B, C }
+
+            // TODO
+            (m.stateSpecificCallbackAnim1.unlifted combineWith m.stateTitleAnim.toLaminarObservable )
+            .map({
+               ;
+
+               import abcdCallbackRenderablility1.renderFromScratch
+
+               { case (urlOption, title) => () => renderFromScratch(urlOption = urlOption, title = title ) }
+            })
+         }
+
+      }
+
       // { given_Conversion_LElemPlusPossibleData1_HL_D[SpawnedButtonL, Any ] }
       // { val s = summon[Conversion[LElemPlusPossibleData1[SpawnedButtonL, Any ] , ? ] ] }
 
       val _ = {}
 
-      val aBackreferencings1
-      = summon[aBackreferencings.type ]
-
       class XEAndStateBag() extends
-      aBackreferencings1.XEAndStateBag(ec = { laminar.api.L.span })
+      aBackreferencings.XEAndStateBag(ec = { laminar.api.L.span })
       {
          // this : aBackreferencings1.XEAndStateBag[org.scalajs.dom.HTMLButtonElement ] =>
          ;
@@ -298,10 +337,17 @@ extends
          = {
             ;
             L.child
-            .startChildrenListUpdateNow(((_: Any, item: () => ln.ReactiveHtmlElement[dom.HTMLElement] ) => {
-               item
-               .apply()
-            }) , initialDataValue = () => L.span() )
+            .startChildrenListUpdateNow((
+               //
+
+               identity[(
+                  ([C] =>> ((Option[C], ( ) => C ) => C ) )
+                  [ln.ReactiveHtmlElement[dom.HTMLElement] ]
+               )]((existingLElemOption, updatedArt ) => {
+                  updatedArt
+                  .apply( )
+               })
+            ) , initialDataValue = ( ) => L.span() )
          } // cRendPipe1$
 
          def model_=(m: ButtonContentModel )
@@ -312,77 +358,14 @@ extends
             ;
 
             // labelRendPipe1
-            // .onNext(m.stateTitleOption )
+            // .onNext(m.stateTitleAnim )
 
             cRendPipe1
             .onNext({
                ;
 
-               case class A(hrefOption: Option[java.net.URI] )
-               case class B(callbackOption: Option[org.scalajs.dom.Event => Unit ] )
-
-               ;
-               m.stateSpecificCallbackOption1
-               .map({
-                  case (Some(s) ) =>
-                     Some {
-                        s match {
-                           case (run : Function1[evt$, rv$] ) => B(Some(run) )
-                           case (href: java.net.URI ) => A(Some(href) )
-                        }
-                     }
-                  case None =>
-                     None
-               })
-               .scanLeft[([T] =>> T )[A | B] ](e => e.getOrElse(A(None) ) )({
-                  case (_, Some(v)) =>
-                     v
-                  case (v0, None ) =>
-                     v0 match {
-                        case _ : A => A(None)
-                        case _ : B => B(None)
-                     }
-               })
-               .map(urlOption => () => {
-                  ;
-                  import L.{href as _, * }
-                  urlOption
-                  match {
-                     case B(callbackOption) =>
-                        button()
-                        .amend((
-                           callbackOption match {
-                              //
-
-                              case Some(run : Function1[evt$, rv$] ) =>
-                                 (onClick --> run )
-                              case None =>
-                                 (disabled := true )
-                           }
-                        ))
-                     case A(urlOption) =>
-                        a()
-                        .amend((
-                           urlOption match {
-                              //
-
-                              case Some(href : java.net.URI ) =>
-                                 (L.href := href.toASCIIString().nn )
-                              case None =>
-                                 (disabled := true )
-                           }
-                        ))
-                  }
-                  match { case e => {
-                     e
-                     .amend(child <-- m.stateTitleOption.map(_.spawn() ) )
-                     // .amend("non title")
-                  } }
-                  match { case e => {
-                     e
-                     .amend((if config.expectInlineHeadline then Seq(L.className := "avfw-inline" ) else Seq() ) : _* )
-                  } }
-               })
+               m
+               .renderLaminar()
             })
 
             // TODO more
@@ -412,335 +395,13 @@ extends
       )
    }
 
+   ;
+
+   ;
+
+   ;
+
 } // ELaminarQckButtonsReconc
-
-private
-trait ELaminarQckButtonsActionModelling
-extends
-   AnyRef
-   /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
-   with w3e.pre.Buttons
-   /* a temporary treat necessary to prevent the compiler from hanging */
-   // with ELaminarQckPlainStringContsReconc
-{
-   this : (
-      AnyRef
-      with w3e.pre.Buttons
-      with w3e.pre.Articles
-      // with ELaminarQckCore
-      // with ELaminarQckCoreHtml
-      // with ELaminarQckButtonsReconc
-      with ELaminarQckPlainStringConts
-   ) =>
-   ;
-
-   override
-   type Action
-      >: Edsb[?, Article]
-      <: Edsb[?, Article]
-
-   /* a mixin which overrides these methods */
-   private[ELaminarQckButtonsActionModelling]
-   sealed
-   trait CallbackOrUrlActionFactoryCommonGivens
-   extends
-   AnyRef
-   with AcsfTitleIndependentCodings1
-   with AcsfReadinessIndCodings1
-   with AcsfDispatchTimeCtxIndependentCodings1
-   with AcsfReturnIndependentCodings1
-   {
-
-      ;
-
-      export given_AcTitleIndependentCodings1.{*, given}
-
-      export AcsfReadinessIndCodings1.whichTranslatesToHalfs.{*, given}
-
-      export AcCallbackCtxIndependentCodings1.ofOpcev.{*, given}
-
-      export AcReturnIndependentCodings1.whichTranslatesToEitheres.{*, given}
-
-      protected
-      def elementFromTitle
-         [Title : TitleCoding]
-         (title: Title)
-      = {
-         ;
-
-         summon[TitleCoding[Title] ]
-         .apply(title )
-      }
-
-   }
-
-   // TODO
-   override
-   val URLAction
-   : (
-      AnyRef
-      & AcsfLabelledUrlTranslator[Action]
-   )
-   = {
-      ;
-
-      new
-         AnyRef
-         with AcsfLabelledUrlTranslator[Action]
-         with CallbackOrUrlActionFactoryCommonGivens
-      {
-         ;
-
-         override
-         def apply
-            [
-               //
-               AcModelState ,
-               Title : TitleCoding ,
-               R <: java.net.URI ,
-
-            ]
-            (
-               //
-               internalStateOption : AsyncStateChangeMonad[AcModelState]
-               ,
-               baseTitle: Title
-               ,
-               updatedTitle: AcsfBaseTitleAndInternalStateCallback[Title, AcModelState, Title ]
-               ,
-            )
-            (byS: PartialFunction[AcModelState, R] )
-         = {
-
-            Edsb[AcModelState, Article ](
-               //
-
-               stateOption = internalStateOption
-               ,
-               // stateCheck = isReadyState.andThen(summon[CReadinessCoding[IsReady ] ].translate _ )
-               // ,
-               baseTitle = elementFromTitle(baseTitle)
-               ,
-               stateTitle = {
-                  case (baseTitleR, newState) =>
-                     elementFromTitle({
-                        updatedTitle({
-                           // elementAsT(e)
-                           baseTitle
-                        }, newState)
-                     } )
-               }
-               ,
-               stateSpecificCallback =
-                  (s: AcModelState ) => {
-                     ;
-
-                     byS.lift
-                     .apply(s )
-                  }
-               ,
-            )
-         }
-
-         ;
-      }
-   }
-
-   // TODO
-   override
-   val Action
-   : (
-      AnyRef
-      & AcsfLabelledCallbackTranslator[Action]
-   )
-   = {
-      ;
-
-      new
-         AnyRef
-         with AcsfLabelledCallbackTranslator[Action]
-         with CallbackOrUrlActionFactoryCommonGivens
-      {
-         ;
-
-         ;
-
-         ;
-
-         ;
-
-         override
-         def apply
-            [
-               //
-               AcModelState ,
-               IsReady : CReadinessCoding ,
-               Title : TitleCoding ,
-               P : CallbackCtxCoding ,
-               R : ReturnCoding ,
-
-            ]
-            (
-               //
-               internalStateOption : AsyncStateChangeMonad[AcModelState]
-               ,
-               isReadyState : AcModelState => IsReady
-               ,
-               baseTitle: Title
-               ,
-               updatedTitle: (baseTitle: Title, internalState: AcModelState ) => Title
-               ,
-            )
-            (doTheMainThing: PartialFunction[P, R] )
-         = {
-            ;
-
-            extension (s: AcModelState ) {
-               //
-
-               def isReadyStateB() : Boolean
-               = {
-                  isReadyState(s)
-                  match { case bl => summon[CReadinessCoding[IsReady] ].translate(bl) }
-                  match { case v : java.lang.Number => 0.33 < v.doubleValue() }
-               }
-
-            }
-
-            Edsb[AcModelState, Article ](
-               //
-
-               stateOption = internalStateOption
-               ,
-               // stateCheck = isReadyState.andThen(summon[CReadinessCoding[IsReady ] ].translate _ )
-               // ,
-               baseTitle = elementFromTitle(baseTitle)
-               ,
-               stateTitle = {
-                  case (baseTitleR, newState) =>
-                     elementFromTitle({
-                        updatedTitle({
-                           // elementAsT(e)
-                           baseTitle
-                        }, newState)
-                     } )
-               }
-               ,
-               stateSpecificCallback =
-                  (s: AcModelState ) => {
-                     ;
-
-                     val evtInfo = summon[CallbackCtxCoding[P] ].apply()
-
-                     if s.isReadyStateB() then {
-                        Some(() => {
-                           ;
-                           doTheMainThing(evtInfo )
-                        } )
-                     }
-                     else None
-                  }
-               ,
-            )
-
-            //
-         }
-
-      }
-   } // Action$
-
-   protected[avcframewrk]
-   given given_AcTitleIndependentCodings1
-   : AcTitleIndependentCodings1
-   with {
-      ;
-
-      opaque type TitleCoding[-Title ]
-         <: (value: Title @annotation.unchecked.uncheckedVariance ) => Article
-         =  (value: Title @annotation.unchecked.uncheckedVariance ) => Article
-
-      implicit def stringAcTitling[Title <: String]
-      = {
-         identity[(value: Title) => Article ](vl => {
-            PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn, vl )
-         })
-      }
-
-   }
-
-   ;
-} // ELaminarQckButtonsActionModelling
-
-// TODO
-export edsbs.Edsb
-
-private[avcframewrk]
-final
-lazy val edsbs
-= new AnyRef with Edsbs
-
-private[avcframewrk]
-trait Edsbs
-{
-   ;
-
-   case class Edsb[S, +T]
-   (
-      //
-      stateOption: AsyncStateChangeMonad[S]
-      ,
-      baseTitle: T
-      ,
-      private val
-      stateTitle: (baseTitle: T @annotation.unchecked.uncheckedVariance, state: S ) => T
-      ,
-      // TODO
-      stateSpecificCallback: S => Option[(() => Unit ) | java.net.URI ]
-      ,
-   )
-   {
-
-      def stateSpecificCallbackOption
-      = {
-         stateOption
-         .map(s => stateSpecificCallback(s) )
-      }
-
-      def stateCheckedOption
-      = {
-         stateSpecificCallbackOption
-         .map[0 | 1 ]({
-            case None => 0
-            case Some(_) => 1
-         })
-      }
-
-      def stateTitleOption
-      = {
-         stateOption
-         .map(s => stateTitle(baseTitle, s) )
-      }
-
-      // TODO
-      def stateSpecificCallbackOption1
-      = {
-         stateSpecificCallbackOption
-         .map[Option[(org.scalajs.dom.Event => Unit ) | java.net.URI ] ]({
-            case Some(cb : Function0[t1]) =>
-               Some((
-                  (e) =>
-                     cb()
-               ))
-            case Some(cb : (java.net.URI )) =>
-               Some(cb)
-            case None =>
-               None
-         })
-      }
-
-   }
-
-}
 
 type BHA
 = (
