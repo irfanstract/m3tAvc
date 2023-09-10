@@ -58,7 +58,11 @@ object AsyncStateChangeMonad
       def scanLeft[State](seed: => State )(doDigest: (State, A) => State )
       : AsyncStateChangeMonad[State]
       = {
-         this10.scanLeftAdapted0[State](_ => seed)(doDigest )
+         this10
+         .scanLeftAdapted0
+            [State]
+            (initialVal => doDigest(seed, initialVal) )
+            (doDigest )
       }
 
       def toLaminarObservable
