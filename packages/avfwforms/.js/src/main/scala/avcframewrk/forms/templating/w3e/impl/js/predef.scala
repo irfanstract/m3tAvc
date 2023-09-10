@@ -42,6 +42,22 @@ with {
 
 } // given_TypeTest_Any_Option
 
+extension (console: org.scalajs.dom.Console ) {
+   //
+
+   def infoExceptionCollapsed(z: Throwable, headline: String = "the exception was:" )
+   = {
+      ;
+
+      util.Using.resource({
+         console.groupCollapsed(headline )
+         locally[java.io.Closeable](() => {
+            console.groupEnd()
+         } )
+      })(_ => console.info(z) )
+   }
+} // infoExceptionCollapsed$
+
 object ParentChildRelationship {
 
    object Cio
@@ -162,6 +178,32 @@ given given_Releasable_Laminar_Observer[T0]
 def trySameThreadScheduler()
 : monix.execution.Scheduler
 = monix.execution.Scheduler.global
+
+/**
+ * translates the `GivenSpinner1` into
+ * the corresponding value which
+ * , when used as a `&lt;button>`'s `type`, will make the elem an editor for the data-type
+ * 
+ */
+transparent inline
+def nativeTypStrFor(edType: w3e.pre.StdGsps.ofSnb.GivenSpinner1[?] )
+: String
+= {
+   ;
+
+   edType
+
+   match {
+      //
+      case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type =>
+         "date"
+      case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] =>
+         "number"
+      case _ =>
+         ""
+      //
+   }
+} // nativeTypStrFor
 
 
 

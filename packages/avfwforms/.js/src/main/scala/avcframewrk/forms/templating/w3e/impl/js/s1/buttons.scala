@@ -202,6 +202,7 @@ extends
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with w3e.pre.Articles
+   with ELaminarQckCoreFailsafeReconcilers
 {
    this : (
       AnyRef
@@ -210,6 +211,7 @@ extends
       with ELaminarQckButtonsActionModelling
       with ELaminarQckButtonsActionModellingTwo
       with ENativeElementsD1
+      with ELaminarQckCoreFailsafeReconcilers
    ) =>
    ;
 
@@ -229,7 +231,7 @@ extends
     * 
     */
    private
-   trait XScanLeftReconciliativeOps[ContentModel]
+   trait XScanLeftReconciliativeOps1[ContentModel]
    {
       ;
 
@@ -238,7 +240,7 @@ extends
 
       def tryUpdateTo
          (m : ContentModel )
-      : Either[XScanLeftReconciliativeOps[ContentModel] , Unit]
+      : Either[XScanLeftReconciliativeOps1[ContentModel] , Unit]
 
    }
 
@@ -274,7 +276,7 @@ extends
          //
 
          def renderLaminar()
-         : laminar.api.L.Signal[() => ln.ReactiveHtmlElement[dom.HTMLElement ] ]
+         : laminar.api.L.Signal[ln.ReactiveHtmlElement[dom.HTMLElement ] ]
          = {
             ;
 
@@ -284,15 +286,34 @@ extends
 
             import CallbackTypeL.{A, B, C }
 
+            import abcdCallbackRenderablility1.{*, given }
+
             // TODO
             (m.stateSpecificCallbackAnim1.unlifted combineWith m.stateTitleAnim.toLaminarObservable )
-            .map({
+            .map(e => e )
+            match { case s => {
                ;
-
-               import abcdCallbackRenderablility1.renderFromScratch
-
-               { case (urlOption, title) => () => renderFromScratch(urlOption = urlOption, title = title ) }
-            })
+               val reconciler
+               = {
+                  llrConv(L.span )((
+                     // (l : A | B | C ) =>
+                     //    reconcilerFor(urlOption = l , title = PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn, "a button" ) ) 
+                     (identity[(A | B | C , Article ) ] _ )
+                     .andThen({
+                        case (l, title) =>
+                           reconcilerFor(urlOption = l , title = title ) 
+                     })
+                  ))
+               }
+               spawnLlrScanConv(s match { case s => s } )(using reconciler )
+               // ; ???
+            } }
+            // match { case s => {
+            //    laminar.api.A.EventStream.delay(2000 )
+            //    .scanLeft[L.Signal[ln.ReactiveHtmlElement[?] ] ](L.Val(L.span() ) )({ case _ => s })
+            //    .flatten
+            // } }
+            match { case s => s }
          }
 
       }
@@ -337,17 +358,11 @@ extends
          = {
             ;
             L.child
-            .startChildrenListUpdateNow((
-               //
+            .startChildrenListUpdateNow(((_: Any, item: ln.ReactiveHtmlElement[dom.HTMLElement] ) => {
+               ;
 
-               identity[(
-                  ([C] =>> ((Option[C], ( ) => C ) => C ) )
-                  [ln.ReactiveHtmlElement[dom.HTMLElement] ]
-               )]((existingLElemOption, updatedArt ) => {
-                  updatedArt
-                  .apply( )
-               })
-            ) , initialDataValue = ( ) => L.span() )
+               item
+            }) , initialDataValue = L.span() )
          } // cRendPipe1$
 
          def model_=(m: ButtonContentModel )
