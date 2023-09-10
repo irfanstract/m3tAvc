@@ -30,7 +30,12 @@ import reconciliabilityC.{*, given }
  * a pair, which's
  * a `SpawnabilityAndReconciliabilityNoArg` and a "data-model"
  * 
- * refines the tuple-type to achieve that 'dependent-typing' of `_1`
+ * refines the tuple-type to achieve that 'dependent-typing' of `_1`:
+ * - narrowed to
+ *   a/any `SpawnabilityAndReconciliabilityNoArg` which allows `(this : (SpawnabilityAndReconciliability, Mdl ) )._2` to be *the model*s
+ *   ;
+ * - without this narrowing,
+ *   there'll be no guarantee that the `SpawnabilityAndReconciliability` could be used with `(this)._2`
  * 
  */
 // private[avcframewrk]
@@ -50,10 +55,21 @@ type SpiwmTwos[+Mdl, Sp, +R]
       (SpawnabilityAndReconciliabilityNoArg[?, ?, ? ], Any )
       {
          //
+         /** 
+          * narrowed to
+          * a/any `SpawnabilityAndReconciliabilityNoArg` which allows `(this : (SpawnabilityAndReconciliability, Mdl ) )._2` to be *the model*s
+          * 
+          * without this narrowing,
+          * there'll be no guarantee that the `SpawnabilityAndReconciliability` could be used with `(this)._2`
+          * 
+          * we leave the other type-arg(s) wildcards, as
+          * the remaining type-conjunction will narrow its type further
+          * 
+          */
          val _1 : SpawnabilityAndReconciliabilityNoArg[_2.type, ?, ? ]
       }
    )
-   & /* the not-so-interesting part */
+   & /* the not-so-interesting part, necessary to apply the remaining necessary specialisations */
    (SpawnabilityAndReconciliabilityNoArg[?, Sp, R], Mdl )
 )
 
