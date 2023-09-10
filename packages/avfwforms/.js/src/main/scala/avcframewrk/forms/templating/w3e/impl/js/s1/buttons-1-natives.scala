@@ -29,15 +29,19 @@ package s1
  * a rather minimal wrapper over the Laminar's 'builder pattern' for native comp(s)
  * 
  */
-private
+private[w3e]
 trait ELaminarQckButtonsReconcNatives
 extends
    AnyRef
    /* */
    with ENativeElementsD1
+   with ELaminarQckInputElemsReconcNatives
+   with ELaminarQckInputElemsLcs
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with ELaminarQckButtonsReconcCtls
+   with w3e.pre.Articles
+   with ELaminarQckCore
 {
    this : (
       AnyRef
@@ -46,6 +50,9 @@ extends
       with ELaminarQckButtonsActionModellingTwo
       with ELaminarQckButtonsReconcCtls
       with ENativeElementsD1
+      with w3e.pre.Articles
+      with ELaminarQckCore
+      with ELaminarQckCoreHtml
    ) =>
    ;
 
@@ -59,100 +66,71 @@ extends
 
    ;
 
-   extension [acv1$] (ed: BInputFunc[?]) {
-      //
-
-      def valueAnim
-      = ed.src.toObservable
-
-      /**
-       * Laminar `controlled`
-       * 
-       */
-      def llc[ExpectedValue1]()
-      = {
-         ;
-
-         lControlled(ed.t )(ed.src )
-      }
-
-      //
-   }
-
    /**
-    * Laminar `controlled`
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;anchor>`s (Laspa) and `&lt;button>`s (Btna) ;
+    * letting `mdl` to Tuple `(headline: Article, contentConfig: Option[Pv] )`
     * 
     */
-   def lControlled
-      [Value]
-      (typ: GivenSpinner1[Value])
-      (src : L.SignalSource[Value] & L.Sink[Value] )
+   def summonLaspaBtnaOrFriends
+      [Pv]
+      (using impl: SpawnabilityAndReconciliabilityNoArg[(Article, Option[Pv] ), ?, ? ] )
+   : impl.type
+   = impl
+
+   /**
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;anchor>`s (Laspa)
+    * 
+    */
+   given given_SpawnabilityAndReconciliability_Laspa[XModel <: LaspaStatic]
+   : SpawnabilityAndReconciliabilityNoArg[(Article, Option[LaspaStatic] ), ln.ReactiveHtmlElement[dom.HTMLAnchorElement], Unit ]
    = {
       ;
 
-      import L.{given}
+      import laminar.api.L
 
-      L.controlled(
-         //
-         L.value <-- src.toObservable.map(_.toString() )
-         ,
-         (
-            L.onInput
-            .mapToValue
-            // .map(v => {
-            //    org.scalajs.dom.console.log("inputed value raw: ", v )
-            //    v
-            // } )
-            .map(typ.parse.lift ).collect({ case Some(v) => v })
-            .map(v => {
-               if v.isInstanceOf[Boolean] then {
-                  org.scalajs.dom.console.log("inputed value parsed: ", v )
-               }
-               v
-            } )
-            -->
-            (src.toObserver.onNext _ )
-         ) ,
-      ) 
-   }
-
-   def lControlledRetypable
-      [Value]
-      (src : ([Value] =>> ((L.SignalSource[Value] & L.Var[Value ] ) & L.Sink[Value] ) )[(GivenSpinner1[Value] , Value ) ] )
-   = {
       ;
 
-      import L.{given}
-
-      L.controlled(
-         //
-         L.value <-- src.toObservable.map({ case (_, value) => value }).map(_.toString() )
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         (Article, Option[LaspaStatic] )
          ,
-         (
-            L.onInput
-            .mapToValue
-            .map(newValue => { val (typ, _) = src.signal.now() ; for (newValue1 <- typ.parse.lift.apply(newValue ) ) yield (typ, newValue1 ) } ).collect({ case Some(v) => v })
-            .map({ case v @ (typ, vV ) => {
-               if vV.isInstanceOf[Boolean] then {
-                  org.scalajs.dom.console.log("inputed value parsed: ", v )
-               }
-               v
-            } })
-            -->
-            (src.toObserver.onNext _ )
-         ) ,
-      ) 
+         dom.HTMLAnchorElement
+         ,
+      ](
+         //
+         prov => (
+
+            prov.applyLaspaBtnaHeadlineProp()
+
+         )
+         ,
+         prov => prov(L.href )((_ )._2.flatMap(_.href ).map(_.toASCIIString().nn ).getOrElse("") , "" )
+         ,
+         prov => prov(L.disabled )((_ )._2.isEmpty, false )
+         ,
+
+      )(nativeElemLCtor = L.a )
    }
 
-   inline given given_SpawnabilityAndReconciliability_Inpfa
-      [Value ]
-      (using typ: GivenSpinner1[Value ] )
+   case class LaspaStatic(
+      //
+      href : ([A] =>> A )[Option[java.net.URI] ]
+      ,
+   )
+
+   /**
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;button>`s (Btna)
+    * 
+    */
+   given given_SpawnabilityAndReconciliability_Btna[XModel <: BtnaStatic]
    : (
       //
       SpawnabilityAndReconciliabilityNoArg[
-         Option[InpfaStatic[Value] ]
+         (Article, Option[BtnaStatic] )
          ,
-         ln.ReactiveHtmlElement[dom.HTMLInputElement]
+         ln.ReactiveHtmlElement[dom.HTMLButtonElement]
          ,
          Unit ,
       ]
@@ -162,205 +140,68 @@ extends
 
       ;
 
-      val initialVal
-      : Value
-      = {
-         typ
-         match {
-            case `given_GivenSpinner_DateTime` =>
-               ("2023-09-06" ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
-               // (0.25 ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
-               // (0.25, 0.5, 0.75, { org.scalajs.dom.console.log("did compare:", typ, given_GivenSpinner_DateTime ) } ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
-            case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] =>
-               edType.apply("0")
-            case `given_GivenSpinner_Boolean` =>
-               (false ).asInstanceOf[Value]
-            case `given_GivenSpinner_String` =>
-               ("" ).asInstanceOf[Value]
-            // case _ : DateTime =>
-            //    ("" ).asInstanceOf[Value]
-         }
-      }
-      ;
-
-      ;
-
-      type XModel
-         >: Option[InpfaStatic[Value] ]
-         <: Option[InpfaStatic[Value] ]
-
-      import laminar.api.L
-
-      ;
-
-      class XEAndStateBag1() extends
-      aBackreferencings.XEAndStateBag(ec = { L.input })
-      with aBackreferencings.XEAndStateBagCm[XModel, Unit]
-      {
-         //
-
-         import laminar.api.L
-
-         override
-         def close(): Unit
-         = {
-            closeAllOf[laminar.api.L.Observer[?] ]((
-               srcToSetterDispatchers
-
-            ))
-         }
-
-         wrappedLaminarElement
-         .amend(L.typ := nativeTypStrFor(typ) )
-
-         val valueControlled1
-         = {
-            ;
-
-            val s = L.Var[( GivenSpinner1[Value ] , Value ) ]((typ, initialVal ))
-
-            val c = lControlledRetypable(src = s )
-
-            wrappedLaminarElement
-            .amend(c )
-
-            s.writer
-         }
-
-         val srcToSetterDispatchers
-         = {
-            (
-               Seq()
-
-               :+(L.disabled.startAttribNow((_: XModel).fold(false)(_ => true ) , initialValue = None ).contraconst() )
-
-               :+(valueControlled1.contramap((c: Option[InpfaStatic[Value] ] ) => c match { case Some(c) => (typ, c.value) ; case None => (typ, initialVal) } ) )
-
-               // TODO
-
-            )
-         } : Seq[L.Observer[XModel ] ]
-
-         override
-         def model_=(newMdl: XModel): Unit
-         = {
-            for (o <- srcToSetterDispatchers )
-            do { o.onNext(newMdl ) }
-         }
-
-         // def
-
-         ;
-
-      }
-
-      ({
-         import aBackreferencings.{given Conversion[?, ?] }
-
-         val f1
-         = () => new XEAndStateBag1().wrappedLaminarElement
-
-         summon[Conversion[f1.type, SpawnabilityAndReconciliabilityNoArg[XModel, ? <: ln.ReactiveHtmlElement[dom.HTMLElement] , ? ] ] ]
-         .apply(f1 )
-      })
-   }
-
-   /**
-    * 
-    * `input`s where setting the attrib-or-prop `value` will do what the name suggests
-    * (as it's not the case when `type` were `button` or `submit` or `checkbox` or `file` )
-    * 
-    */
-   type InpfaStatic[+Value]
-   = InpfaStaticInvar[? <: Value ]
-
-   case class InpfaStaticInvar
-      [Value ]
-      (
-         //
-         value: Value
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         (Article, Option[BtnaStatic] )
          ,
-         propagate1 : (evtInfo: dom.Event, newValue: String ) => Unit
+         dom.HTMLButtonElement
          ,
-      )
-   {
-      ;
-
-      ;
-   }
-
-   locally {
-      ;
-
-      //
-      locally({
-         ;
-
-         summon[(
-            //
-
-            SpawnabilityAndReconciliabilityNoArg[
-               Option[InpfaStatic[Boolean] ]
-               ,
-               // ln.ReactiveHtmlElement[dom.HTMLInputElement]
-               // ,
-               // Unit ,
-               ?,
-               ?,
-            ]
-         )]
-      })
-      match { case s => s }
-
-      //
-      locally({
-         ;
-
-         summon[(
-            //
-
-            SpawnabilityAndReconciliabilityNoArg[
-               Option[InpfaStatic[Int] ]
-               ,
-               ?,
-               ?,
-            ]
-         )]
-      })
-      match { case s => s }
-
-      ;
-   }
-
-   transparent inline
-   def nativeTypStrFor(edType: GivenSpinner1[?] )
-   : String
-   = {
-      ;
-
-      edType
-
-      match {
+      ](
          //
-         case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type =>
-            "date"
-         case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] =>
-            "number"
-         case _ =>
-            ""
-         //
-      }
+
+         prov => prov.applyLaspaBtnaHeadlineProp()
+         ,
+
+         prov => prov(laminar.api.L.onClick )((_ )._2.map(_.onClick ).getOrElse(_ => {} ) , (_: Any) => {} )((evt, dispatch) => dispatch(evt) )
+         ,
+         prov => prov(laminar.api.L.disabled )((_ )._2.flatMap(d => Some(d.onClick) ).isEmpty , true )
+         ,
+
+      )(nativeElemLCtor = L.button )
    }
+
+   case class BtnaStatic(
+      //
+      onClick : (evtInfo: dom.Event) => Unit
+      ,
+   )
 
    ;
 
-   extension [Item] (dest: laminar.api.L.Observer[? >: AsyncStateChangeMonad[Item] ] ) {
+   ;
+
+   extension [Contents] (prov : given_SpawnabilityAndReconciliability_CaseClassGeneralised1.SrcLensAndDestAttrPairRawSelInvar[(Article, Contents )] ) {
       //
 
-      def contraconst()
-      = dest.contramap((v: Item) => laminar.api.L.Val(v) )
+      def applyLaspaBtnaHeadlineProp()
+      : laminar.api.L.Observer[(Article, Contents ) ]
+      = {
+         ;
 
-      //
+         import laminar.api.L
+
+         (
+            //
+
+            prov
+
+               (L.child )
+               ({ case (title, _) => title } , summon[avcalg.CBC[Article] ].empty )
+
+               ((s: ([A] =>> A )[ln.ReactiveHtmlElement[?] ] ) => s , (
+
+                  (existingNodeOption, newDataValue) => (
+
+                     existingNodeOption
+                     .fold(newDataValue.spawn() )(e => {
+                        e.model_=(newDataValue )
+                        e
+                     })
+                  )
+               ) )
+
+         )
+      }
+
    }
 
    ;
