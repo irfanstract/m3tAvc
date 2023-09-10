@@ -339,6 +339,13 @@ extends
          : e.type
          = e
 
+         // TODO
+         protected
+         def unmountIfFailure
+            [R](v: util.Try[?] )
+         : Boolean
+         = { v.isFailure match { case v => if v then wrappedLaminarElement.ref.remove() ; v } }
+
          /**
           * Laminar doesn't provide native support for re-routings of `Observable`s,
           * so
