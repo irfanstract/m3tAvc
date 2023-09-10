@@ -69,6 +69,32 @@ with Articles
 
 }
 
+// TODO
+case class given_AcTitleIndependentCodings1
+   [+C <: Articles & PlainTxtContents ]
+   (ctx: C )
+extends
+   AcTitleIndependentCodings1
+{
+   ;
+
+   import ctx.{*, given}
+
+   ;
+
+   opaque type TitleCoding[-Title ]
+      <: (value: Title @annotation.unchecked.uncheckedVariance ) => Article
+      =  (value: Title @annotation.unchecked.uncheckedVariance ) => Article
+
+   implicit def stringAcTitling[Title <: String]
+   = {
+      identity[(value: Title) => Article ](vl => {
+         PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn, vl )
+      })
+   }
+
+} // given_AcTitleIndependentCodings1
+
 object VarEditingActionsProv
 {
    ;
