@@ -22,15 +22,14 @@ package s1
 
 
 
-/* we intended it `import` or `private export` */
-export rendering.reconciliabilityC.*
-
 trait ELaminarQckCore
 extends
    AnyRef
    with ELaminarQckCoreABackreferencings
+   with w3e.pre.ArticlesViaLspwmt
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Articles
+   with w3e.pre.ArticlesViaLspw
 {
    this : (
       AnyRef
@@ -42,117 +41,135 @@ extends
 
    import org.scalajs.dom
 
-   /**
-    * `Article`
-    * 
-    * we can't make this opaque here, as
-    * that'd close all the remaning ways to express the necessary specialisations
-    * 
-    */
-   override
-   type Article
-   // = () => ArticleSpawned
-   <: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] | ln.ReactiveSvgElement[? <: dom.SVGElement] , dom.HTMLElement | dom.SVGElement ]
+   // // protected
+   // class given_Conversion_SpiwmTwos_LaminarSpawnable_TypeKey
 
-   /**
-    * `LaminarSpawnable`
-    * 
-    * opaque.
-    * we provided a `given` `Spawnability` instead
-    * 
-    */
-   protected
-   opaque
-   type LaminarSpawnable[
-      +HL <: ln.ReactiveElement[HD & dom.Element],
-      +HD <: dom.Node ,
-   ]
-   = (
-      SpiwmTwos[Any, LElemPlusPossibleData[HL] @annotation.unchecked.uncheckedVariance, Unit]
-   )
+   extension [
+      T0Spw
+      <: LNRE
+      ,
+      T0Mdl,
+      LNRE
+      <: ln.ReactiveElement[?]
+      ,
+      UOpR ,
 
-   protected
-   // opaque
-   type LElemPlusPossibleData[+HL]
-   = LElemPlusPossibleData1[HL, Any]
-
-   protected
-   // opaque
-   type LElemPlusPossibleData1[+HL, +D]
-   // >: (HL, D)
-   // <: AnyRef
-   // =  (HL, D)
-   >: HL @annotation.unchecked.uncheckedVariance
-   <: HL
-
-   // protected
-   // given [HL, D]
-   // : Conversion[LElemPlusPossibleData1[HL, D], (HL, D) ]
-   // = identity[(HL, D)] _
-
-   /**
-    * allows them to serve as impl of `LaminarSpawnable`
-    * 
-    */
-   given [
+   ] (h0: SpiwmTwos[T0Mdl, T0Spw, UOpR ] ) {
       //
-      HL <: ln.ReactiveElement[HD & dom.Element],
-      HD <: dom.Node ,
-      Mdl ,
-   ]
-   : (
-      Conversion[
-         SpiwmTwos[Mdl, LElemPlusPossibleData[HL] , Unit] ,
-         LaminarSpawnable[HL , HD] ,
-      ]
-   )
-   = identity[SpiwmTwos[Mdl, LElemPlusPossibleData[HL] , Unit] ] _
 
-   /**
-    * `SpawnabilityNoArg`
-    * 
-    */
-   // transparent inline
-   implicit def given_SpawnabilityNoArg_LaminarSpawnable_LElemPlusPossibleData
-      [
-         //
-         HL <: ln.ReactiveElement[HD & dom.Element],
-         HD <: dom.Node ,
-         M ,
-      ]
-   : (
-      SpawnabilityAndReconciliabilityNoArg[
-         //
-         LaminarSpawnable[HL, HD],
-         LElemPlusPossibleData[HL],
-         Unit ,
-      ]
-   )
-   = {
-      ;
-
-      ;
-
-      SpawnabilityAndReconciliabilityNoArg
-      .bySpawnabilityAndReconciliabilityFnc(
-         //
-
-         spwImpl1 =
-            (mdl: LaminarSpawnable[HL, HD]) =>
-               mdl.spawnThisSpiwmTwos()
-
-         ,
-
-         reconcImpl1 =
-            (this1, mdl) => {
-               ;
-
-               mdl.doSpiwmTwoReconciliationOf(this1 )
-            }
-         ,
-
+      /** 
+       * attempt to `treat` `h0` as compatible.
+       * note the change in the type-arg `Mdl` (from `T0Mdl` to `T2Mdl` )
+       * 
+       */
+      def tryCompatAgainstSpawned
+         [
+            T2Mdl,
+         ]
+         (h2br: aBackreferencings.XEAndStateBag[?] )
+         (using reflect.Typeable[LNRE] )
+         (using util.NotGiven[LNRE <:< Null ] )
+      : (
+         Option[(
+            // h0.type &
+            SpawnabilityAndReconciliabilityNoArg[T2Mdl, T0Spw, UOpR ]
+         ) ]
       )
+      = {
+         ;
+
+         val h0br
+         = h0.spawnThisSpiwmTwos().avfwBackreferent[aBackreferencings.XEAndStateBag[?] ]
+
+         if (
+            h0br.getClass()
+            ==
+               h2br.getClass()
+         ) then {
+            Some(h0._1 )
+            .collect({ case h : SpawnabilityAndReconciliabilityNoArg[T2Mdl, T0Spw, UOpR ] => h })
+            .map[SpawnabilityAndReconciliabilityNoArg[T2Mdl, T0Spw, UOpR] ] ( e => e )
+         }
+         else None
+      }
+
+      /** 
+       * attempt to `treat` `h0` as compatible.
+       * note the change in the type-arg `Mdl` (from `T0Mdl` to `T2Mdl` )
+       * 
+       */
+      def tryCompatAgainstSpawned1
+         [
+            //
+            // LNRE2
+            // <: ln.ReactiveElement[?]
+            // ,
+            T2Spw
+            <: LNRE
+               ,
+            T2Mdl,
+         ]
+         (h2sp: T2Spw )
+         (using reflect.Typeable[LNRE] )
+         (using util.NotGiven[LNRE <:< Null ] )
+      = {
+         ;
+
+         val h2br
+         = (h2sp ).avfwBackreferent[aBackreferencings.XEAndStateBag[?]]
+
+         h0.tryCompatAgainstSpawned(h2br )
+      }
+
+      /** 
+       * attempt to `treat` `h0` as compatible.
+       * note the change in the type-arg `Mdl` (from `T0Mdl` to `T2Mdl` )
+       * 
+       */
+      def tryCompatAgainstSpawnable
+         [
+            //
+            // LNRE2
+            // <: ln.ReactiveElement[?]
+            // ,
+            T2Spw
+            <: LNRE
+               ,
+            T2Mdl,
+         ]
+         (h2: SpiwmTwos[T2Mdl, T2Spw, UOpR ] )
+         (using reflect.Typeable[LNRE] )
+         (using util.NotGiven[LNRE <:< Null ] )
+      = {
+         ;
+
+         val h2sp
+         = h2.spawnThisSpiwmTwos()
+
+         h0.tryCompatAgainstSpawned1(h2sp )
+      }
+
+      //
    }
+
+   // type ALS0
+   // = (
+   //    ({ type Main[T] <: { type HL ; type HD } = T match { case LaminarSpawnable[hl, hd] => { type HL = hl ; type HD = hd } } })
+   //    #Main[Article]
+   // )
+   type ALS
+   = (
+      ({ type Main[T] <: (Any, Any) = T match { case SpiwmTwos[m, hl, uOpR] => SpiwmTwos[m, hl, uOpR] } })
+      #Main[Article]
+   )
+
+   def lebControlledly[R]
+      (
+         runMain: => R ,
+         doCatch: Throwable => (Nothing & R ) = { case util.control.NonFatal(z) => throw new RuntimeException(s"LebControlledCode Exception: ${z}", z ) ; case z => throw z } ,
+      )
+   : R
+   = { util.Try({ runMain }).fold(doCatch, e => e ) }
 
    ;
 }
@@ -177,36 +194,6 @@ extends
    type Article
    >: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] , dom.HTMLElement ]
    <: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] , dom.HTMLElement ]
-
-   /**
-    * 
-    */
-   extension (src: monix.reactive.Observable[Article] ) {
-      //
-
-      def toLaminarRefreshMonix()
-      : monix.reactive.Observable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] ]
-      = {
-         ;
-
-         src
-         .scan[Option[ln.ReactiveHtmlElement[? <: dom.HTMLElement] ] ](None )({
-            case (_, newR) =>
-               ;
-
-               val gvn = given_SpawnabilityNoArg_LaminarSpawnable_LElemPlusPossibleData[ln.ReactiveHtmlElement[? <: org.scalajs.dom.HTMLElement] , org.scalajs.dom.HTMLElement, Nothing ]
-               ;
-
-               // newR.spawn() /* this LOC caused the compiler to hang */
-               gvn.spawn(newR )( )
-               match { case e => (e) }
-
-               match { case e => Some(e) }
-         })
-         /* */
-         .flatMapIterable(o => o.toList )
-      }
-   }
 
    ;
 }
@@ -352,6 +339,13 @@ extends
          : e.type
          = e
 
+         // TODO
+         protected
+         def unmountIfFailure
+            [R](v: util.Try[?] )
+         : Boolean
+         = { v.isFailure match { case v => if v then wrappedLaminarElement.ref.remove() ; v } }
+
          /**
           * Laminar doesn't provide native support for re-routings of `Observable`s,
           * so
@@ -398,9 +392,9 @@ extends
 
                (target match {
                   case target : com.raquo.laminar.keys.HtmlProp[v1, v2] =>
-                     target <-- statePipe._2.map(m).toLaminarObservable
+                     target <-- statePipe._2.map(m).toLaminarObservable.replaceAllExceptionsWithConstException()
                   case target : com.raquo.laminar.keys.HtmlAttr[v1] =>
-                     target <-- statePipe._2.map(m).toLaminarObservable
+                     target <-- statePipe._2.map(m).toLaminarObservable.replaceAllExceptionsWithConstException()
                   /* it was our own wrapper ; now, however, we need compile-time conformance */
                } )
                .startNow()
@@ -476,6 +470,7 @@ extends
                      })
                      /* it was our own wrapper ; now, however, we need compile-time conformance */
                      .toLaminarObservable
+                     .replaceAllExceptionsWithConstException()
                   }
                })
                .startNow()
