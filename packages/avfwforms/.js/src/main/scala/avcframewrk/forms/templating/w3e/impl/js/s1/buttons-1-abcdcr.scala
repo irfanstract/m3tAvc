@@ -59,6 +59,15 @@ extends
    ) =>
    ;
 
+   @deprecated
+   protected
+   given typeTestEdsbEventInfo
+   : reflect.Typeable[EdsbEventInfo ]
+   = {
+      ReopaquativeTypeTest.apply[org.scalajs.dom.Event ](_ => true)
+      .asInstanceOf[reflect.Typeable[EdsbEventInfo ] ]
+   }
+
    import com.raquo.laminar.{nodes as ln}
 
    import org.scalajs.dom
@@ -92,6 +101,19 @@ extends
       //    disabled ,
       //    given ,
       // }
+
+      given given_SpawnabilityAndReconciliabilityNoArg_B_ReactiveHtmlElement_Unit
+      : SpawnabilityAndReconciliabilityNoArg[B, ln.ReactiveHtmlElement[?], Unit ]
+      = {
+         ;
+
+         // SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+         //    //
+         //    spwImpl1 = (mdl: B) => {  } ,
+         // )
+
+         ???
+      }
 
       extension [DT] (ed: BInputFunc[DT] ) {
          //
@@ -148,7 +170,10 @@ extends
          (urlOption : A | B | C, title: Article )
          (using BfSnaConfig )
       : ln.ReactiveHtmlElement[dom.HTMLElement]
-      = ???
+      = {
+         reconcilerFor(urlOption = urlOption, title = title )
+         .wrappedLaminarElem
+      }
 
       def reconcilerFor
          (urlOption : A | B | C, title: Article )
@@ -156,18 +181,9 @@ extends
       : (
          //
 
-         // SpawnabilityAndReconciliabilityNoArg[
-         //    ? <: Option[InpfaStatic[Any] ]
-         //    ,
-         //    // ln.ReactiveHtmlElement[dom.HTMLInputElement]
-         //    // ,
-         //    // Unit ,
-         //    ?,
-         //    ?,
-         // ]
          XScanLeftReconciliativeOps[
             //
-            ? <: ln.ReactiveHtmlElement[dom.HTMLInputElement]
+            ? <: ln.ReactiveHtmlElement[dom.HTMLElement]
             ,
             ? <: (A | B | C )
             ,
@@ -185,150 +201,198 @@ extends
          ;
          urlOption
          match {
-            // case C(edTypeOption ) =>
-            //    ;
-            //    edTypeOption
-            //    .map(e => (e, e.t, true ) )
-            //    match {
+            case md @ C(_ ) =>
+            ;
 
-            //       case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_Boolean.type, enabled ) =>
-            //          // L.input( L.typ := "checkbox" )
-            //          // .amend(disabled := !enabled  )
-            //          // // .amend(L.value <-- ed.valueAnim.map(_.toString() ) )
-            //          // .amend(
-            //          //    //
-            //          //    L.checked <-- ed.valueAnim.map(_.asInstanceOf[Boolean ] ) 
-            //          //    ,
-            //          //    L.onChange.mapToChecked.map(_.asInstanceOf[acv1$] ) --> (ed.src.toObserver.onNext _ )
-            //          //    ,
-            //          // )
-            //          ???
+            // edTypeOption
 
-            //       case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type , enabled ) =>
-            //          // L.input( L.typ := "date" )
-            //          // .amend(disabled := !enabled  )
-            //          // .amend((
-            //          //    ed.llc()
-            //          // ))
+            def renderIntrinsic(edTypeOption: Option[BInputFunc[?] ] )
+            : XScanLeftReconciliativeOps[ln.ReactiveHtmlElement[dom.HTMLElement ], ? <: Option[BInputFunc[?] ], Unit ]
+            = {
+               ;
 
-            //          summon[(
-            //             //
+               import L.{given }
 
-            //             SpawnabilityAndReconciliabilityNoArg[
-            //                Option[InpfaStatic[w3e.pre.StdGsps.DateTime ] ]
-            //                ,
-            //                // ln.ReactiveHtmlElement[dom.HTMLInputElement]
-            //                // ,
-            //                // Unit ,
-            //                ?,
-            //                ?,
-            //             ]
-            //          )]
+               edTypeOption
+               .map(e => (e, e.t, true ) )
+               match {
 
-            //       case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] , enabled ) =>
-            //          // L.input( L.typ := "number" )
-            //          // .amend(disabled := !enabled  )
-            //          // .amend((
-            //          //    ed.llc()
-            //          // ))
+                  // case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_Boolean.type, enabled ) =>
+                  //    // L.input( L.typ := "checkbox" )
+                  //    // .amend(disabled := !enabled  )
+                  //    // // .amend(L.value <-- ed.valueAnim.map(_.toString() ) )
+                  //    // .amend(
+                  //    //    //
+                  //    //    L.checked <-- ed.valueAnim.map(_.asInstanceOf[Boolean ] ) 
+                  //    //    ,
+                  //    //    L.onChange.mapToChecked.map(_.asInstanceOf[acv1$] ) --> (ed.src.toObserver.onNext _ )
+                  //    //    ,
+                  //    // )
+                  //    ???
 
-            //          ;
+                  case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type , enabled ) =>
+                     ;
 
-            //          ;
+                     summonInpfaForPv[w3e.pre.StdGsps.DateTime ]
+                     .composeForSpawn1()
+                     .spawnAsXsr(edTypeOption)
 
-            //          summon[(
-            //             //
+                  case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] , enabled ) =>
+                     ;
 
-            //             SpawnabilityAndReconciliabilityNoArg[
-            //                Option[InpfaStatic[BigDecimal] ]
-            //                ,
-            //                // ln.ReactiveHtmlElement[dom.HTMLInputElement]
-            //                // ,
-            //                // Unit ,
-            //                ?,
-            //                ?,
-            //             ]
-            //          )]
+                     // 5 : enm
 
-            //       case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_String.type, enabled ) =>
-            //          // L.input( )
-            //          // .amend(disabled := !enabled  )
-            //          // .amend((
-            //          //    ed.llc()
-            //          // ))
+                     ({ given edType.type = edType ; summonInpfaForPv })
+                     .composeForSpawn1()
+                     .spawnAsXsr(edTypeOption)
 
-            //          summon[(
-            //             //
+                  case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_String.type, enabled ) =>
+                     ;
 
-            //             SpawnabilityAndReconciliabilityNoArg[
-            //                Option[InpfaStatic[String] ]
-            //                ,
-            //                // ln.ReactiveHtmlElement[dom.HTMLInputElement]
-            //                // ,
-            //                // Unit ,
-            //                ?,
-            //                ?,
-            //             ]
-            //          )]
+                     summonInpfaForPv[String]
+                     .composeForSpawn1()
+                     .spawnAsXsr(edTypeOption)
 
-            //       case _ =>
-            //          L.input(disabled := true )
-            //    }
-            //    match {
-            //       case e =>
+                     // ???
 
-            //          // L.label(e, (
-            //          //    L.span(L.child <-- L.Val(title.spawn() ) )
-            //          //    .amend(":" )
-            //          //    .amend((
-            //          //       L.span()
-            //          //       .amend(L.styleAttr := (
-            //          //          ""
-            //          //          + s"display: inline-block ; position: relative ; inline-size: 11em ; vertical-align: text-top ;"
-            //          //          + s"background: rgba(255, 255, 0, 0.15 ) ; "
-            //          //       ) )
-            //          //       .amend(edTypeOption.fold(Seq() )(e => Seq[com.raquo.laminar.modifiers.Inserter.Base ](L.span(L.child <-- e.src.toObservable.map(_.toString() ) ) ) ) : _* )
-            //          //    ))
-            //          // ) )
+                  case _ =>
+                     L.input(L.disabled := true )
 
-            //          ???
-            //    }
-            case B(callbackOption) =>
-               // button() /* never, never use `<a>` for call-back buttons */
-               // .amend(L.typ := "button" ) /* necessary, as `<form>`s set the default to `submit` */
-               // .amend((
-               //    callbackOption match {
-               //       //
+                     match {
+                        case e =>
 
-               //       case Some(run : Function1[evt$, rv$] ) =>
-               //          (L.onClick --> run )
-               //       case None =>
-               //          (disabled := true )
+                           val xNothing = None
+
+                           /* can't use anon-classes, when subclassing, in Sc JS */
+                           ({
+                              ;
+
+                              object emn extends
+                                 AnyRef
+                                 with XScanLeftReconciliativeOps[e.type, xNothing.type, Unit ](lE = e )
+                              {
+
+                                 override
+                                 def updateTo(m: xNothing.type )
+                                 : Unit
+                                 = {
+                                    // no-op
+                                 }
+
+                              }
+                              emn
+                           })
+                     }
+               }
+
+               // TODO remove this test LOC
+               // match { case e => {
+               //    // assert((e : XScanLeftReconciliativeOps[?, ?, ?] ).wrappedLaminarElem.nn match { case e => e != scalajs.js.undefined && e != null }, (
+               //    //    s"assertion failed: ain't ('e.wrappedLaminarElem' non-null ) for ${e} "
+               //    // ) )
+               //    try {
+               //       ;
+
+               //       e.wrappedLaminarElem
+               //       .ref
+               //       .parentNode
                //    }
-               // ))
-               // .amend(L.child <-- L.Val(title.spawn() ) )
-               ; ???
+               //    catch { case z : ClassCastException => {
+               //       ;
 
-            // case A(urlOption) =>
-            //    // L.a()
-            //    // .amend((
-            //    //    urlOption match {
-            //    //       //
+               //       e.wrappedLaminarElemLst
+               //       .ref
+               //       .parentNode
+               //    } }
+               //    e
+               // } }
+               match { case e => {
+                  ;
 
-            //    //       case Some(href : java.net.URI ) =>
-            //    //          (L.href := href.toASCIIString().nn )
-            //    //       case None =>
-            //    //          (disabled := true )
-            //    //    }
-            //    // ))
-            //    // .amend(L.child <-- L.Val(title.spawn() ) )
-            //    ; ???
+                  e.wrappedLaminarElemLst
+                  .ref
+                  .parentNode
+                  e
+               } }
+            }
+            def renderHeadline(edTypeOption: Option[BInputFunc[?] ] )
+            : ln.ReactiveHtmlElement[dom.HTMLElement ]
+            = {
+               ;
+
+               import L.{given }
+
+               ;
+
+               (
+                  //
+
+                  L.span(L.child <-- L.Val(title.spawn() ) )
+                  .amend(":" )
+                  .amend((
+                     L.span()
+                     .amend(L.styleAttr := (
+                        ""
+                        + s"display: inline-block ; position: relative ; inline-size: 11em ; vertical-align: text-top ;"
+                        + s"background: rgba(255, 255, 0, 0.15 ) ; "
+                     ) )
+                     .amend(edTypeOption.fold(Seq() )(e => Seq[com.raquo.laminar.modifiers.Inserter.Base ](L.span(L.child <-- e.src.toObservable.map(_.toString() ) ) ) ) : _* )
+                  ))
+               )
+            }
+
+            // ???
+
+            lazy val _ = llrConvToArt(L.span )((mdl: Option[BInputFunc[?] ] ) => renderIntrinsic(mdl ) )(md.edTypeOption )
+
+            llrConv(L.span )((mdl: Option[BInputFunc[?] ] ) => renderIntrinsic(mdl ) )
+            .compose((md: C) => md.edTypeOption )
+            .spawnAsXsr(md )
+
+            // TODO remove this test LOC
+            match { case e => {
+               e.wrappedLaminarElem
+               .ref
+               .parentNode
+               e
+            } }
+
+            //
+            case md @ B(_) =>
+               ;
+
+               summonLaspaBtnaOrFriends[BtnaStatic ]
+               .compose((
+                  //
+
+                  (m : B ) =>
+                     (title, {
+                        for { callback <- m.callbackOption }
+                        yield BtnaStatic(onClick = callback.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
+                     } )
+
+               ) )
+               .spawnAsXsr(md )
+
+            case md @ A(_) =>
+               ;
+
+               summonLaspaBtnaOrFriends[LaspaStatic ]
+               .compose((
+                  //
+
+                  (m : A ) =>
+                     (title, {
+                        for { href <- m.hrefOption }
+                        yield LaspaStatic(href = Some(href) )
+                     } )
+
+               ) )
+               .spawnAsXsr(md )
+
          }
          match { case e => {
-            ebAvfwInlineBtnCssInit
-            // e
-            // .amend(L.className := (if (summon[BfSnaConfig] ).expectInlineHeadline then ("avfw-inline" ) else ("avfw-offtopic") ) )
-            ; ???
+            e
          } }
       }
 

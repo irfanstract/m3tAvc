@@ -42,6 +42,22 @@ with {
 
 } // given_TypeTest_Any_Option
 
+extension (console: org.scalajs.dom.Console ) {
+   //
+
+   def infoExceptionCollapsed(z: Throwable, headline: String = "the exception was:" )
+   = {
+      ;
+
+      util.Using.resource({
+         console.groupCollapsed(headline )
+         locally[java.io.Closeable](() => {
+            console.groupEnd()
+         } )
+      })(_ => console.info(z) )
+   }
+} // infoExceptionCollapsed$
+
 object ParentChildRelationship {
 
    object Cio
@@ -164,83 +180,32 @@ def trySameThreadScheduler()
 = monix.execution.Scheduler.global
 
 /**
- * like "pipe"s, but
- * instead of individual items we pass `Observable`s instead
+ * translates the `GivenSpinner1` into
+ * the corresponding value which
+ * , when used as a `&lt;button>`'s `type`, will make the elem an editor for the data-type
  * 
  */
-def newValueUpdateRepipe[R](
-   //
-   prototype
-      : (value: R) => Any
-   ,
-   initialValue
-      : R
-   ,
-)
+transparent inline
+def nativeTypStrFor(edType: w3e.pre.StdGsps.ofSnb.GivenSpinner1[?] )
+: org.scalajs.dom.AvfwHTMLButtonType
 = {
    ;
 
-   implicit val scheduler
-   = trySameThreadScheduler()
+   edType
 
-   laminar.api.L.Var[AsyncStateChangeMonad[R] ](laminar.api.L.Val(initialValue ) )
-   match { case pipe => {
-      (pipe.writer, {
-         pipe.signal
-         .flatMap(_.toLaminarObservable )
-         match { case e => e : AsyncStateChangeMonad[R] }
-      } )
-   } }
-} // newValueUpdateRepipe
-
-/**
- * the consumer-side itc ref will never change identity ; only the impl will change .
- * like "pipe"s, but
- * instead of individual fnc(s) we pass `Observable`s emitting fnc(s) instead .
- * 
- */
-def newCallbackImplUpdateRepipe
-   [
-      A,
-      R,
-   ]
-   (
+   match {
       //
-      prototype
-         : (arg: A) => R
-      ,
-      initialImpl
-         : A => R
-      = (_: Any) => { throw new IllegalStateException(s"no initial impl") }
-      ,
-   )
-= {
-   ;
-
-   type F
-   = (argOrCtx: A) => R
-
-   implicit val scheduler
-   = trySameThreadScheduler()
-
-   newValueUpdateRepipe(
+      case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type =>
+         "date"
+      case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] =>
+         "number"
+      case _ =>
+         ""
       //
-      prototype = (a: A => R ) => {} ,
-      initialValue = initialImpl ,
-   )
-   match { case (_1, _2) => {
-      ;
+   }
 
-      var vle
-      : F
-      = initialImpl
-
-      _2
-      .map(c => { vle = c } )
-
-      locally[(_1.type, F )](_1, { (arg: A) => vle.apply(arg) } )
-   } }
-} // newCallbackImplUpdatePipe
+   match { case v => org.scalajs.dom.AvfwHTMLButtonType(v) }
+} // nativeTypStrFor
 
 
 
