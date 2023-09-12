@@ -23,49 +23,49 @@ package s1
 
 
 
-trait ELaminarQckPlainStringConts
-extends
-   AnyRef
-   with ELaminarQckPlainStringContsReconc
-   /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
-   with w3e.pre.Articles
-   with w3e.pre.PlainTxtContents
-   /* a temporary treat necessary to prevent the compiler from hanging */
-   // with ELaminarQckCoreHtml
-{
-   this : (
-      AnyRef
-      with w3e.pre.Articles
-      with w3e.pre.PlainTxtContents
-      with ELaminarQckCoreHtml
-      with ELaminarQckPlainStringContsReconc
-   ) =>
-   ;
+// trait ELaminarQckPlainStringConts
+// extends
+//    AnyRef
+//    with ELaminarQckPlainStringContsReconc
+//    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
+//    with w3e.pre.Articles
+//    with w3e.pre.PlainTxtContents
+//    /* a temporary treat necessary to prevent the compiler from hanging */
+//    // with ELaminarQckCoreHtml
+// {
+//    this : (
+//       AnyRef
+//       with w3e.pre.Articles
+//       with w3e.pre.PlainTxtContents
+//       with ELaminarQckCoreHtml
+//       with ELaminarQckPlainStringContsReconc
+//    ) =>
+//    ;
 
-   import com.raquo.laminar.{nodes as ln}
+//    import com.raquo.laminar.{nodes as ln}
 
-   import org.scalajs.dom
+//    import org.scalajs.dom
 
-   ;
+//    ;
 
-   override
-   val PlainLocaleStringPlainTxtArticle
-   : (locale: java.util.Locale, txt: String) => Article
-   = (
+//    override
+//    val PlainLocaleStringPlainTxtArticle
+//    : (locale: java.util.Locale, txt: String) => Article
+//    = (
 
-      {
-         //
+//       {
+//          //
 
-         case value => {
-            (summon[SpawnabilityAndReconciliabilityNoArg[EbLocaleAndTxtString[?], ?, ? ] ] , EbLocaleAndTxtString(value ) )
-            match { case s => s : Article }
-         }
+//          case value => {
+//             (summon[SpawnabilityAndReconciliabilityNoArg[EbLocaleAndTxtString[?], ?, ? ] ] , EbLocaleAndTxtString(value ) )
+//             match { case s => s : Article }
+//          }
 
-      }
-   )
+//       }
+//    )
 
-   ;
-}
+//    ;
+// }
 
 case class EbLocaleAndTxtString[+V <: (java.util.Locale, String)](impl: V)
 {
