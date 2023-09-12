@@ -316,7 +316,7 @@ extends
                      (identity[(A | B | C , Article ) ] _ )
                      .andThen({
                         case (l, title) =>
-                           reconcilerFor(urlOption = l , title = title ) 
+                           spawnAndGetOptReconciler(urlOption = l , title = title ) 
                      })
                   ))
                }
