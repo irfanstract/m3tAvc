@@ -239,6 +239,7 @@ extends
     * to avoid serious compile-time infinite-looping
     * 
     */
+   @deprecated
    def artToSpiwmTwoConv
       //
       /** 
@@ -252,6 +253,7 @@ extends
          HD <: dom.Element ,
       ]
       (using (LaminarSpawnable[HL, HD] => Unit ) <:< (Article => Unit ) )
+      // (using (LaminarSpawnable[HL, HD] ) <:< (Article ) ) /* caused the compiler to crash */
    : Conversion[LaminarSpawnable[HL, HD], SpiwmTwos[Any, HL, Unit]]
    = {
       def toConv[t1, t2](impl : <:<[t1, t2] ) = identity[Conversion[t1, t2] ](impl.apply _ )

@@ -185,6 +185,14 @@ extends
             val a1 = artToSpiwmTwoConv.apply(a0 )
             val a2Reconc = (
                a1._1
+               .withAfterSpawnIntercept((
+                  /* type-checks it against `ln.ReactiveHtmlElement[dom.HTMLElement ]` */
+                  ((sp: ln.ReactiveElement[?] , mdl: Any ) => {
+                     sp.asInstanceOf[ln.ReactiveHtmlElement[dom.HTMLElement ] ]
+                  } )
+                  /* an extra 'match', to prevent ctxtual SAM conv leading to failure */
+                  match { case f => f }
+               ) )
                .withAfterReconcileIntercept((sp, m, r0 ) => {
                   ({ import laminar.api.L ; if summon[BfSnaConfig ].expectInlineHeadline then sp.amend(L.className := "avfw-inline" ) })
                   r0
