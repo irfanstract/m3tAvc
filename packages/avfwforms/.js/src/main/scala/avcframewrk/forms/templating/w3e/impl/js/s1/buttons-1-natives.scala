@@ -268,7 +268,11 @@ extends
 
                      existingNodeOption
                      .fold({
-                        val e = newDataValue.spawn()
+                        val e
+                        = {
+                           newDataValue.spawn()
+                           .asInstanceOf[ln.ReactiveHtmlElement[?] ]
+                        }
                         (e, e)
                      } )({ case e0 @ (e, _) => {
                         e.model_=(newDataValue )
