@@ -93,7 +93,7 @@ extends
       ;
 
       given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
-         (Article, Option[LaspaStaticWithoutHeadline] )
+         LaspaStaticA
          ,
          dom.HTMLAnchorElement
          ,
@@ -111,11 +111,7 @@ extends
          ,
 
       )(nativeElemLCtor = L.a )
-      .compose((a: LaspaStaticA) => (a.headlineAndFlowThruMode._1, a.contentualConfig1) )
    }
-
-   @deprecated("this is actually 'LaspaStaticWithoutHeadline'.") type LaspaStatic = LaspaStaticWithoutHeadline
-   @deprecated("this is actually 'LaspaStaticWithoutHeadline'.") val  LaspaStatic : LaspaStaticWithoutHeadline.type = LaspaStaticWithoutHeadline
 
    case class LaspaStaticWithoutHeadline(
       //
@@ -155,7 +151,7 @@ extends
       ;
 
       given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
-         (Article, Option[BtnaStaticWithoutHeadline] )
+         BtnaStaticA
          ,
          dom.HTMLButtonElement
          ,
@@ -171,11 +167,13 @@ extends
          ,
 
       )(nativeElemLCtor = L.button )
-      .compose((a: BtnaStaticA) => (a.headlineAndFlowThruMode._1, a.contentualConfig1) )
+      .withAfterSpawnIntercept((e, mdl) => {
+         for {
+            _ <- mdl.headlineAndFlowThruMode._2.collect({ case FlowThroughMode.forThroughness => })
+         } do e.amend(L.className := "avfw-inline" )
+         e
+      })
    }
-
-   @deprecated("this is actually 'BtnaStaticWithoutHeadline'.") type BtnaStatic = BtnaStaticWithoutHeadline
-   @deprecated("this is actually 'BtnaStaticWithoutHeadline'.") val  BtnaStatic : BtnaStaticWithoutHeadline.type = BtnaStaticWithoutHeadline
 
    case class BtnaStaticWithoutHeadline(
       //
@@ -245,12 +243,12 @@ extends
    }
 
    extension [Contents] (prov : (
-      given_SpawnabilityAndReconciliability_CaseClassGeneralised1.SrcLensAndDestAttrPairRawSelInvar[(Article, Contents )]
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1.SrcLensAndDestAttrPairRawSelInvar[((Article, Option[FlowThroughMode] ) , Contents )]
    ) ) {
       //
 
       def applyLaspaBtnaHeadlineProp()
-      : laminar.api.L.Observer[(Article, Contents ) ]
+      : laminar.api.L.Observer[((Article, Option[FlowThroughMode] ) , Contents ) ]
       = {
          ;
 
@@ -262,17 +260,20 @@ extends
             prov
 
                (L.child )
-               ({ case (title, _) => title } , summon[avcalg.CBC[Article] ].empty )
+               ({ case ((title, flowThruMode ), _) => title } , summon[avcalg.CBC[Article] ].empty )
 
-               ((s: ([A] =>> A )[ln.ReactiveHtmlElement[?] ] ) => s , (
+               ((s: ([A] =>> (A, A) )[ln.ReactiveHtmlElement[?] ] ) => s._2 , (
 
                   (existingNodeOption, newDataValue) => (
 
                      existingNodeOption
-                     .fold(newDataValue.spawn() )(e => {
+                     .fold({
+                        val e = newDataValue.spawn()
+                        (e, e)
+                     } )({ case e0 @ (e, _) => {
                         e.model_=(newDataValue )
-                        e
-                     })
+                        e0
+                     } })
                   )
                ) )
 
