@@ -265,19 +265,23 @@ extends
                ((s: ([A] =>> (A, A) )[ln.ReactiveHtmlElement[?] ] ) => s._2 , (
 
                   (existingNodeOption, newDataValue) => (
+                     //
 
-                     existingNodeOption
-                     .fold({
-                        val e
-                        = {
-                           newDataValue.spawn()
-                           .asInstanceOf[ln.ReactiveHtmlElement[?] ]
-                        }
-                        (e, e)
-                     } )({ case e0 @ (e, _) => {
-                        e.model_=(newDataValue )
-                        e0
-                     } })
+                     // TODO
+
+                     // existingNodeOption
+                     // .fold({
+                     //    val e
+                     //    = {
+                     //       newDataValue.spawn()
+                     //       .asInstanceOf[ln.ReactiveHtmlElement[?] ]
+                     //    }
+                     //    (e, e)
+                     // } )({ case e0 @ (e, _) => {
+                     //    e.model_=(newDataValue )
+                     //    e0
+                     // } })
+                     ???
                   )
                ) )
 
