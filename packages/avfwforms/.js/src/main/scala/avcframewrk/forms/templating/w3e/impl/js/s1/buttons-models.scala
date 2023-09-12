@@ -45,7 +45,8 @@ extends
       // with ELaminarQckCore
       // with ELaminarQckCoreHtml
       // with ELaminarQckButtonsReconc
-      with ELaminarQckPlainStringConts
+      // with ELaminarQckPlainStringConts
+      with w3e.pre.PlainTxtContents
    ) =>
    ;
 
@@ -360,7 +361,8 @@ extends
       with w3e.pre.Buttons
       with w3e.pre.PlainTxtContents
       // with ELaminarQckCoreHtml
-      with ELaminarQckPlainStringConts
+      // with ELaminarQckPlainStringConts
+      with w3e.pre.PlainTxtContents
    ) =>
    ;
 
