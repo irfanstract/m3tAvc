@@ -26,10 +26,10 @@ trait ELaminarQckCore
 extends
    AnyRef
    with ELaminarQckCoreABackreferencings
-   with w3e.pre.ArticlesViaLspwmt
+   with w3e.pre.ArticlesViaLspw
+   // with w3e.pre.ArticlesViaLspwmt
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Articles
-   with w3e.pre.ArticlesViaLspw
 {
    this : (
       AnyRef
