@@ -181,6 +181,19 @@ extends
          match { case a : ActionDescImpl[t1, t2] => a }
          match { case a : ActionDescImpl[t1, t2] => a.withGivenConstantTitle(mainLineContents ) }
          match { case a => describeButtonByActionGiven1(a) }
+         match { case a0 => {
+            val a1 = artToSpiwmTwoConv.apply(a0 )
+            val a2Reconc = (
+               a1._1
+               .withAfterReconcileIntercept((sp, m, r0 ) => {
+                  ({ import laminar.api.L ; if summon[BfSnaConfig ].expectInlineHeadline then sp.amend(L.className := "avfw-inline" ) })
+                  r0
+               } )
+            )
+            val a2 = identity[(a2Reconc.type, a1._2.type) ]((a2Reconc, a1._2 ) )
+            val a3 = a2 : Article
+            a3
+         } }
       }
 
    } // (mainLineContents: Article) asHavingDirectActionImpl(action: Action)

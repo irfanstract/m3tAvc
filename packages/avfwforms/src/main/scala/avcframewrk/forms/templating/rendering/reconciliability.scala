@@ -278,6 +278,67 @@ object reconciliabilityC
          //
       } // extension compose
 
+      extension [HL, Md, UOpR] (spawnerOriginal: SpawnabilityAndReconciliabilityNoArg[Md, HL, UOpR ] ) {
+         //
+
+         /**
+          * 
+          * with post-intercept, as given, during `spawn` -
+          * `reconcile` won't run the callback
+          * 
+          */
+         def withAfterSpawnIntercept
+            [HLAfter >: HL <: HL ]
+            (doPostSpw1: (thisSpawned: HL, mdl: Md ) => HLAfter )
+         : SpawnabilityAndReconciliabilityNoArg[Md, HLAfter, UOpR]
+         = {
+            ;
+
+            SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+               //
+               spwImpl1 = (mdl: Md) => (
+                  mdl
+                  match { case mdl => spawnerOriginal.spawn(mdl)( ) }
+                  match { case sp => doPostSpw1(sp, mdl) }
+               )
+               ,
+               reconcImpl1 = (spawnedThis, mdl) => (
+                  mdl
+                  match { case mdl => spawnerOriginal.model_=(spawnedThis )(mdl ) } 
+               )
+               ,
+            )
+         }
+
+         def withAfterReconcileIntercept
+            [UOpRNew <: UOpR ]
+            (doPostSpw1: (receiver: HL, newMdl: Md, c0: UOpR ) => UOpRNew )
+            (using util.NotGiven[Any <:< UOpRNew ] )
+         : SpawnabilityAndReconciliabilityNoArg[Md, HL, UOpRNew ]
+         = {
+            ;
+
+            ;
+
+            SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+               //
+               spwImpl1 = (mdl: Md) => (
+                  mdl
+                  match { case mdl => spawnerOriginal.spawn(mdl)( ) }
+               )
+               ,
+               reconcImpl1 = (spawnedThis, mdl) => (
+                  mdl
+                  match { case mdl => spawnerOriginal.model_=(spawnedThis )(mdl ) }
+                  match { case r => doPostSpw1(spawnedThis, mdl, r ) }
+               )
+               ,
+            )
+         }
+
+         //
+      }
+
       ;
    } // SpawnabilityAndReconciliabilityNoArg$
 
