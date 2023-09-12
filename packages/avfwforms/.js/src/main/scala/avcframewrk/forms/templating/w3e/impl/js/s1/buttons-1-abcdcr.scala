@@ -102,6 +102,19 @@ extends
       //    given ,
       // }
 
+      given given_SpawnabilityAndReconciliabilityNoArg_B_ReactiveHtmlElement_Unit
+      : SpawnabilityAndReconciliabilityNoArg[B, ln.ReactiveHtmlElement[?], Unit ]
+      = {
+         ;
+
+         // SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
+         //    //
+         //    spwImpl1 = (mdl: B) => {  } ,
+         // )
+
+         ???
+      }
+
       extension [DT] (ed: BInputFunc[DT] ) {
          //
 
@@ -345,37 +358,37 @@ extends
             } }
 
             //
-            // case md @ B(_) =>
-            //    ;
+            case md @ B(_) =>
+               ;
 
-            //    summonLaspaBtnaOrFriends[BtnaStatic ]
-            //    .compose((
-            //       //
+               summonLaspaBtnaOrFriends[BtnaStatic ]
+               .compose((
+                  //
 
-            //       (m : B ) =>
-            //          (title, {
-            //             for { callback <- m.callbackOption }
-            //             yield BtnaStatic(onClick = callback.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
-               //       } )
+                  (m : B ) =>
+                     (title, {
+                        for { callback <- m.callbackOption }
+                        yield BtnaStatic(onClick = callback.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
+                     } )
 
-            //    ) )
-            //    .spawnAsXsr(md )
+               ) )
+               .spawnAsXsr(md )
 
-            // case md @ A(_) =>
-            //    ;
+            case md @ A(_) =>
+               ;
 
-            //    summonLaspaBtnaOrFriends[LaspaStatic ]
-            //    .compose((
-            //       //
+               summonLaspaBtnaOrFriends[LaspaStatic ]
+               .compose((
+                  //
 
-            //       (m : A ) =>
-            //          (title, {
-            //             for { href <- m.hrefOption }
-            //             yield LaspaStatic(href = Some(href) )
-               //       } )
+                  (m : A ) =>
+                     (title, {
+                        for { href <- m.hrefOption }
+                        yield LaspaStatic(href = Some(href) )
+                     } )
 
-            //    ) )
-            //    .spawnAsXsr(md )
+               ) )
+               .spawnAsXsr(md )
 
          }
          match { case e => {
