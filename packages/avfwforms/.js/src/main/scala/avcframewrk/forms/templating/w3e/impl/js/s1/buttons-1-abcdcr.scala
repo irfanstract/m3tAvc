@@ -361,14 +361,15 @@ extends
             case md @ B(_) =>
                ;
 
-               summonLaspaBtnaOrFriends[BtnaStatic ]
+               given_SpawnabilityAndReconciliability_Btna[BtnaStaticWithoutHeadline]
+               .compose(btnaStaticAFromAcTuple2.apply _ )
                .compose((
                   //
 
                   (m : B ) =>
                      (title, {
                         for { callback <- m.callbackOption }
-                        yield BtnaStatic(onClick = callback.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
+                        yield BtnaStaticWithoutHeadline(onClick = callback.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
                      } )
 
                ) )
@@ -377,14 +378,15 @@ extends
             case md @ A(_) =>
                ;
 
-               summonLaspaBtnaOrFriends[LaspaStatic ]
+               given_SpawnabilityAndReconciliability_Laspa[LaspaStaticWithoutHeadline]
+               .compose(laspaStaticAFromAcTuple2.apply _ )
                .compose((
                   //
 
                   (m : A ) =>
                      (title, {
                         for { href <- m.hrefOption }
-                        yield LaspaStatic(href = Some(href) )
+                        yield LaspaStaticWithoutHeadline(href = Some(href) )
                      } )
 
                ) )
