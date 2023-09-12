@@ -166,16 +166,7 @@ extends
          //
       }
 
-      def renderFromScratch
-         (urlOption : A | B | C, title: Article )
-         (using BfSnaConfig )
-      : ln.ReactiveHtmlElement[dom.HTMLElement]
-      = {
-         reconcilerFor(urlOption = urlOption, title = title )
-         .wrappedLaminarElem
-      }
-
-      def reconcilerFor
+      def spawnAndGetOptReconciler
          (urlOption : A | B | C, title: Article )
          (using BfSnaConfig )
       : (
