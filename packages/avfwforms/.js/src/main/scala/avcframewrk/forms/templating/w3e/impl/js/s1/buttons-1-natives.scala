@@ -66,31 +66,230 @@ extends
 
    ;
 
-   locally {
-      ""
-      match { case s => s }
+   /**
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;anchor>`s (Laspa) and `&lt;button>`s (Btna) ;
+    * letting `mdl` to Tuple `(headline: Article, contentConfig: Option[Pv] )`
+    * 
+    */
+   def summonLaspaBtnaOrFriends
+      [Pv]
+      (using impl: SpawnabilityAndReconciliabilityNoArg[(Article, Option[Pv] ), ?, ? ] )
+   : impl.type
+   = impl
 
-      ;
-   }
-
-   transparent inline
-   def nativeTypStrFor(edType: GivenSpinner1[?] )
-   : String
+   /**
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;anchor>`s (Laspa)
+    * 
+    */
+   given given_SpawnabilityAndReconciliability_Laspa[XModel <: LaspaStaticWithoutHeadline]
+   : SpawnabilityAndReconciliabilityNoArg[LaspaStaticA, ln.ReactiveHtmlElement[dom.HTMLAnchorElement], Unit ]
    = {
       ;
 
-      edType
+      import laminar.api.L
 
-      match {
+      ;
+
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         (Article, Option[LaspaStaticWithoutHeadline] )
+         ,
+         dom.HTMLAnchorElement
+         ,
+      ](
          //
-         case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type =>
-            "date"
-         case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] =>
-            "number"
-         case _ =>
-            ""
+         prov => (
+
+            prov.applyLaspaBtnaHeadlineProp()
+
+         )
+         ,
+         prov => prov(L.href )((_ )._2.flatMap(_.href ).map(_.toASCIIString().nn ).getOrElse("") , "" )
+         ,
+         prov => prov(L.disabled )((_ )._2.isEmpty, false )
+         ,
+
+      )(nativeElemLCtor = L.a )
+      .compose((a: LaspaStaticA) => (a.headlineAndFlowThruMode._1, a.contentualConfig1) )
+   }
+
+   @deprecated("this is actually 'LaspaStaticWithoutHeadline'.") type LaspaStatic = LaspaStaticWithoutHeadline
+   @deprecated("this is actually 'LaspaStaticWithoutHeadline'.") val  LaspaStatic : LaspaStaticWithoutHeadline.type = LaspaStaticWithoutHeadline
+
+   case class LaspaStaticWithoutHeadline(
+      //
+      href : ([A] =>> A )[Option[java.net.URI] ]
+      ,
+   )
+
+   opaque type LaspaStaticA
+   <: Matchable
+   = ((Article, Option[FlowThroughMode] ) , Option[LaspaStaticWithoutHeadline] )
+
+   @deprecated
+   given laspaStaticAFromAcTuple2(using DummyImplicit)
+      (using util.NotGiven[LaspaStaticA <:< (Tuple | Tuple2[?, ?] | Tuple3[?, ?, ?]) ] ) /* to disallow local usage */
+   : Conversion[(Article, Option[LaspaStaticWithoutHeadline]) , LaspaStaticA ]
+   = btnaOrLaspaStaticImplAFromAcTuple2[LaspaStaticA, Option[LaspaStaticWithoutHeadline]]
+
+   /**
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;button>`s (Btna)
+    * 
+    */
+   given given_SpawnabilityAndReconciliability_Btna[XModel <: BtnaStaticWithoutHeadline]
+   : (
+      //
+      SpawnabilityAndReconciliabilityNoArg[
+         BtnaStaticA
+         ,
+         ln.ReactiveHtmlElement[dom.HTMLButtonElement]
+         ,
+         Unit ,
+      ]
+   )
+   = {
+      ;
+
+      ;
+
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
+         (Article, Option[BtnaStaticWithoutHeadline] )
+         ,
+         dom.HTMLButtonElement
+         ,
+      ](
          //
+
+         prov => prov.applyLaspaBtnaHeadlineProp()
+         ,
+
+         prov => prov(laminar.api.L.onClick )((_ )._2.map(_.onClick ).getOrElse(_ => {} ) , (_: Any) => {} )((evt, dispatch) => dispatch(evt) )
+         ,
+         prov => prov(laminar.api.L.disabled )((_ )._2.flatMap(d => Some(d.onClick) ).isEmpty , true )
+         ,
+
+      )(nativeElemLCtor = L.button )
+      .compose((a: BtnaStaticA) => (a.headlineAndFlowThruMode._1, a.contentualConfig1) )
+   }
+
+   @deprecated("this is actually 'BtnaStaticWithoutHeadline'.") type BtnaStatic = BtnaStaticWithoutHeadline
+   @deprecated("this is actually 'BtnaStaticWithoutHeadline'.") val  BtnaStatic : BtnaStaticWithoutHeadline.type = BtnaStaticWithoutHeadline
+
+   case class BtnaStaticWithoutHeadline(
+      //
+      onClick : (evtInfo: dom.Event) => Unit
+      ,
+   )
+
+   opaque type BtnaStaticA
+   <: Matchable
+   = ((Article, Option[FlowThroughMode] ) , Option[BtnaStaticWithoutHeadline] )
+
+   @deprecated
+   given btnaStaticAFromAcTuple2(using DummyImplicit)
+      (using util.NotGiven[BtnaStaticA <:< (Tuple | Tuple2[?, ?] | Tuple3[?, ?, ?]) ] ) /* to disallow local usage */
+   : Conversion[(Article, Option[BtnaStaticWithoutHeadline]) , BtnaStaticA ]
+   = btnaOrLaspaStaticImplAFromAcTuple2[BtnaStaticA, Option[BtnaStaticWithoutHeadline]]
+
+   final
+   lazy
+   val BtnaStaticInline
+   : (headline: Article, cb: Option[BtnaStaticWithoutHeadline] ) => BtnaStaticA
+   = (headline: Article, cb: Option[BtnaStaticWithoutHeadline] ) => ((headline, Some(FlowThroughMode.forThroughness ) ) , cb )
+
+   final
+   lazy
+   val BtnaStaticAside
+   : (headline: Article, cb: Option[BtnaStaticWithoutHeadline] ) => BtnaStaticA
+   = (headline: Article, cb: Option[BtnaStaticWithoutHeadline] ) => ((headline, Some(FlowThroughMode.forSkip ) ) , cb )
+
+   private object btnaStaticFlowThruModeNotSpecifiedWarningDone { org.scalajs.dom.console.error(s"[BtnaStaticWithoutHeadline] missing 'flowThroughMode' property") }
+
+   ;
+
+   ;
+
+   extension [BtnlWithoutHeadline] (c: ((Article, Option[FlowThroughMode]) , BtnlWithoutHeadline ) ) {
+      //
+
+      def headlineAndFlowThruMode
+      : (Article, Option[FlowThroughMode])
+      = c._1
+
+      def contentualConfig1
+      : BtnlWithoutHeadline
+      = c._2
+
+      //
+   }
+
+   @deprecated
+   def btnaOrLaspaStaticImplAFromAcTuple2[
+      BtnlWithHeadline
+         >: ((Article, Option[FlowThroughMode]) , BtnlWithoutHeadline )
+         <: ((Article, Option[FlowThroughMode]) , BtnlWithoutHeadline )
+      ,
+      BtnlWithoutHeadline ,
+   ]
+      (using DummyImplicit)
+   : Conversion[(Article, BtnlWithoutHeadline) , BtnlWithHeadline ]
+   = {
+      /* use combination of pat-matching and eta-expansion and fnc-composition, to avoid infinite-loopings */
+      identity[((Article, BtnlWithoutHeadline)) => ((Article, Option[FlowThroughMode]) , BtnlWithoutHeadline ) ]({
+         case (headline, config) =>
+            ((headline, None ) , config )
+      })
+      .apply _
+   }
+
+   extension [Contents] (prov : (
+      given_SpawnabilityAndReconciliability_CaseClassGeneralised1.SrcLensAndDestAttrPairRawSelInvar[(Article, Contents )]
+   ) ) {
+      //
+
+      def applyLaspaBtnaHeadlineProp()
+      : laminar.api.L.Observer[(Article, Contents ) ]
+      = {
+         ;
+
+         import laminar.api.L
+
+         (
+            //
+
+            prov
+
+               (L.child )
+               ({ case (title, _) => title } , summon[avcalg.CBC[Article] ].empty )
+
+               ((s: ([A] =>> A )[ln.ReactiveHtmlElement[?] ] ) => s , (
+
+                  (existingNodeOption, newDataValue) => (
+
+                     existingNodeOption
+                     .fold(newDataValue.spawn() )(e => {
+                        e.model_=(newDataValue )
+                        e
+                     })
+                  )
+               ) )
+
+         )
       }
+
+      // @deprecated
+      // def applyLaspaBtnaHeadlineProp()
+      // : laminar.api.L.Observer[(Article, Contents ) ]
+      // = ???
+
+   }
+
+   locally {
+      ""
+      match { case s => s }
+      ;
    }
 
    ;
