@@ -202,6 +202,7 @@ extends
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with w3e.pre.Articles
+   with ELaminarQckCoreFailsafeReconcilers
 {
    this : (
       AnyRef
@@ -210,6 +211,7 @@ extends
       with ELaminarQckButtonsActionModelling
       with ELaminarQckButtonsActionModellingTwo
       with ENativeElementsD1
+      with ELaminarQckCoreFailsafeReconcilers
    ) =>
    ;
 
@@ -229,7 +231,7 @@ extends
     * 
     */
    private
-   trait XScanLeftReconciliativeOps[ContentModel]
+   trait XScanLeftReconciliativeOps1[ContentModel]
    {
       ;
 
@@ -238,7 +240,7 @@ extends
 
       def tryUpdateTo
          (m : ContentModel )
-      : Either[XScanLeftReconciliativeOps[ContentModel] , Unit]
+      : Either[XScanLeftReconciliativeOps1[ContentModel] , Unit]
 
    }
 
