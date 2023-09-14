@@ -283,8 +283,8 @@ object reconciliabilityC
 
          /**
           * 
-          * with post-intercept, as given, during `spawn` -
-          * `reconcile` won't run the callback
+          * with post-spawn intercept, possibly changing the return-value -
+          * `reconcile` won't run the callback .
           * 
           */
          def withAfterSpawnIntercept
@@ -334,6 +334,28 @@ object reconciliabilityC
                )
                ,
             )
+         }
+
+         //
+      }
+
+      extension [HL, Md, UOpR] (spawnerOriginal: SpawnabilityAndReconciliabilityNoArg[Md, HL, UOpR ] ) {
+         //
+
+         //
+
+         /** 
+          * in `Tuple2` form, as
+          * otherwise there'd be no way to get a type which e
+          * 
+          */
+         def asTypeTupelified
+         = {
+            ;
+            val tc
+               = (new AnyRef).asInstanceOf[{ type Reconcilee = HL }]
+            (tc, spawnerOriginal )
+               : (tc.type, Any ) { val _2 : spawnerOriginal.type & SpawnabilityAndReconciliabilityNoArg[Md, _1.Reconcilee, UOpR ] }
          }
 
          //
