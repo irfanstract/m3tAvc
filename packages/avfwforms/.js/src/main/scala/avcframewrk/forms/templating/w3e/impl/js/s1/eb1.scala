@@ -250,6 +250,18 @@ extends
 
    export LaminarSpawnableReconcTuple.{apply => LaminarSpawnableReconcTupleImplBy }
 
+   object LaminarSpawnableReconcFromTuple
+   {
+      ;
+
+      export LaminarSpawnableReconcTuple.unapply
+
+      val _ = 5
+      lazy val _ = 5
+
+      ;
+   }
+
    lazy val _ = {
       ;
 
@@ -308,18 +320,6 @@ extends
          ,
       )
    }
-
-   // object laminarInSpawneddLLImplicitsAgain
-   // {
-   //    ;
-// 
-   //    export LaminarSpawnableReconcTuple.unapply
-   //    
-   //    val _ = 5
-   //    lazy val _ = 5
-// 
-   //    ;
-   // }
 
    /** 
     * query, by an `Article`, for its `LReconciliativeKey`

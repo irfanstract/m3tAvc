@@ -71,6 +71,8 @@ extends
 
       ;
 
+      // final
+      // lazy
       val cc
       = {
          ;
@@ -78,6 +80,8 @@ extends
             //
          )
       }
+      // final
+      // lazy
       val spws
       = {
          ;
@@ -97,6 +101,54 @@ extends
       import XAspwPredefs.{*, given}
 
       import spws.{*, given}
+
+      /**
+       * 
+       * an infrastructure to
+       * impl the proper data-structures for these purposes
+       * 
+       */
+      private[avcframewrk]
+      object ConcatArtDat
+      {
+         ;
+
+         type XItemSeqOps[+E]
+            >: Seq[XItemSeqRow[E] ]
+            <: Seq[XItemSeqRow[E] ]
+
+         opaque type XItemSeqRow[+E]
+            <: Matchable
+            = (Unit, E)
+
+         object XItemSeqRow {
+            def apply[E](v: E) : XItemSeqRow[v.type] = ((), v )
+            def unapply[E](o: XItemSeqRow[E] ): Some[E] = Some(o._2 )
+         }
+
+         ;
+
+         /**
+          * this
+          * is intended to do the inverse of the implicit conv to `Article`
+          * 
+          */
+         def unapply(a: Article)
+         : Option[(XItemSeqOps[Article] )]
+         = {
+            a match {
+               case LaminarSpawnableReconcFromTuple((`reconciliabilityKey`, d : XItemSeqOps[Article] )) =>
+                  Some(d)
+               case _ =>
+                  None
+            }
+         }
+
+      } // ConcatArtDat$
+
+      type EModel
+      >: ConcatArtDat.XItemSeqOps[Article]
+      <: ConcatArtDat.XItemSeqOps[Article]
 
       ;
 
@@ -252,10 +304,22 @@ extends
             .flatMap({ case (newArtLs, nds, s ) => {
                s.map(o => o.fold(Seq(L.span("loading...") ) )(_ => nds.map(e => laminarInSpawneddLL(e) ) ) ) 
             } })
+            .map(s => {
+               s
+               .map({
+                  case e: ln.ReactiveHtmlElement[?] =>
+                     import laminar.api.L.{given }
+                     chtSeparator(e, " ")
+                  case e =>
+                     e
+               })
+            })
          }
 
          //
       }
+
+      val chtSeparator = laminar.api.L.customHtmlTag("c-per-item")
 
       /**
        * the core/heart of the _aggregate_ reconciler.
@@ -335,6 +399,8 @@ extends
          ;
       }
 
+      // final
+      // lazy
       val reconciliability
       = {
 
@@ -355,14 +421,10 @@ extends
             }
             ,
          )
-         match { case s => {
-            new
-               SpawnabilityAndReconciliabilityNoArg[EModel, ({ type M[E] = E match { case SpawnabilityAndReconciliabilityNoArg[?, e, ?] => e } })#M[s.type ] , Unit]
-               with ConcatArtDat.OperatorM
-            { export s.* }
-         } }
       }
 
+      // final
+      lazy
       val reconciliabilityKey
       = SRNA.allocateGScanLeft(Seq() )(reconciliability )
 
@@ -433,7 +495,7 @@ extends
    this : (
       AnyRef
       with w3e.pre.Articles
-      // with ELaminarQckCore
+      with ELaminarQckCore
       // with ELaminarQckCoreHtml
       with w3e.pre.PlainTxtContents
       with ELaminarQckCoreABackreferencings
@@ -462,61 +524,7 @@ extends
    {
       ;
 
-      /**
-       * 
-       * an infrastructure to
-       * impl the proper data-structures for these purposes
-       * 
-       */
-      private[avcframewrk]
-      object ConcatArtDat
-      {
-         ;
-
-         type XItemSeqOps[+E]
-            >: Seq[XItemSeqRow[E] ]
-            <: Seq[XItemSeqRow[E] ]
-
-         opaque type XItemSeqRow[+E]
-            <: Matchable
-            = (Unit, E)
-
-         object XItemSeqRow {
-            def apply[E](v: E) : XItemSeqRow[v.type] = ((), v )
-            def unapply[E](o: XItemSeqRow[E] ): Some[E] = Some(o._2 )
-         }
-
-         ;
-
-         /**
-          * this
-          * is intended to do the inverse of the implicit conv to `Article`
-          * 
-          */
-         def unapply(a: Article)
-         : Option[(XItemSeqOps[Article] )]
-         = {
-            a match {
-               case (o: OperatorM, d : XItemSeqOps[Article] ) =>
-                  Some(d)
-               case _ =>
-                  None
-            }
-         }
-
-         /**
-          * 
-          */
-         sealed
-         trait OperatorM
-
-      } // ConcatArtDat$
-
       ;
-
-      type EModel
-      >: ConcatArtDat.XItemSeqOps[Article]
-      <: ConcatArtDat.XItemSeqOps[Article]
 
       ;
 
