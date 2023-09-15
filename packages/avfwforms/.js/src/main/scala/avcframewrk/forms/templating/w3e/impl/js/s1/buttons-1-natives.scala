@@ -254,6 +254,8 @@ extends
 
          import laminar.api.L
 
+         val reconcilerI = summon[SpawnabilityAndReconciliabilityNoArg[Article, ?, ? ] ].asTypeTupelified
+
          (
             //
 
@@ -262,26 +264,31 @@ extends
                (L.child )
                ({ case ((title, flowThruMode ), _) => title } , summon[avcalg.CBC[Article] ].empty )
 
-               ((s: ([A] =>> (A, A) )[ln.ReactiveHtmlElement[?] ] ) => s._2 , (
+               ((s: (reconcilerI._1.Reconcilee, ln.ReactiveHtmlElement[?] ) ) => (s._2 match { case e => e } ) , (
 
-                  (existingNodeOption, newDataValue) => (
+                  (existingNodeOption, newArtD ) => (
                      //
 
                      // TODO
 
-                     // existingNodeOption
-                     // .fold({
-                     //    val e
-                     //    = {
-                     //       newDataValue.spawn()
-                     //       .asInstanceOf[ln.ReactiveHtmlElement[?] ]
-                     //    }
-                     //    (e, e)
-                     // } )({ case e0 @ (e, _) => {
-                     //    e.model_=(newDataValue )
-                     //    e0
-                     // } })
-                     ???
+                     // import eb.laminarInSpawneddLLImplicits.{given }
+
+                     existingNodeOption
+                     .fold({
+                        val e
+                        = {
+                           // newArtD.spawn()
+                           reconcilerI._2.spawn(newArtD )( )
+                        }
+                        (e, (e match { case e => laminarInSpawneddLL.apply(e).asInstanceOf[ln.ReactiveHtmlElement[?] ] } ) )
+                     } )({ case e0 @ (e, _) => {
+                        // e.model_=(newArtD )
+                        reconcilerI._2
+                        .model_=(e )(newArtD )
+                        // ( ??? )
+                        e0
+                     } })
+                     match { case e => e }
                   )
                ) )
 
