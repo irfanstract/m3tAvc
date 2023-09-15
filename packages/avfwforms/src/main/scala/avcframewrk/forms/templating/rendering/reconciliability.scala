@@ -33,13 +33,26 @@ object reconciliabilityC
 {
    ;
 
+   // trait SpawnabilityOpModels[-Mdl]
+   // { type Model >: Mdl <: Mdl }
+
    trait SpawnabilityNoArg[-Mdl, +R ]
    {
       ;
 
-      extension (this1: Mdl)
+      // @deprecated
+      type Model
+      >: Mdl @annotation.unchecked.uncheckedVariance
+      <: Mdl @annotation.unchecked.uncheckedVariance
+
+      extension (this1: Model)
          def spawn()
          : R
+
+      @deprecated
+      type Spawned
+      >: R @annotation.unchecked.uncheckedVariance
+      <: R @annotation.unchecked.uncheckedVariance
 
    }
 
@@ -47,10 +60,16 @@ object reconciliabilityC
    {
       ;
 
-      extension (this1: Mdl)
+      // @deprecated
+      type Model
+      >: Mdl @annotation.unchecked.uncheckedVariance
+      <: Mdl @annotation.unchecked.uncheckedVariance
+
+      extension (this1: Model)
          def spawn(arg: A)
          : R
 
+      ;
    }
 
    /**
@@ -63,10 +82,20 @@ object reconciliabilityC
    {
       ;
 
-      extension (this1: Receiver)
+      type Reconcilee
+      >: Receiver @annotation.unchecked.uncheckedVariance
+      <: Receiver @annotation.unchecked.uncheckedVariance
+
+      extension (this1: Reconcilee )
          def model_=(newModel: Mdl )
          : R
 
+      @deprecated
+      type ReconciliativeStat
+      >: R @annotation.unchecked.uncheckedVariance
+      <: R @annotation.unchecked.uncheckedVariance
+
+      ;
    }
 
    final
@@ -283,8 +312,8 @@ object reconciliabilityC
 
          /**
           * 
-          * with post-intercept, as given, during `spawn` -
-          * `reconcile` won't run the callback
+          * with post-spawn intercept, possibly changing the return-value -
+          * `reconcile` won't run the callback .
           * 
           */
          def withAfterSpawnIntercept
@@ -334,6 +363,34 @@ object reconciliabilityC
                )
                ,
             )
+         }
+
+         //
+      }
+
+      extension [HL, Md, UOpR] (spawnerOriginal: SpawnabilityAndReconciliabilityNoArg[Md, HL, UOpR ] ) {
+         //
+
+         //
+
+         /** 
+          * in `Tuple2` form, as
+          * otherwise there'd be no way to get a type which e
+          * 
+          */
+         def asTypeTupelified
+         = {
+            spawnerOriginal.asTypeTupelifiedImpl()
+         }
+
+         def asTypeTupelifiedImpl
+            ( )
+         = {
+            ;
+            val tc
+               = Tuple.asInstanceOf[{ type Reconcilee = HL }]
+            (tc, spawnerOriginal )
+               : (tc.type, Any ) { val _2 : SpawnabilityAndReconciliabilityNoArg[Md, _1.Reconcilee, UOpR ] }
          }
 
          //
