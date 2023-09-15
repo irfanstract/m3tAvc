@@ -81,7 +81,7 @@ extends
          //
 
          SpawnabilityAndReconciliabilityNoArg[
-            Option[InpfaStatic[Pv] ]
+            Option[BInputFunc[Pv] ]
             ,
             ?,
             ?,
@@ -103,9 +103,9 @@ extends
    : (
       //
       SpawnabilityAndReconciliabilityNoArg[
-         Option[InpfaStatic[Value] ]
+         Option[BInputFunc[Value] ]
          ,
-         ln.ReactiveHtmlElement[dom.HTMLInputElement]
+         ln.ReactiveHtmlElement[dom.HTMLElement]
          ,
          Unit ,
       ]
@@ -139,15 +139,15 @@ extends
       ;
 
       type XModel
-         >: Option[InpfaStatic[Value] ]
-         <: Option[InpfaStatic[Value] ]
+         >: Option[BInputFunc[Value] ]
+         <: Option[BInputFunc[Value] ]
 
       import laminar.api.L
 
       ;
 
       class XEAndStateBag1() extends
-      aBackreferencings.XEAndStateBag(ec = { L.input })
+      aBackreferencings.XEAndStateBag(ec = { L.span })
       with aBackreferencings.XEAndStateBagCm[XModel, Unit]
       {
          //
@@ -166,18 +166,123 @@ extends
          wrappedLaminarElement
          .amend(L.typ := nativeTypStrFor(typ) )
 
-         val valueControlled1
+         // val valueControlled1
+         // = {
+         //    ;
+
+         //    val s = L.Var[( GivenSpinner1[Value ] , Value ) ]((typ, initialVal ))
+
+         //    val c = lControlledRetypable(src = s )
+
+         //    wrappedLaminarElement
+         //    .amend(c )
+
+         //    s.writer
+         // }
+
+         extension (s0 : L.Signal[InpfaStaticInvar[Value] ] ) {
+            //
+
+            //
+
+            def spawnNewE()
+            : ln.ReactiveHtmlElement[dom.HTMLInputElement ]
+            = {
+               ;
+
+               val s1 = L.Var[Option[InpfaStaticInvar[Value] ] ](None)
+
+               def propagateEditResultValue(c: Value)
+               : Unit
+               = {
+                  ;
+                  val evtInfo
+                  = new (org.scalajs.dom.Event)("avfwinputfieldevt", scalajs.js.undefined )
+                  ;
+                  for { s <- s1.now() }
+                  yield {
+                     s
+                     .propagate1(evtInfo , c )
+                  }
+               }
+
+               val s
+               = s0.map(value => { s1.set(Some(value) ) ; value } )
+
+               // TODO
+               L.input({
+                  lControlledRemote(typ )(s.map(_.value ) )({
+                     L.Observer((c: Value) => {
+                        propagateEditResultValue(c)
+                     } )
+                  } )
+               } )
+            }
+
+            //
+         }
+
+         val valueControlled11
          = {
             ;
 
-            val s = L.Var[( GivenSpinner1[Value ] , Value ) ]((typ, initialVal ))
+            val s
+            = L.Var[Option[L.Signal[InpfaStaticInvar[Value] ] ] ](None )
 
-            val c = lControlledRetypable(src = s )
+            val sS
+            = {
+               s.signal
+               .changes
+               .collect({ case Some(v) => v })
+            }
 
             wrappedLaminarElement
-            .amend(c )
+            .amend({
+               L.child <-- {
+                  sS
+                  .map(s => s.spawnNewE() )
+               }
+            })
 
             s.writer
+         }
+
+         val valueControlled1
+         = {
+            valueControlled11
+            .contramap((s0: Option[BInputFunc[Value] ] ) => {
+               org.scalajs.dom.window.isSecureContext
+               (for {
+                  s <- s0
+               } yield {
+                  ;
+                  val s1
+                  = {
+                     for {
+                        value <- s.src.toObservable
+                     }
+                     yield {
+                        //
+                        InpfaStaticInvar(
+                           //
+                           value = value
+                           ,
+                           propagate1 = (
+                              { case (evtInfo, newValue) => {
+                                 ;
+
+                                 s.src.toObserver
+                                 .onNext(newValue)
+                              } }
+                           )
+                           ,
+                        )
+                     }
+                  }
+                  ;
+                  s1
+               } )
+            } )
          }
 
          val srcToSetterDispatchers
@@ -187,7 +292,9 @@ extends
 
                :+(L.disabled.startAttribNow((_: XModel).fold(false)(_ => true ) , initialValue = None ).contraconst() )
 
-               :+(valueControlled1.contramap((c: Option[InpfaStatic[Value] ] ) => c match { case Some(c) => (typ, c.value) ; case None => (typ, initialVal) } ) )
+               :+(valueControlled1 )
+
+               // :+ (valueControlled11 )
 
                // TODO
 
@@ -211,7 +318,12 @@ extends
          import aBackreferencings.{given Conversion[?, ?] }
 
          val f1
-         = () => new XEAndStateBag1().wrappedLaminarElement
+         = {
+            () => {
+               new XEAndStateBag1()
+               .wrappedLaminarElement
+            }
+         }
 
          summon[Conversion[f1.type, SpawnabilityAndReconciliabilityNoArg[XModel, ? <: ln.ReactiveHtmlElement[dom.HTMLElement] , ? ] ] ]
          .apply(f1 )
@@ -224,11 +336,17 @@ extends
     * (as it's not the case when `type` were `button` or `submit` or `checkbox` or `file` )
     * 
     */
-   type InpfaStatic[+Value]
+   @deprecated("this is a co-variant (re)export of the latter.")
+   type InpfaStatic[+Value ]
+   = InpfaStaticCovar[Value ]
+
+   type InpfaStaticCovar[+Value ]
    = InpfaStaticInvar[? <: Value ]
 
    /**
-    * `InpfaStatic`, with invariance in place of co-variance
+    * 
+    * `input`s where setting the attrib-or-prop `value` will do what the name suggests
+    * (as it's not the case when `type` were `button` or `submit` or `checkbox` or `file` )
     * 
     */
    case class InpfaStaticInvar
@@ -237,13 +355,38 @@ extends
          //
          value: Value
          ,
-         propagate1 : (evtInfo: dom.Event, newValue: String ) => Unit
+         propagate1 : (evtInfo: dom.Event, newValue: Value ) => Unit
          ,
       )
    {
       ;
 
       ;
+   }
+
+   lazy val inpfaDemoAutoIncrement
+   = {
+      import laminar.api.L
+
+      ;
+
+      ;
+
+      val vr = L.Var[String]("")
+
+      new {
+         reschedule()
+         def reschedule()
+         : Unit
+         = {
+            scalajs.js.timers.setTimeout(970)({
+               vr.set(scalajs.js.Date.apply() )
+               reschedule()
+            })
+         }
+      }
+
+      vr.signal
    }
 
    locally {
@@ -257,7 +400,7 @@ extends
             //
 
             SpawnabilityAndReconciliabilityNoArg[
-               Option[InpfaStatic[Boolean] ]
+               Option[BInputFunc[Boolean] ]
                ,
                // ln.ReactiveHtmlElement[dom.HTMLInputElement]
                // ,
@@ -277,7 +420,7 @@ extends
             //
 
             SpawnabilityAndReconciliabilityNoArg[
-               Option[InpfaStatic[Int] ]
+               Option[BInputFunc[Int] ]
                ,
                ?,
                ?,
@@ -291,7 +434,15 @@ extends
 
    ;
 
-   extension [Pv, Sp, ReconcOpR] (impl: SpawnabilityAndReconciliabilityNoArg[Option[InpfaStatic[Pv]], Sp, ReconcOpR ] ) {
+   extension [
+      Pv
+      ,
+      Sp
+      >: ln.ReactiveHtmlElement[?]
+      <: ln.ReactiveHtmlElement[?]
+      ,
+      ReconcOpR,
+   ] (impl: SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[Pv]], Sp, ReconcOpR ] ) {
       //
 
       // transparent inline
@@ -313,19 +464,10 @@ extends
 
             // TODO
 
-            ({
-               for {
-                  e <- eOption
-                  case src : L.Var[t] <- Some(e.src )
-               }
-               yield {
-                  InpfaStaticInvar(
-                     //
-                     value = src.now() match { case e => e.asInstanceOf[Pv] } ,
-                     propagate1 = { case _ => } ,
-                  )
-               }
-            })
+            for {
+               case eh0 : BInputFunc[Pv] <- eOption
+            }
+            yield eh0
 
          ) )
       }

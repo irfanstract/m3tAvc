@@ -96,30 +96,7 @@ extends
    = {
       ;
 
-      import L.{given}
-
-      L.controlled(
-         //
-         L.value <-- src.toObservable.map(_.toString() )
-         ,
-         (
-            L.onInput
-            .mapToValue
-            // .map(v => {
-            //    org.scalajs.dom.console.log("inputed value raw: ", v )
-            //    v
-            // } )
-            .map(typ.parse.lift ).collect({ case Some(v) => v })
-            .map(v => {
-               if v.isInstanceOf[Boolean] then {
-                  org.scalajs.dom.console.log("inputed value parsed: ", v )
-               }
-               v
-            } )
-            -->
-            (src.toObserver.onNext _ )
-         ) ,
-      ) 
+      lControlledRemote(typ)(src.toObservable )(dest = src.toObserver )
    }
 
    /**
@@ -135,14 +112,73 @@ extends
 
       import L.{given}
 
+      lControlledRetypableRemote(src.signal )(src.toObserver )
+   }
+
+   def lControlledRemote
+      [Value]
+      (typ: GivenSpinner1[Value])
+      (src : L.Observable[Value] )
+      (dest : L.Observer[Value] )
+   = {
+      ;
+
+      import L.{given}
+
       L.controlled(
          //
-         L.value <-- src.toObservable.map({ case (_, value) => value }).map(_.toString() )
+         L.value <-- src.map(_.toString() )
          ,
          (
             L.onInput
             .mapToValue
-            .map(newValue => { val (typ, _) = src.signal.now() ; for (newValue1 <- typ.parse.lift.apply(newValue ) ) yield (typ, newValue1 ) } ).collect({ case Some(v) => v })
+            // .map(v => {
+            //    org.scalajs.dom.console.log("inputed value raw: ", v )
+            //    v
+            // } )
+            .map((
+               typ.parse.lift
+               match { case f => {
+                  (v: String) => {
+                     f(v)
+                  }
+               } }
+            ) )
+            .collect({ case Some(v) => v })
+            .map(v => {
+               if v.isInstanceOf[Boolean] then {
+                  org.scalajs.dom.console.log("inputed value parsed: ", v )
+               }
+               else {
+                  org.scalajs.dom.console.log("inputed value parsed: ", s"${v.toString().take(3) }..." )
+               }
+               v
+            } )
+            // -->
+            // (dest.onNext _ )
+            .map(value => dest.onNext(value) )
+            --> L.Observer.empty
+         ) ,
+      ) 
+   }
+
+   def lControlledRetypableRemote
+      [Value]
+      (src : ([Value] =>> L.StrictSignal[Value] )[(GivenSpinner1[Value] , Value ) ] )
+      (dest : ([Value] =>> L.Observer[Value] )[(GivenSpinner1[Value] , Value ) ] )
+   = {
+      ;
+
+      import L.{given}
+
+      L.controlled(
+         //
+         L.value <-- src.map({ case (_, value) => value }).map(_.toString() )
+         ,
+         (
+            L.onInput
+            .mapToValue
+            .map(newValue => { val (typ, _) = src.now() ; for (newValue1 <- typ.parse.lift.apply(newValue ) ) yield (typ, newValue1 ) } ).collect({ case Some(v) => v })
             .map({ case v @ (typ, vV ) => {
                if vV.isInstanceOf[Boolean] then {
                   org.scalajs.dom.console.log("inputed value parsed: ", v )
@@ -150,7 +186,7 @@ extends
                v
             } })
             -->
-            (src.toObserver.onNext _ )
+            dest
          ) ,
       ) 
    }
