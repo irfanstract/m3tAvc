@@ -82,6 +82,13 @@ extends
 
    ;
 
+   def summonInpfaForPv
+      [Value]
+      //
+      (using GspGoodDefaultValuation[Value ] )
+      (using GivenSpinner1[Value ] )
+   = summonInpfaForPvB[Value]
+
    object abcdCallbackRenderablility1
    {
       ;
@@ -93,29 +100,6 @@ extends
       import CallbackTypeL.{A, B, C }
 
       ;
-
-      ;
-      // import L.{
-      //    href as _,
-      //    input as _,
-      //    a as _ ,
-      //    button ,
-      //    disabled ,
-      //    given ,
-      // }
-
-      given given_SpawnabilityAndReconciliabilityNoArg_B_ReactiveHtmlElement_Unit
-      : SpawnabilityAndReconciliabilityNoArg[B, ln.ReactiveHtmlElement[?], Unit ]
-      = {
-         ;
-
-         // SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
-         //    //
-         //    spwImpl1 = (mdl: B) => {  } ,
-         // )
-
-         ???
-      }
 
       extension [DT] (ed: BInputFunc[DT] ) {
          //
@@ -180,7 +164,7 @@ extends
 
          ;
          
-         def renderIntrinsic(edTypeOption: Option[BInputFunc[?] ] )
+         def renderIntrinsic[Pv] (edTypeOption: Option[BInputFunc[Pv] ] )
          : XScanLeftReconciliativeOps[ln.ReactiveHtmlElement[dom.HTMLElement ], ? <: Option[BInputFunc[?] ], Unit ]
          = {
             ;
@@ -191,40 +175,24 @@ extends
             .map(e => (e, e.t, true ) )
             match {
 
-               // case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_Boolean.type, enabled ) =>
-               //    // L.input( L.typ := "checkbox" )
-               //    // .amend(disabled := !enabled  )
-               //    // // .amend(L.value <-- ed.valueAnim.map(_.toString() ) )
-               //    // .amend(
-               //    //    //
-               //    //    L.checked <-- ed.valueAnim.map(_.asInstanceOf[Boolean ] ) 
-               //    //    ,
-               //    //    L.onChange.mapToChecked.map(_.asInstanceOf[acv1$] ) --> (ed.src.toObserver.onNext _ )
-               //    //    ,
-               //    // )
-               //    ???
-
-               case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type , enabled ) =>
+               case Some(ed: BInputFunc[acv1$], edType : ( w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type) , enabled ) =>
                   ;
 
                   summonInpfaForPv[w3e.pre.StdGsps.DateTime ]
-                  .composeForSpawn1()
                   .spawnAsXsr(edTypeOption)
 
-               case Some(ed: BInputFunc[acv1$], edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] , enabled ) =>
+               case Some(ed: BInputFunc[acv1$], edType : ( w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm]) , enabled ) =>
                   ;
 
                   // 5 : enm
 
                   ({ given edType.type = edType ; summonInpfaForPv })
-                  .composeForSpawn1()
                   .spawnAsXsr(edTypeOption)
 
-               case Some(ed: BInputFunc[acv1$], edType : given_GivenSpinner_String.type, enabled ) =>
+               case Some(ed: BInputFunc[acv1$], edType : ( given_GivenSpinner_String.type), enabled ) =>
                   ;
 
                   summonInpfaForPv[String]
-                  .composeForSpawn1()
                   .spawnAsXsr(edTypeOption)
 
                   // ???
@@ -349,12 +317,12 @@ extends
 
             import anSkpmTitlePairInputSpwOps.{*, given}
 
-            // ???
-
-            // lazy val _ = llrConvToArt(L.span )((mdl: Option[BInputFunc[?] ] ) => renderIntrinsic(mdl ) )(md.edTypeOption )
-            ;
-
-            llrConv(L.span )((mdl: Option[BInputFunc[?] ] ) => renderIntrinsic(mdl ) )
+            llrConv(L.span )((mdl: Option[BInputFunc[?] ] ) => {
+               mdl
+               /** needs to extract type `t`, as a work-around to avoid the spurious type-mismatch */
+               match { case (e : Option[BInputFunc[t]] ) => renderIntrinsic[t](e) }
+               match { case e => e }
+            } )
             .compose((md: C) => md.edTypeOption )
             .spawnAsXsr(md )
 

@@ -78,7 +78,7 @@ extends
     * 
     * 
     */
-   def summonInpfaForPv
+   def summonInpfaForPvB
       [Value]
       //
       (using GspGoodDefaultValuation[Value ] )
@@ -106,41 +106,6 @@ extends
       ))
    : impl.type
    = impl
-
-   // /**
-   //  * a `SpawnabilityAndReconciliabilityNoArg` for
-   //  * `&lt;input>`s whose setting `value` will do what the name says
-   //  * (there are some who don't, eg when `type` is `button` or `submit`, or `checkbox`, or `file` )
-   //  * 
-   //  * 
-   //  */
-   // inline given given_SpawnabilityAndReconciliability_Inpfa
-   //    [Value ]
-   //    (using typ: GivenSpinner1[Value ] )
-   // : (
-   //    //
-   //    SpawnabilityAndReconciliabilityNoArg[
-   //       Option[BInputFunc[Value] ]
-   //       ,
-   //       ln.ReactiveHtmlElement[dom.HTMLElement]
-   //       ,
-   //       Unit ,
-   //    ]
-   // )
-   // = {
-   //    ;
-
-   //    ;
-
-   //    val initialVal
-   //    : Value
-   //    = summonGspGoodDefaultValue[Value]
-   //    ;
-
-   //    given_SpawnabilityAndReconciliability_Inpfa_impl
-   //       [Value]
-   //       (initialVal = initialVal)
-   // }
 
    /**
     * a `SpawnabilityAndReconciliabilityNoArg` for
