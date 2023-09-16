@@ -93,33 +93,11 @@ extends
       [Value]
       (typ: GivenSpinner1[Value])
       (src : L.SignalSource[Value] & L.Sink[Value] )
+      (using IvpLogging[Value] )
    = {
       ;
 
-      import L.{given}
-
-      L.controlled(
-         //
-         L.value <-- src.toObservable.map(_.toString() )
-         ,
-         (
-            L.onInput
-            .mapToValue
-            // .map(v => {
-            //    org.scalajs.dom.console.log("inputed value raw: ", v )
-            //    v
-            // } )
-            .map(typ.parse.lift ).collect({ case Some(v) => v })
-            .map(v => {
-               if v.isInstanceOf[Boolean] then {
-                  org.scalajs.dom.console.log("inputed value parsed: ", v )
-               }
-               v
-            } )
-            -->
-            (src.toObserver.onNext _ )
-         ) ,
-      ) 
+      lControlledRemote(typ)(src.toObservable )(dest = src.toObserver )
    }
 
    /**
@@ -130,6 +108,26 @@ extends
    def lControlledRetypable
       [Value]
       (src : ([Value] =>> ((L.SignalSource[Value] & L.Var[Value ] ) & L.Sink[Value] ) )[(GivenSpinner1[Value] , Value ) ] )
+      (using IvpLogging[Value] )
+   = {
+      ;
+
+      import L.{given}
+
+      lControlledRetypableRemote(src.signal )(src.toObserver )
+   }
+
+   /**
+    * `lControlledRetypable` -
+    * a version allowing separate `Source` and `Sink`
+    * 
+    */
+   def lControlledRetypableRemote
+      [Value]
+      (src : ([Value] =>> L.StrictSignal[Value] )[(GivenSpinner1[Value] , Value ) ] )
+      (dest : ([Value] =>> L.Observer[Value] )[(GivenSpinner1[Value] , Value ) ] )
+      // (using Console )
+      (using IvpLogging[Value] )
    = {
       ;
 
@@ -137,22 +135,94 @@ extends
 
       L.controlled(
          //
-         L.value <-- src.toObservable.map({ case (_, value) => value }).map(_.toString() )
+         L.value <-- src.map({ case (_, value) => value }).map(_.toString() )
          ,
          (
             L.onInput
             .mapToValue
-            .map(newValue => { val (typ, _) = src.signal.now() ; for (newValue1 <- typ.parse.lift.apply(newValue ) ) yield (typ, newValue1 ) } ).collect({ case Some(v) => v })
+            .map(newValue => { val (typ, _) = src.now() ; for (newValue1 <- typ.parse.lift.apply(newValue ) ) yield (typ, newValue1 ) } ).collect({ case Some(v) => v })
             .map({ case v @ (typ, vV ) => {
-               if vV.isInstanceOf[Boolean] then {
-                  org.scalajs.dom.console.log("inputed value parsed: ", v )
-               }
+               ivpConsole
+               .info("inputed value parsed: ", vV )
                v
             } })
             -->
-            (src.toObserver.onNext _ )
+            dest
          ) ,
       ) 
+   }
+
+   /**
+    * `lControlled` -
+    * a version allowing separate `Source` and `Sink`
+    * 
+    */
+   def lControlledRemote
+      [Value]
+      (typ: GivenSpinner1[Value])
+      (src : L.Observable[Value] )
+      (dest : L.Observer[Value] )
+      (using IvpLogging[Value] )
+   = {
+      ;
+
+      import L.{given}
+
+      L.controlled(
+         //
+         L.value <-- src.map(_.toString() )
+         ,
+         (
+            L.onInput
+            .mapToValue
+            // .map(v => {
+            //    org.scalajs.dom.console.log("inputed value raw: ", v )
+            //    v
+            // } )
+            .map((
+               typ.parse.lift
+               match { case f => {
+                  (v: String) => {
+                     f(v)
+                  }
+               } }
+            ) )
+            .collect({ case Some(v) => v })
+            .map(v => {
+               ivpConsole
+               .info("inputed value parsed: ", v ) 
+               v
+            } )
+            -->
+            (dest.onNext _ )
+         ) ,
+      ) 
+   }
+
+   opaque type IvpLogging[-Value]
+   = Console
+
+   given Conversion[IvpLogging[Nothing] , Console]
+   = identity[Console] _
+
+   def ivpConsole(using impl : IvpLogging[Nothing] )
+   : (impl.type & IvpLogging[Nothing] )
+   = impl
+
+   implicit
+   // transparent
+   inline def ivpConsoleNew[Value]
+   : IvpLogging[Value]
+   = {
+      inline compiletime.erasedValue[Value => Value]
+      match {
+         case _ : (Boolean => Boolean) =>
+            given_Console_1
+         case _ : ((Nothing => Nothing ) | (Any => Any) ) =>
+            compiletime.error("error: type-argument not specified, or set to Any or Nothing")
+         case _ =>
+            silentConsole
+      }
    }
 
    ;
