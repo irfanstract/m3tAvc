@@ -396,12 +396,12 @@ extends
          [
             M,
             ReconciliativeRunReturnVal,
-            HL <: com.raquo.laminar.nodes.ReactiveElement[HD & org.scalajs.dom.Element],
-            HD <: org.scalajs.dom.Node ,
+            SpawnedLaminar <: com.raquo.laminar.nodes.ReactiveElement[SpawnedDOMNode & org.scalajs.dom.Element],
+            SpawnedDOMNode <: org.scalajs.dom.Node ,
             // C <: XEAndStateBagCm[M, ReconciliativeRunReturnVal] ,
          ]
          (using reflect.Typeable[XEAndStateBagCm[M, ReconciliativeRunReturnVal] ] )
-      : Conversion[() => HL, SpawnabilityAndReconciliabilityNoArg[M, HL, ReconciliativeRunReturnVal ] ]
+      : Conversion[() => SpawnedLaminar, SpawnabilityAndReconciliabilityNoArg[M, SpawnedLaminar, ReconciliativeRunReturnVal ] ]
       = (constructDefaulted) => {
          SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
             //
