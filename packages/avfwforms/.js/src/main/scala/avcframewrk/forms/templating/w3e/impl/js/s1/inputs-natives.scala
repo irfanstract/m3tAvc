@@ -55,6 +55,7 @@ extends
       with w3e.pre.Articles
       with ELaminarQckCore
       with ELaminarQckCoreHtml
+      with ELaminarQckInputElemsDataTypesPre
    ) =>
    ;
 
@@ -78,6 +79,20 @@ extends
     * 
     */
    def summonInpfaForPv
+      [Value]
+      //
+      (using GspGoodDefaultValuation[Value ] )
+      (using GivenSpinner1[Value ] )
+   = given_SpawnabilityAndReconciliability_Inpfa_impl[Value]
+
+   def summonInpfaForPvF
+      [Value]
+      //
+      (using GspGoodDefaultValuation[Value ] )
+      (using GivenSpinner1[Value ] )
+   = given_SpawnabilityAndReconciliability_Inpfa_impl1[Value]
+
+   def summonInpfaForPvAlt
       [Pv]
       (using impl : (
          //
@@ -92,6 +107,41 @@ extends
    : impl.type
    = impl
 
+   // /**
+   //  * a `SpawnabilityAndReconciliabilityNoArg` for
+   //  * `&lt;input>`s whose setting `value` will do what the name says
+   //  * (there are some who don't, eg when `type` is `button` or `submit`, or `checkbox`, or `file` )
+   //  * 
+   //  * 
+   //  */
+   // inline given given_SpawnabilityAndReconciliability_Inpfa
+   //    [Value ]
+   //    (using typ: GivenSpinner1[Value ] )
+   // : (
+   //    //
+   //    SpawnabilityAndReconciliabilityNoArg[
+   //       Option[BInputFunc[Value] ]
+   //       ,
+   //       ln.ReactiveHtmlElement[dom.HTMLElement]
+   //       ,
+   //       Unit ,
+   //    ]
+   // )
+   // = {
+   //    ;
+
+   //    ;
+
+   //    val initialVal
+   //    : Value
+   //    = summonGspGoodDefaultValue[Value]
+   //    ;
+
+   //    given_SpawnabilityAndReconciliability_Inpfa_impl
+   //       [Value]
+   //       (initialVal = initialVal)
+   // }
+
    /**
     * a `SpawnabilityAndReconciliabilityNoArg` for
     * `&lt;input>`s whose setting `value` will do what the name says
@@ -99,39 +149,11 @@ extends
     * 
     * 
     */
-   inline given given_SpawnabilityAndReconciliability_Inpfa
-      [Value ]
-      (using typ: GivenSpinner1[Value ] )
-   : (
-      //
-      SpawnabilityAndReconciliabilityNoArg[
-         Option[BInputFunc[Value] ]
-         ,
-         ln.ReactiveHtmlElement[dom.HTMLElement]
-         ,
-         Unit ,
-      ]
-   )
-   = {
-      ;
-
-      ;
-
-      val initialVal
-      : Value
-      = summonGspGoodDefaultValue[Value]
-      ;
-
-      given_SpawnabilityAndReconciliability_Inpfa_impl
-         [Value]
-         (initialVal = initialVal)
-   }
-
-   private[s1]
+   // private[s1]
    def given_SpawnabilityAndReconciliability_Inpfa_impl
       [Value ]
-      (initialVal: Value )
-      (using GivenSpinner1[Value ] )
+      (using GspGoodDefaultValuation[Value ] )
+      (using typ: GivenSpinner1[Value ] )
    : (
       //
       SpawnabilityAndReconciliabilityNoArg[
@@ -146,19 +168,19 @@ extends
       ;
 
       given_SpawnabilityAndReconciliability_Inpfa_impl1
-         [Value](initialVal = initialVal )
+         [Value]
       .unliftSwitching()
    }
 
-   private[s1]
+   // private[s1]
    def given_SpawnabilityAndReconciliability_Inpfa_impl1
       [Value ]
-      (initialVal: Value )
+      (using GspGoodDefaultValuation[Value ] )
       (using typ: GivenSpinner1[Value ] )
    : (
       //
       SpawnabilityAndReconciliabilityNoArg[
-         Option[laminar.api.L.Signal[InpfaStaticInvar[Value] ] ]
+         Option[InpfaRefreshInvar[Value] ]
          ,
          ln.ReactiveHtmlElement[dom.HTMLElement]
          ,
@@ -168,6 +190,11 @@ extends
    = {
       ;
 
+      val initialVal: Value
+      = summon[GspGoodDefaultValuation[Value] ].value
+
+      ;
+
       ;
 
       ;
@@ -175,8 +202,8 @@ extends
       import laminar.api.L
 
       type XModel
-         >: Option[L.Signal[InpfaStaticInvar[Value] ] ]
-         <: Option[L.Signal[InpfaStaticInvar[Value] ] ]
+         >: Option[InpfaRefreshInvar[Value] ]
+         <: Option[InpfaRefreshInvar[Value] ]
 
       ;
 
@@ -205,7 +232,7 @@ extends
             ;
 
             val s
-            = L.Var[Option[L.Signal[InpfaStaticInvar[Value] ] ] ](None )
+            = L.Var[Option[InpfaRefreshInvar[Value] ] ](None )
 
             val sS
             = {
@@ -277,16 +304,24 @@ extends
 
    ;
 
+   ;
+
    locally {
       ;
 
       //
-      summonInpfaForPv[Boolean]
-      match { case s => s }
+      // summonInpfaForPv[Boolean]
+      // match { case s => s }
 
-      //
-      summonInpfaForPv[Int]
-      match { case s => s }
+      // //
+      // summonInpfaForPv[Int]
+      // match { case s => s }
+
+      // given_SpawnabilityAndReconciliability_Inpfa_impl[Int]
+
+      summonInpfaForPvAlt(using (
+         given_SpawnabilityAndReconciliability_Inpfa_impl[Int]
+      ))
 
       ;
    }

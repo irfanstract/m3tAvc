@@ -36,6 +36,8 @@ extends
    /* */
    with ENativeElementsD1
    with ELaminarQckButtonsReconcNatives
+   /* due to the self-types */
+   with ELaminarQckInputElemsDataTypesPre
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with ELaminarQckButtonsReconcCtls

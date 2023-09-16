@@ -50,6 +50,8 @@ extends
       with w3e.pre.Articles
       with ELaminarQckCore
       with ELaminarQckCoreHtml
+      // with  avcframewrk.forms.templating.w3e.pre.Buttons
+      with ELaminarQckInputElemsDataTypesPre
    ) =>
    ;
 
@@ -191,6 +193,7 @@ extends
    AnyRef
    /* */
    with ELaminarQckInputElemsLcs
+   with ELaminarQckInputElemsDataTypes
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with ELaminarQckButtonsReconcCtls
@@ -202,6 +205,8 @@ extends
       with ELaminarQckButtonsActionModellingTwo
       with ELaminarQckButtonsReconcCtls
       with w3e.pre.Articles
+      // with  avcframewrk.forms.templating.w3e.pre.Buttons
+      with ELaminarQckInputElemsDataTypesPre
    ) =>
    ;
 
@@ -212,41 +217,6 @@ extends
    import laminar.api.L
 
    ;
-
-   // private[avcframewrk]
-   transparent
-   inline def summonGspGoodDefaultValue
-      [Value]
-      (using GivenSpinner1[Value] )
-   : Value
-   = {
-      ;
-
-      summon[GivenSpinner1[Value] ]
-      match {
-         case `given_GivenSpinner_DateTime` =>
-            ("2023-09-06" )
-            // (0.25 )
-            // (0.25, 0.5, 0.75, { org.scalajs.dom.console.log("did compare:", typ, given_GivenSpinner_DateTime ) } )
-         case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] =>
-            edType.apply("0")
-         case `given_GivenSpinner_Boolean` =>
-            (false )
-         case `given_GivenSpinner_String` =>
-            ("" )
-         // case _ : DateTime =>
-         //    ("" )
-      }
-      match {
-         case e : Value =>
-            e
-      }
-   }
-
-   lazy val _ = {
-      val _ = summonGspGoodDefaultValue[Boolean] match { case v => v }
-      val _ = summonGspGoodDefaultValue[String ] match { case v => v }
-   }
 
    lazy val inpfaDemoAutoIncrement
    = {
@@ -307,12 +277,125 @@ extends
       ;
    }
 
+   type InpfaRefreshInvar[Value]
+   >: laminar.api.L.Signal[InpfaStaticInvar[Value] ]
+   <: laminar.api.L.Signal[InpfaStaticInvar[Value] ]
+
+   object InpfaRefreshInvar
 
    ;
 
    ;
 
    ;
+
+}
+
+private[w3e]
+trait ELaminarQckInputElemsDataTypes
+extends
+AnyRef
+   /* a temporary repetition here (of below) necessary to prevent the compiler from hanging or crashing */
+   with ELaminarQckButtonsActionModellingTwo
+{
+   this : (
+      AnyRef
+      & ELaminarQckButtonsActionModelling
+      & ELaminarQckButtonsActionModellingTwo
+      // &  avcframewrk.forms.templating.w3e.impl.js.s1.ELaminarQckButtonsActionModelling
+      // &  avcframewrk.forms.templating.w3e.pre.Articles
+      // &  avcframewrk.forms.templating.w3e.pre.Buttons
+      // &  avcframewrk.forms.templating.w3e.pre.PlainTxtContents
+      // &  avcframewrk.forms.templating.w3e.pre.PlainTxtContents
+      with ELaminarQckInputElemsDataTypesPre
+   ) =>
+   ;
+
+   inline given given_GspGoodDefaultValuation_Value
+      [Value]
+      (using GivenSpinner1[Value] )
+   : GspGoodDefaultValuation[Value]
+   = summonGspGoodDefaultValue[Value]
+
+   opaque type GspGoodDefaultValuation
+      [+Value] /* without making it 'co-variant' we're wasting a chance */
+   = Value
+   extension [Value](c: GspGoodDefaultValuation[Value] ) def value: Value = c
+
+   // private[avcframewrk]
+   // transparent
+   // inline
+   def summonGspGoodDefaultValue
+      [Value]
+      (using reflect.Typeable[Value] )
+      (using GivenSpinner1[Value] )
+   : Value
+   = {
+      ;
+
+      summon[GivenSpinner1[Value] ]
+      match {
+         case `given_GivenSpinner_DateTime` =>
+            ("2023-09-06" )
+            // (0.25 )
+            // (0.25, 0.5, 0.75, { org.scalajs.dom.console.log("did compare:", typ, given_GivenSpinner_DateTime ) } )
+         case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] =>
+            edType.apply("0")
+         case `given_GivenSpinner_Boolean` =>
+            (false )
+         case `given_GivenSpinner_String` =>
+            ("" )
+         // case _ : DateTime =>
+         //    ("" )
+      }
+      match {
+         case e : Value =>
+            e
+      }
+   }
+
+   lazy val _ = {
+      val _ = summonGspGoodDefaultValue[Boolean] match { case v => v }
+      val _ = summonGspGoodDefaultValue[String ] match { case v => v }
+   }
+
+   ;
+
+   ;
+}
+
+/** 
+ * 
+ * we need this `trait` here for these reason
+ * 
+ * if the above `trait` didn't `extends` `ELaminarQckButtonsActionModellingTwo`,
+ * the compiler
+ * would crash with
+ * `AssertionError` attributable to the desugared tree `this.asInstanceOf[(.......)].given_GivenSpinner_DateTime`
+ * 
+ */
+private[s1]
+trait ELaminarQckInputElemsDataTypesPre
+extends
+AnyRef
+   //
+   with ELaminarQckButtonsActionModellingTwo
+   with  avcframewrk.forms.templating.w3e.impl.js.s1.ELaminarQckButtonsActionModelling
+   with  avcframewrk.forms.templating.w3e.pre.Articles
+   with  avcframewrk.forms.templating.w3e.pre.Buttons
+   with  avcframewrk.forms.templating.w3e.pre.PlainTxtContents
+{
+
+   this : (
+      AnyRef
+      // & ELaminarQckButtonsActionModelling
+      // & ELaminarQckButtonsActionModellingTwo
+      &  avcframewrk.forms.templating.w3e.impl.js.s1.ELaminarQckButtonsActionModelling
+      &  avcframewrk.forms.templating.w3e.pre.Articles
+      &  avcframewrk.forms.templating.w3e.pre.Buttons
+      &  avcframewrk.forms.templating.w3e.pre.PlainTxtContents
+      // &  avcframewrk.forms.templating.w3e.pre.PlainTxtContents
+   ) =>
 
 }
 
