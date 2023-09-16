@@ -25,13 +25,12 @@ final
 lazy val ebAll
 = {
    new AnyRef
-   // with ELaminarQckCore
-   // with ELaminarQckCoreHtml
-   // with ELaminarQckCoreHtmlConcatImpl
-   // with ELaminarQckPlainStringConts
-   // with ELaminarQckButtons
-   // with ELaminarQckButtonsActionModelling
-   // with ELaminarQckCoreHtmlArticleDecorsExt
+   with ELaminarQckCore
+   with ELaminarQckCoreHtml
+   with ELaminarQckCoreHtmlConcatImpl
+   with ELaminarQckPlainStringConts
+   with ELaminarQckButtons
+   with ELaminarQckButtonsActionModelling
    {
       // implicit val articleConcatenability = ???
    }
