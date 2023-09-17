@@ -133,39 +133,70 @@ with StdGsps
 
    protected[avcframewrk]
    opaque type VarEditingActionConstructor
-   <: (
-      //
+   <: VarEditingActionConstructorImpl
+   = VarEditingActionConstructorImpl
 
-      /** 
-       * `[Value given GivenSpinner] -> (varLike : VarLike[Value] ) -> Action`
-       * 
-       * anticipating some 3rd party libs which provides "mapped var(s)" which `extends` both these `trait`s yet does not `extends` `Var#`.
-       * `Var[type A]#` `extends` both `SignalSource[A]#` and `Sink[A]#`
-       * 
-       */
-      [Value] =>
-      (baseTitle: String | Article ) =>
-      (operand: L.SignalSource[Value] & L.Sink[Value] ) =>
-      (GivenSpinner[Value] ) ?=>
-         Action
+   private[pre]
+   case class VarEditingActionConstructorImpl
+      (impl: (
+         //
 
-      //
-   )
-   = (
-      //
+         /** 
+          * `[Value given GivenSpinner] -> (varLike : VarLike[Value] ) -> Action`
+          * 
+          * anticipating some 3rd party libs which provides "mapped var(s)" which `extends` both these `trait`s yet does not `extends` `Var#`.
+          * `Var[type A]#` `extends` both `SignalSource[A]#` and `Sink[A]#`
+          * 
+          */
+         [Value] =>
+         (baseTitle: String | Article ) =>
+         (r: L.SignalSource[Value], w: ODEC[Value] ) =>
+         (GivenSpinner[Value] ) ?=>
+            Action
 
-      [Value] =>
-      (baseTitle: String | Article ) =>
-      (operand: L.SignalSource[Value] & L.Sink[Value] ) =>
-      (GivenSpinner[Value] ) ?=>
-         Action
-   )
+      ))
+   {
+      ;
+
+      // export impl.{apply as applyAlt }
+
+      def apply
+         //
+         [Value]
+         (baseTitle: String | Article )
+         (r: L.Var[Value] )
+         (using GivenSpinner[Value] )
+      : Action
+      = {
+         ;
+         
+         impl
+         .apply
+            (baseTitle)
+            (r = r, w = ODEC[Value](editSinkOption = Some(r ) ) )
+      }
+
+      ;
+   }
 
    lazy val _ = {
       val f = VarEditingAction
       // f.apply("")(??? : L.Var["5"] )
       f.apply("")(??? : L.Var[String] )
    }
+
+   private[w3e]
+   case class ODEC[Value] (
+      //
+      editSinkOption
+      : Option[com.raquo.airstream.core.Sink[Value] ]
+      = None
+      ,
+      undoRedoCmdSinkOption
+      : Option[com.raquo.airstream.core.Sink[ValueEditOrUndoOrRedo.ForUndo | ValueEditOrUndoOrRedo.ForRedo ] ]
+      = None
+      ,
+   )
 
    protected[avcframewrk]
    given Conversion[(
@@ -178,7 +209,32 @@ with StdGsps
          Action
 
    ), VarEditingActionConstructor]
-   = identity[VarEditingActionConstructor] _
+   = (impl1) => {
+      ;
+      VarEditingActionConstructorImpl(
+         //
+
+         impl = (
+            //
+
+            [Value] =>
+            (baseTitle: String | Article ) =>
+            (r: L.SignalSource[Value], edc: ODEC[Value] ) =>
+            (gsp: GivenSpinner[Value] ) ?=>
+            {
+               impl1
+                  [Value ]
+                  (baseTitle )
+                  ({
+                     new L.SignalSource[Value] with L.Sink[Value]
+                     { export r.toObservable ; val toObserver = edc.editSinkOption.get.toObserver }
+                  })
+            }
+         )
+         ,
+
+      )
+   }
 
    ;
 
