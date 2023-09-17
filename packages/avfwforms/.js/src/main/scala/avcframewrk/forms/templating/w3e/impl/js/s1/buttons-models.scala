@@ -348,6 +348,7 @@ extends
    AnyRef
    with EActionDescImpls
    with ELaminarQckButtonsActionModelling
+   with ELaminarQckButtonsActionModellingInps
    with EdGlobalEventInfoItcUni
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.VarEditingActionsProv
@@ -376,119 +377,7 @@ extends
 
    ;
 
-   export w3e.pre.StdGsps.ofSnb.{*, given}
-
    ;
-
-   val VarEditingAction
-   : (
-      AnyRef
-      & (
-         [Value] =>
-         (baseTitle: String | Article ) =>
-         (operand: ({ val L : laminar.api.L.type ; type LSS = L.SignalSource[Value] & L.Sink[Value] })#LSS ) =>
-         (GivenSpinner[Value] ) ?=>
-            Action
-      )
-   )
-   = {
-      ;
-
-      (
-
-         [Value] =>
-         (baseTitle: String | Article ) =>
-         (operand: ({ val L : laminar.api.L.type ; type LSS = L.SignalSource[Value] & L.Sink[Value] })#LSS ) =>
-         (spn: GivenSpinner[Value] ) ?=>
-         {
-            ;
-
-            val headline
-            = {
-               ;
-
-               baseTitle
-               match {
-                  case baseTitle : String =>
-                     PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn , baseTitle )
-                  case baseTitle : Article =>
-                     baseTitle
-               }
-               match { case e => e : Article }
-            }
-
-            val a = {
-               BInputFunc[Value](
-                  //
-                  onShallEditStart = { case _ => ??? } ,
-                  src = operand ,
-                  t = spn ,
-               )
-            }
-
-            ActionDescImpl(
-               stateAnim = laminar.api.L.Val(() ) ,
-               baseTitle = headline ,
-               stateTitle = { case _ => headline } ,
-               stateSpecificCallback = { case _ => Some(a) } ,
-            )
-         }
-      )
-   }
-
-   ;
-
-   private[w3e]
-   case class BInputFunc
-      [Value]
-      (
-         //
-         onShallEditStart : (
-            (lastValue: Value, host: BInputFunc[Value] ) =>
-               Unit
-         )
-         ,
-         src : (
-            ([V] =>> (laminar.api.L.SignalSource[V] ) )[Value]
-            & laminar.api.L.Sink[Value]
-         )
-         ,
-         t : sgvs.GivenSpinner1[Value]
-         ,
-      )
-   extends
-      AnyRef
-      with (() => Unit )
-      with ((EdsbEventInfo) => Unit )
-   {
-      ;
-
-      def valueAnim
-      = src.toObservable
-
-      ;
-
-      def apply(clickEvt: EdsbEventInfo )
-      = apply()
-
-      def apply(): Unit
-      = {
-         ;
-
-         onShallEditStart
-         .apply(
-            //
-            src.toObservable
-            match { case s : laminar.api.L.StrictSignal[t] => (s.now() : t ).asInstanceOf[Value] }
-            match { case s => s }
-            ,
-            BInputFunc.this
-            ,
-         )
-      }
-
-      ;
-   }
 
    implicit class ActionDescImplSsca1 [S, T] (val this1: ActionDescImpl[S, T] )
    {
@@ -531,7 +420,9 @@ extends
    } // ActionDescImplSsca1
 
    ;
-} // ELaminarQckButtonsActionModellingTwo
+
+   ;
+}
 
 private[avcframewrk]
 trait EdGlobalEventInfoItcUni
