@@ -65,7 +65,7 @@ extends
 
    ;
 
-   extension [acv1$] (ed: BInputFunc[?]) {
+   extension [acv1$] (ed: BInputFunc[acv1$]) {
       //
 
       def valueAnim
@@ -79,7 +79,16 @@ extends
       = {
          ;
 
-         lControlled(ed.t )(ed.src )
+         lControlledRemote(ed.t )(ed.src.toObservable )((
+            L.Observer((v: acv1$ ) => {
+               val evtInfo
+               = newIcrEditEventInfo()
+               ed
+               .onEditToNewValue(v, evtInfo ) 
+            } )
+
+            //
+         ) )
       }
 
       //
@@ -223,6 +232,14 @@ extends
          case _ =>
             silentConsole
       }
+   }
+
+   def newIcrEditEventInfo()
+   : org.scalajs.dom.Event
+   = {
+      ;
+
+      new (org.scalajs.dom.Event)("avfwinputfieldevt", scalajs.js.undefined )
    }
 
    ;
