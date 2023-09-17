@@ -128,6 +128,7 @@ def runSMain(): Unit
                      eb.VarEditingAction(baseTitle = label )(var1 )
                   }
                   eb.describeButtonByAction(action )
+                  match { case e => (e ++ e ) }
                }
             })
          )
