@@ -127,29 +127,58 @@ with StdGsps
     */
    val VarEditingAction
    : (
-      AnyRef
-
-      & (
-         /** 
-          * `[Value given GivenSpinner] -> (varLike : VarLike[Value] ) -> Action`
-          * 
-          * anticipating some 3rd party libs which provides "mapped var(s)" which `extends` both these `trait`s yet does not `extends` `Var#`.
-          * `Var[type A]#` `extends` both `SignalSource[A]#` and `Sink[A]#`
-          * 
-          */
-         [Value] =>
-         (baseTitle: String | Article ) =>
-         (operand: L.SignalSource[Value] & L.Sink[Value] ) =>
-         (GivenSpinner[Value] ) ?=>
-            Action
-      )
+      VarEditingActionConstructor
 
    )
+
+   protected[avcframewrk]
+   opaque type VarEditingActionConstructor
+   <: (
+      //
+
+      /** 
+       * `[Value given GivenSpinner] -> (varLike : VarLike[Value] ) -> Action`
+       * 
+       * anticipating some 3rd party libs which provides "mapped var(s)" which `extends` both these `trait`s yet does not `extends` `Var#`.
+       * `Var[type A]#` `extends` both `SignalSource[A]#` and `Sink[A]#`
+       * 
+       */
+      [Value] =>
+      (baseTitle: String | Article ) =>
+      (operand: L.SignalSource[Value] & L.Sink[Value] ) =>
+      (GivenSpinner[Value] ) ?=>
+         Action
+
+      //
+   )
+   = (
+      //
+
+      [Value] =>
+      (baseTitle: String | Article ) =>
+      (operand: L.SignalSource[Value] & L.Sink[Value] ) =>
+      (GivenSpinner[Value] ) ?=>
+         Action
+   )
+
    lazy val _ = {
       val f = VarEditingAction
       // f.apply("")(??? : L.Var["5"] )
       f.apply("")(??? : L.Var[String] )
    }
+
+   protected[avcframewrk]
+   given Conversion[(
+      //
+
+      [Value] =>
+      (baseTitle: String | Article ) =>
+      (operand: L.SignalSource[Value] & L.Sink[Value] ) =>
+      (GivenSpinner[Value] ) ?=>
+         Action
+
+   ), VarEditingActionConstructor]
+   = identity[VarEditingActionConstructor] _
 
    ;
 
