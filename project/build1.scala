@@ -32,6 +32,14 @@ object Build {
 
       import sbt.*
 
+      /** 
+       * the implicit con providing the triple variant of `%`
+       * was not defined within package `sbt.` directly, but
+       * was instead within `org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport`
+       * 
+       */
+      import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
+
       lazy val comMonix
          = identity[ModuleID]("io.monix" %% "monix" % "3.4.1" )
 
@@ -43,6 +51,11 @@ object Build {
 
       lazy val orgTypelevelCatsEffects
          = identity[ModuleID]( "org.typelevel" %% "cats-effect" % "3.5.1" )
+
+      /* 
+       * cannot list any `%%%`-ed entry here  --
+       * "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting."
+       */
 
    } // externalLibraryVersions$
 
@@ -175,6 +188,18 @@ object Build {
         println(s"PATH: '${java.lang.System.getenv("PATH") }'")
 
         Seq()
+      }
+
+      /** "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting." */
+      implicit class CrossProjectDevLaminarDependencyOps(receiver: CrossProject ) {
+
+         def withDevLaminar()
+         = {
+            receiver
+            /* a JS-only library building on `js.dom`. also, Laminar (re)exports Airstream as well, no need to explicitly list it here */
+            .jsSettings(libraryDependencies += "com.raquo" %%% "laminar" % "15.0.1" )
+         }
+
       }
 
       //
