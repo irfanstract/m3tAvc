@@ -265,29 +265,23 @@ extends
                (L.child )
                ({ case ((title, flowThruMode ), _) => title } , summon[avcalg.CBC[Article] ].empty )
 
-               ((s: (reconcilerI._1.Reconcilee, ln.ReactiveHtmlElement[?] ) ) => (s._2 match { case e => e } ) , (
+               ((s: reconcilerI._1.Reconcilee ) => laminarInSpawneddLL(s) , (
 
-                  (existingNodeOption, newArtD ) => (
+                  (existingStateBagOption, newArtD ) => (
                      //
 
-                     // TODO
-
-                     // import eb.laminarInSpawneddLLImplicits.{given }
-
-                     existingNodeOption
+                     existingStateBagOption
                      .fold({
-                        val e
-                        = {
-                           // newArtD.spawn()
-                           reconcilerI._2.spawn(newArtD )( )
-                        }
-                        (e, (e match { case e => laminarInSpawneddLL.apply(e).asInstanceOf[ln.ReactiveHtmlElement[?] ] } ) )
-                     } )({ case e0 @ (e, _) => {
-                        // e.model_=(newArtD )
+
+                        reconcilerI._2
+                        .spawn(newArtD )( )
+                     } )({ case e => {
+                        ;
+
                         reconcilerI._2
                         .model_=(e )(newArtD )
-                        // ( ??? )
-                        e0
+                        
+                        e
                      } })
                      match { case e => e }
                   )
