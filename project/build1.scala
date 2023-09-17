@@ -27,6 +27,10 @@ object Build {
     * 
     * external library versions
     * 
+    * to avoid problems,
+    * there should only be one art-version for each "artifact name"
+    * (IOW you should avoid using multiple versions at once, like "Monix v3.4 and Monix v3.5 at once" )
+    * 
     */
    object externalLibraryVersions {
 
@@ -40,17 +44,42 @@ object Build {
        */
       import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
+      lazy val orgScalatestLibVer
+        = "3.2.9"
+
+      lazy val comMonixLibraryVer
+         = "3.4.1"
+
       lazy val comMonix
-         = identity[ModuleID]("io.monix" %% "monix" % "3.4.1" )
+         = identity[ModuleID]("io.monix" %% "monix" % externalLibraryVersions.comMonixLibraryVer )
+
+      lazy val comRaquoAirstreamLibVer
+        = "16.0.0"
 
       lazy val orgTypelevelCatsCore
          = identity[ModuleID]("org.typelevel" %% "cats-core" % "2.9.0" )
+
+      lazy val ioOpticsMonocleCore
+        = identity[ModuleID]( "dev.optics" %% "monocle-core" % "3.2.0" )
 
       lazy val orgTypelevelKittens
          = identity[ModuleID]( "org.typelevel" %% "kittens" % "3.0.0" )
 
       lazy val orgTypelevelCatsEffects
          = identity[ModuleID]( "org.typelevel" %% "cats-effect" % "3.5.1" )
+
+      /* https://index.scala-lang.org/kitlangton/quotidian */
+      lazy val kitlangtonQuotidian
+         = identity[ModuleID]( "io.github.kitlangton" %% "quotidian" % "0.0.6" )
+
+      lazy val comPLoKhotNyukJsonIterLibVer
+        = "2.23.5"
+
+      lazy val orgScalaJsDOmLibVer
+        = "2.4.0"
+
+      lazy val comRaquoLaminarLibVer
+        = "15.0.1"
 
       /* 
        * cannot list any `%%%`-ed entry here  --
@@ -126,7 +155,7 @@ object Build {
       = file("packages")
 
       lazy val suggestedScalaVersionV: String
-      = "3.3.1-RC4"
+      = "3.3.1"
 
       ThisBuild / Keys.scalaVersion := suggestedScalaVersionV
 
@@ -163,7 +192,24 @@ object Build {
           /* STD LIB DEPENDENCIES */
 
           libraryDependencies ++= Seq(
-            "org.scalatest" %% "scalatest" % "3.2.9" % Test
+            "org.scalatest" %% "scalatest" % externalLibraryVersions.orgScalatestLibVer % Test
+          )
+          ,
+          libraryDependencies ++= Seq(
+            externalLibraryVersions.ioOpticsMonocleCore
+            ,
+            externalLibraryVersions.kitlangtonQuotidian
+            ,
+          )
+          ,
+          /* still unsure if these usage of `%%%` is right */
+          libraryDependencies ++= Seq(
+            // Use the %%% operator instead of %% for Scala.js and Scala Native 
+            "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-core"   % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer
+            ,
+            // Use the "provided" scope instead when the "compile-internal" scope is not supported  
+            "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-macros" % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer % "compile-internal"
+            ,
           )
           ,
 
@@ -197,7 +243,7 @@ object Build {
          = {
             receiver
             /* a JS-only library building on `js.dom`. also, Laminar (re)exports Airstream as well, no need to explicitly list it here */
-            .jsSettings(libraryDependencies += "com.raquo" %%% "laminar" % "15.0.1" )
+            .jsSettings(libraryDependencies += "com.raquo" %%% "laminar" % externalLibraryVersions.comRaquoLaminarLibVer )
          }
 
       }
@@ -212,7 +258,7 @@ object Build {
 
       /* see also [https://github.com/portable-scala/sbt-crossproject](`sbt-crossproject`) */
       val suggestedTargetPlatforms: Seq[sbtcrossproject.Platform ]
-      = Seq(JVMPlatform, JSPlatform)
+      = Seq(JSPlatform)
 
       implicit class XCrossProjectBuilderSuggestedSettingsOps(receiver: CrossProject.Builder ) {
 
@@ -296,7 +342,7 @@ object Build {
             /* Depend on the scalajs-dom library.
             * It provides static types for the browser DOM APIs.
             */
-            libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.4.0"
+            libraryDependencies += "org.scala-js" %%% "scalajs-dom" % externalLibraryVersions.orgScalaJsDOmLibVer
             ,
 
             //
