@@ -98,7 +98,7 @@ extends
          = {
             ;
             val evtInfo
-            = new (org.scalajs.dom.Event)("avfwinputfieldevt", scalajs.js.undefined )
+            = newIcrEditEventInfo()
             ;
             for { s <- s1.now() }
             yield {
@@ -166,8 +166,10 @@ extends
                            { case (evtInfo, newValue) => {
                               ;
 
-                              s.src.toObserver
-                              .onNext(newValue)
+                              s
+                              // .src.toObserver
+                              // .onNext(newValue)
+                              .onEditToNewValue(newValue, evtInfo )
                            } }
                         )
                         ,

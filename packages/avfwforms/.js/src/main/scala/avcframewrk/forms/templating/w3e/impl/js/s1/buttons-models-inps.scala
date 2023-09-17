@@ -105,8 +105,9 @@ extends
                BInputFunc[Value](
                   //
                   onShallEditStart = { case _ => ??? } ,
+                  typ = spn ,
                   src = operand ,
-                  t = spn ,
+                  onEditToNewValue0 = Some { (newValue: Value, _) => operand.toObserver.onNext(newValue ) } ,
                )
             }
 
@@ -127,17 +128,26 @@ extends
       [Value]
       (
          //
-         onShallEditStart : (
+         onShallEditStart
+         : (
             (lastValue: Value, host: BInputFunc[Value] ) =>
                Unit
          )
          ,
+         typ
+         : sgvs.GivenSpinner1[Value]
+         ,
          src : (
             ([V] =>> (laminar.api.L.SignalSource[V] ) )[Value]
-            & laminar.api.L.Sink[Value]
+            // & laminar.api.L.Sink[Value]
          )
          ,
-         t : sgvs.GivenSpinner1[Value]
+         onUndoOrRedoKeyEventCOption
+         : Option[(evtInfo: org.scalajs.dom.Event) => Unit ]
+         = None
+         ,
+         onEditToNewValue0
+         : Option[(newValue: Value, chgEvtInfo: org.scalajs.dom.Event) => Unit ]
          ,
       )
    extends
@@ -146,6 +156,17 @@ extends
       with ((EdsbEventInfo) => Unit )
    {
       ;
+
+      @deprecated
+      val t
+      : typ.type
+      = typ
+
+      val onEditToNewValue
+      = {
+         onEditToNewValue0
+         .getOrElse((_: Any, _: Any) => {} )
+      }
 
       def valueAnim
       = src.toObservable
