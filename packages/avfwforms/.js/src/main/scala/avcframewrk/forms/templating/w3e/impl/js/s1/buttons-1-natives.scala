@@ -151,6 +151,8 @@ extends
 
       ;
 
+      ebAvfwInlineBtnCssInit
+
       given_SpawnabilityAndReconciliability_CaseClassGeneralised1[
          BtnaStaticA
          ,
