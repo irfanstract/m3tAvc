@@ -99,6 +99,97 @@ extends
    ;
 }
 
+/** 
+ * 
+ * implementative mix-in `ELaminarQckCoreLrksBased`
+ * 
+ */
+trait ELaminarQckCoreLrksBased
+extends
+   AnyRef
+   //
+   with ELaminarQckCoreLrks
+   with w3e.pre.ArticlesImplLReconciliativeKeyFoundPairs
+{
+   thisELaminarQckCoreLrks : (
+      AnyRef
+      & ELaminarQckCoreLrks
+      // & w3e.pre.ArticlesViaLspw
+   ) =>
+   ;
+
+   ;
+
+   import com.raquo.laminar.{nodes as ln}
+
+   import org.scalajs.dom
+
+   ;
+
+   ;
+}
+
+/**
+ * 
+ * a complement of `w3e.pre.ArticlesImplByL`,
+ * which builds on Laminar
+ * 
+ */
+trait ELaminarQckCoreLrks
+extends
+   AnyRef
+   // with w3e.pre.ArticlesViaLspwmt
+   /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
+   with w3e.pre.ArticlesImplByL
+{
+   thisELaminarQckCoreLrks : (
+      AnyRef
+      & w3e.pre.ArticlesImplByL
+   ) =>
+   ;
+
+   import com.raquo.laminar.{nodes as ln}
+
+   import org.scalajs.dom
+
+   ;
+
+   ;
+
+   /** 
+    * supposed to be the main/primary data-type (or repr) in the targeted backend/fw -
+    * this could be `React.Element`, `DOM.Element`, `Laminar.Element`, etc
+    * 
+    */
+   override
+   type NativeDocNode
+   >: ln.ReactiveElement[?]
+   <: ln.ReactiveElement[?]
+
+   ;
+
+   /** 
+    * note -
+    * avoid summon-ing `T1 =:= T2` directly as it places execssive assumptions ;
+    * split it into the two `T1 <:< T2` and `T2 <:< T1` ; 
+    * 
+    */
+   summon[NativeDocNode <:< ln.ReactiveElement[?] ]
+   summon[ln.ReactiveElement[?] <:< NativeDocNode ]
+
+   lazy val _ = {
+      ;
+
+      def gt[SpawnedLaminar <: ln.ReactiveElement[dom.Element] ]
+      = summon[SpawnedLaminar <:< NativeDocNode ]
+
+      summon[NativeDocNode <:< ln.ReactiveElement[?] ]
+
+      ;
+   }
+
+}
+
 
 
 
