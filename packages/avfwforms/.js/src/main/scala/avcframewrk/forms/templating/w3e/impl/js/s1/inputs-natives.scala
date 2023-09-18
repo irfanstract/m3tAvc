@@ -155,8 +155,53 @@ extends
    = {
       ;
 
-      val initialVal: Value
-      = summon[GspGoodDefaultValuation[Value] ].value
+      ;
+
+      %%%%((
+         () => {
+            ;
+            inpfaXesbs.forRefresh[Value]()
+            .wrappedLaminarElement
+         }
+      ))
+   }
+
+   // private[s1]
+   def given_SpawnabilityAndReconciliability_Inpfa_impl11
+      [Value ]
+      (using GspGoodDefaultValuation[Value ] )
+      (using typ: GivenSpinner1[Value ] )
+   : (
+      //
+      SpawnabilityAndReconciliabilityNoArg[
+         Option[InpfaStaticInvar[Value] ]
+         ,
+         ln.ReactiveHtmlElement[dom.HTMLElement]
+         ,
+         Unit ,
+      ]
+   )
+   = {
+      ;
+
+      ;
+
+      %%%%((
+         () => {
+            ;
+            inpfaXesbs.forStatic[Value]()
+            .wrappedLaminarElement
+         }
+      ))
+   }
+
+   private
+   object inpfaXesbs
+   {
+      ;
+
+      // val initialVal: Value
+      // = summon[GspGoodDefaultValuation[Value] ].value
 
       ;
 
@@ -166,101 +211,233 @@ extends
 
       import laminar.api.L
 
-      type XModel
-         >: Option[InpfaRefreshInvar[Value] ]
-         <: Option[InpfaRefreshInvar[Value] ]
+      ;
 
       ;
 
-      class XEAndStateBag1() extends
-      aBackreferencings.XEAndStateBag(ec = { L.span })
-      with aBackreferencings.XEAndStateBagCm[XModel, Unit]
-      {
+      given ELaminarIndirectionImpl.directly.type
+      = ELaminarIndirectionImpl.directly
+
+      ;
+
+      ;
+
+      def forStatic
          //
-
-         import laminar.api.L
-
-         override
-         def close(): Unit
-         = {
-            closeAllOf[laminar.api.L.Observer[?] ]((
-               srcToSetterDispatchers
-
-            ))
-         }
-
-         wrappedLaminarElement
-         .amend(L.typ := nativeTypStrFor(typ) )
-
-         val valueControlled11
-         = {
-            ;
-
-            val s
-            = L.Var[Option[InpfaRefreshInvar[Value] ] ](None )
-
-            val sS
-            = {
-               s.signal
-               .changes
-               .collect({ case Some(v) => v })
-            }
-
-            wrappedLaminarElement
-            .amend({
-               L.child <-- {
-                  sS
-                  .map(s => s.scanSpawnNewLlE() )
-               }
-            })
-
-            s.writer
-         }
-
-         val valueControlled1
-         = {
-            valueControlled11
-         }
-
-         val srcToSetterDispatchers
-         = {
-            (
-               Seq()
-
-               :+(L.disabled.startAttribNow((_: XModel).fold(false)(_ => true ) , initialValue = None ).contraconst() )
-
-               :+(valueControlled1 )
-
-               // :+ (valueControlled11 )
-
-               // TODO
-
-            )
-         } : Seq[L.Observer[XModel ] ]
-
-         override
-         def model_=(newMdl: XModel): Unit
-         = {
-            for (o <- srcToSetterDispatchers )
-            do { o.onNext(newMdl ) }
-         }
-
-         // def
+         [Value]
+         ()
+         (using GspGoodDefaultValuation[Value ] )
+         (using typ: GivenSpinner1[Value ] )
+      : (
+         aBackreferencings.XEAndStateBag[? <: dom.HTMLElement]
+         & aBackreferencings.XEAndStateBagCm[Option[InpfaStaticInvar[Value] ] , Unit]
+      )
+      = {
+         ;
 
          ;
 
+         type XModel
+         >: Option[InpfaStaticInvar[Value] ]
+         <: Option[InpfaStaticInvar[Value] ]
+
+         ;
+
+         class XEAndStateBag1() extends
+         aBackreferencings.XEAndStateBag(ec = { L.span })
+         with aBackreferencings.XEAndStateBagCm[XModel, Unit]
+         {
+            //
+
+            import laminar.api.L
+
+            override
+            def close(): Unit
+            = {
+               s
+               .onError(new RuntimeException("regular closedown") )
+            }
+
+            val s
+            = {
+               ;
+
+               val vr
+               = {
+                  ;
+
+                  val p0
+                  = L.Var[Option[InpfaStaticInvar[Value] ] ](None)
+
+                  (p0.writer, {
+                     ;
+
+                     p0.signal
+                     .changes
+
+                     .scanLeft[Option[L.Var[InpfaStaticInvar[Value] ] ] ]((None ) )({
+                        case (_, None) =>
+                           None
+                        case (None, Some(newS) ) =>
+                           Some { L.Var[InpfaStaticInvar[Value] ](newS ) }
+                        case (Some(var0), Some(newS) ) =>
+                           var0.set(newS )
+                           Some { var0 }
+                     })
+                     .map(o => {
+                        o
+                        .map(vr => (
+                           //
+                           vr.signal
+                           match { case e => e : InpfaRefreshInvar[Value] } 
+                        ) )
+                     } )
+                  })
+               }
+
+               val peer
+               = { forRefresh[Value]() }
+
+               vr._2
+               .foreach(e => {
+                  peer
+                  .model_=(e )
+               })(using com.raquo.airstream.ownership.ManualOwner() ) // TODO which right Owner to use as
+
+               vr
+               ._1
+            }
+
+            override
+            def model_=(newMdl: XModel): Unit
+            = {
+               s
+               .onNext(newMdl )
+            }
+
+            // def
+
+            ;
+
+         }
+
+         new XEAndStateBag1
       }
+
+      def forRefresh
+         //
+         [Value]
+         ()
+         (using GspGoodDefaultValuation[Value ] )
+         (using typ: GivenSpinner1[Value ] )
+      : (
+         aBackreferencings.XEAndStateBag[? <: dom.HTMLElement]
+         & aBackreferencings.XEAndStateBagCm[Option[InpfaRefreshInvar[Value] ] , Unit]
+      )
+      = {
+         ;
+
+         type XModel
+         >: Option[InpfaRefreshInvar[Value] ]
+         <: Option[InpfaRefreshInvar[Value] ]
+
+         ;
+
+         class XEAndStateBag1() extends
+         aBackreferencings.XEAndStateBag(ec = { L.span })
+         with aBackreferencings.XEAndStateBagCm[XModel, Unit]
+         {
+            //
+
+            import laminar.api.L
+
+            override
+            def close(): Unit
+            = {
+               closeAllOf[laminar.api.L.Observer[?] ]((
+                  srcToSetterDispatchers
+
+               ))
+            }
+
+            val valueControlled11
+            = {
+               ;
+
+               val s
+               = L.Var[Option[InpfaRefreshInvar[Value] ] ](None )
+
+               val sS
+               = {
+                  s.signal
+                  .changes
+                  .collect({ case Some(v) => v })
+               }
+
+               wrappedLaminarElement
+               .amend({
+                  L.child <-- {
+                     sS
+                     .map(s => s.scanSpawnNewLlE() )
+                  }
+               })
+
+               s.writer
+            }
+
+            val valueControlled1
+            = {
+               valueControlled11
+            }
+
+            val srcToSetterDispatchers
+            = {
+               (
+                  Seq()
+
+                  :+(L.disabled.startAttribNow((_: XModel).fold(false)(_ => true ) , initialValue = None ).contraconst() )
+
+                  :+(valueControlled1 )
+
+                  // :+ (valueControlled11 )
+
+                  // TODO
+
+               )
+            } : Seq[L.Observer[XModel ] ]
+
+            override
+            def model_=(newMdl: XModel): Unit
+            = {
+               for (o <- srcToSetterDispatchers )
+               do { o.onNext(newMdl ) }
+            }
+
+            // def
+
+            ;
+
+         }
+
+         new XEAndStateBag1
+      }
+
+      ;
+
+      ;
+   }
+
+   /* a conciciety */
+   @deprecated
+   private[s1]
+   def %%%%
+      [XModel]
+      (f1: () => ln.ReactiveHtmlElement[dom.HTMLElement] )
+   = {
+      ;
 
       ({
          import aBackreferencings.{given Conversion[?, ?] }
-
-         val f1
-         = {
-            () => {
-               new XEAndStateBag1()
-               .wrappedLaminarElement
-            }
-         }
 
          summon[Conversion[f1.type, SpawnabilityAndReconciliabilityNoArg[XModel, ? <: ln.ReactiveHtmlElement[dom.HTMLElement] , ? ] ] ]
          .apply(f1 )

@@ -81,8 +81,9 @@ extends
        */
       def scanSpawnNewLlE
          ()
+         (using givenELaminarIndirectionImpl : ELaminarIndirectionImpl )
          (using subscrAssignee : com.raquo.airstream.ownership.Owner = com.raquo.airstream.ownership.ManualOwner() )
-      : ln.ReactiveHtmlElement[? ]
+      : givenELaminarIndirectionImpl.AppliedR
       = {
          ;
 
@@ -129,7 +130,7 @@ extends
                }
 
                // TODO
-               ({
+               givenELaminarIndirectionImpl.appliedTo ({
                   ;
 
                   import L.{given }
@@ -159,7 +160,7 @@ extends
                }
 
                // TODO
-               ({
+               givenELaminarIndirectionImpl.appliedTo ({
                   ;
 
                   import L.{given }
@@ -175,20 +176,25 @@ extends
 
                import vctr.{*, given }
 
-               // TODO
-               lazy val e1 : ln.ReactiveHtmlElement[?]
-               = {
+               givenELaminarIndirectionImpl.appliedTo {
                   ;
 
-                  L.input(iC, L.typ := nativeTypStrFor(gsp ), {
-                     import L.{given }
+                  // TODO
+                  lazy val e1 : ln.ReactiveHtmlElement[?]
+                  = {
                      ;
-                     L.eventProp[dom.FocusEvent ]("focusout") --> (e => {
-                        processFocusOutEvent(e)
-                     })
-                  } )
+
+                     L.input(iC, L.typ := nativeTypStrFor(gsp ), {
+                        import L.{given }
+                        ;
+                        L.eventProp[dom.FocusEvent ]("focusout") --> (e => {
+                           processFocusOutEvent(e)
+                        })
+                     } )
+                  }
+
+                  e1
                }
-               e1
 
             //
             case e if false =>
