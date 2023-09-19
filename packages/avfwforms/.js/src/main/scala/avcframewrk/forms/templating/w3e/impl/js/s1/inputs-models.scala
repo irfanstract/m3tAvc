@@ -80,7 +80,7 @@ extends
    {
       //
 
-      def unliftSwitching()
+      def unliftSwitchingInpfa()
       : (
          SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[Value] ] , Spw, ReconcOpR ]
       )
