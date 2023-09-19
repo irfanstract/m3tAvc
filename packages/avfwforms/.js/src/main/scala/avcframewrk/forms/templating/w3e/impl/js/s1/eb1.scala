@@ -187,6 +187,8 @@ extends
 
       export asrcp.CompIntermediateState
 
+      export xsclhReconciler.{given_SpawnabilityAndReconciliabilityNoArg_Md_TIntermediateState => sReconciler }
+
       def spawnImpl()
       : xsclhReconciler.IntermediateState
       = {
@@ -223,7 +225,30 @@ extends
    {
       ;
 
+      // TODO
       export LaminarSpawnableReconcTuple.unapply
+
+      def apply
+         [
+            M
+            ,
+            SpecificBinaryReconcilerTPre
+               <: LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ?, SpawnedLaminar]
+            ,
+            //
+            SpawnedLaminar <: ln.ReactiveElement[SpawnedDOMNode & dom.Element],
+            SpawnedDOMNode <: dom.Node ,
+         ]
+         (impl: (
+            LReconciliativeKeyTo1[(
+               SpecificBinaryReconcilerTPre
+               & LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, M, ?]
+            ) ] 
+            ,
+            M ,
+         ) )
+      : LaminarSpawnable[SpawnedLaminar, SpawnedDOMNode]
+      = LaminarSpawnableReconcTuple[M, SpecificBinaryReconcilerTPre ](impl )
 
       val _ = 5
       lazy val _ = 5
