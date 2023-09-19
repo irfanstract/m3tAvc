@@ -134,7 +134,7 @@ extends
 
       given_SpawnabilityAndReconciliability_Inpfa_impl1
          [Value]
-      .unliftSwitching()
+      .unliftSwitchingInpfa()
    }
 
    // private[s1]
