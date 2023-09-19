@@ -74,7 +74,7 @@ extends
 
    import org.scalajs.dom
 
-   ;
+   import laminar.api.L
 
    ;
 
@@ -82,12 +82,304 @@ extends
 
    ;
 
+   ;
+
+   // TODO
+   private
+   inline
    def summonInpfaForPv
       [Value]
       //
       (using GspGoodDefaultValuation[Value ] )
       (using GivenSpinner1[Value ] )
-   = summonInpfaForPvB[Value]
+   : SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[Value]], ? <: ln.ReactiveHtmlElement[dom.HTMLElement], Unit]
+   = {
+      ;
+
+      /* a conciciety */
+      @deprecated
+      // private
+      def %%%%
+         [XModel]
+         (f1: () => ln.ReactiveHtmlElement[dom.HTMLElement] )
+      = {
+         ;
+
+         ({
+            import aBackreferencings.{given Conversion[?, ?] }
+
+            summon[Conversion[f1.type, SpawnabilityAndReconciliabilityNoArg[XModel, ? <: ln.ReactiveHtmlElement[dom.HTMLElement] , ? ] ] ]
+            .apply(f1 )
+         })
+      }
+
+      ;
+      compiletime.summonFrom({
+         //
+
+         case sgv0 : (sgvs.Sgv[Value] ) =>
+            ;
+            val sgv
+            = sgv0
+            val describeFieldElem
+            = {
+               laminarSpawnableMdlFactory
+                  [Option[BInputFunc[Value] ], (
+                     LReconciliativeKey.ScnAllocAndReconcileAndDistillH[? , Option[BInputFunc[Value] ] , ? <: ln.ReactiveHtmlElement[? <: dom.HTMLElement ] ]
+                     //
+                  ) , ln.ReactiveHtmlElement[? <: dom.HTMLElement ], dom.HTMLElement ]
+                  ( sgv )
+            }
+            if true then ({
+               ;
+
+               type XM
+               >: Option[BInputFunc[Value] ]
+               <: Option[BInputFunc[Value] ]
+
+               val sp10
+               = summon[SpawnabilityAndReconciliabilityNoArg[LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement], dom.HTMLElement], ?, ? ] ].asTypeTupelified
+               import sp10.{_2 as sp1 }
+
+               // TODO
+               class XSB extends
+                  aBackreferencings.XEAndStateBag(ec = { L.span })
+                  with aBackreferencings.XEAndStateBagCm[XM , Unit ]
+               {
+                  ;
+                  override def close(): Unit = {}
+                  ;
+                  val peer = sp1.spawn(describeFieldElem(None ) )( )
+                  ;
+                  wrappedLaminarElement
+                  .amend({ import L.{given} ; L.span("the newer engine") } , laminarInSpawneddLL(peer) )
+                  ;
+                  override def model_=(mdl: XM ) = sp1.model_=(peer)(describeFieldElem(mdl ) )
+                  // ???
+               }
+
+               %%%%[Option[BInputFunc[Value] ] ](() => { new XSB().wrappedLaminarElement } )
+            })
+            else summonInpfaForPvB[Value]
+
+         case _ =>
+            // compiletime.error("no given Sgv.")
+            summonInpfaForPvB[Value]
+
+      })
+   }
+
+   private
+   object sgvs {
+      ;
+
+      opaque type Sgv[Value]
+      <: LReconciliativeKeyTo1[SgvMinReconcilerOps[Value] ]
+      =  LReconciliativeKeyTo1[SgvMinReconcilerOps[Value] ]
+
+      type SgvMinReconcilerOps[Value ]
+      >: LReconciliativeKey.ScnAllocAndReconcileAndDistillH[? , Option[BInputFunc[Value] ] , ? <: ln.ReactiveHtmlElement[? <: dom.HTMLElement ] ]
+      <: LReconciliativeKey.ScnAllocAndReconcileAndDistillH[? , Option[BInputFunc[Value] ] , ? <: ln.ReactiveHtmlElement[? <: dom.HTMLElement ] ]
+
+      /* for them each, its initialiser shall only run once, so we make it explicitly `val`s (as `implicit val`) */
+
+      implicit
+      final
+      lazy val sgvForString
+      : Sgv[String] & LReconciliativeKeyTo1[ScnAllocAndReconcileAndDistillH[sgvForStringImpl.HigherLevelState, ?, ? ] ]
+      = sgvForStringImpl.higherLvlR
+
+      implicit
+      final
+      lazy val sgvForDateTime
+      : Sgv[w3e.pre.StdGsps.DateTime] & LReconciliativeKeyTo1[ScnAllocAndReconcileAndDistillH[sgvForDateTimeImpl.HigherLevelState, ?, ? ] ]
+      = sgvForDateTimeImpl.higherLvlR
+
+      ;
+
+      final
+      lazy val sgvForStringImpl
+      : allocateSpecial[String]
+      = allocateSpecial[String]
+
+      final
+      lazy val sgvForDateTimeImpl
+      : allocateSpecial[w3e.pre.StdGsps.DateTime]
+      = allocateSpecial[w3e.pre.StdGsps.DateTime]
+
+      private[s1]
+      class allocateSpecial[Value] private[s1]
+            (using GspGoodDefaultValuation[Value ] )
+            (using GivenSpinner1[Value ] )
+            ()
+      {
+         ;
+
+         val lowerLvlR
+         = SRNA.allocateGScanLeftAlt(None )((
+            summonInpfaForPvF1[Value]
+         ) )(e => e )
+
+         val lowerLvlReconciler0
+         = {
+            ({
+               ;
+               lowerLvlR
+               .toScnAllocAndReconcileAndDistillH
+               .given_SpawnabilityAndReconciliabilityNoArg_Md_TIntermediateState
+            })
+            match { case s: SpawnabilityAndReconciliabilityNoArg[t1, t2, t3] => s: SpawnabilityAndReconciliabilityNoArg[t1, ? <: t2, t3] }
+            match { case s => s.asTypeTupelified }
+         }
+         /* can't use `import` */
+         val lowerLvlReconciler
+         : lowerLvlReconciler0._2.type
+         = lowerLvlReconciler0._2
+
+         opaque type HigherLevelState
+         <: Any
+         = (
+            //
+
+            (
+               ln.ReactiveHtmlElement[?] ,
+               L.Var[Option[BInputFunc[Value] ] ]
+               ,
+            )
+         )
+
+         given HigherLevelStateLlElement
+         : Conversion[HigherLevelState, ln.ReactiveHtmlElement[?] ]
+         = _._1
+
+         val higerLevelImplReconciler
+         : (
+            //
+            SpawnabilityAndReconciliabilityNoArg[
+               //
+               Option[BInputFunc[Value] ] ,
+               HigherLevelState ,
+               Unit ,
+            ]
+         )
+         = {
+            SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc[
+               //
+               Option[BInputFunc[Value] ] ,
+               HigherLevelState ,
+               Unit ,
+            ] (
+               //
+               spwImpl1 = (initialFrame ) => {
+                  val s
+                  = lowerLvlReconciler.spawn(None )( )
+                  val sg = laminar.api.L.Var[Option[BInputFunc[Value] ] ](initialFrame )
+                  sg.signal
+                  .map(o => (
+                     o
+                     .map(desc => {
+                        // desc.src
+                        for {
+                           value <- desc.src.toObservable
+                        }
+                        yield {
+                           InpfaStaticInvar[Value] (value = value, propagate1 = (evtInfo, newValue) => desc.onEditToNewValue(newValue, evtInfo ) )
+                        }
+                     } : InpfaRefreshInvar[Value] )
+                  ) )
+                  .flatMap({
+                     case None =>
+                        L.Val(None)
+                     case Some(s) =>
+                        for { sV <- s } yield Some(sV)
+                  })
+                  .foreach(e => {
+                     ;
+
+                     // TODO
+                     lowerLvlReconciler.model_=(s)(e )
+
+                  })(using com.raquo.airstream.ownership.ManualOwner() ) // TODO
+                  (s, sg)
+               } ,
+               reconcImpl1 = {
+                  case ((s, sg), newFrame ) =>
+                     sg
+                     .set(newFrame )
+               } ,
+            )
+         }
+
+         val higherLvlR
+         : (
+            LReconciliativeKeyTo1[(
+               //
+               LReconciliativeKey.ScnAllocAndReconcileAndDistillH[
+                  //
+
+                  HigherLevelState ,
+                  Option[BInputFunc[Value] ] ,
+                  ln.ReactiveHtmlElement[?] ,
+               ]
+            )]
+         )
+         = {
+            SRNA.allocateGScanLeftAlt(None )(higerLevelImplReconciler )(_._1 )
+            // (???)
+         }
+
+         // TODO
+      }
+
+      ;
+
+      // TODO
+
+      ;
+   }
+
+   extension [
+      Pv
+      ,
+      Sp
+      >: ln.ReactiveHtmlElement[?]
+      <: ln.ReactiveHtmlElement[?]
+      ,
+      ReconcOpR,
+   ] (impl: SpawnabilityAndReconciliabilityNoArg[Option[InpfaStaticInvar[Pv]], Sp, ReconcOpR ] ) {
+      //
+
+      @annotation.experimental
+      // transparent inline
+      def composeForSpawn1
+         ()
+         (using reflect.Typeable[Pv] )
+      : SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[?] ], Sp, ReconcOpR ]
+      = {
+         ;
+
+         import laminar.api.L
+
+         ;
+
+         ;
+         impl
+         .compose((eOption : Option[BInputFunc[?] ] ) => ({
+            //
+
+            // TODO
+
+            for {
+               case eh0 : BInputFunc[Pv] <- eOption
+            }
+            yield eh0
+
+            ???
+         }) )
+      }
+
+      //
+   }
 
    object abcdCallbackRenderablility1
    {
