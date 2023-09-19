@@ -113,6 +113,103 @@ extends
    >: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] , dom.HTMLElement ] | LaminarSpawnable[ln.ReactiveSvgElement[? <: dom.SVGElement] , dom.SVGElement ]
    <: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] , dom.HTMLElement ] | LaminarSpawnable[ln.ReactiveSvgElement[? <: dom.SVGElement] , dom.SVGElement ]
 
+   /** 
+    * (pre)allocate
+    * am RCK which applies the given fnc .
+    * returns
+    * a RCK
+    * whose `Model#` is an REMPM[MdlHighLevel] (a Tuple2 `forSome [ M ] (CompForMdl[M] , M )` )
+    * (needs explicit import of `given_REMPM_CONV` which's not `implicit` as it's )
+    * 
+    */
+   // TODO
+   def allocateRemappingComp
+      [
+         MdlHighLevel,
+         ModelAtLowerLvlT ,
+         SPL <: ln.ReactiveElement[SPD ],
+         SPD <: dom.Element ,
+      ]
+      (f: MdlHighLevel => ModelAtLowerLvlT )
+      (initialMdl : => (
+         //
+
+         REMPM[?, [_] =>> (
+            //
+            LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ModelAtLowerLvlT, SPL] ] ,
+            MdlHighLevel ,
+         )]
+      ) )
+   // : (
+   //    //
+   //    LReconciliativeKeyTo1[(
+   //       //
+   //       LReconciliativeKey.ScnAllocAndReconcileAndDistillH[
+   //          //
+   //          ? <: (
+   //             SpawnedArtReconcilerAndStateBagPairToLL[SPL ]
+   //             & SpawnedArtReconcilerAndStateBagPairToLD[SPD ]
+   //          ),
+   //          REMPM[? <: MdlHighLevel, SPL],
+   //          SPL,
+   //       ]
+   //    )]
+   // )
+   = {
+      ;
+      val sp = {
+         lspwmHeterognSpawnability[Article & LaminarSpawnable[SPL, SPD], SPL, SPD, Boolean ]
+         .compose((m0: (
+            REMPM[?, [_] =>> (
+               //
+               LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ModelAtLowerLvlT, SPL] ] ,
+               MdlHighLevel ,
+            )]
+         ) ) => {
+            val m = m0.impl
+            LaminarSpawnableReconcFromTuple ((m._1, m._2 match { case mdl => f(mdl) }) )
+         } ) 
+      }
+      val spK
+      = {
+         SRNA.allocateGScanLeftAlt(initialMdl )(sp)(e => laminarInSpawneddLL(e) )
+      }
+      spK
+   }
+
+   @deprecated
+   private[s1]
+   case class REMPM
+      [
+         K ,
+         +C[k]
+         <: 
+         (
+            //
+            LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ?, ? ] ] ,
+            Any ,
+         )
+         ,
+      ]
+   (impl: C[K] )
+
+   /* offered, but not implied, adapter */
+   def given_REMPM_CONV
+      //
+      [
+         //
+         C
+         <: 
+         (
+            //
+            LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ?, ? ] ] ,
+            Any ,
+         )
+         ,
+      ]
+   : Conversion[C , REMPM[?, [_] =>> C] ]
+   = REMPM.apply[Any, [_] =>> C ] _
+
    ;
 }
 
@@ -175,11 +272,35 @@ extends
          ]
       )
       = {
+         allocateGScanLeftAlt
+            (initialMdl )
+            (impl )
+            (identity[SpawnedLaminar] _ )
+      }
+
+      /* generalisation where `SpawnedCompStateBag`s doesn't need to be `ANativeNode`s */
+      def allocateGScanLeftAlt
+         //
+         [
+            mdlT,
+            SpawnedLaminar <: ln.ReactiveElement[?],
+            S ,
+            ReconcOpR,
+         ]
+         (initialMdl: => mdlT )
+         (impl : SpawnabilityAndReconciliabilityNoArg[mdlT, S, ReconcOpR] )
+         (getNativeNode: S => SpawnedLaminar )
+      : (
+         LReconciliativeKeyTo1[(
+            LReconciliativeKey.ScnAllocAndReconcileAndDistillH[S , mdlT, SpawnedLaminar ]
+         ) ]
+      )
+      = {
          ;
-         allocate[mdlT, SpawnedLaminar, SpawnedLaminar, ReconcOpR ](
+         allocate[mdlT, S, SpawnedLaminar, ReconcOpR ](
             //
             impl = impl,
-            getWrappedNativeNode = identity[SpawnedLaminar] _ ,
+            getWrappedNativeNode = getNativeNode ,
             initialMdl = initialMdl ,
             //
          )
@@ -194,7 +315,7 @@ extends
    opaque type SRNA
       [
          -mdlT,
-         +SpawnedLaminar <: ln.ReactiveElement[?],
+         +SpawnedLaminar <: ln.ReactiveElement[?] ,
          +ReconcOpR,
       ]
    <: LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, mdlT, SpawnedLaminar ] ]
