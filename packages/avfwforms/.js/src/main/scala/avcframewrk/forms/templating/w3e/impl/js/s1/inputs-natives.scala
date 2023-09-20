@@ -477,47 +477,6 @@ extends
 
    ;
 
-   extension [
-      Pv
-      ,
-      Sp
-      >: ln.ReactiveHtmlElement[?]
-      <: ln.ReactiveHtmlElement[?]
-      ,
-      ReconcOpR,
-   ] (impl: SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[Pv]], Sp, ReconcOpR ] ) {
-      //
-
-      // transparent inline
-      def composeForSpawn1
-         ()
-         (using reflect.Typeable[Pv] )
-      : SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[?] ], Sp, ReconcOpR ]
-      = {
-         ;
-
-         import laminar.api.L
-
-         ;
-
-         ;
-         impl
-         .compose((eOption : Option[BInputFunc[?] ] ) => (
-            //
-
-            // TODO
-
-            for {
-               case eh0 : BInputFunc[Pv] <- eOption
-            }
-            yield eh0
-
-         ) )
-      }
-
-      //
-   }
-
    ;
 
    ;
