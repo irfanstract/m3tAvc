@@ -179,18 +179,43 @@ extends
                givenELaminarIndirectionImpl.appliedTo {
                   ;
 
+                  import L.{given }
+
                   // TODO
                   lazy val e1 : ln.ReactiveHtmlElement[?]
                   = {
                      ;
 
-                     L.input(iC, L.typ := nativeTypStrFor(gsp ), {
-                        import L.{given }
-                        ;
-                        L.eventProp[dom.FocusEvent ]("focusout") --> (e => {
-                           processFocusOutEvent(e)
-                        })
-                     } )
+                     L.span(L.styleAttr := s"display: inline-block ;" , (
+                        //
+
+                        L.span(L.styleAttr := s"display: flex ; flex-direction: column ;" , (
+                           //
+
+                           L.input(iC, L.typ := nativeTypStrFor(gsp ), {
+                              import L.{given }
+                              ;
+                              L.eventProp[dom.FocusEvent ]("focusout") --> (e => {
+                                 processFocusOutEvent(e)
+                              })
+                           } )
+                        ), (
+                           // L.child <--
+                           // vrForPretendCleanStateS
+                           // .map({ case true => L.span() ; case _ => L.button("cancel", L.onClick --> (e => resetWithoutSubmit() ) ) })
+
+                           L.span(
+                           //
+                           L.transition := "all 0.33s ease-out" ,
+                           L.fontSize.percent <-- (vrForPretendCleanStateS.map({ case true => 5 ; case _ => 66 }) ) ,
+                           L.opacity <-- (vrForPretendCleanStateS.map({ case true => 0 ; case _ => 1 }).map(_.toString() ) ) ,
+                           (
+                              L.button("✘ cancel", L.onClick --> (e => resetWithoutSubmit() ) )
+                              .amend(L.disabled <-- vrForPretendCleanStateS )
+                           ) ,
+                           )
+                        ) )
+                     ))
                   }
 
                   e1
