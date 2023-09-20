@@ -77,6 +77,11 @@ trait ELaminarIndirectionImpl
    type AppliedR
    <: Any
 
+   extension (lhs: AppliedR )
+      def ++(rhs: AppliedR)
+         (using ELaminarIndirectionImpl.KTag )
+      : AppliedR
+
    ;
 }
 
@@ -89,6 +94,7 @@ object ELaminarIndirectionImpl
 
    import org.scalajs.dom
 
+   @annotation.experimental
    object directly extends
    ELaminarIndirectionImpl
    {
@@ -109,6 +115,12 @@ object ELaminarIndirectionImpl
          (s: => AppliedS )
       : (AppliedR )
       = s
+
+      extension (lhs: AppliedR )
+         def ++(rhs: AppliedR)
+            (using ELaminarIndirectionImpl.KTag )
+         : AppliedR
+         = throw new UnsupportedOperationException
 
       ;
    }
@@ -136,8 +148,31 @@ object ELaminarIndirectionImpl
       : (DummyImplicit ?=> ln.ReactiveElement[?] )
       = s
 
+      extension (lhs: AppliedR )
+         def ++(rhs: AppliedR)
+            (using tg: ELaminarIndirectionImpl.KTag )
+         : AppliedR
+         = {
+            import laminar.api.L
+            import L.{given }
+            ???
+         }
+
       ;
    } // cloneably.
+
+   type KTag
+   >: com.raquo.laminar.tags.HtmlTag[?]
+   <: com.raquo.laminar.tags.HtmlTag[?]
+
+   // opaque type KtConcatModeByR
+   //    [-RU <: RL, +RL]
+   // <: (
+   //    ({ type R >: RL <: RU } , Function1[com.raquo.laminar.nodes.ChildNode[?], ?] ) {
+   //       val _2
+   //       : com.raquo.laminar.nodes.ChildNode[?] => _1.R
+   //    }
+   // )
 
    ;
 } // ELaminarIndirectionImpl$

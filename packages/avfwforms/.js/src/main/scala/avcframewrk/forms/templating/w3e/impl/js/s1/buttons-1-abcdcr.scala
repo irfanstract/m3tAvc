@@ -36,6 +36,7 @@ extends
    /* */
    with ENativeElementsD1
    with ELaminarQckButtonsReconcNatives
+   with ELaminarQckInputElemsReconcNativesExt
    /* due to the self-types */
    with ELaminarQckInputElemsDataTypesPre
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
@@ -74,7 +75,7 @@ extends
 
    import org.scalajs.dom
 
-   ;
+   import laminar.api.L
 
    ;
 
@@ -82,12 +83,7 @@ extends
 
    ;
 
-   def summonInpfaForPv
-      [Value]
-      //
-      (using GspGoodDefaultValuation[Value ] )
-      (using GivenSpinner1[Value ] )
-   = summonInpfaForPvB[Value]
+   ;
 
    object abcdCallbackRenderablility1
    {

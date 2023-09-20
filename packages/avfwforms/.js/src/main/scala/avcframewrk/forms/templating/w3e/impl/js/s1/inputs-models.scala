@@ -70,6 +70,46 @@ extends
 
    ;
 
+   extension [Value] (s: BInputFunc[Value] )
+      def frames
+      : InpfaRefreshInvar[Value]
+      = s.toFrames
+
+   extension [Value] (s: BInputFunc[Value] )
+      def toFrames
+      : L.Signal[InpfaStaticInvar[Value ] ]
+      = {
+         ;
+
+         val s1
+         = {
+            for {
+               value <- s.src.toObservable
+            }
+            yield {
+               //
+               InpfaStaticInvar(
+                  //
+                  value = value
+                  ,
+                  propagate1 = (
+                     { case (evtInfo, newValue) => {
+                        ;
+
+                        s
+                        // .src.toObserver
+                        // .onNext(newValue)
+                        .onEditToNewValue(newValue, evtInfo )
+                     } }
+                  )
+                  ,
+               )
+            }
+         }
+         ;
+         s1
+      }
+
    extension [
       Value ,
       Spw ,
@@ -90,42 +130,9 @@ extends
          impl
 
          .compose((s0: Option[BInputFunc[Value] ] ) => {
-            ;
-
-            ;
-
             (for {
                s <- s0
-            } yield {
-               ;
-               val s1
-               = {
-                  for {
-                     value <- s.src.toObservable
-                  }
-                  yield {
-                     //
-                     InpfaStaticInvar(
-                        //
-                        value = value
-                        ,
-                        propagate1 = (
-                           { case (evtInfo, newValue) => {
-                              ;
-
-                              s
-                              // .src.toObserver
-                              // .onNext(newValue)
-                              .onEditToNewValue(newValue, evtInfo )
-                           } }
-                        )
-                        ,
-                     )
-                  }
-               }
-               ;
-               s1
-            } )
+            } yield s.toFrames )
          } )
       }
 
