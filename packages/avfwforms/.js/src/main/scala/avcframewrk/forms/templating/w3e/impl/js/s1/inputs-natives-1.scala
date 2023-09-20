@@ -218,17 +218,50 @@ extends
    class VCTR
       [Value]
       (using val gsp: GivenSpinner[Value] )
-      (s : laminar.api.L.StrictSignal[InpfaStaticInvar[Value] ] )
+      (srcObservab : laminar.api.L.StrictSignal[InpfaStaticInvar[Value] ] )
       (propagateEditResultValue : (newValue: Value ) => Unit )
       (using laminar.api.A.Owner )
    {
       ;
 
-      val vr1 = L.Var[String]("")
+      import org.scalajs.dom
 
-      s
+      import laminar.api.L
+
+      ;
+
+      private[VCTR]
+      val vr1 = L.Var[Option[String] ](None )
+
+      // export vr1.{signal => vr1R, writer => vr1W }
+      val vr1R
+      = {
+         (vr1.signal combineWith srcObservab.map(_.value ) )
+         .map({ case e => e._1.getOrElse[String](e._2.toString() ) })
+         .observe
+      }
+      private[VCTR]
+      val vr1W
+      = {
+         vr1.writer
+         .contramapSome
+      }
+
+      private[VCTR]
+      def vrReset1() : Unit
+      = {
+         vr1.set(None )
+      }
+
+      private[VCTR]
+      def vrSetTo(v: Value ) : Unit
+      = vr1W.onNext(v.toString() )
+
+      vrReset()
+
+      srcObservab
       .map(_.value)
-      .map(e => vr1.set(e.toString() ) )
+      .map(e => vrReset1() )
       .observe
 
       val tryParse
@@ -236,12 +269,55 @@ extends
 
       ;
 
+      val sgForIsInpValuePresentlyInSyncWithSrc
+      = {
+         (srcObservab.map(_.value).map(_.toString() ) combineWith vr1R )
+         .map({ case v => v._1 == v._2 })
+         .observe
+      }
+
+      def isInpValuePresentlyInSyncWithSrc()
+      : Boolean
+      = {
+         sgForIsInpValuePresentlyInSyncWithSrc.now()
+      }
+
+      /* note: `vrForPretendCleanState` being defined later */
+      ((vr1.signal combineWith sgForIsInpValuePresentlyInSyncWithSrc) )
+      .map({
+         case (o, b) =>
+            o.isEmpty || b
+      } )
+      .foreach({ case isNowSo => vrForPretendCleanState.update(_ && isNowSo ) } )
+
+      private[VCTR]
+      final
+      lazy val vrForPretendCleanState
+      = L.Var[Boolean](true )
+
+      export vrForPretendCleanState.{signal as vrForPretendCleanStateS }
+
+      private[VCTR]
+      def vrReset() : Unit
+      = {
+         vrReset1()
+         vrForPretendCleanState.set(true )
+      }
+
+      def resetWithoutSubmit()
+      : Unit
+      = {
+         ;
+
+         vrReset()
+      }
+
       def tryFlush()
       = {
          ;
 
          val valueRaw
-         = vr1.now()
+         = vr1R.now()
 
          given_Console_alt
             .info(
@@ -254,7 +330,7 @@ extends
             r <- tryParse(valueRaw ).toRight(new RuntimeException(s"cannot translate value '${valueRaw}' with the GSP ${gsp } " ) ).toTry
          }
          yield {
-            vr1.set("")
+            vrReset()
             propagateEditResultValue(r)
             ()
          }
@@ -263,7 +339,7 @@ extends
       val iC = {
          ;
 
-         lControlled(summon[GivenSpinner1[String ] ] )(vr1 )
+         lControlledRemote(summon[GivenSpinner1[String ] ] )(vr1R )(vr1W )
       }
 
       ;
