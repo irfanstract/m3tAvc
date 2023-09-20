@@ -49,6 +49,8 @@ extends
 
    import org.scalajs.dom
 
+   import laminar.api.L
+
    // // protected
    // class given_Conversion_SpiwmTwos_LaminarSpawnable_TypeKey
 
@@ -82,6 +84,87 @@ extends
          match { case lR => laminarSpawnableMdlFactory(lR ) }
          match { case f => f }
       }
+   }
+
+   /** 
+    * a concise way to write a `SpawnabilityAndReconciliabilityNoArg` impl this way
+    * 
+    */
+   @deprecated
+   private[avcframewrk]
+   def %%%%%
+      [XModel]
+      (f1: () => ln.ReactiveHtmlElement[dom.HTMLElement] )
+   = {
+      ;
+
+      ({
+         import aBackreferencings.{given Conversion[?, ?] }
+
+         summon[Conversion[f1.type, SpawnabilityAndReconciliabilityNoArg[XModel, ? <: ln.ReactiveHtmlElement[dom.HTMLElement] , ? ] ] ]
+         .apply(f1 )
+      })
+   }
+
+   def lnWrappedElemReconciler1
+      //
+      [
+         //
+         XM
+         <: Option[?]
+         ,
+         E
+         >: dom.HTMLElement
+         <: dom.HTMLElement
+         ,
+      ]
+      // describeFieldElem: (subArtMdl: Option[BInputFunc[Value]]) => LaminarSpawnable[ln.ReactiveHtmlElement[ <: HTMLElement], HTMLElement]
+      (describeFieldElem: (subArtMdl: XM ) => LaminarSpawnable[ln.ReactiveHtmlElement[? <: E], E] )
+      // 
+      (using <:<[None.type, XM] )
+   = {
+      ;
+
+      val sp10
+      = {
+         summon[SpawnabilityAndReconciliabilityNoArg[LaminarSpawnable[ln.ReactiveHtmlElement[? <: E], E], ?, ? ] ]
+         // TODO
+         .withAfterReconcileIntercept({ case e => e._3 })
+         /* `asTypeTupelified` */
+         .asTypeTupelified
+      }
+      import sp10.{_2 as sp1 }
+
+      // TODO
+      class XSB extends
+         aBackreferencings.XEAndStateBag(ec = { L.span })
+         with aBackreferencings.XEAndStateBagCm[XM , Unit ]
+      {
+         ;
+
+         override
+         def close(): Unit
+         = {}
+
+         ;
+         val peer
+         = sp1.spawn(describeFieldElem(None ) )( )
+         ;
+
+         wrappedLaminarElement
+         .amend(laminarInSpawneddLL(peer) , { import L.{given} ; L.span("✨") } )
+         ;
+
+         override
+         def model_=(mdl: XM )
+         = sp1.model_=(peer)(describeFieldElem(mdl ) )
+
+         // ???
+
+         ;
+      }
+
+      %%%%%[XM ](() => { new XSB().wrappedLaminarElement } )
    }
 
    ;
