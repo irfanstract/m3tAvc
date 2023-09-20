@@ -242,8 +242,8 @@ extends
 
       ;
 
-      given ELaminarIndirectionImpl.directly.type
-      = ELaminarIndirectionImpl.directly
+      given ELaminarIndirectionImpl.cloneably.type
+      = ELaminarIndirectionImpl.cloneably
 
       ;
 
@@ -308,8 +308,11 @@ extends
                      wrappedLaminarElement
                      .amend({
                         L.child <-- {
+                           // summon[ELaminarIndirectionImpl.directly.AppliedS =:= ln.ReactiveElement[?] ]
+                           // summon[ln.ReactiveElement[?] <:< com.raquo.laminar.nodes.ChildNode[org.scalajs.dom.Node] ]
+                           // summon[ELaminarIndirectionImpl.directly.AppliedS <:< com.raquo.laminar.nodes.ChildNode[org.scalajs.dom.Node] ]
                            sS
-                           .map(s => s.scanSpawnNewLlE() )
+                           .map(s => s.scanSpawnNewLlE() match { case e => e } )
                         }
                      })
 
