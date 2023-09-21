@@ -311,11 +311,18 @@ extends
                   val subscrAssignee
                   = com.raquo.airstream.ownership.ManualOwner()
 
+                  implicit val counter = L.Var[Int](0)
+
                   val e1
                   = perFrameReconciler.spawn(None )( )
 
                   val internalReconcileTo
-                  = perFrameReconciler.model_=(e1) _
+                  = {
+                     (perFrameReconciler.model_=(e1) _ )
+                     match { case f : Function1[aType, r] => {
+                        f.compose((a: aType ) => { counter.update(_ + 1 ) ; a } )
+                     } }
+                  }
 
                   val repiping1
                   = L.Var[Option[BInputFunc[Value] ] ](initialDescrOption )
@@ -347,7 +354,15 @@ extends
                   })
                   .foreach(_.apply() )
 
-                  RepipeModeCompStateBag((e1, repiping1) )
+                  val e11 = {
+                     ;
+
+                     import L.{given}
+
+                     L.span(e1, llByCco(counter) )
+                  }
+
+                  RepipeModeCompStateBag((e11, repiping1) )
                } ,
 
                //
