@@ -67,7 +67,7 @@ trait ELaminarIndirectionImpl
    import org.scalajs.dom
 
    def appliedTo
-      (s: => AppliedS )
+      (s: ExtrOps ?=> AppliedS )
    : AppliedR
 
    type AppliedS
@@ -76,6 +76,20 @@ trait ELaminarIndirectionImpl
 
    type AppliedR
    <: Any
+
+   protected
+   trait ExtrOps
+   {
+      def render
+         (r: AppliedR)
+      : AppliedS
+   }
+
+   extension (src: Seq[AppliedR])
+      def sumLd
+         (using ELaminarIndirectionImpl.KTagSumCtx )
+      : AppliedR
+      = ???
 
    ;
 }
@@ -107,9 +121,9 @@ object ELaminarIndirectionImpl
       // transparent
       // inline
       def appliedTo
-         (s: => AppliedS )
+         (s: ExtrOps ?=> AppliedS )
       : (AppliedR )
-      = s
+      = s(using ??? )
 
       ;
    }
@@ -124,21 +138,87 @@ object ELaminarIndirectionImpl
       <: ln.ReactiveElement[?]
 
       type AppliedR
-      // >: DummyImplicit ?=> AppliedS
-      // <: DummyImplicit ?=> AppliedS
-      = DummyImplicit ?=> ln.ReactiveElement[?]
+      // >: DlndDummyImplicit ?=> AppliedS
+      // <: DlndDummyImplicit ?=> AppliedS
+      = (DlndDummyImplicit) ?=> ln.ReactiveElement[?]
 
       override
       // transparent
       // inline
       def appliedTo
-         (s: => AppliedS )
+         //
+         (s: ExtrOps ?=> AppliedS )
       // : (AppliedR )
-      : (DummyImplicit ?=> ln.ReactiveElement[?] )
-      = s
+      : (DlndDummyImplicit ?=> ln.ReactiveElement[?] )
+      = (_: DlndDummyImplicit) ?=> {
+         s(using (
+            new ExtrOps {
+               //
+               override
+               def render
+                  (r: AppliedR)
+               = r
+            }
+         ))
+      }
+
+      extension (src: Seq[AppliedR])
+         override
+         def sumLd
+            (using ELaminarIndirectionImpl.KTagSumCtx )
+         : AppliedR
+         = ((dummyImplicit1 : DlndDummyImplicit) ?=> {
+            import laminar.api.L
+            import L.{given }
+
+            (
+               summon[KTagSumCtx ] ,
+               src.map(e => e ) /* eval if not */ ,
+            )
+            match {
+               case (EC(cls : com.raquo.laminar.tags.HtmlTag[ec] ) , ls ) =>
+                  cls(ls.map(_.asInstanceOf[ln.ReactiveHtmlElement[?] ] ) : _* )
+                  
+               case (EC(cls : com.raquo.laminar.tags.SvgTag[ec] ) , ls ) =>
+                  cls(ls.map(_.asInstanceOf[ln.ReactiveSvgElement[?] ] ) : _* )
+
+               case e =>
+                  throw
+                     new IllegalArgumentException(new MatchError(e).getMessage() )
+            }
+         })
 
       ;
    } // cloneably.
+
+   case class EC
+      [+E <: ln.ReactiveElement.Base]
+      (cls: com.raquo.laminar.tags.Tag[E] )
+
+   opaque type KTagSumCtx
+   <: EC[?]
+   = EC[?]
+
+   final
+   lazy
+   val KTagSumCtx
+   : EC[?] => KTagSumCtx
+   = identity[KTagSumCtx] _
+
+   // opaque type KtConcatModeByR
+   //    [-RU <: RL, +RL]
+   // <: (
+   //    ({ type R >: RL <: RU } , Function1[com.raquo.laminar.nodes.ChildNode[?], ?] ) {
+   //       val _2
+   //       : com.raquo.laminar.nodes.ChildNode[?] => _1.R
+   //    }
+   // )
+
+   given DlndDummyImplicit(using util.NotGiven[noDlndDPlease.type] )
+   : AnyRef with {}
+
+   protected
+   implicit object noDlndDPlease
 
    ;
 } // ELaminarIndirectionImpl$
