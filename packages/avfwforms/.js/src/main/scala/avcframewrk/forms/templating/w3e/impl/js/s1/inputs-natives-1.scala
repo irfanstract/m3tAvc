@@ -179,6 +179,15 @@ extends
                givenELaminarIndirectionImpl.appliedTo {
                   ;
 
+                  import L.{given }
+
+                  new Selectable {
+                  ;
+
+                  /**
+                   * the main input-element
+                   * 
+                   */
                   // TODO
                   lazy val e1 : ln.ReactiveHtmlElement[?]
                   = {
@@ -188,12 +197,75 @@ extends
                         import L.{given }
                         ;
                         L.eventProp[dom.FocusEvent ]("focusout") --> (e => {
-                           processFocusOutEvent(e)
+                           // processFocusOutEvent(e)
                         })
                      } )
                   }
 
-                  e1
+                  /**
+                   * the complete elements
+                   * 
+                   */
+                  lazy val e2 : ln.ReactiveHtmlElement[?]
+                  = {
+                     ;
+
+                     L.span(L.styleAttr := s"display: inline-block ;" , (
+                        //
+
+                        L.span(L.styleAttr := s"display: flex ; flex-direction: column ;" , (
+                           //
+
+                           e1
+                        ), (
+                           //
+
+                           L.span(
+                           //
+                           L.transition := "all 0.33s ease-out" ,
+                           L.fontSize.percent <-- (vrForPretendCleanStateS.map({ case true => 5 ; case _ => 66 }) ) ,
+                           L.opacity <-- (vrForPretendCleanStateS.map({ case true => 0 ; case _ => 1 }).map(_.toString() ) ) ,
+                           (
+                              L.button("✘ cancel", L.onClick --> (e => resetWithoutSubmit() ) )
+                              .amend(L.disabled <-- vrForPretendCleanStateS )
+                           ) ,
+                           )
+                        ) , {
+                           // ;
+
+                           // import L.{given }
+                           // ;
+                           // L.eventProp[dom.FocusEvent ]("focusin") --> (e => {
+                           //    ;
+                           //    reRegisterWfcl()
+                           // })
+
+                           import avcframewrk.forms.templating.ll_util.llOnElementTreeFocusOutIvn
+
+                           llOnElementTreeFocusOutIvn(processFocusOutEvent _)
+                        } )
+                     ))
+                  }
+
+                  def processFocusOutEvent
+                     (e: dom.FocusEvent)
+                  : Unit
+                  = {
+                     ;
+
+                     if false then dom.console.log(e)
+
+                     tryFlush()
+                     .fold[Unit](z => {
+                        given_Console_alt.info("failed 'tryFlush' ; cancelling the unfocusing ", z.toString() )
+                        e1.ref
+                        .focus()
+                     } , _ => {} )
+
+                     ;
+                  }
+
+                  }.e2
                }
 
             //
@@ -343,24 +415,6 @@ extends
       }
 
       ;
-
-      def processFocusOutEvent
-         (e: dom.FocusEvent)
-      : Unit
-      = {
-         ;
-
-         if false then dom.console.log(e)
-
-         tryFlush()
-         .fold[Unit](z => {
-            given_Console_alt.info("failed 'tryFlush' ; cancelling the unfocusing ", z.toString() )
-            // e.preventDefault()
-            domutil.restoreFocusFor(e)
-         } , _ => {} )
-
-         ;
-      }
 
       ;
    }
