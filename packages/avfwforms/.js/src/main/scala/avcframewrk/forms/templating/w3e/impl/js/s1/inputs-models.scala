@@ -70,34 +70,17 @@ extends
 
    ;
 
-   extension [
-      Value ,
-      Spw ,
-      ReconcOpR ,
+   extension [Value] (s: BInputFunc[Value] )
+      def frames
+      : InpfaRefreshInvar[Value]
+      = s.toFrames
 
-      //
-   ] (impl: SpawnabilityAndReconciliabilityNoArg[Option[laminar.api.L.Signal[InpfaStaticInvar[Value] ] ], Spw, ReconcOpR ] )
-   {
-      //
-
-      def unliftSwitchingInpfa()
-      : (
-         SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[Value] ] , Spw, ReconcOpR ]
-      )
+   extension [Value] (s: BInputFunc[Value] )
+      def toFrames
+      : L.Signal[InpfaStaticInvar[Value ] ]
       = {
-         ;
-
-         impl
-
-         .compose((s0: Option[BInputFunc[Value] ] ) => {
-            ;
-
-            ;
-
-            (for {
-               s <- s0
-            } yield {
                ;
+
                val s1
                = {
                   for {
@@ -125,7 +108,31 @@ extends
                }
                ;
                s1
-            } )
+      }
+
+   extension [
+      Value ,
+      Spw ,
+      ReconcOpR ,
+
+      //
+   ] (impl: SpawnabilityAndReconciliabilityNoArg[Option[laminar.api.L.Signal[InpfaStaticInvar[Value] ] ], Spw, ReconcOpR ] )
+   {
+      //
+
+      def unliftSwitchingInpfa()
+      : (
+         SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[Value] ] , Spw, ReconcOpR ]
+      )
+      = {
+         ;
+
+         impl
+
+         .compose((s0: Option[BInputFunc[Value] ] ) => {
+            (for {
+               s <- s0
+            } yield s.toFrames )
          } )
       }
 
