@@ -89,6 +89,7 @@ object ELaminarIndirectionImpl
 
    import org.scalajs.dom
 
+   @annotation.experimental
    object directly extends
    ELaminarIndirectionImpl
    {
