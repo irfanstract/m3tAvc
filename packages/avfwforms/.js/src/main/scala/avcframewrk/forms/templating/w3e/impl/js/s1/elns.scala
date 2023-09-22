@@ -54,6 +54,46 @@ extends
    import laminar.api.L
 
    ;
+
+   private[s1]
+   def llByCco
+      (counter : L.Source[Int])
+      (using CCE )
+   = {
+      ;
+
+      import L.{given}
+      L.span((
+         //
+         L.child <-- (
+         for { i <- counter.toObservable }
+         yield llByCount(i)
+         )
+      ) )
+   }
+
+   private[s1]
+   def llByCount
+      (i : Int )
+      (using CCE )
+   = {
+      ;
+
+      import L.{given}
+      (
+         //
+
+         L.span(s"[update-count: $i]", L.title :=
+            s"update count: $i "
+            .appendedAll(s". (${summon[CCE].callingMethodName } )")
+         )
+      )
+   }
+
+   inline given given_CCE_1[T0] : CCE = { val cmn = currentMethodName ; CCE(callingMethodName = cmn ) }
+   case class CCE(callingMethodName: String)
+
+   ;
 }
 
 /** 
