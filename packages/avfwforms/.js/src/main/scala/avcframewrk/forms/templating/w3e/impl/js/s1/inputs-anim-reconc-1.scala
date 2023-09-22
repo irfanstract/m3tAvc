@@ -336,13 +336,13 @@ extends
                         L.span(L.child <-- src.toObservable.map(_.toString() ) )
                      }
 
-                     L.span(e1, (
-                        L.span("[", (
+                     L.span(e1, L.inpfaReconclCountUpDebugSpan((
+                        L.span((
                            L.span(s"frames:", xNewCounterComponent(src = frameCounter ), L.title := "the frame-count" )
                         ) , ";" , (
                            L.span(s"repipes:", xNewCounterComponent(src = repipeCounter ), L.title := "the count of switching across the src BInputFunc(s) " )
-                        ) , L.button("Repipe", L.onClick --> (_ => { repiping1.update(identity _ ) } ) ) , "]" )
-                     ) )
+                        ) , L.button("Repipe", L.onClick --> (_ => { repiping1.update(identity _ ) } ) ) )
+                     )) )
                   }
 
                   RepipeModeCompStateBag((e11, repiping1) )

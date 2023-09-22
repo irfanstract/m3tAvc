@@ -119,12 +119,50 @@ extends
 
    import org.scalajs.dom
 
+   import laminar.api.L
+
    override
    type Article
    >: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] , dom.HTMLElement ] | LaminarSpawnable[ln.ReactiveSvgElement[? <: dom.SVGElement] , dom.SVGElement ]
    <: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] , dom.HTMLElement ] | LaminarSpawnable[ln.ReactiveSvgElement[? <: dom.SVGElement] , dom.SVGElement ]
 
    ;
+
+   extension (pr: L.type )
+      // transparent inline
+      def debugSpan(ms: L.Modifier[ln.ReactiveHtmlElement[dom.HTMLElement ] ]* )
+      : ln.ReactiveHtmlElement[dom.HTMLElement ]
+      = {
+         ;
+
+         val L : pr.type
+         = pr
+         import L.{given}
+
+         givenAvfwDebugPanelCssInit
+         L.span(L.className := "avfw-dbpblock" , (
+            L.span(L.span(ms : _* ))
+         ))
+      }
+
+   ;
+}
+
+object givenAvfwDebugPanelCssInit
+{
+   ;
+   addGlobalCss({
+      """
+      .avfw-dbpblock {
+          border-inline: 0.1em solid currentColor;
+          border-radius: 0.25em;
+          padding-inline: 0.5ex;
+          margin: 0.5ex;
+          border: 0.1em solid currentColor;
+          display: inline-block ;
+      }
+      """
+   })
 }
 
 /**

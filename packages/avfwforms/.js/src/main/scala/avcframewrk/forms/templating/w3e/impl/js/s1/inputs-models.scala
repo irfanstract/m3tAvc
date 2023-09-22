@@ -47,6 +47,7 @@ extends
       with ELaminarQckButtonsActionModelling
       with ELaminarQckButtonsActionModellingTwo
       with ELaminarQckButtonsReconcCtls
+      with ELaminarQckInputElemsReconcNatives
       with ENativeElementsD1
       with w3e.pre.Articles
       with ELaminarQckCore
