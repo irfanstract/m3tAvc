@@ -371,6 +371,13 @@ extends
 
             import laminar.api.L
 
+            val uid = {
+               import language.unsafeNulls
+               java.util.Random().nextLong()
+               .toHexString
+               .prependedAll("0x")
+            }
+
             override
             def close(): Unit
             = {
@@ -404,7 +411,10 @@ extends
                = { forRefresh[Value]() }
 
                wrappedLaminarElement
-               .amend(peer.wrappedLaminarElement )
+               .amend(peer.wrappedLaminarElement , {
+                  import L.{given}
+                  L.span("[", uid.toString() , "]")
+               } )
 
                vr._2
                .foreach(e => {
