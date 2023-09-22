@@ -45,7 +45,7 @@ with AcsfReturnIndependentCodings1
          ,
          baseTitle: Title
          ,
-         updatedTitle: (baseTitle: Title, internalState: AcModelState ) => Title
+         updatedTitle: AcsfBaseTitleAndInternalStateCallback[Title, AcModelState, Title ]
          = (baseTitle: Title, s: AcModelState ) => baseTitle
          ,
       )
@@ -60,6 +60,54 @@ object AcsfLabelledCallbackTranslator
    //
 
 } // AcsfLabelledCallbackTranslator$
+
+trait AcsfLabelledUrlTranslator[+M]
+extends
+AnyRef
+with AcsfTitleIndependentCodings1
+with AcsfReturnIndependentCodings1
+{
+
+   //
+
+   def apply
+      [
+         //
+         AcModelState ,
+         Title : TitleCoding ,
+         R <: java.net.URI ,
+
+      ]
+      (
+         //
+         internalStateOption : AsyncStateChangeMonad[AcModelState]
+         = { laminar.api.L.Var(true ).signal }
+         ,
+         baseTitle: Title
+         ,
+         updatedTitle: AcsfBaseTitleAndInternalStateCallback[Title, AcModelState, Title ]
+         = (baseTitle: Title, s: AcModelState ) => baseTitle
+         ,
+      )
+      (byS: PartialFunction[AcModelState, R] )
+      : M
+
+} // AcsfLabelledUrlTranslator
+
+object AcsfLabelledUrlTranslator
+{
+   ;
+} // AcsfLabelledUrlTranslator$
+
+/**
+ * 
+ * a callback with those two param-val(s) -
+ * `baseTitle: Title`, `internalState: AcModelState`
+ * 
+ */
+type AcsfBaseTitleAndInternalStateCallback
+   [-Title, -AcModelState, +R ]
+= (baseTitle: Title, internalState: AcModelState ) => R
 
 type AcsfTitleIndependentCodings1
 = AcTitleIndependentCodings1
