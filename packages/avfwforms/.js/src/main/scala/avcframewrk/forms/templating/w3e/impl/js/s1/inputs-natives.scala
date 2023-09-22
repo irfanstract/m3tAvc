@@ -413,7 +413,7 @@ extends
                wrappedLaminarElement
                .amend(peer.wrappedLaminarElement , {
                   import L.{given}
-                  L.span("[", uid.toString() , "]")
+                  L.inpfaReconclCountUpDebugSpan("[", uid.toString() , "]")
                } )
 
                vr._2
@@ -446,6 +446,34 @@ extends
 
       ;
    }
+
+   extension (pr: L.type )
+      // transparent inline
+      def inpfaReconclCountUpDebugSpan(ms: L.Modifier[ln.ReactiveHtmlElement[dom.HTMLElement ] ]* )
+      : ln.ReactiveHtmlElement[dom.HTMLElement ]
+      = {
+         ;
+
+         val L : pr.type
+         = pr
+         import L.{given}
+
+         L.span(L.display := "inline-block" , (
+            //
+
+            L.span(L.styleAttr := s"display: var(--avfw-inpfadebugspan-display, none ) ", (
+               //
+
+               L.span(L.styleAttr := s"display: flex ; flex-direction: column ; ", (
+                  //
+
+                  L.debugSpan((
+                     L.span(ms : _* )
+                  ))
+               ))
+            ))
+         ))
+      }
 
    /* a conciciety */
    @deprecated

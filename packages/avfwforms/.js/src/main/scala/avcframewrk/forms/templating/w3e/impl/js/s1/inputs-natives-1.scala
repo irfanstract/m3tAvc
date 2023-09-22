@@ -47,6 +47,7 @@ extends
       with ELaminarQckCoreHtml
       // with  avcframewrk.forms.templating.w3e.pre.Buttons
       with ELaminarQckInputElemsDataTypesPre
+      with ELaminarQckInputElemsReconcNatives // TODO get rid of this
    ) =>
    ;
 
@@ -169,9 +170,18 @@ extends
 
                   import L.{given }
 
-                  L.span((
-                     L.input(iC , L.typ := nativeTypStrFor(summon[GivenSpinner1[Value ] ] ) )
-                  ), llByCco(s.map({ var c : Int = 0 ; _ => { c += 1 ; c } }) ) )
+                  L.span(
+                     //
+                     L.display := "inline-block" ,
+                     (
+                        L.input(iC , L.typ := nativeTypStrFor(summon[GivenSpinner1[Value ] ] ) )
+                     ),
+                     (
+                        L.inpfaReconclCountUpDebugSpan((
+                           llByCco(s.map({ var c : Int = 0 ; _ => { c += 1 ; c } }) )
+                        ))
+                     ) ,
+                  )
                })
 
             case ICM.ToSubmitOnBlur() =>
