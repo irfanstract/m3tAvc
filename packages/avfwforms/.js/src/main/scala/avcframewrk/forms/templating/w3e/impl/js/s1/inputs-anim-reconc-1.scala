@@ -275,14 +275,26 @@ extends
                   val subscrAssignee
                   = com.raquo.airstream.ownership.ManualOwner()
 
+                  val frameCounter = L.Var[Int](0)
+
                   val e1
                   = perFrameReconciler.spawn(None )( )
 
                   val internalReconcileTo
-                  = perFrameReconciler.model_=(e1) _
+                  = {
+                     (perFrameReconciler.model_=(e1) _ )
+                     match { case f : Function1[aType, r] => {
+                        f.compose((a: aType ) => { frameCounter.update(_ + 1 ) ; a } )
+                     } }
+                  }
+
+                  val repipeCounter = L.Var[Int](0)
 
                   val repiping1
                   = L.Var[Option[BInputFunc[Value] ] ](initialDescrOption )
+
+                  repiping1.signal
+                  .foreach(mdlOption => { repipeCounter.update(_ + 1 ) } )
 
                   repiping1.signal
 
@@ -311,7 +323,27 @@ extends
                   })
                   .foreach(_.apply() )
 
-                  RepipeModeCompStateBag((e1, repiping1) )
+                  val e11 = {
+                     ;
+
+                     import L.{given}
+
+                     def xNewCounterComponent
+                        (src: L.Source[Int] )
+                     = {
+                        L.span(L.child <-- src.toObservable.map(_.toString() ) )
+                     }
+
+                     L.span(e1, (
+                        L.span("[", (
+                           L.span(s"frames:", xNewCounterComponent(src = frameCounter ), L.title := "the frame-count" )
+                        ) , ";" , (
+                           L.span(s"repipes:", xNewCounterComponent(src = repipeCounter ), L.title := "the count of switching across the src BInputFunc(s) " )
+                        ) , L.button("Repipe", L.onClick --> (_ => { repiping1.update(identity _ ) } ) ) , "]" )
+                     ) )
+                  }
+
+                  RepipeModeCompStateBag((e11, repiping1) )
                } ,
 
                //
