@@ -36,6 +36,8 @@ export avcframewrk.forms.math.CSingleton
 
 export avcframewrk.forms.math.InstanceOf
 
+export reflect.Selectable.reflectiveSelectable
+
 /**
  * 
  * a *safe* factory for imperative-style `TypeTest`(s)
