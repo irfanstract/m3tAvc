@@ -86,6 +86,10 @@ extends
       : givenELaminarIndirectionImpl.AppliedR
       = {
          ;
+         given gcce1 : CCE = given_CCE_1
+         ;
+         {
+         ;
 
          import laminar.api.L
 
@@ -112,7 +116,7 @@ extends
             }
          }
 
-         ICM.ToSubmitOnBlur()
+         ICM.ToSubmitImmediately()
          match {
             //
 
@@ -165,7 +169,9 @@ extends
 
                   import L.{given }
 
-                  L.input(iC , L.typ := nativeTypStrFor(summon[GivenSpinner1[Value ] ] ) )
+                  L.span((
+                     L.input(iC , L.typ := nativeTypStrFor(summon[GivenSpinner1[Value ] ] ) )
+                  ), llByCco(s.map({ var c : Int = 0 ; _ => { c += 1 ; c } }) ) )
                })
 
             case ICM.ToSubmitOnBlur() =>
@@ -275,6 +281,10 @@ extends
             //
          }
 
+         }
+         match { case e => {
+            e
+         } }
       }
 
       //
