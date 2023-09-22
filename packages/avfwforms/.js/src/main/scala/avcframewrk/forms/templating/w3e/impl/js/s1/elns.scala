@@ -87,6 +87,78 @@ extends
    ;
 }
 
+/**
+ * 
+ * .
+ * 
+ */
+trait ELaminarQckCoreFormCtrlElemReconcKeying1
+extends
+   AnyRef
+   /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
+   /* that-s all */
+   /* the mix-ins */
+   /* that-s all */
+{
+   this : (
+      AnyRef
+      with ELaminarQckCore
+      with w3e.pre.ArticlesImplByL
+      with ELaminarQckCoreHtml
+   ) =>
+   ;
+
+   import com.raquo.laminar.{nodes as ln}
+
+   import org.scalajs.dom
+
+   ;
+
+   ;
+
+   /** 
+    * a ReconciliabilityKey for `input` for `Value#`
+    * 
+    */
+   opaque type FKCompReconciliabilityKey
+      //
+      [
+         Value,
+         XMdlByValue[_],
+      ]
+   <: LReconciliativeKeyTo1[FKCompReconciliabilityKeyMinReconcilerOps[Value , XMdlByValue , Any ] ]
+   =  LReconciliativeKeyTo1[FKCompReconciliabilityKeyMinReconcilerOps[Value , XMdlByValue , Any ] ]
+
+   /** 
+    * the associated-ReconciliabilityKey-associated for `input` for `Value#`
+    * 
+    * this narrows `SpawnedLaminar` to `ReactiveHTMLElement`.
+    * currently, the support is restricted to the HTML NS
+    * 
+    */
+   type FKCompReconciliabilityKeyMinReconcilerOps
+      //
+      [
+         Value,
+         XMdlByValue[_],
+         +S ,
+      ]
+   >: LReconciliativeKey.ScnAllocAndReconcileAndDistillH[? <: S , Option[XMdlByValue[Value] ] , ? <: ln.ReactiveHtmlElement[? <: dom.HTMLElement ] ]
+   <: LReconciliativeKey.ScnAllocAndReconcileAndDistillH[? <: S , Option[XMdlByValue[Value] ] , ? <: ln.ReactiveHtmlElement[? <: dom.HTMLElement ] ]
+
+   implicit
+   def FKCompReconciliabilityKey1[Value, XMdlByValue[_] ] 
+      (a: LReconciliativeKeyTo1[FKCompReconciliabilityKeyMinReconcilerOps[Value, XMdlByValue, Any ] ] )
+   : a.type & FKCompReconciliabilityKey[Value, XMdlByValue ]
+   = a
+
+   ;
+
+   ;
+
+   ;
+}
+
 
 
 
