@@ -245,11 +245,16 @@ extends
       given ELaminarIndirectionImpl.cloneably.type
       = ELaminarIndirectionImpl.cloneably
 
-      ;
+      // TODO
+      given given_Owner
+      : com.raquo.airstream.ownership.Owner
+      = com.raquo.airstream.ownership.ManualOwner()
 
       ;
 
-      def forRefresh
+      ;
+
+      def forStatic
          //
          [Value]
          ()
@@ -257,14 +262,14 @@ extends
          (using typ: GivenSpinner1[Value ] )
       : (
          aBackreferencings.XEAndStateBag[? <: dom.HTMLElement]
-         & aBackreferencings.XEAndStateBagCm[Option[InpfaRefreshInvar[Value] ] , Unit]
+         & aBackreferencings.XEAndStateBagCm[Option[InpfaStaticInvar[Value] ] , Unit]
       )
       = {
          ;
 
          type XModel
-         >: Option[InpfaRefreshInvar[Value] ]
-         <: Option[InpfaRefreshInvar[Value] ]
+         >: Option[InpfaStaticInvar[Value] ]
+         <: Option[InpfaStaticInvar[Value] ]
 
          ;
 
@@ -296,13 +301,13 @@ extends
                      ;
 
                      val s
-                     = L.Var[Option[InpfaRefreshInvar[Value] ] ](None )
+                     = L.Var[Option[InpfaStaticInvar[Value] ] ](None )
 
                      val sS
                      = {
                         s.signal
-                        .changes
-                        .collect({ case Some(v) => v })
+                        .scanLeftLiftCoalesceAnimative()
+                        .map(<:<.refl[Option[InpfaRefreshInvar[Value] ] ] )
                      }
 
                      wrappedLaminarElement
@@ -312,7 +317,14 @@ extends
                            // summon[ln.ReactiveElement[?] <:< com.raquo.laminar.nodes.ChildNode[org.scalajs.dom.Node] ]
                            // summon[ELaminarIndirectionImpl.directly.AppliedS <:< com.raquo.laminar.nodes.ChildNode[org.scalajs.dom.Node] ]
                            sS
-                           .map(s => s.scanSpawnNewLlE() match { case e => e } )
+                           .map({
+                              case Some(s) =>
+                                 s.scanSpawnNewLlE() match { case e => e }
+                              case None =>
+                                 L.span((
+                                    L.input(L.disabled := true , L.typ := nativeTypStrFor(summon[GivenSpinner1[Value ] ] ) )
+                                 ) )
+                           })
                         }
                      })
 
@@ -342,7 +354,7 @@ extends
          new XEAndStateBag1
       }
 
-      def forStatic
+      def forRefresh
          //
          [Value]
          ()
@@ -350,7 +362,7 @@ extends
          (using typ: GivenSpinner1[Value ] )
       : (
          aBackreferencings.XEAndStateBag[? <: dom.HTMLElement]
-         & aBackreferencings.XEAndStateBagCm[Option[InpfaStaticInvar[Value] ] , Unit]
+         & aBackreferencings.XEAndStateBagCm[Option[InpfaRefreshInvar[Value] ] , Unit]
       )
       = {
          ;
@@ -358,8 +370,8 @@ extends
          ;
 
          type XModel
-         >: Option[InpfaStaticInvar[Value] ]
-         <: Option[InpfaStaticInvar[Value] ]
+         >: Option[InpfaRefreshInvar[Value] ]
+         <: Option[InpfaRefreshInvar[Value] ]
 
          ;
 
@@ -370,13 +382,6 @@ extends
             //
 
             import laminar.api.L
-
-            val uid = {
-               import language.unsafeNulls
-               java.util.Random().nextLong()
-               .toHexString
-               .prependedAll("0x")
-            }
 
             override
             def close(): Unit
@@ -394,27 +399,30 @@ extends
                   ;
 
                   val p0
-                  = L.Var[Option[InpfaStaticInvar[Value] ] ](None)
+                  = L.Var[Option[InpfaRefreshInvar[Value] ] ](None)
 
                   (p0.writer, {
                      ;
 
                      p0.signal
 
-                     .scanLeftLiftCoalesceAnimative()
-                     .map(o => o.map(s => s : InpfaRefreshInvar[Value] ) )
-                     .distinct
+                     .flatMap({
+                        case Some(dAnim) =>
+                           for {
+                              dFrame <- dAnim 
+                           }
+                           yield Some(dFrame )
+                        case None =>
+                           L.Val(None )
+                     })
                   })
                }
 
                val peer
-               = { forRefresh[Value]() }
+               = { forStatic[Value]() }
 
                wrappedLaminarElement
-               .amend(peer.wrappedLaminarElement , {
-                  import L.{given}
-                  L.inpfaReconclCountUpDebugSpan("[", uid.toString() , "]")
-               } )
+               .amend(peer.wrappedLaminarElement )
 
                vr._2
                .foreach(e => {
