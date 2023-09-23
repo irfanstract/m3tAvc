@@ -251,33 +251,9 @@ extends
          urlOption
          match {
             case md @ C(_ ) =>
-            ;
+               ;
 
-            // edTypeOption
-
-            // import spawnabilityOfInputDataActionsImpl.{*, given }
-
-            val anSkpmTitlePairInputSpwOps
-            = SkpmTitlePair(skpm = summon[BfSnaConfig], title = title ) match { case p => SkpmTitlePairInputSpwOps(p) }
-
-            import anSkpmTitlePairInputSpwOps.{*, given}
-
-            llrConv(L.span )((mdl: Option[BInputFunc[?] ] ) => {
-               mdl
-               /** needs to extract type `t`, as a work-around to avoid the spurious type-mismatch */
-               match { case (e : Option[BInputFunc[t]] ) => renderIntrinsic[t](e) }
-               match { case e => e }
-            } )
-            .compose((md: C) => md.edTypeOption )
-            .spawnAsXsr(md )
-
-            // TODO remove this test LOC
-            match { case e => {
-               e.wrappedLaminarElem
-               .ref
-               .parentNode
-               e
-            } }
+               spawnInpfaAndGetOptReconciler(title = title, urlOption = md )
 
             //
             case md @ B(_) =>
@@ -328,6 +304,57 @@ extends
 
          }
          match { case e => {
+            e
+         } }
+      }
+
+      def spawnInpfaAndGetOptReconciler
+         (urlOption : C, title: Article )
+         (using BfSnaConfig )
+      : (
+         //
+
+         XScanLeftReconciliativeOps[
+            //
+            ? <: ln.ReactiveHtmlElement[dom.HTMLElement]
+            ,
+            ? <: C
+            ,
+            Unit
+            ,
+         ]
+      )
+      = {
+         ;
+
+         val md : urlOption.type
+         = valueOf
+
+         ;
+
+         // edTypeOption
+
+         // import spawnabilityOfInputDataActionsImpl.{*, given }
+
+         val anSkpmTitlePairInputSpwOps
+         = SkpmTitlePair(skpm = summon[BfSnaConfig], title = title ) match { case p => SkpmTitlePairInputSpwOps(p) }
+
+         import anSkpmTitlePairInputSpwOps.{*, given}
+
+         llrConv(L.span )((mdl: Option[BInputFunc[?] ] ) => {
+            mdl
+            /** needs to extract type `t`, as a work-around to avoid the spurious type-mismatch */
+            match { case (e : Option[BInputFunc[t]] ) => renderIntrinsic[t](e) }
+            match { case e => e }
+         } )
+         .compose((md: C) => md.edTypeOption )
+         .spawnAsXsr(md )
+
+         // TODO remove this test LOC
+         match { case e => {
+            e.wrappedLaminarElem
+            .ref
+            .parentNode
             e
          } }
       }
