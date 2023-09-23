@@ -327,6 +327,38 @@ extends
 
       ;
 
+      // final
+      lazy
+      val ((), lAbcReconciler)
+      = {
+         ;
+
+         import laminar.api.L
+
+         ;
+
+         import CallbackTypeL.{A, B, C }
+
+         import abcdCallbackRenderablility1.{*, given }
+
+         ;
+
+         val reconciler
+         = {
+            llrConv(L.span )((
+               //
+
+               (identity[(A | B | C , Article ) ] _ )
+               .andThen({
+                  case (l, title) =>
+                     spawnAndGetOptReconciler(urlOption = l , title = title ) 
+               })
+            ))
+         }
+
+         ((), reconciler )
+      }
+
       extension (m: ButtonContentModel ) {
          //
 
@@ -352,15 +384,7 @@ extends
                ;
                val reconciler
                = {
-                  llrConv(L.span )((
-                     //
-
-                     (identity[(A | B | C , Article ) ] _ )
-                     .andThen({
-                        case (l, title) =>
-                           spawnAndGetOptReconciler(urlOption = l , title = title ) 
-                     })
-                  ))
+                  lAbcReconciler
                }
 
                spawnLlrScanConv(s match { case s => s } )(using reconciler )
