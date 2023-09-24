@@ -79,6 +79,11 @@ extends
    : impl.type
    = impl
 
+   /** the tuple-type `(Article, Option[FlowThroughMode] )` */
+   private[s1]
+   type LaspaOrBtnaArticleAndOptionFlwThruModeTuple
+   = ((Article, Option[FlowThroughMode] )  )
+
    /**
     * a `SpawnabilityAndReconciliabilityNoArg` for
     * `&lt;anchor>`s (Laspa)
@@ -122,7 +127,13 @@ extends
 
    opaque type LaspaStaticA
    <: Matchable
-   = ((Article, Option[FlowThroughMode] ) , Option[LaspaStaticWithoutHeadline] )
+   = (LaspaOrBtnaArticleAndOptionFlwThruModeTuple , Option[LaspaStaticWithoutHeadline] )
+
+   final
+   lazy
+   val LaspaStaticByHeadline
+   : (flwMode: FlowThroughMode, headline: Article, cb: Option[LaspaStaticWithoutHeadline] ) => LaspaStaticA
+   = (flwMode: FlowThroughMode, headline: Article, cb: Option[LaspaStaticWithoutHeadline] ) => ((headline, Some(flwMode ) ) , cb )
 
    @deprecated
    given laspaStaticAFromAcTuple2(using DummyImplicit)
@@ -186,13 +197,19 @@ extends
 
    opaque type BtnaStaticA
    <: Matchable
-   = ((Article, Option[FlowThroughMode] ) , Option[BtnaStaticWithoutHeadline] )
+   = (LaspaOrBtnaArticleAndOptionFlwThruModeTuple , Option[BtnaStaticWithoutHeadline] )
 
    @deprecated
    given btnaStaticAFromAcTuple2(using DummyImplicit)
       (using util.NotGiven[BtnaStaticA <:< (Tuple | Tuple2[?, ?] | Tuple3[?, ?, ?]) ] ) /* to disallow local usage */
    : Conversion[(Article, Option[BtnaStaticWithoutHeadline]) , BtnaStaticA ]
    = btnaOrLaspaStaticImplAFromAcTuple2[BtnaStaticA, Option[BtnaStaticWithoutHeadline]]
+
+   final
+   lazy
+   val BtnaStaticByHeadline
+   : (flwMode: FlowThroughMode, headline: Article, cb: Option[BtnaStaticWithoutHeadline] ) => BtnaStaticA
+   = (flwMode: FlowThroughMode, headline: Article, cb: Option[BtnaStaticWithoutHeadline] ) => ((headline, Some(flwMode ) ) , cb )
 
    final
    lazy
