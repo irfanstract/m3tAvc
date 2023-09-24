@@ -113,6 +113,40 @@ extends
 
    }
 
+   extension [
+      HL0 ,
+
+      ContentModel1,
+      UOpR ,
+      
+   ] (this1: XScanLeftReconciliativeOps[HL0, ContentModel1, UOpR ] ) {
+      //
+
+      /**
+       * derived instance with mapped `.wrappedNativeElem` aka `.lE`
+       * 
+       */
+      def mapHl
+         [HL2](f: HL0 => HL2)
+      : XScanLeftReconciliativeOps[HL2, ContentModel1, UOpR ]
+      = {
+         val convertedLE
+         = f(this1.lE )
+
+         ({
+            ;
+            object main1 extends
+               XScanLeftReconciliativeOps[convertedLE.type, ContentModel1, UOpR ](lE = convertedLE )
+            {
+               export this1.updateTo
+            }
+            main1
+         })
+      }
+
+      //
+   }
+
    extension [HL] (this1: XScanLeftReconciliativeOps[HL, ?, ?] ) {
       //
 
