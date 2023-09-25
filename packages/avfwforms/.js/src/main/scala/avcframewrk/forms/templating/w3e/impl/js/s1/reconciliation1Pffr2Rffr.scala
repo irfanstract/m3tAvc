@@ -94,15 +94,22 @@ extends
          [UserSideMdl ]
          (containerElem : com.raquo.laminar.tags.HtmlTag[?] )
          (implImplSideAnimFramesFromUserSideMdl: UserSideMdl => L.Signal[ImplSpecificPerFrameMdl] )
-      // : SpawnabilityAndReconciliabilityNoArg[UserSideMdl, S, Unit ]
       = {
+         ;
+
          pffr2Rffr(implImplSideAnimFramesFromUserSideMdl ).repipingImplReconciler
+
          match { case rc => {
+            ;
+
             llrConv(containerElem )((mdl: Option[UserSideMdl] ) => {
+               ;
+
                rc.spawnAsXsr(mdl )
                .mapHl(_.wrappedLaminarElemI  )
             } )
          } }
+
          match { case e => e }
       }
 
