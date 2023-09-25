@@ -39,6 +39,7 @@ extends
    with ELaminarQckButtonsReconcNatives
    /* due to the self-types */
    with ELaminarQckInputElemsDataTypesPre
+   with ELaminarQckCorePfr2Rffr
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with ELaminarQckButtonsReconcCtls
@@ -231,137 +232,23 @@ extends
       {
          ;
 
-         val perFrameReconciler0
-         = {
-            ({
-               ;
-               lowerLvlReconcKey
-               .toScnAllocAndReconcileAndDistillH
-               .given_SpawnabilityAndReconciliabilityNoArg_Md_TIntermediateState
-            })
-            match { case s: SpawnabilityAndReconciliabilityNoArg[t1, t2, t3] => s: SpawnabilityAndReconciliabilityNoArg[t1, ? <: t2, t3] }
-            match { case s => s.asTypeTupelified }
-         }
-         /* can't use `import` */
-         val perFrameReconciler
-         : perFrameReconciler0._2.type
-         = perFrameReconciler0._2
-
-         val repipingImplReconciler
-            /* can't make the type inferred, due to the resulting Cyclic Error .. */
-         : (
-            SpawnabilityAndReconciliabilityNoArg[
-               //
-               Option[BInputFunc[Value] ] ,
-               RepipeModeCompStateBag ,
-               Unit ,
-            ]
-         )
-         = {
+         private[s1]
+         val impl1 = {
             ;
 
-            SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc[
-               //
-               Option[BInputFunc[Value] ] ,
-               RepipeModeCompStateBag ,
-               Unit ,
-            ] (
-               //
+            lowerLvlReconcKey
+            .toScnAllocAndReconcileAndDistillH
+            .given_SpawnabilityAndReconciliabilityNoArg_Md_TIntermediateState
 
-               //
-               spwImpl1 = (initialDescrOption ) => {
-                  ;
-
-                  // TODO
-                  implicit
-                  val subscrAssignee
-                  = com.raquo.airstream.ownership.ManualOwner()
-
-                  val frameCounter = L.Var[Int](0)
-
-                  val e1
-                  = perFrameReconciler.spawn(None )( )
-
-                  val internalReconcileTo
-                  = {
-                     (perFrameReconciler.model_=(e1) _ )
-                     match { case f : Function1[aType, r] => {
-                        f.compose((a: aType ) => { frameCounter.update(_ + 1 ) ; a } )
-                     } }
-                  }
-
-                  val repipeCounter = L.Var[Int](0)
-
-                  val repiping1
-                  = L.Var[Option[BInputFunc[Value] ] ](initialDescrOption )
-
-                  repiping1.signal
-                  .foreach(mdlOption => { repipeCounter.update(_ + 1 ) } )
-
-                  repiping1.signal
-
-                  .flatMap({
-
-                     case None =>
-                        for { _ <- L.Val(() ) }
-
-                        yield () => {
-                           internalReconcileTo(None )
-                        }
-
-                     case Some(desc) =>
-                        ;
-
-                        val eFrames
-                        = desc.frames
-
-                        for {
-                           eFrame <- eFrames
-                        }
-                        yield (() => {
-                           internalReconcileTo(Some(eFrame ) )
-                        } )
-
-                  })
-                  .foreach(_.apply() )
-
-                  val e11 = {
-                     ;
-
-                     import L.{given}
-
-                     def xNewCounterComponent
-                        (src: L.Source[Int] )
-                     = {
-                        L.span(L.child <-- src.toObservable.map(_.toString() ) )
-                     }
-
-                     L.span(e1, L.inpfaReconclCountUpDebugSpan((
-                        L.span((
-                           L.span(s"frames:", xNewCounterComponent(src = frameCounter ), L.title := "the frame-count" )
-                        ) , ";" , (
-                           L.span(s"repipes:", xNewCounterComponent(src = repipeCounter ), L.title := "the count of switching across the src BInputFunc(s) " )
-                        ) , L.button("Repipe", L.onClick --> (_ => { repiping1.update(identity _ ) } ) ) )
-                     )) )
-                  }
-
-                  RepipeModeCompStateBag((e11, repiping1) )
-               } ,
-
-               //
-               reconcImpl1 = {
-                  //
-
-                  case (s0, newDescrOption ) =>
-                     ;
-                     s0.btnModelOption_=(newDescrOption )
-
-                  //
-               } ,
-
-               //
-            )
+            .pffr2Rffr((desc : BInputFunc[Value] ) => desc.frames )
          }
+
+         export impl1.{
+            perFrameReconciler0 ,
+            perFrameReconciler ,
+         }
+
+         export impl1.repipingImplReconciler
 
          val repipingReconcKey
          = {
@@ -371,23 +258,7 @@ extends
                (_.wrappedLaminarElemI )
          }
 
-         case class RepipeModeCompStateBag(impl : (
-            //
-
-            (
-               ln.ReactiveHtmlElement[?] ,
-               L.Var[Option[BInputFunc[Value] ] ]
-               ,
-            )
-         ) )
-         {
-            ;
-
-            export impl.{_1 as wrappedLaminarElemI }
-
-            export impl._2.{set as btnModelOption_= }
-
-         }
+         export impl1.RepipeModeCompStateBag
 
          val repipingPosReconciler0
          = {
