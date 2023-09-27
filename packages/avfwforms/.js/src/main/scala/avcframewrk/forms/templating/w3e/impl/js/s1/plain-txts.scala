@@ -174,6 +174,7 @@ extends
          : Unit
          = {
             import laminar.api.L
+            import L.{given }
 
             ;
 
@@ -187,11 +188,18 @@ extends
             .onNext({
                locally[() => com.raquo.laminar.nodes.ReactiveHtmlElement[?] ](() => {
                   import language.unsafeNulls
+                  L.span( /* the outer */
+                  " "
+                  /* a necessary white-space content, to avoid *collapsing* */
+                  ,
                   L.span(
                      // { L.styleAttr := s"background: green ; " } ,
                      L.lang := { m.locale match { case java.util.Locale.ROOT => "" ; case l => l.getISO3Language() } } ,
                      { import L.* ; m.d } ,
                   )
+                  ,
+                  " " ,
+                  ) /* the outer */
                })
                match { case nd => laminar.api.L.Val(nd) }
             } )
@@ -222,7 +230,7 @@ extends
          ,
       )
 
-      match { case s => SRNA.allocateGScanLeft(EbLocaleAndTxtString((java.util.Locale.ROOT.nn, "")) )(s ) }
+      match { case s => SRNA.allocateGScanLeft(EbLocaleAndTxtString((java.util.Locale.ROOT.nn, "(error rendering PlainLocaleStringPlainTxtArticle - no model yet)")) )(s ) }
    }
 
 }
