@@ -93,6 +93,8 @@ extends
    inline given given_CCE_1[T0] : CCE = { val cmn = currentMethodName ; CCE(callingMethodName = cmn ) }
    case class CCE(callingMethodName: String)
 
+   given nnnnnnnnnnnnnnnnnnnnnnnnnnn1 : AnyRef with {}
+
    ;
 }
 
