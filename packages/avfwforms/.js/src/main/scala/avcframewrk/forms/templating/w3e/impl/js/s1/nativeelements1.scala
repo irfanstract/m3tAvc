@@ -245,6 +245,14 @@ with ELaminarQckCoreABackreferencings
                               ;
 
                               ;
+                              /** 
+                               * can't use `EventStream` here ;
+                               * the arrival of *observer*s might be later than the arrival of *item*s, and
+                               * neither `(_ : L.EventBus[?] ).events` nor `(_ : L.Signal[?] ).changes` would repeat ;
+                               * it's also "conceptually wrong"
+                               * 
+                               */
+                              ;
                               // final
                               lazy
                               val aPiper
@@ -264,8 +272,7 @@ with ELaminarQckCoreABackreferencings
                                  wrappedLaminarElement
                                  .amend(L.child <-- (
                                     aPiper._2
-                                    .changes.collect({ case Some(v) => v })
-                                    .scanLeft[Option[RC] ](None )((reconcilee, newItem) => { rc1(reconcilee, newItem) match { case r => Some(r) } } )
+                                    .scanLeft[Option[RC] ](v => Some(rc1(None, v ) ) )((reconcilee, newItem) => { rc1(reconcilee, newItem) match { case r => Some(r) } } )
                                     .map({
                                        case Some(v) =>
                                           lNodeFromState(v)
@@ -273,7 +280,22 @@ with ELaminarQckCoreABackreferencings
                                           L.commentNode("None")
                                           // L.span("")
                                     })
-                                 ) )
+                                    // .map(e => {
+                                    //    ;
+                                    //    org.scalajs.dom.console.log(e, e.ref )
+                                    //    e
+                                    // })
+                                    // .debugLogErrors()
+                                    // /* a work-around since otherwise the S won't fire . TODO */
+                                    // .observe(using com.raquo.airstream.ownership.ManualOwner() )
+                                    .map(e => e )
+                                 ), 
+                                 // L.child <-- {
+                                 //    L.EventStream.periodic(5 * 1000 )
+                                 //    .scanLeft[Int](-1)({ case e => e._2 })
+                                 //    .map(i => L.span(s"count: ${i} ") )
+                                 // } ,
+                                 )
                                  ;
                                  ({
                                     ;
