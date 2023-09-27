@@ -42,6 +42,42 @@ val _ = {
    .nn
 }
 
+/** 
+ * the Signal will `throw` after an initial delay by `delay`.
+ * 
+ */
+def reconcNoconfDelaySig
+   [Initial]
+   (
+      //
+      delay: concurrent.duration.FiniteDuration
+      = {
+         import scala.concurrent.duration.{*, given }
+         5.seconds
+      }
+      ,
+   )
+   (initialVal: => Initial )
+= {
+   ;
+
+   import laminar.api.L
+
+   {
+      L.Val(() )
+      .flatMap(_ => {
+         ;
+
+         L.EventStream.delay(delay.toMillis.toInt )
+         .scanLeft(initialVal)({ case _ => {
+            throw
+               new AssertionError(s"no model configured yet")
+         } })
+      })
+   }
+
+}
+
 trait ELaminarQckCoreFailsafeReconcilers
 extends
    AnyRef
@@ -63,22 +99,6 @@ extends
    ;
 
    ;
-
-   def reconcNoconfDelaySig[Initial]
-      (delay: concurrent.duration.FiniteDuration )
-      (initialVal: => Initial )
-   = {
-      ;
-
-      {
-         L.EventStream.delay(delay.toMillis.toInt )
-         .scanLeft(initialVal)({ case _ => {
-            throw
-               new AssertionError(s"no model configured yet")
-         } })
-      }
-
-   }
 
    /**
     * 
