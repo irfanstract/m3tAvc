@@ -42,6 +42,36 @@ val _ = {
    .nn
 }
 
+/** 
+ * the Signal will `throw` after an initial delay by `delay`.
+ * 
+ */
+def reconcNoconfDelaySig[Initial]
+   (
+      //
+      delay: concurrent.duration.FiniteDuration
+      = {
+         import scala.concurrent.duration.{*, given }
+         5.seconds
+      }
+      ,
+   )
+   (initialVal: => Initial )
+= {
+   ;
+
+   import laminar.api.L
+
+   {
+      L.EventStream.delay(delay.toMillis.toInt )
+      .scanLeft(initialVal)({ case _ => {
+         throw
+            new AssertionError(s"no model configured yet")
+      } })
+   }
+
+}
+
 trait ELaminarQckCoreFailsafeReconcilers
 extends
    AnyRef
@@ -63,22 +93,6 @@ extends
    ;
 
    ;
-
-   def reconcNoconfDelaySig[Initial]
-      (delay: concurrent.duration.FiniteDuration )
-      (initialVal: => Initial )
-   = {
-      ;
-
-      {
-         L.EventStream.delay(delay.toMillis.toInt )
-         .scanLeft(initialVal)({ case _ => {
-            throw
-               new AssertionError(s"no model configured yet")
-         } })
-      }
-
-   }
 
    /**
     * 
@@ -121,10 +135,11 @@ extends
          this.lE
       }
 
-      // // TODO remove this
-      // private
-      // val cst
-      // = { new CstError(s"for ${this }") }
+      // TODO remove this
+      /** the stack trace where this constructor gets run */
+      private[s1]
+      val cst
+      = { new CstError(s"for ${this }") }
 
       // TODO remove this
       lEAlt
@@ -150,6 +165,8 @@ extends
       = {
          val convertedLE
          = f(this1.lE )
+
+         import this1.{given_TypeTest_ContentModel1 }
 
          ({
             ;
@@ -362,6 +379,14 @@ extends
 
          ;
 
+         ({
+            val p = (scMaybe, newMdl )
+            for { v <- Some(p ) }
+            yield {
+               v.getClass()
+            }
+         })
+
          /**
           * at the first turn `scMaybe` would be `None`, and
           * even then
@@ -373,7 +398,11 @@ extends
             /** at the first turn `scMaybe` would be `None` */
             sc <- scMaybe
 
-            /** it's possible `sc.TypeTest` point(ed) to a `type` which `newMdl` doesn't conform to */
+            /** 
+             * it's possible `sc.TypeTest` point(ed) to a `type` which `newMdl` doesn't conform to ;
+             * if so then
+             * we need it to start over
+             */
             case sc.given_TypeTest_ContentModel1(newMdl) <- Some(newMdl)
          }
          yield {
@@ -402,16 +431,28 @@ extends
          })
       }
 
-      def newContentModelLmVar()
+      def newContentModelLmVar1()
       = {
          ;
 
-         L.Var[Option[(ContentModelBase) ] ](None)
+         /** 
+          * can't use `EventStream` here ;
+          * the arrival of *observer*s might be later than the arrival of *item*s, and
+          * neither `(_ : L.EventBus[?] ).events` nor `(_ : L.Signal[?] ).changes` would repeat ;
+          * it's also "conceptually wrong"
+          * 
+          * 
+          * 
+          */
+
+         ;
+
+         L.EventBus[ContentModelBase ]()
 
          match { case v => {
             (
-               v.writer.contramap((e: ContentModelBase ) => Some(e) ) ,
-               v.signal ,
+               v.writer ,
+               v.events ,
             )
          } }
       }
@@ -439,7 +480,7 @@ extends
             val (mdlSetter, mdlOptionAnim)
             = {
 
-               newContentModelLmVar()
+               newContentModelLmVar1()
             }
             ;
 
@@ -451,33 +492,44 @@ extends
                .<--({
 
                   mdlOptionAnim
-                  .composeAll[Option[SpawnedAsScReconciler] ] (s => {
-                     s
+                  // .composeAll[Option[SpawnedAsScReconciler] ] (s => {
+                  //    s
 
-                     .collect({ case Some(v) => v })
-                     .scanLeft[Option[SpawnedAsScReconciler] ](None)({
-                        //
+                  //    .collect({ case Some(v) => v })
+                  //    .scanLeft[Option[SpawnedAsScReconciler] ](None)({
+                  //       //
 
-                        case (scMaybe, newMdl) =>
-                           ;
+                  //       case (scMaybe, newMdl) =>
+                  //          ;
 
-                           reconcileOrRecreate(scMaybe, newMdl )
-                           match { case r => Some(r) }
+                  //          reconcileOrRecreate(scMaybe, newMdl )
+                  //          match { case r => Some(r) }
 
-                        //
-                     })
-                     .changes
-                  } , mdlOptionTr => {
-                     for {
-                        mdlOption <- mdlOptionTr
-                     }
-                     yield {
-                        for {
-                           mdl <- mdlOption
-                        }
-                        yield reconcileOrRecreate(None, mdl )
-                     }
-                  } )
+                  //       //
+                  //    })
+                  //    .changes
+                  // } , mdlOptionTr => {
+                  //    for {
+                  //       mdlOption <- mdlOptionTr
+                  //    }
+                  //    yield {
+                  //       for {
+                  //          mdl <- mdlOption
+                  //       }
+                  //       yield reconcileOrRecreate(None, mdl )
+                  //    }
+                  // } )
+                  .scanLeft[Option[SpawnedAsScReconciler] ](None)({
+                     //
+
+                     case (scMaybe, newMdl) =>
+                        ;
+
+                        reconcileOrRecreate(scMaybe, newMdl )
+                        match { case r => Some(r) }
+
+                     //
+                  })
                   .map(o => (o.map(_.wrappedLaminarElem) getOrElse L.span() ) )
                   .map(e => e )
                   .observe

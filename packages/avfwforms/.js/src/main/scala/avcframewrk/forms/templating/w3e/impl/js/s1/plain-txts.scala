@@ -222,7 +222,7 @@ extends
          ,
       )
 
-      match { case s => SRNA.allocateGScanLeft(EbLocaleAndTxtString((java.util.Locale.ROOT.nn, "")) )(s ) }
+      match { case s => SRNA.allocateGScanLeft(EbLocaleAndTxtString((java.util.Locale.ROOT.nn, "(error rendering PlainLocaleStringPlainTxtArticle - no model yet)")) )(s ) }
    }
 
 }

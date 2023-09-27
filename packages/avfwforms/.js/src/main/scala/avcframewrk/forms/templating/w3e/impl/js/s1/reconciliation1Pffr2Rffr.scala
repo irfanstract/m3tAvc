@@ -311,8 +311,8 @@ extends
 
                .composeChanges(s => {
                   // TODO
-                  // s.delay(15 )
-                  s.delay(815 )
+                  s.delay(15 )
+                  // s.delay(815 )
                } )
 
                .flatMap({
