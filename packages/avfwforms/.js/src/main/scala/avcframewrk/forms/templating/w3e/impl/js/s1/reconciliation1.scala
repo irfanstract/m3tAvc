@@ -141,10 +141,11 @@ extends
          this.lE
       }
 
-      // // TODO remove this
-      // private
-      // val cst
-      // = { new CstError(s"for ${this }") }
+      // TODO remove this
+      /** the stack trace where this constructor gets run */
+      private[s1]
+      val cst
+      = { new CstError(s"for ${this }") }
 
       // TODO remove this
       lEAlt
@@ -170,6 +171,8 @@ extends
       = {
          val convertedLE
          = f(this1.lE )
+
+         import this1.{given_TypeTest_ContentModel1 }
 
          ({
             ;
@@ -382,6 +385,14 @@ extends
 
          ;
 
+         ({
+            val p = (scMaybe, newMdl )
+            for { v <- Some(p ) }
+            yield {
+               v.getClass()
+            }
+         })
+
          /**
           * at the first turn `scMaybe` would be `None`, and
           * even then
@@ -393,7 +404,11 @@ extends
             /** at the first turn `scMaybe` would be `None` */
             sc <- scMaybe
 
-            /** it's possible `sc.TypeTest` point(ed) to a `type` which `newMdl` doesn't conform to */
+            /** 
+             * it's possible `sc.TypeTest` point(ed) to a `type` which `newMdl` doesn't conform to ;
+             * if so then
+             * we need it to "start over" (ie re-spawn it)
+             */
             case sc.given_TypeTest_ContentModel1(newMdl) <- Some(newMdl)
          }
          yield {
@@ -424,6 +439,18 @@ extends
 
       def newContentModelLmVar()
       = {
+         ;
+
+         /** 
+          * can't use `EventStream` here ;
+          * the arrival of *observer*s might be later than the arrival of *item*s, and
+          * neither `(_ : L.EventBus[?] ).events` nor `(_ : L.Signal[?] ).changes` would repeat ;
+          * it's also "conceptually wrong"
+          * 
+          * 
+          * 
+          */
+
          ;
 
          L.Var[Option[(ContentModelBase) ] ](None)
