@@ -54,6 +54,8 @@ extends
       with w3e.pre.Articles
       with ELaminarQckCore
       with ELaminarQckCoreHtml
+      with w3e.pre.PlainTxtContents
+      with ELaminarQckCoreFailsafeReconcilers
    ) =>
    ;
 
@@ -282,7 +284,10 @@ extends
             prov
 
                (L.child )
-               ({ case ((title, flowThruMode ), _) => title } , summon[avcalg.CBC[Article] ].empty )
+               ({ case ((title, flowThruMode ), _) => {
+                  ;
+                  title
+               } } , PlainLocaleStringPlainTxtArticle(java.util.Locale.ROOT.nn, "(error in applyLaspaBtnaHeadlineProp - no hl yet)" ) )
 
                ((s: reconcilerI._1.Reconcilee ) => laminarInSpawneddLL(s) , (
 
