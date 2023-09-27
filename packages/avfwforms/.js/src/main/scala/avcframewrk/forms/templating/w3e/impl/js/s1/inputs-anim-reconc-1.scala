@@ -232,8 +232,14 @@ extends
       {
          ;
 
+         import extraPffr2RffrGivenUnpck.{defaultPffr2RffrGivenUnpck as defaultPffr2RffrGivenUnpck }
+
          private[s1]
-         val impl1 = {
+         val impl1
+         : (
+            Pffr2RffrGiven[InpfaStaticInvar[Value], ? <: ln.ReactiveHtmlElement[? <: dom.HTMLElement], Unit, defaultPffr2RffrGivenUnpck.type ]#contraFlatMap1OImpl[BInputFunc[Value] ]
+         )
+         = {
             ;
 
             lowerLvlReconcKey
@@ -241,6 +247,8 @@ extends
             .given_SpawnabilityAndReconciliabilityNoArg_Md_TIntermediateState
 
             .pffr2Rffr((desc : BInputFunc[Value] ) => desc.frames )
+
+            match { case e => e }
          }
 
          export impl1.{
