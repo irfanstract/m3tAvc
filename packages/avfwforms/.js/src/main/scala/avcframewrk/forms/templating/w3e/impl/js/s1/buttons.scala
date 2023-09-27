@@ -106,7 +106,8 @@ extends
 
    // TODO
    private
-   def allocateDbbaFac(config: BfSnaConfig )
+   def allocateDbbaFac
+      (config: BfSnaConfig )
    : ((model: Action ) => ButtonArt )
    = {
       ;
