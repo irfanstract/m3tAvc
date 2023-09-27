@@ -213,17 +213,6 @@ extends
    ;
 } // ELaminarQckButtons
 
-type BHA
-= (
-   //
-         //
-         org.scalajs.dom.html.Button
-         | org.scalajs.dom.html.Button
-         | org.scalajs.dom.html.Anchor
-         | org.scalajs.dom.html.Input
-         | org.scalajs.dom.html.Select
-)
-
 
 
 
