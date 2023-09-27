@@ -58,9 +58,27 @@ extends
 
    import org.scalajs.dom
 
+   import laminar.api.L
+
    ;
 
    ;
+
+   def reconcNoconfDelaySig[Initial]
+      (delay: concurrent.duration.FiniteDuration )
+      (initialVal: => Initial )
+   = {
+      ;
+
+      {
+         L.EventStream.delay(delay.toMillis.toInt )
+         .scanLeft(initialVal)({ case _ => {
+            throw
+               new AssertionError(s"no model configured yet")
+         } })
+      }
+
+   }
 
    /**
     * 
@@ -332,6 +350,11 @@ extends
 
       ;
 
+      // TODO
+      implicit
+      val subscrOwner
+      = com.raquo.airstream.ownership.ManualOwner()
+
       def reconcileOrRecreate(scMaybe : Option[SpawnedAsScReconciler], newMdl: ContentModelBase)
       : SpawnedAsScReconciler
       = {
@@ -428,22 +451,36 @@ extends
                .<--({
 
                   mdlOptionAnim
-                  .changes
-                  // .delay(5 * 1000) // TODO remove this LOC
-                  .collect({ case Some(v) => v })
-                  .scanLeft[Option[SpawnedAsScReconciler] ](None)({
-                     //
+                  .composeAll[Option[SpawnedAsScReconciler] ] (s => {
+                     s
 
-                     case (scMaybe, newMdl) =>
-                        ;
+                     .collect({ case Some(v) => v })
+                     .scanLeft[Option[SpawnedAsScReconciler] ](None)({
+                        //
 
-                        reconcileOrRecreate(scMaybe, newMdl )
-                        match { case r => Some(r) }
+                        case (scMaybe, newMdl) =>
+                           ;
 
-                     //
-                  })
+                           reconcileOrRecreate(scMaybe, newMdl )
+                           match { case r => Some(r) }
+
+                        //
+                     })
+                     .changes
+                  } , mdlOptionTr => {
+                     for {
+                        mdlOption <- mdlOptionTr
+                     }
+                     yield {
+                        for {
+                           mdl <- mdlOption
+                        }
+                        yield reconcileOrRecreate(None, mdl )
+                     }
+                  } )
                   .map(o => (o.map(_.wrappedLaminarElem) getOrElse L.span() ) )
                   .map(e => e )
+                  .observe
                   // TODO
                   .recoverToTry
                   .map(e => {
@@ -459,6 +496,13 @@ extends
                      })
                      .get
                   })
+                  .recover({
+                     case util.control.NonFatal(t) =>
+                        throw
+                           new LlrConHError(s"exception: ${t} ", t )
+                  })
+                  .observe
+                  .map(e => e )
                })
 
             ))
@@ -505,7 +549,7 @@ extends
    private
    object unmountOnFailureDone
    {
-      org.scalajs.dom.console.warn(new Exception(s"unmounted the component, due to an exception") )
+      org.scalajs.dom.console.warn(new LlrConHException(s"unmounted the component, due to an exception" , null ) )
    }
    
    ;
