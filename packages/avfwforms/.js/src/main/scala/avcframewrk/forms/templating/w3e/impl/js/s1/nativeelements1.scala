@@ -245,29 +245,40 @@ with ELaminarQckCoreABackreferencings
                               ;
 
                               ;
+                              // final
+                              lazy
                               val aPiper
-                              = L.Var[Option[V] ](None )
+                              = {
+                                 L.Var[Option[V] ](None )
+                                 match { case e => (
+                                    e.writer.contramapSome,
+                                    e.signal.map(o => o.getOrElse(defaultValue ) ) ,
+                                 ) }
+                              }
                               ;
                               f.dest match {
                               //
                               case com.raquo.laminar.receivers.ChildReceiver =>
                                  ;
+                                 import L.{given }
                                  wrappedLaminarElement
                                  .amend(L.child <-- (
-                                    aPiper.signal
+                                    aPiper._2
                                     .changes.collect({ case Some(v) => v })
                                     .scanLeft[Option[RC] ](None )((reconcilee, newItem) => { rc1(reconcilee, newItem) match { case r => Some(r) } } )
                                     .map({
-                                       case Some(v) => lNodeFromState(v)
-                                       case None => L.commentNode("--")
+                                       case Some(v) =>
+                                          lNodeFromState(v)
+                                       case None =>
+                                          L.commentNode("None")
+                                          // L.span("")
                                     })
                                  ) )
                                  ;
                                  ({
                                     ;
 
-                                    aPiper.writer
-                                    .contramap((v: V ) => Some(v) )
+                                    aPiper._1
                                     .contramap((src: XModel ) => distill(src) )
                                     // ;
                                     // ???
