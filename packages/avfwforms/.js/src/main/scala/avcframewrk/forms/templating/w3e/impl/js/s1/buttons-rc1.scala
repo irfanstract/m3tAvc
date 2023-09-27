@@ -172,9 +172,10 @@ extends
 
          val defaultS
          = {
+            val dna = defaultNoOpActional
             reconcNoconfDelaySig
                ({ import scala.concurrent.duration.{*, given} ; 5.second })
-               (defaultNoOpActional )
+               (dna )
          }
 
          ;
@@ -213,7 +214,12 @@ extends
    = {
       ;
 
-      val s = currentMethodName
+      val cmn
+      = (new scalajs.js.Error() match { case s => s.asJsDynamic.stack : Any } match { case s : String => s } )
+
+      val s
+      // = cmn
+      = s"(button not initialised ; @ ${cmn } )"
 
       val title
       = {
@@ -236,7 +242,7 @@ extends
 
    private[s1]
    lazy val defaultNoOpAction
-   = URLAction(baseTitle = "")({ case _ => new java.net.URI("javascript", s"void(0)", null ) })
+   = URLAction(baseTitle = "(error -- defaultNoOpAction)")({ case _ => new java.net.URI("javascript", s"void(0)", null ) })
 
    ;
 
