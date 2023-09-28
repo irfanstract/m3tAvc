@@ -526,52 +526,52 @@ extends
 
    ;
 
-   def llrConvToArt
-      [
-         SpawnedAsScReconciler <: XScanLeftReconciliativeOps[? <: ln.ReactiveHtmlElement[?], ?, UOpR ]
-         ,
-         ContentModelBase
-         ,
-         ContainerNative <: org.scalajs.dom.HTMLElement ,
-         UOpR >: Unit <: Unit ,
-      ]
-      (container : com.raquo.laminar.tags.HtmlTag[ContainerNative] )
-      (spawnAsScReconciler: (mdl: ContentModelBase ) => SpawnedAsScReconciler)
-      (initialDataValue: ContentModelBase )
-   : Article
-   = {
-      ;
+   // def llrConvToArt
+   //    [
+   //       SpawnedAsScReconciler <: XScanLeftReconciliativeOps[? <: ln.ReactiveHtmlElement[?], ?, UOpR ]
+   //       ,
+   //       ContentModelBase
+   //       ,
+   //       ContainerNative <: org.scalajs.dom.HTMLElement ,
+   //       UOpR >: Unit <: Unit ,
+   //    ]
+   //    (container : com.raquo.laminar.tags.HtmlTag[ContainerNative] )
+   //    (spawnAsScReconciler: (mdl: ContentModelBase ) => SpawnedAsScReconciler)
+   //    (initialDataValue: ContentModelBase )
+   // : Article
+   // = {
+   //    ;
 
-      val art = llrConv(container)(spawnAsScReconciler)
+   //    val art = llrConv(container)(spawnAsScReconciler)
 
-      {
-         ;
+   //    {
+   //       ;
 
-         type artSc
-         = ({ type Main[T] = T match { case SpawnabilityAndReconciliabilityNoArg[?, sc, ?] => sc } })#Main[art.type ]
+   //       type artSc
+   //       = ({ type Main[T] = T match { case SpawnabilityAndReconciliabilityNoArg[?, sc, ?] => sc } })#Main[art.type ]
 
-         // (art, initialDataValue ) : Article
+   //       // (art, initialDataValue ) : Article
 
-         // summon[(
-         //    Conversion[
-         //       //
+   //       // summon[(
+   //       //    Conversion[
+   //       //       //
 
-         //       ? <: (
-         //          // SpiwmTwos[ContentModelBase, ?, ? ]
-         //          // &
-         //          // (SpawnabilityAndReconciliabilityNoArg[ContentModelBase, LElemPlusPossibleData[? <: ln.ReactiveHtmlElement[?] ], ? ], Any )
-         //          (SpawnabilityAndReconciliabilityNoArg[ContentModelBase, ?, ? ], Any )
-         //       ) ,
-         //       ?
-         //       <: LaminarSpawnable[ln.ReactiveHtmlElement[dom.HTMLElement], dom.HTMLElement]
-         //       ,
-         //    ]
-         // ) ]
-         // given_Conversion_SpiwmTwos_LaminarSpawnable[ln.ReactiveHtmlElement[dom.HTMLElement], dom.HTMLElement, ContentModelBase ]
-         given_Conversion_SpiwmTwos_LaminarSpawnable[artSc, dom.HTMLElement, ContentModelBase ]
-         .apply(((initialDataValue, art) : (initialDataValue.type, art.type) ).swap )
-      }
-   }
+   //       //       ? <: (
+   //       //          // SpiwmTwos[ContentModelBase, ?, ? ]
+   //       //          // &
+   //       //          // (SpawnabilityAndReconciliabilityNoArg[ContentModelBase, LElemPlusPossibleData[? <: ln.ReactiveHtmlElement[?] ], ? ], Any )
+   //       //          (SpawnabilityAndReconciliabilityNoArg[ContentModelBase, ?, ? ], Any )
+   //       //       ) ,
+   //       //       ?
+   //       //       <: LaminarSpawnable[ln.ReactiveHtmlElement[dom.HTMLElement], dom.HTMLElement]
+   //       //       ,
+   //       //    ]
+   //       // ) ]
+   //       // given_Conversion_SpiwmTwos_LaminarSpawnable[ln.ReactiveHtmlElement[dom.HTMLElement], dom.HTMLElement, ContentModelBase ]
+   //       given_Conversion_SpiwmTwos_LaminarSpawnable[artSc, dom.HTMLElement, ContentModelBase ]
+   //       .apply(((initialDataValue, art) : (initialDataValue.type, art.type) ).swap )
+   //    }
+   // }
 
    ;
 }
