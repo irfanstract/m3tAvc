@@ -55,10 +55,24 @@ extends
 
       ;
 
+      import articleConcatenabilityNs.{*, given }
+
+      ;
+
+      ;
+
+      avcalg.given_CBC_C[Article]
+   }
+
+   private[s1]
+   object articleConcatenabilityNs
+   {
       ;
 
       ;
 
+      // final
+      // lazy
       val cc
       = {
          ;
@@ -66,6 +80,8 @@ extends
             //
          )
       }
+      // final
+      // lazy
       val spws
       = {
          ;
@@ -80,12 +96,76 @@ extends
 
       import cc.{*, given}
 
+      // export cc.ConcatArtDat
+
+      import XAspwPredefs.{*, given}
+
       import spws.{*, given}
+
+      import thematicLaminarUtil.{*, given }
+
+      /**
+       * 
+       * an infrastructure to
+       * impl the proper data-structures for these purposes
+       * 
+       */
+      private[avcframewrk]
+      object ConcatArtDat
+      {
+         ;
+
+         type XItemSeqOps[+E]
+            >: Seq[XItemSeqRowWithValue[E] ]
+            <: Seq[XItemSeqRowWithValue[E] ]
+
+         opaque type XItemSeqRow[+E]
+         <: Matchable
+         = (Unit, E)
+
+         object XItemSeqRow
+
+         opaque type XItemSeqRowWithValue[+E]
+            <: Matchable & XItemSeqRow[E]
+            = (Unit, E)
+
+         object XItemSeqRowWithValue
+         {
+            @deprecated
+            def apply[E](v: E) : XItemSeqRowWithValue[v.type] = ((), v )
+            def unapply[E](o: XItemSeqRowWithValue[E] ): Some[E] = Some(o._2 )
+         }
+
+         ;
+
+         /**
+          * this
+          * is intended to do the inverse of the implicit conv to `Article`
+          * 
+          */
+         def unapply(a: Article)
+         : Option[(XItemSeqOps[Article] )]
+         = {
+            a match {
+               case LaminarSpawnableReconcFromTuple((`reconciliabilityKey`, d : XItemSeqOps[Article] )) =>
+                  Some(d)
+               case _ =>
+                  None
+            }
+         }
+
+      } // ConcatArtDat$
+
+      type EModel
+      >: ConcatArtDat.XItemSeqOps[Article]
+      <: ConcatArtDat.XItemSeqOps[Article]
 
       ;
 
-      object lll {
-         org.scalajs.dom.console.log({ class LllError extends Exception ; new LllError } )
+      val artSpwCrosReconcOption1
+      = {
+         summon[SpawnabilityAndReconciliabilityNoArg[Article, ?, ? ] ]
+         match { case e => e.asTypeTupelified }
       }
 
       extension (src: laminar.api.L.Signal[ConcatArtDat.XItemSeqOps[Article] ] ) {
@@ -104,9 +184,6 @@ extends
          = {
             ;
 
-            val artToSpiwmTwoConv1
-            = artToSpiwmTwoConv
-
             import laminar.api.L
 
             import com.raquo.laminar.{nodes as ln}
@@ -121,28 +198,89 @@ extends
                def convR()
                = {
                   src
-                  .map({ case ConcatArtDat.XItemSeqRow(item) => item })
+                  .map({ case ConcatArtDat.XItemSeqRowWithValue(item) => item })
                }
+            }
+
+            type UnitValuedWeakSignal
+            >: L.Signal[Option[Unit] ] /* the return-type of `.toWeakSignal` in Airstream */
+            <: L.Signal[Option[Unit] ] /* the return-type of `.toWeakSignal` in Airstream */
+
+            type XScanStateBag
+            >: (
+               ConcatArtDat.XItemSeqOps[Article]
+               ,
+               ([A] =>> A )[(
+                  Seq[(
+                     // SpawnedArtReconcilerAndStateBagPairToLL[ln.ReactiveElement[dom.Element ] ]
+                     artSpwCrosReconcOption1._1.Reconcilee
+                  )] 
+               ) ]
+               ,
+               UnitValuedWeakSignal
+               ,
+            )
+            <: (
+               ConcatArtDat.XItemSeqOps[Article]
+               ,
+               ([A] =>> A )[(
+                  Seq[(
+                     // SpawnedArtReconcilerAndStateBagPairToLL[ln.ReactiveElement[dom.Element ] ]
+                     artSpwCrosReconcOption1._1.Reconcilee
+                  )] 
+               ) ]
+               ,
+               UnitValuedWeakSignal
+               ,
+            )
+
+            extension (e: Article )
+               def spawnArtFromScratch() = { artSpwCrosReconcOption1._2.spawn(e )( ) match { case e => e } }
+
+            def tryReconcile
+               (nd: artSpwCrosReconcOption1._1.Reconcilee )
+               (newMdl : Article )
+            = {
+               ;
+
+               def test1()
+               = {
+                  util.Try {}
+               }
+
+               (for {
+                  tr <- {
+                     test1()
+                     /** note: `util.Try` only catches 'the non-fatal ones', including all these */
+                     util.Try({
+                        if { artSpwCrosReconcOption1._2.model_=(nd)(newMdl ) } then {}
+                        else { throw new ReconciliativeClassMismatchException(s"not matching: ${nd } vs ${newMdl } " ) }
+                     })
+                     match {
+                        case util.Failure(z : (ClassCastException | MatchError | ReconciliativeClassMismatchException ) ) =>
+                           None
+                        case util.Failure(z ) =>
+                           throw z
+                        case util.Success(() ) =>
+                           Some(() )
+                     }
+                  }
+               } yield {
+                  nd
+               })
             }
 
             src
 
-            .scanLeft[(
-               ConcatArtDat.XItemSeqOps[Article]
-               ,
-               ([A] =>> A )[(Seq[ln.ReactiveHtmlElement[dom.HTMLElement ] ] ) ]
-               ,
-               L.Signal[Option[Unit] ] /* the return-type of `.toWeakSignal` in Airstream */
-               ,
-
-            ) ](arts => {
+            .scanLeft[XScanStateBag ](arts => {
+               ;
                ;
                val nds = {
                   ;
 
                   arts
                   .convR()
-                  .map(_.spawn() ) 
+                  .map(e => { e.spawnArtFromScratch() } ) 
                }
                (arts, nds, L.Val(Some(() ) ) )
             } )({
@@ -151,13 +289,6 @@ extends
 
                   /* will conditionally reuse the existing LN(s) */
                   ;
-
-                  extension (a: Article) { def toSpiwmTwos = artToSpiwmTwoConv1.apply(a) }
-
-                  def test1()
-                  = {
-                     util.Try {}
-                  }
 
                   val ndsRefAnim
                   = {
@@ -168,67 +299,71 @@ extends
                       * we can no longer rely on simply comparing with `equals`
                       */
                      /* no, we don't wanna migrate to `util.Boundary`, it has that well-known serious pitfall */
-                     (util.control.NonLocalReturns.returning[Seq[ln.ReactiveHtmlElement[dom.HTMLElement ] ] ] {r1 ?=> {
+                     (util.control.NonLocalReturns.returning[Seq[artSpwCrosReconcOption1._1.Reconcilee ] ] {r1 ?=> {
                         ;
 
                         ;
 
                         if (newArtLs.length == nodes0.length ) then {
                            ;
-                           r1.throwReturn({
+                           ({
                               ;
+
+                              /** 
+                               * for all `i` in the range,
+                               * try reconcile for the `i`-th Node,
+                               * falling back to re-spawn-ing
+                               * 
+                               */
                               newArtLs.indices
                               .map(i => (i, nodes0(i), formerArtLs.convR().apply(i), newArtLs.convR().apply(i) ) )
                               .map({ case (i, nd, formerMdl, newMdl) => {
                                  ;
-                                 // TODO
-                                 ({
-                                    locally {}
-                                    locally {}
-                                    val reconcA
-                                    = { formerMdl.toSpiwmTwos }
-                                    import reconcA.{_1 => reconcX }
-                                    (for {
-                                       reconcXAdapted <- reconcA.tryCompatAgainstSpawned1(nd)
-                                       tr <- {
-                                          test1()
-                                          util.Try({
-                                             reconcXAdapted.model_=(nd)(newMdl.toSpiwmTwos._2 )
-                                          })
-                                          match {
-                                             case util.Failure(z : (ClassCastException | MatchError ) ) =>
-                                                None
-                                             case util.Failure(z ) =>
-                                                throw z
-                                             case util.Success(() ) =>
-                                                Some(() )
-                                          }
-                                       }
-                                    } yield {
-                                       nd
-                                    })
-                                    .getOrElse({
-                                       // TODO
-                                       newMdl
-                                       .spawn()
-                                    })
+
+                                 (for { nd <- tryReconcile(nd )(newMdl ) } yield nd )
+                                 .getOrElse[artSpwCrosReconcOption1._1.Reconcilee ] ({
+                                    // TODO
+                                    newMdl
+                                    match { case e => e.spawnArtFromScratch() }
                                  })
                               }})
+
+                              //
                            })
+                           match { case result => r1.throwReturn(result) }
                         }
 
                         ;
                         // TODO
                         newArtLs
-                        .map({ case ConcatArtDat.XItemSeqRow(v) => v.spawn() } )
+                        .map({ case ConcatArtDat.XItemSeqRowWithValue(v) => v.spawnArtFromScratch() } )
                      }})
                   }
 
-                  (newArtLs, ndsRefAnim, L.EventStream.delay(2000 ).toWeakSignal )
+                  (newArtLs, ndsRefAnim, L.EventStream.delay(100 ).toWeakSignal )
             })
             .flatMap({ case (newArtLs, nds, s ) => {
-               s.map(o => o.fold(Seq(L.span("loading...") ) )(_ => nds ) ) 
+               s
+               .map(o => {
+                  o
+                  .fold(Seq {
+                     L.span("loading...")
+                  } )(_ => {
+                     nds
+                     .map(e => laminarInSpawneddLL(e) )
+                  } )
+               } ) 
             } })
+            .map(s => {
+               s
+               .map(e => {
+                  /** add spacing if possible and necessary */
+                  e
+                  .withProactiveSpacingFix()
+               })
+               // TODO remove this LOC
+               .map(_.asInstanceOf[ln.ReactiveHtmlElement[dom.HTMLElement ] | ln.ReactiveSvgElement[dom.SVGElement ] ] )
+            })
          }
 
          //
@@ -312,6 +447,8 @@ extends
          ;
       }
 
+      // final
+      // lazy
       val reconciliability
       = {
 
@@ -332,13 +469,12 @@ extends
             }
             ,
          )
-         match { case s => {
-            new
-               SpawnabilityAndReconciliabilityNoArg[EModel, ({ type M[E] = E match { case SpawnabilityAndReconciliabilityNoArg[?, e, ?] => e } })#M[s.type ] , Unit]
-               with ConcatArtDat.OperatorM
-            { export s.* }
-         } }
       }
+
+      // final
+      lazy
+      val reconciliabilityKey
+      = SRNA.allocateGScanLeft(Seq() )(reconciliability )
 
       given acc
       : cats.Monoid[Article]
@@ -361,7 +497,7 @@ extends
             val finalSeq = {
                ;
 
-               import ConcatArtDat.{XItemSeqRow, XItemSeqOps}
+               import ConcatArtDat.{XItemSeqRowWithValue, XItemSeqOps}
 
                (a1, a2) match {
                   //
@@ -370,14 +506,14 @@ extends
                      s1 ++ s2
 
                   case (ConcatArtDat(s1), si2 ) =>
-                     s1 :+ XItemSeqRow(si2 )
+                     s1 :+ XItemSeqRowWithValue(si2 )
 
                   case (si1, ConcatArtDat(s2) ) =>
-                     XItemSeqRow(si1) +: s2
+                     XItemSeqRowWithValue(si1) +: s2
 
                   case (si1, si2 ) =>
                      (Seq() :+ si1 :+ si2 )
-                     .map(art => XItemSeqRow(art ) )
+                     .map(art => XItemSeqRowWithValue(art ) )
 
                }
             } : ConcatArtDat.XItemSeqOps[Article]
@@ -385,13 +521,70 @@ extends
             assert(2 <= finalSeq.length, s"failed to have (2 <= s.length ) ")
 
             ;
-            (reconciliability, finalSeq ) : Article
+            // (reconciliability, finalSeq ) : Article
+            laminarSpawnableMdlFactory(reconciliabilityKey )
+            .apply(finalSeq )
          }
 
          ;
       }
 
-      avcalg.given_CBC_C[Article]
+      ;
+   }
+
+   private
+   object thematicLaminarUtil
+   {
+      ;
+
+      val chtSeparator
+      = laminar.api.L.htmlTag[dom.HTMLElement ]("c-per-item")
+
+      extension (e: ln.ReactiveElement[?] ) {
+         //
+
+         /** 
+          * proactively
+          * add spacing if possible and necessary ;
+          * without this,
+          * nothing else will keep two adjacent elements from collapsing without spacing
+          * 
+          */
+         transparent inline
+         def withProactiveSpacingFix()
+         : ln.ReactiveElement[?]
+         = {
+            ;
+
+            /** add spacing if possible and necessary */
+            e match {
+               //
+
+               //
+               case e: ln.ReactiveHtmlElement[?] =>
+                  import laminar.api.L.{given }
+                  chtSeparator(" ", e, " ")
+
+               //
+
+               //
+               case e: ln.ReactiveSvgElement[?] =>
+                  import laminar.api.L.{svg, given }
+                  svg.g(" ", e, " ")
+
+               case e =>
+                  e
+
+                  //
+            }
+         }
+
+         //
+      }
+
+      ;
+
+      ;
    }
 
 }
@@ -405,7 +598,7 @@ extends
    this : (
       AnyRef
       with w3e.pre.Articles
-      // with ELaminarQckCore
+      with ELaminarQckCore
       // with ELaminarQckCoreHtml
       with w3e.pre.PlainTxtContents
       with ELaminarQckCoreABackreferencings
@@ -434,67 +627,40 @@ extends
    {
       ;
 
-      /**
-       * 
-       * an infrastructure to
-       * impl the proper data-structures for these purposes
+      ;
+
+      ;
+
+      ;
+
+      ;
+      ;
+   }
+
+   /** 
+    * `ReconciliativeClassMismatchError`, and the relevant stuffs
+    * 
+    */
+   object XAspwPredefs
+   {
+      ;
+
+      /* note: we need a rename here ; shame on u, Chr DevTools! */
+      class ReconciliativeClassMismatchError(msg: String)
+      extends
+         RuntimeException(msg)
+      /** 
+       * to be `thrown` whenever
+       * finding mismatch in the reconciliative-class between two reconcilee from both sides.
        * 
        */
-      private[avcframewrk]
-      object ConcatArtDat
-      {
-         ;
+      type ReconciliativeClassMismatchException
+         = ReconciliativeClassMismatchError
 
-         type XItemSeqOps[+E]
-            >: Seq[XItemSeqRow[E] ]
-            <: Seq[XItemSeqRow[E] ]
+      object lll {
+         org.scalajs.dom.console.log({ class LllError extends Exception ; new LllError } )
+      }
 
-         opaque type XItemSeqRow[+E]
-            <: Matchable
-            = (Unit, E)
-
-         object XItemSeqRow {
-            def apply[E](v: E) : XItemSeqRow[v.type] = ((), v )
-            def unapply[E](o: XItemSeqRow[E] ): Some[E] = Some(o._2 )
-         }
-
-         ;
-
-         /**
-          * this
-          * is intended to do the inverse of the implicit conv to `Article`
-          * 
-          */
-         def unapply(a: Article)
-         : Option[(XItemSeqOps[Article] )]
-         = {
-            a match {
-               case (o: OperatorM, d : XItemSeqOps[Article] ) =>
-                  Some(d)
-               case _ =>
-                  None
-            }
-         }
-
-         /**
-          * 
-          */
-         sealed
-         trait OperatorM
-
-      } // ConcatArtDat$
-
-      ;
-
-      type EModel
-      >: ConcatArtDat.XItemSeqOps[Article]
-      <: ConcatArtDat.XItemSeqOps[Article]
-
-      ;
-
-      ;
-
-      ;
       ;
    }
 
