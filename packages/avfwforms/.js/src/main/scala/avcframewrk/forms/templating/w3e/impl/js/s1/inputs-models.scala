@@ -32,6 +32,7 @@ extends
    AnyRef
    /* */
    with ENativeElementsD1
+   with ELaminarQckInputElemsReconcNativesCf
    with ELaminarQckInputElemsLcs
    with ELaminarQckInputElemsReconcModels
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
@@ -68,60 +69,6 @@ extends
    ;
 
    ;
-
-   extension [Value] (s0 : laminar.api.L.Signal[InpfaStaticInvar[Value] ] )
-      (using GivenSpinner1[Value ] )
-   {
-      //
-
-      //
-
-      /** 
-       * spawns a new `ln.ReactiveHtmlElement[dom.HTMLInputElement]`, animated by the `L.Signal[InpfaOf[Value] ]`.
-       * 
-       * the `&lt;input>` will be *controlled*.
-       * in case of parse-error (eg "not in a valid numeric fmt", "not in a valid date-time fmt"),
-       * nothing will be `propagate`ed, so what the input-field is gon' to would be misleading
-       * 
-       */
-      def scanSpawnNewLlE()
-      : ln.ReactiveHtmlElement[dom.HTMLInputElement ]
-      = {
-         ;
-
-         import laminar.api.L
-
-         val s1 = L.Var[Option[InpfaStaticInvar[Value] ] ](None)
-
-         def propagateEditResultValue(value: Value)
-         : Unit
-         = {
-            ;
-            val evtInfo
-            = newIcrEditEventInfo()
-            ;
-            for { s <- s1.now() }
-            yield {
-               s
-               .propagate1(evtInfo , value )
-            }
-         }
-
-         val s
-         = s0.map(value => { s1.set(Some(value) ) ; value } )
-
-         // TODO
-         L.input({
-            lControlledRemote(summon[GivenSpinner1[Value ] ] )(s.map(_.value ) )({
-               L.Observer((c: Value) => {
-                  propagateEditResultValue(c)
-               } )
-            } )
-         } , L.typ := nativeTypStrFor(summon[GivenSpinner1[Value ] ] ) )
-      }
-
-      //
-   }
 
    extension [
       Value ,
