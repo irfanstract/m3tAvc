@@ -191,6 +191,101 @@ trait ArticlesImplByL
 extends
    AnyRef
    with ADefinesNativeDocNodeType0
+{
+   thisArticlesImplByL : (
+      AnyRef
+   ) =>
+   ;
+
+   import avcframewrk.forms.templating.rendering.reconciliabilityC.{*}
+
+   import org.scalajs.dom
+
+   ;
+
+   ;
+
+   /** 
+    * supposed to be the main/primary data-type (or repr) in the targeted backend/fw -
+    * this could be `React.Element`, `DOM.Element`, `Laminar.Element`, etc
+    * 
+    */
+   override
+   type NativeDocNode
+      // // TODO remove all these bounds
+      // >: com.raquo.laminar.nodes.ReactiveElement[?]
+      // <: com.raquo.laminar.nodes.ReactiveElement[?]
+
+   ;
+
+   private[avcframewrk]
+   given given_ArticlesImplByL1
+   : ArticlesImplByL1
+   with {
+      ;
+
+      ;
+
+      /** 
+       * supposed to be the main/primary data-type (or repr) in the targeted backend/fw -
+       * this could be `React.Element`, `DOM.Element`, `Laminar.Element`, etc
+       * 
+       */
+      override
+      type NativeDocNode
+         >: thisArticlesImplByL.NativeDocNode
+         <: thisArticlesImplByL.NativeDocNode
+
+      ;
+
+      ;
+   }
+
+   // export given_ArticlesImplByL1.{given }
+
+   /* `LReconciliativeKey` and sub-types */
+   export given_ArticlesImplByL1.{
+      LReconciliativeKey ,
+      lrecTReconstr ,
+      LReconciliativeKey1 ,
+      LReconciliativeKeyTo1 ,
+      LReconciliativeKeyToMdl ,
+      // LReconciliativeKeyOfArt ,
+   }
+
+   /* the key-assoc-ed Reconciler */
+   export given_ArticlesImplByL1.{
+      toScnAllocAndReconcileAndDistillH ,
+      asWithXScanLeftHPreSMH ,
+      LReconcilerForKey ,
+   }
+
+   export given_ArticlesImplByL1.{
+      /* given a Reconciler, get back the key */
+      LReconciliativeKeyed ,
+   }
+
+   export given_ArticlesImplByL1.{
+      uid ,
+   }
+
+   export given_ArticlesImplByL1.{
+      isOfSameReconcClass ,
+   }
+
+   ;
+
+   ;
+
+   ;
+}
+
+// @deprecated
+private[avcframewrk] 
+trait ArticlesImplByL1
+extends
+   AnyRef
+   with ADefinesNativeDocNodeType0
    with ArticlesImplScn
 {
    thisArticlesImplByL : (
@@ -416,7 +511,12 @@ extends
       //
    }
 
-   extension [K <: LReconciliativeKey](o: LReconcilerForKey[K]) {
+   extension [
+      K <: LReconciliativeKeyTo1[RC] ,
+      RC <: LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ?, ? ] ,
+
+      //
+   ](o: LReconcilerForKey[K] & RC ) {
       //
 
       /** 

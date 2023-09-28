@@ -242,7 +242,9 @@ object reconciliabilityC
                extension (this1: SpawnedButton)
                   def model_=(newModel: ButtonContentModel )
                   = {
-                     reconcImpl1(this1, newModel )
+                     System.out.nn.flush()
+                     try reconciliabilityCWgc.impl.apply((this1, newModel), reconcImpl1(this1, newModel ) )
+                     finally System.out.nn.flush()
                   }
             }
          } // reconcImpl$
@@ -401,6 +403,12 @@ object reconciliabilityC
 
    ;
 } // reconciliabilityC$
+
+object reconciliabilityCWgc {
+   var impl
+   : [E] => (ctx: Product, impl: DummyImplicit ?=> E ) => E
+   = [E] => (p: Product, c: DummyImplicit ?=> E ) => c
+}
 
 
 
