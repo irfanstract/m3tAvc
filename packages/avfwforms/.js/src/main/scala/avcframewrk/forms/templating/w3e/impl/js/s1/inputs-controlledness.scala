@@ -94,6 +94,16 @@ extends
       //
    }
 
+   object lValueNat {
+      ;
+      def <--
+         [Value]
+         (src: L.Source[Value] )
+      = {
+         L.value <-- src.toObservable.map(_.toString() )
+      }
+   }
+
    /**
     * Laminar `controlled`
     * 
@@ -144,7 +154,7 @@ extends
 
       L.controlled(
          //
-         L.value <-- src.map({ case (_, value) => value }).map(_.toString() )
+         lValueNat <-- src.map({ case (_, value) => value })
          ,
          (
             L.onInput
@@ -166,6 +176,24 @@ extends
     * a version allowing separate `Source` and `Sink`
     * 
     */
+   def lReadonly
+      [Value]
+      (typ: GivenSpinner1[Value])
+      (src : L.Observable[Value] )
+      (using IvpLogging[Value] )
+   = {
+      ;
+
+      import L.{given}
+
+      lValueNat <-- src
+   }
+
+   /**
+    * `lControlled` -
+    * a version allowing separate `Source` and `Sink`
+    * 
+    */
    def lControlledRemote
       [Value]
       (typ: GivenSpinner1[Value])
@@ -179,7 +207,7 @@ extends
 
       L.controlled(
          //
-         L.value <-- src.map(_.toString() )
+         lValueNat <-- src
          ,
          (
             L.onInput
