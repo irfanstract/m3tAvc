@@ -147,3 +147,7 @@ button:not(.avfw-inline ) ,
     background-color: #f9f9f9;
   }
 }
+
+#app {
+  --avfw-inpfadebugspan-display: block ;
+}

@@ -35,6 +35,8 @@ extends
    with w3e.pre.ArticlesViaLspw
    with ELaminarQckCore1
    with ELSRNA
+   with ELaminarQckCoreWRE
+   with ELF1
    // with w3e.pre.ArticlesViaLspwmt
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with w3e.pre.Articles
@@ -49,40 +51,49 @@ extends
 
    import org.scalajs.dom
 
-   // // protected
-   // class given_Conversion_SpiwmTwos_LaminarSpawnable_TypeKey
+   import laminar.api.L
 
-   /** 
-    * warning - this's add a reg into the registry (with)in the NS `LReconciliativeKey`, leading to "memory leak"!
-    * 
-    */
-   def allocateFactory
-      //
-      [
-         mdlT,
-         SpawnedLaminar <: ln.ReactiveElement[SpawnedDOMNode] ,
-         SpawnedDOMNode <: dom.Element ,
-         ReconcOpR,
-         UOpR ,
-      ]
-      (initialValue : => mdlT )
-      (using c : SpawnabilityAndReconciliabilityNoArg[mdlT, SpawnedLaminar, ReconcOpR] )
-      (using toUOpR : Conversion[Boolean, UOpR] = (identity[Boolean] _ ) : Conversion[Boolean, Boolean] )
-   : ((mdl: mdlT ) => LaminarSpawnable[SpawnedLaminar, SpawnedDOMNode] )
+   ;
+
+   private[s1]
+   def llByCco
+      (counter : L.Source[Int])
+      (using CCE )
    = {
       ;
 
-      val lR
-      = SRNA.allocateGScanLeft(initialMdl = initialValue )(c )
-      
-      locally {
-         ;
-
-         lR
-         match { case lR => laminarSpawnableMdlFactory(lR ) }
-         match { case f => f }
-      }
+      import L.{given}
+      L.span((
+         //
+         L.child <-- (
+         for { i <- counter.toObservable }
+         yield llByCount(i)
+         )
+      ) )
    }
+
+   private[s1]
+   def llByCount
+      (i : Int )
+      (using CCE )
+   = {
+      ;
+
+      import L.{given}
+      (
+         //
+
+         L.span(s"[update-count: $i]", L.title :=
+            s"update count: $i "
+            .appendedAll(s". (${summon[CCE].callingMethodName } )")
+         )
+      )
+   }
+
+   inline given given_CCE_1[T0] : CCE = { val cmn = currentMethodName ; CCE(callingMethodName = cmn ) }
+   case class CCE(callingMethodName: String)
+
+   given nnnnnnnnnnnnnnnnnnnnnnnnnnn1 : AnyRef with {}
 
    ;
 }
@@ -97,6 +108,8 @@ extends
    AnyRef
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
    with ELaminarQckCore
+   /* the mix-ins */
+   with ELaminarQckCoreReMppsHtml
 {
    this : (
       AnyRef
@@ -108,132 +121,70 @@ extends
 
    import org.scalajs.dom
 
+   import laminar.api.L
+
    override
    type Article
    >: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] , dom.HTMLElement ] | LaminarSpawnable[ln.ReactiveSvgElement[? <: dom.SVGElement] , dom.SVGElement ]
    <: LaminarSpawnable[ln.ReactiveHtmlElement[? <: dom.HTMLElement] , dom.HTMLElement ] | LaminarSpawnable[ln.ReactiveSvgElement[? <: dom.SVGElement] , dom.SVGElement ]
 
-   /** 
-    * (pre)allocate
-    * am RCK which applies the given fnc .
-    * returns
-    * a RCK
-    * whose `Model#` is an REMPM[MdlHighLevel] (a Tuple2 `forSome [ M ] (CompForMdl[M] , M )` )
-    * (needs explicit import of `given_REMPM_CONV` which's not `implicit` as it's )
-    * 
-    */
-   // TODO
-   def allocateRemappingComp
-      [
-         MdlHighLevel,
-         ModelAtLowerLvlT ,
-         SPL <: ln.ReactiveElement[SPD ],
-         SPD <: dom.Element ,
-      ]
-      (f: MdlHighLevel => ModelAtLowerLvlT )
-      (initialMdl : => (
-         //
+   ;
 
-         REMPM[?, [_] =>> (
-            //
-            LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ModelAtLowerLvlT, SPL] ] ,
-            MdlHighLevel ,
-         )]
-      ) )
-   // : (
-   //    //
-   //    LReconciliativeKeyTo1[(
-   //       //
-   //       LReconciliativeKey.ScnAllocAndReconcileAndDistillH[
-   //          //
-   //          ? <: (
-   //             SpawnedArtReconcilerAndStateBagPairToLL[SPL ]
-   //             & SpawnedArtReconcilerAndStateBagPairToLD[SPD ]
-   //          ),
-   //          REMPM[? <: MdlHighLevel, SPL],
-   //          SPL,
-   //       ]
-   //    )]
-   // )
-   = {
-      ;
-      val sp = {
-         lspwmHeterognSpawnability[Article & LaminarSpawnable[SPL, SPD], SPL, SPD, Boolean ]
-         .compose((m0: (
-            REMPM[?, [_] =>> (
-               //
-               LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ModelAtLowerLvlT, SPL] ] ,
-               MdlHighLevel ,
-            )]
-         ) ) => {
-            val m = m0.impl
-            LaminarSpawnableReconcFromTuple ((m._1, m._2 match { case mdl => f(mdl) }) )
-         } ) 
-      }
-      val spK
+   extension (pr: L.type )
+      // transparent inline
+      def debugSpan(ms: L.Modifier[ln.ReactiveHtmlElement[dom.HTMLElement ] ]* )
+      : ln.ReactiveHtmlElement[dom.HTMLElement ]
       = {
-         SRNA.allocateGScanLeftAlt(initialMdl )(sp)(e => laminarInSpawneddLL(e) )
+         ;
+
+         val L : pr.type
+         = pr
+         import L.{given}
+
+         givenAvfwDebugPanelCssInit
+         L.span(L.className := "avfw-dbpblock" , (
+            L.span(L.span(ms : _* ))
+         ))
       }
-      spK
-   }
-
-   @deprecated
-   private[s1]
-   case class REMPM
-      [
-         K ,
-         +C[k]
-         <: 
-         (
-            //
-            LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ?, ? ] ] ,
-            Any ,
-         )
-         ,
-      ]
-   (impl: C[K] )
-
-   /* offered, but not implied, adapter */
-   def given_REMPM_CONV
-      //
-      [
-         //
-         C
-         <: 
-         (
-            //
-            LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, ?, ? ] ] ,
-            Any ,
-         )
-         ,
-      ]
-   : Conversion[C , REMPM[?, [_] =>> C] ]
-   = REMPM.apply[Any, [_] =>> C ] _
 
    ;
 }
 
-trait ELSRNA
+object givenAvfwDebugPanelCssInit
+{
+   ;
+   addGlobalCss({
+      """
+      .avfw-dbpblock {
+          border-inline: 0.1em solid currentColor;
+          border-radius: 0.25em;
+          padding-inline: 0.5ex;
+          margin: 0.5ex;
+          border: 0.1em solid currentColor;
+          display: inline-block ;
+      }
+      """
+   })
+}
+
+/**
+ * 
+ * .
+ * 
+ */
+trait ELaminarQckCoreFormCtrlElemReconcKeying1
 extends
    AnyRef
-   // with w3e.pre.ArticlesViaLspwmt
    /* with these items item merely listed in the self-type, the IDE/editor won't show any relevant "overrides super member" markers */
-   // that's all
-   /* a temporary repetition here (of below) necessary to prevent the compiler from "crashing" or serious 100%-CPU hanging */
-   // with w3e.pre.ArticlesViaLspw
-   // with w3e.pre.Articles
-   // with w3e.pre.ArticlesViaLspw
-   with w3e.pre.ArticlesImplByL
-   with ELaminarQckCoreLrks
+   /* that-s all */
+   /* the mix-ins */
+   /* that-s all */
 {
    this : (
       AnyRef
-      with w3e.pre.Articles
-      with w3e.pre.ArticlesViaLspw
+      with ELaminarQckCore
       with w3e.pre.ArticlesImplByL
-      // with ELaminarQckCore1
-      with ELaminarQckCoreLrks
-      // with ELaminarQckCoreABackreferencings
+      with ELaminarQckCoreHtml
    ) =>
    ;
 
@@ -243,83 +194,45 @@ extends
 
    ;
 
+   ;
+
    /** 
-    * warning - this's add a reg into the registry (with)in the NS `LReconciliativeKey`, leading to "memory leak"!
+    * a ReconciliabilityKey for `input` for `Value#`
     * 
     */
-   protected[avcframewrk]
-   object SRNA
-   {
-      ;
-
-      export LReconciliativeKey.allocate
-
-      def allocateGScanLeft
-         //
-         [
-            mdlT,
-            SpawnedLaminar <: ln.ReactiveElement[?],
-            ReconcOpR,
-         ]
-         (initialMdl: => mdlT )
-         (impl : SpawnabilityAndReconciliabilityNoArg[mdlT, SpawnedLaminar, ReconcOpR] )
-      : (
-         SRNA
-         [
-            mdlT,
-            SpawnedLaminar,
-            ReconcOpR,
-         ]
-      )
-      = {
-         allocateGScanLeftAlt
-            (initialMdl )
-            (impl )
-            (identity[SpawnedLaminar] _ )
-      }
-
-      /* generalisation where `SpawnedCompStateBag`s doesn't need to be `ANativeNode`s */
-      def allocateGScanLeftAlt
-         //
-         [
-            mdlT,
-            SpawnedLaminar <: ln.ReactiveElement[?],
-            S ,
-            ReconcOpR,
-         ]
-         (initialMdl: => mdlT )
-         (impl : SpawnabilityAndReconciliabilityNoArg[mdlT, S, ReconcOpR] )
-         (getNativeNode: S => SpawnedLaminar )
-      : (
-         LReconciliativeKeyTo1[(
-            LReconciliativeKey.ScnAllocAndReconcileAndDistillH[S , mdlT, SpawnedLaminar ]
-         ) ]
-      )
-      = {
-         ;
-         allocate[mdlT, S, SpawnedLaminar, ReconcOpR ](
-            //
-            impl = impl,
-            getWrappedNativeNode = getNativeNode ,
-            initialMdl = initialMdl ,
-            //
-         )
-      }
-
-      ;
-
-      ;
-   }
-
-   protected[avcframewrk]
-   opaque type SRNA
+   opaque type FKCompReconciliabilityKey
+      //
       [
-         -mdlT,
-         +SpawnedLaminar <: ln.ReactiveElement[?] ,
-         +ReconcOpR,
+         Value,
+         XMdlByValue[_],
       ]
-   <: LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, mdlT, SpawnedLaminar ] ]
-   =  LReconciliativeKeyTo1[LReconciliativeKey.ScnAllocAndReconcileAndDistillH[?, mdlT, SpawnedLaminar ] ]
+   <: LReconciliativeKeyTo1[FKCompReconciliabilityKeyMinReconcilerOps[Value , XMdlByValue , Any ] ]
+   =  LReconciliativeKeyTo1[FKCompReconciliabilityKeyMinReconcilerOps[Value , XMdlByValue , Any ] ]
+
+   /** 
+    * the associated-ReconciliabilityKey-associated for `input` for `Value#`
+    * 
+    * this narrows `SpawnedLaminar` to `ReactiveHTMLElement`.
+    * currently, the support is restricted to the HTML NS
+    * 
+    */
+   type FKCompReconciliabilityKeyMinReconcilerOps
+      //
+      [
+         Value,
+         XMdlByValue[_],
+         +S ,
+      ]
+   >: LReconciliativeKey.ScnAllocAndReconcileAndDistillH[? <: S , Option[XMdlByValue[Value] ] , ? <: ln.ReactiveHtmlElement[? <: dom.HTMLElement ] ]
+   <: LReconciliativeKey.ScnAllocAndReconcileAndDistillH[? <: S , Option[XMdlByValue[Value] ] , ? <: ln.ReactiveHtmlElement[? <: dom.HTMLElement ] ]
+
+   implicit
+   def FKCompReconciliabilityKey1[Value, XMdlByValue[_] ] 
+      (a: LReconciliativeKeyTo1[FKCompReconciliabilityKeyMinReconcilerOps[Value, XMdlByValue, Any ] ] )
+   : a.type & FKCompReconciliabilityKey[Value, XMdlByValue ]
+   = a
+
+   ;
 
    ;
 
