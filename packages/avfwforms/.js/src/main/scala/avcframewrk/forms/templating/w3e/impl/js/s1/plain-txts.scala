@@ -49,20 +49,16 @@ extends
    ;
 
    override
+   // final
+   // lazy
    val PlainLocaleStringPlainTxtArticle
    : (locale: java.util.Locale, txt: String) => Article
-   = (
+   = {
+      ;
 
-      {
-         //
-
-         case value => {
-            (summon[SpawnabilityAndReconciliabilityNoArg[EbLocaleAndTxtString[?], ?, ? ] ] , EbLocaleAndTxtString(value ) )
-            match { case s => s : Article }
-         }
-
-      }
-   )
+      laminarSpawnableMdlFactory(given_SpawnabilityAndReconciliabilityNoArg_EbLocaleAndTxtString_ReactiveHtmlElement_Unit )
+      match { case f0 => identity[(locale: java.util.Locale, txt: String) => Article ]({ case l => EbLocaleAndTxtString(l) match { case l => f0(l) } }) }
+   }
 
    ;
 }
@@ -104,9 +100,11 @@ extends
 
    // TODO
    private[avcframewrk]
-   given [T0]
+   final
+   lazy
+   val given_SpawnabilityAndReconciliabilityNoArg_EbLocaleAndTxtString_ReactiveHtmlElement_Unit
    : (
-      SpawnabilityAndReconciliabilityNoArg[
+      SRNA[
          EbLocaleAndTxtString[?] ,
          ln.ReactiveHtmlElement[org.scalajs.dom.HTMLElement ], /* at this point there's no idea which subclass to choose - for plain texts there's rather wide range of choices available */
          Unit,
@@ -176,6 +174,7 @@ extends
          : Unit
          = {
             import laminar.api.L
+            import L.{given }
 
             ;
 
@@ -189,11 +188,18 @@ extends
             .onNext({
                locally[() => com.raquo.laminar.nodes.ReactiveHtmlElement[?] ](() => {
                   import language.unsafeNulls
+                  L.span( /* the outer */
+                  " "
+                  /* a necessary white-space content, to avoid *collapsing* */
+                  ,
                   L.span(
                      // { L.styleAttr := s"background: green ; " } ,
                      L.lang := { m.locale match { case java.util.Locale.ROOT => "" ; case l => l.getISO3Language() } } ,
                      { import L.* ; m.d } ,
                   )
+                  ,
+                  " " ,
+                  ) /* the outer */
                })
                match { case nd => laminar.api.L.Val(nd) }
             } )
@@ -223,6 +229,8 @@ extends
          }
          ,
       )
+
+      match { case s => SRNA.allocateGScanLeft(EbLocaleAndTxtString((java.util.Locale.ROOT.nn, "(error rendering PlainLocaleStringPlainTxtArticle - no model yet)")) )(s ) }
    }
 
 }
