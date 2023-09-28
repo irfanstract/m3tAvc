@@ -47,7 +47,7 @@ object reconciliabilityC
 
       extension (this1: Model)
          def spawn()
-         : R
+         : Spawned
 
       @deprecated
       type Spawned
