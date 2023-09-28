@@ -102,19 +102,6 @@ extends
       //    given ,
       // }
 
-      given given_SpawnabilityAndReconciliabilityNoArg_B_ReactiveHtmlElement_Unit
-      : SpawnabilityAndReconciliabilityNoArg[B, ln.ReactiveHtmlElement[?], Unit ]
-      = {
-         ;
-
-         // SpawnabilityAndReconciliabilityNoArg.bySpawnabilityAndReconciliabilityFnc(
-         //    //
-         //    spwImpl1 = (mdl: B) => {  } ,
-         // )
-
-         ???
-      }
-
       extension [DT] (ed: BInputFunc[DT] ) {
          //
 
@@ -370,37 +357,37 @@ extends
             .spawnAsXsr(md )
 
             //
-            case md @ B(_) =>
-               ;
+            // case md @ B(_) =>
+            //    ;
 
-               summon[SpawnabilityAndReconciliabilityNoArg[Option[BtnaStatic], ?, ? ] ]
-               .compose((
-                  //
+            //    summon[SpawnabilityAndReconciliabilityNoArg[Option[BtnaStatic], ?, ? ] ]
+            //    .compose((
+            //       //
 
-                  (_ : B )
-                  .callbackOption
-                  .map(f => {
-                     BtnaStatic(onClick = f.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
-                  } )
+            //       (_ : B )
+            //       .callbackOption
+            //       .map(f => {
+            //          BtnaStatic(onClick = f.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
+            //       } )
 
-               ) )
-               .spawnAsXsr(md )
+            //    ) )
+            //    .spawnAsXsr(md )
 
-            case md @ A(_) =>
-               ;
+            // case md @ A(_) =>
+            //    ;
 
-               summon[SpawnabilityAndReconciliabilityNoArg[Option[LaspaStatic], ?, ? ] ]
-               .compose((
-                  //
+            //    summon[SpawnabilityAndReconciliabilityNoArg[Option[LaspaStatic], ?, ? ] ]
+            //    .compose((
+            //       //
 
-                  (_ : A )
-                  .hrefOption
-                  .map(f => {
-                     LaspaStatic(href = Some(f) )
-                  } )
+            //       (_ : A )
+            //       .hrefOption
+            //       .map(f => {
+            //          LaspaStatic(href = Some(f) )
+            //       } )
 
-               ) )
-               .spawnAsXsr(md )
+            //    ) )
+            //    .spawnAsXsr(md )
 
          }
          match { case e => {
