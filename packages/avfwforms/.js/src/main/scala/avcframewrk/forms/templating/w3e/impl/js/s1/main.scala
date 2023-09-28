@@ -31,7 +31,9 @@ lazy val ebAll
    with ELaminarQckPlainStringConts
    with ELaminarQckButtons
    with ELaminarQckButtonsActionModelling
-   with ELaminarQckCoreHtmlArticleDecorsExt
+   {
+      // implicit val articleConcatenability = ???
+   }
 }
 
 
