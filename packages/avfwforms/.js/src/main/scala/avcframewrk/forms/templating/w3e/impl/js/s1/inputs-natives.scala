@@ -24,18 +24,18 @@ package s1
 
 
 
+
 /**
  * 
  * a rather minimal wrapper over the Laminar's 'builder pattern' for native comp(s)
  * 
  */
-private
-trait ELaminarQckButtonsReconcNatives
+private[w3e]
+trait ELaminarQckInputElemsReconcNatives
 extends
    AnyRef
    /* */
    with ENativeElementsD1
-   with ELaminarQckInputElemsReconcNatives
    with ELaminarQckInputElemsLcs
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
@@ -66,91 +66,37 @@ extends
 
    ;
 
-   extension [acv1$] (ed: BInputFunc[?]) {
-      //
-
-      def valueAnim
-      = ed.src.toObservable
-
-      /**
-       * Laminar `controlled`
-       * 
-       */
-      def llc[ExpectedValue1]()
-      = {
-         ;
-
-         lControlled(ed.t )(ed.src )
-      }
-
-      //
-   }
+   ;
 
    /**
-    * Laminar `controlled`
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;input>`s whose setting `value` will do what the name says
+    * (there are some who don't, eg when `type` is `button` or `submit`, or `checkbox`, or `file` )
+    * 
     * 
     */
-   def lControlled
-      [Value]
-      (typ: GivenSpinner1[Value])
-      (src : L.SignalSource[Value] & L.Sink[Value] )
-   = {
-      ;
-
-      import L.{given}
-
-      L.controlled(
+   def summonInpfaForPv
+      [Pv]
+      (using impl : (
          //
-         L.value <-- src.toObservable.map(_.toString() )
-         ,
-         (
-            L.onInput
-            .mapToValue
-            // .map(v => {
-            //    org.scalajs.dom.console.log("inputed value raw: ", v )
-            //    v
-            // } )
-            .map(typ.parse.lift ).collect({ case Some(v) => v })
-            .map(v => {
-               if v.isInstanceOf[Boolean] then {
-                  org.scalajs.dom.console.log("inputed value parsed: ", v )
-               }
-               v
-            } )
-            -->
-            (src.toObserver.onNext _ )
-         ) ,
-      ) 
-   }
 
-   def lControlledRetypable
-      [Value]
-      (src : ([Value] =>> ((L.SignalSource[Value] & L.Var[Value ] ) & L.Sink[Value] ) )[(GivenSpinner1[Value] , Value ) ] )
-   = {
-      ;
+         SpawnabilityAndReconciliabilityNoArg[
+            Option[InpfaStatic[Pv] ]
+            ,
+            ?,
+            ?,
+         ]
+      ))
+   : impl.type
+   = impl
 
-      import L.{given}
-
-      L.controlled(
-         //
-         L.value <-- src.toObservable.map({ case (_, value) => value }).map(_.toString() )
-         ,
-         (
-            L.onInput
-            .mapToValue
-            .map(newValue => { val (typ, _) = src.signal.now() ; for (newValue1 <- typ.parse.lift.apply(newValue ) ) yield (typ, newValue1 ) } ).collect({ case Some(v) => v })
-            .map({ case v @ (typ, vV ) => {
-               if vV.isInstanceOf[Boolean] then {
-                  org.scalajs.dom.console.log("inputed value parsed: ", v )
-               }
-               v
-            } })
-            -->
-            (src.toObserver.onNext _ )
-         ) ,
-      ) 
-   }
-
+   /**
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;input>`s whose setting `value` will do what the name says
+    * (there are some who don't, eg when `type` is `button` or `submit`, or `checkbox`, or `file` )
+    * 
+    * 
+    */
    inline given given_SpawnabilityAndReconciliability_Inpfa
       [Value ]
       (using typ: GivenSpinner1[Value ] )
@@ -281,6 +227,10 @@ extends
    type InpfaStatic[+Value]
    = InpfaStaticInvar[? <: Value ]
 
+   /**
+    * `InpfaStatic`, with invariance in place of co-variance
+    * 
+    */
    case class InpfaStaticInvar
       [Value ]
       (
@@ -339,124 +289,59 @@ extends
       ;
    }
 
-   transparent inline
-   def nativeTypStrFor(edType: GivenSpinner1[?] )
-   : String
-   = {
-      ;
+   ;
 
-      edType
+   extension [Pv, Sp, ReconcOpR] (impl: SpawnabilityAndReconciliabilityNoArg[Option[InpfaStatic[Pv]], Sp, ReconcOpR ] ) {
+      //
 
-      match {
-         //
-         case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_DateTime.type =>
-            "date"
-         case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[?] =>
-            "number"
-         case _ =>
-            ""
-         //
+      // transparent inline
+      def composeForSpawn1
+         ()
+         (using reflect.Typeable[Pv] )
+      : SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[?] ], Sp, ReconcOpR ]
+      = {
+         ;
+
+         import laminar.api.L
+
+         ;
+
+         ;
+         impl
+         .compose((eOption : Option[BInputFunc[?] ] ) => (
+            //
+
+            // TODO
+
+            ({
+               for {
+                  e <- eOption
+                  case src : L.Var[t] <- Some(e.src )
+               }
+               yield {
+                  InpfaStaticInvar(
+                     //
+                     value = src.now() match { case e => e.asInstanceOf[Pv] } ,
+                     propagate1 = { case _ => } ,
+                  )
+               }
+            })
+
+         ) )
       }
-   }
-
-   ;
-
-   extension [Item] (dest: laminar.api.L.Observer[? >: AsyncStateChangeMonad[Item] ] ) {
-      //
-
-      def contraconst()
-      = dest.contramap((v: Item) => laminar.api.L.Val(v) )
 
       //
    }
 
    ;
-
-   ;
-
 
    ;
 }
 
-given ebAvfwInlineBtnCssInit
-: AnyRef
-with {
-   ;
 
-   org.scalajs.dom.console.log(s"[ebAvfwInlineBtnCssInit]")
 
-   avcframewrk.forms.addGlobalCss({
-      ;
 
-      enum Hoverffect {
-         case OnBorder()
-         case ToIncreaseUnderline()
-      }
 
-      val hoverEffect
-      = Hoverffect.OnBorder()
-
-      (
-         //
-
-         Seq()
-
-         :+ s"button, input { padding-block: 0.75ex ; } "
-
-         :+ s"button.avfw-inline, a.avfw-inline, input.avfw-inline { display: inline ; } "
-
-         :+ s"button.avfw-inline, a.avfw-inline, input.avfw-inline { padding-block: 0.7ex ; padding-block-end: 1.5ex ; margin-block: -0.4ex ; } "
-         :+ s"button.avfw-inline, input.avfw-inline { margin-block-end: -1ex ; } "
-
-         :+ s"button.avfw-inline { padding-inline: 1ex ; } "
-
-         :+ s"button.avfw-inline { background: transparent ; background: rgba(0, 0, 0, 0.02) ; } "
-
-         :+ s"button.avfw-inline { margin-inline: -1ex ; } "
-
-         // :+ s"button.avfw-inline { font-weight: bolder ; } "
-
-         :++ (hoverEffect match {
-
-            case Hoverffect.OnBorder() => 
-
-               (Seq()
-
-               :+ s"button { border: 0.1ex solid transparent ; } "
-
-               :+ { def sel(sc: String ) = s"#app${sc } button " ; s"${sel(":hover") }, ${sel(":focus-within") } { border-color: currentColor ; } " }
-
-               )
-
-            case _ =>
-               Seq()
-
-         } )
-
-         :+ s"button, a { text-decoration: underline ; } "
-
-         :++ (hoverEffect match {
-
-            case Hoverffect.ToIncreaseUnderline() => 
-
-               (Seq()
-
-         :+ { def sel(sc: String ) = s"#app${sc } button.avfw-inline " ; s"${sel(":hover") }, ${sel(":focus-within") } { text-decoration-style: double ; } " }
-
-               )
-
-            case _ =>
-               Seq()
-
-         } )
-
-         :+ s"button.avfw-offtopic { user-select: none !important ; } "
-
-      )
-      .mkString("\r\n\r\n")
-   })
-
-} // ebAvfwInlineBtnCssInit$
 
 
 
