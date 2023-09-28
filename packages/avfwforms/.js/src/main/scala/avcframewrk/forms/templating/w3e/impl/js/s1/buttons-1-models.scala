@@ -59,8 +59,13 @@ extends
 
    }
 
+   @deprecated("the return-type of the sole view-method 'unlifted' is plain 'Airstream.Signal', rather than 'AsyncStateChangeMonad' as the receiver does.")
+   implicit def OptionalCallbackAnimLaminarUnliftToAbcd (src : AsyncStateChangeMonad[Option[(EdsbEventInfo => Unit ) | java.net.URI ] ] )
+   : OptionalCallbackAnimLaminarUnliftToAbcd1
+   = OptionalCallbackAnimLaminarUnliftToAbcd1(src.toLaminarObservable )
+
    // extension
-   implicit class OptionalCallbackAnimLaminarUnliftToAbcd (src : AsyncStateChangeMonad[Option[(EdsbEventInfo => Unit ) | java.net.URI ] ] ) {
+   implicit class OptionalCallbackAnimLaminarUnliftToAbcd1 (src : laminar.api.L.Signal[Option[(EdsbEventInfo => Unit ) | java.net.URI ] ] ) {
       //
 
       ;
@@ -117,7 +122,7 @@ extends
             case None =>
                None
          })
-         .scanLeftAdapted0[([T] =>> T )[A | B | C ] ](e => e.getOrElse(A(None) ) )({
+         .scanLeft[([T] =>> T )[A | B | C ] ](e => e.getOrElse(A(None) ) )({
             case (_, Some(v)) =>
                v
             case (v0, None ) =>
