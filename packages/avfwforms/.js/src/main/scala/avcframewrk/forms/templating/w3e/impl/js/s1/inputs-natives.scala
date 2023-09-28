@@ -37,6 +37,7 @@ extends
    /* */
    with ENativeElementsD1
    with ELaminarQckInputElemsLcs
+   with ELaminarQckInputElemsReconcNativesModels
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with ELaminarQckButtonsReconcCtls
@@ -48,11 +49,13 @@ extends
       with ELaminarQckCoreHtml
       with ELaminarQckButtonsActionModelling
       with ELaminarQckButtonsActionModellingTwo
+      with ELaminarQckInputElemsReconcNativesModels
       with ELaminarQckButtonsReconcCtls
       with ENativeElementsD1
       with w3e.pre.Articles
       with ELaminarQckCore
       with ELaminarQckCoreHtml
+      with ELaminarQckInputElemsDataTypesPre
    ) =>
    ;
 
@@ -72,16 +75,57 @@ extends
     * a `SpawnabilityAndReconciliabilityNoArg` for
     * `&lt;input>`s whose setting `value` will do what the name says
     * (there are some who don't, eg when `type` is `button` or `submit`, or `checkbox`, or `file` )
+    * , where
+    * `Model#` is `Option[BInputFunc[Value] ]` (ie *to update/refresh requires having `[desc: BInputFunc[Value] <- _ ] desc.src` emitting a signal* )
     * 
     * 
     */
-   def summonInpfaForPv
+   def summonInpfaForPvB
+      [Value]
+      //
+      (using GspGoodDefaultValuation[Value ] )
+      (using GivenSpinner1[Value ] )
+   = given_SpawnabilityAndReconciliability_Inpfa_impl[Value]
+
+   /**
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;input>`s whose setting `value` will do what the name says
+    * (there are some who don't, eg when `type` is `button` or `submit`, or `checkbox`, or `file` )
+    * , where
+    * `Model#` is `Option[L.Signal[InpfaStaticInvar[Value] ] ]` (ie *to update/refresh requires having `[src: L.Signal[InpfaStaticInvar[Value] ] <- _ ] src` emitting a signal* )
+    * 
+    * 
+    */
+   def summonInpfaForPvF
+      [Value]
+      //
+      (using GspGoodDefaultValuation[Value ] )
+      (using GivenSpinner1[Value ] )
+   = given_SpawnabilityAndReconciliability_Inpfa_impl1[Value]
+
+   /**
+    * a `SpawnabilityAndReconciliabilityNoArg` for
+    * `&lt;input>`s whose setting `value` will do what the name says
+    * (there are some who don't, eg when `type` is `button` or `submit`, or `checkbox`, or `file` )
+    * , where
+    * `Model#` is `Option[InpfaStaticInvar[Value] ]` (ie *to update/refresh requires (re)assigning `model: Option[InpfaStaticInvar[Value] ]`* )
+    * 
+    * 
+    */
+   def summonInpfaForPvF1
+      [Value]
+      //
+      (using GspGoodDefaultValuation[Value ] )
+      (using GivenSpinner1[Value ] )
+   = given_SpawnabilityAndReconciliability_Inpfa_impl11[Value]
+
+   def summonInpfaForPvAlt
       [Pv]
       (using impl : (
          //
 
          SpawnabilityAndReconciliabilityNoArg[
-            Option[InpfaStatic[Pv] ]
+            Option[BInputFunc[Pv] ]
             ,
             ?,
             ?,
@@ -97,15 +141,40 @@ extends
     * 
     * 
     */
-   inline given given_SpawnabilityAndReconciliability_Inpfa
+   // private[s1]
+   def given_SpawnabilityAndReconciliability_Inpfa_impl
       [Value ]
+      (using GspGoodDefaultValuation[Value ] )
       (using typ: GivenSpinner1[Value ] )
    : (
       //
       SpawnabilityAndReconciliabilityNoArg[
-         Option[InpfaStatic[Value] ]
+         Option[BInputFunc[Value] ]
          ,
-         ln.ReactiveHtmlElement[dom.HTMLInputElement]
+         ln.ReactiveHtmlElement[dom.HTMLElement]
+         ,
+         Unit ,
+      ]
+   )
+   = {
+      ;
+
+      given_SpawnabilityAndReconciliability_Inpfa_impl1
+         [Value]
+      .unliftSwitchingInpfa()
+   }
+
+   // private[s1]
+   def given_SpawnabilityAndReconciliability_Inpfa_impl1
+      [Value ]
+      (using GspGoodDefaultValuation[Value ] )
+      (using typ: GivenSpinner1[Value ] )
+   : (
+      //
+      SpawnabilityAndReconciliabilityNoArg[
+         Option[InpfaRefreshInvar[Value] ]
+         ,
+         ln.ReactiveHtmlElement[dom.HTMLElement]
          ,
          Unit ,
       ]
@@ -115,223 +184,347 @@ extends
 
       ;
 
-      val initialVal
-      : Value
-      = {
-         typ
-         match {
-            case `given_GivenSpinner_DateTime` =>
-               ("2023-09-06" ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
-               // (0.25 ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
-               // (0.25, 0.5, 0.75, { org.scalajs.dom.console.log("did compare:", typ, given_GivenSpinner_DateTime ) } ).asInstanceOf[Value & w3e.pre.StdGsps.DateTime ]
-            case edType : w3e.pre.StdGsps.ofSnb.given_GivenSpinner_Number[enm] =>
-               edType.apply("0")
-            case `given_GivenSpinner_Boolean` =>
-               (false ).asInstanceOf[Value]
-            case `given_GivenSpinner_String` =>
-               ("" ).asInstanceOf[Value]
-            // case _ : DateTime =>
-            //    ("" ).asInstanceOf[Value]
+      %%%%((
+         () => {
+            ;
+            inpfaXesbs.forRefresh[Value]()
+            .wrappedLaminarElement
          }
-      }
+      ))
+   }
+
+   // private[s1]
+   def given_SpawnabilityAndReconciliability_Inpfa_impl11
+      [Value ]
+      (using GspGoodDefaultValuation[Value ] )
+      (using typ: GivenSpinner1[Value ] )
+   : (
+      //
+      SpawnabilityAndReconciliabilityNoArg[
+         Option[InpfaStaticInvar[Value] ]
+         ,
+         ln.ReactiveHtmlElement[dom.HTMLElement]
+         ,
+         Unit ,
+      ]
+   )
+   = {
       ;
 
       ;
 
-      type XModel
-         >: Option[InpfaStatic[Value] ]
-         <: Option[InpfaStatic[Value] ]
+      %%%%((
+         () => {
+            ;
+            inpfaXesbs.forStatic[Value]()
+            .wrappedLaminarElement
+         }
+      ))
+   }
+
+   private
+   object inpfaXesbs
+   {
+      ;
+
+      // val initialVal: Value
+      // = summon[GspGoodDefaultValuation[Value] ].value
+
+      ;
+
+      ;
+
+      ;
 
       import laminar.api.L
 
       ;
 
-      class XEAndStateBag1() extends
-      aBackreferencings.XEAndStateBag(ec = { L.input })
-      with aBackreferencings.XEAndStateBagCm[XModel, Unit]
-      {
+      ;
+
+      given ELaminarIndirectionImpl.cloneably.type
+      = ELaminarIndirectionImpl.cloneably
+
+      // TODO
+      given given_Owner
+      : com.raquo.airstream.ownership.Owner
+      = com.raquo.airstream.ownership.ManualOwner()
+
+      ;
+
+      ;
+
+      def forStatic
          //
+         [Value]
+         ()
+         (using GspGoodDefaultValuation[Value ] )
+         (using typ: GivenSpinner1[Value ] )
+      : (
+         aBackreferencings.XEAndStateBag[? <: dom.HTMLElement]
+         & aBackreferencings.XEAndStateBagCm[Option[InpfaStaticInvar[Value] ] , Unit]
+      )
+      = {
+         ;
 
-         import laminar.api.L
-
-         override
-         def close(): Unit
-         = {
-            closeAllOf[laminar.api.L.Observer[?] ]((
-               srcToSetterDispatchers
-
-            ))
-         }
-
-         wrappedLaminarElement
-         .amend(L.typ := nativeTypStrFor(typ) )
-
-         val valueControlled1
-         = {
-            ;
-
-            val s = L.Var[( GivenSpinner1[Value ] , Value ) ]((typ, initialVal ))
-
-            val c = lControlledRetypable(src = s )
-
-            wrappedLaminarElement
-            .amend(c )
-
-            s.writer
-         }
-
-         val srcToSetterDispatchers
-         = {
-            (
-               Seq()
-
-               :+(L.disabled.startAttribNow((_: XModel).fold(false)(_ => true ) , initialValue = None ).contraconst() )
-
-               :+(valueControlled1.contramap((c: Option[InpfaStatic[Value] ] ) => c match { case Some(c) => (typ, c.value) ; case None => (typ, initialVal) } ) )
-
-               // TODO
-
-            )
-         } : Seq[L.Observer[XModel ] ]
-
-         override
-         def model_=(newMdl: XModel): Unit
-         = {
-            for (o <- srcToSetterDispatchers )
-            do { o.onNext(newMdl ) }
-         }
-
-         // def
+         type XModel
+         >: Option[InpfaStaticInvar[Value] ]
+         <: Option[InpfaStaticInvar[Value] ]
 
          ;
 
+         class XEAndStateBag1() extends
+         aBackreferencings.XEAndStateBag(ec = { L.span })
+         with aBackreferencings.XEAndStateBagCm[XModel, Unit]
+         {
+            //
+
+            import laminar.api.L
+
+            override
+            def close(): Unit
+            = {
+               closeAllOf[laminar.api.L.Observer[?] ]((
+                  srcToSetterDispatchers
+
+               ))
+            }
+
+            val srcToSetterDispatchers
+            = {
+               (
+                  Seq()
+
+                  :+(L.disabled.startAttribNow((_: XModel).fold(false)(_ => true ) , initialValue = None ).contraconst() )
+
+                  :+({
+                     ;
+
+                     val s
+                     = L.Var[Option[InpfaStaticInvar[Value] ] ](None )
+
+                     val sS
+                     = {
+                        s.signal
+                        .scanLeftLiftCoalesceAnimative()
+                        .map(<:<.refl[Option[InpfaRefreshInvar[Value] ] ] )
+                     }
+
+                     wrappedLaminarElement
+                     .amend({
+                        L.child <-- {
+                           // summon[ELaminarIndirectionImpl.directly.AppliedS =:= ln.ReactiveElement[?] ]
+                           // summon[ln.ReactiveElement[?] <:< com.raquo.laminar.nodes.ChildNode[org.scalajs.dom.Node] ]
+                           // summon[ELaminarIndirectionImpl.directly.AppliedS <:< com.raquo.laminar.nodes.ChildNode[org.scalajs.dom.Node] ]
+                           sS
+                           .map({
+                              case Some(s) =>
+                                 s.scanSpawnNewLlE() match { case e => e }
+                              case None =>
+                                 L.span((
+                                    L.input(L.disabled := true , L.typ := nativeTypStrFor(summon[GivenSpinner1[Value ] ] ) )
+                                 ) )
+                           })
+                        }
+                     })
+
+                     s.writer
+                  })
+
+                  // :+ (valueControlled11 )
+
+                  // TODO
+
+               )
+            } : Seq[L.Observer[XModel ] ]
+
+            override
+            def model_=(newMdl: XModel): Unit
+            = {
+               for (o <- srcToSetterDispatchers )
+               do { o.onNext(newMdl ) }
+            }
+
+            // def
+
+            ;
+
+         }
+
+         new XEAndStateBag1
       }
+
+      def forRefresh
+         //
+         [Value]
+         ()
+         (using GspGoodDefaultValuation[Value ] )
+         (using typ: GivenSpinner1[Value ] )
+      : (
+         aBackreferencings.XEAndStateBag[? <: dom.HTMLElement]
+         & aBackreferencings.XEAndStateBagCm[Option[InpfaRefreshInvar[Value] ] , Unit]
+      )
+      = {
+         ;
+
+         ;
+
+         type XModel
+         >: Option[InpfaRefreshInvar[Value] ]
+         <: Option[InpfaRefreshInvar[Value] ]
+
+         ;
+
+         class XEAndStateBag1() extends
+         aBackreferencings.XEAndStateBag(ec = { L.span })
+         with aBackreferencings.XEAndStateBagCm[XModel, Unit]
+         {
+            //
+
+            import laminar.api.L
+
+            override
+            def close(): Unit
+            = {
+               s
+               .onError(new RuntimeException("regular closedown") )
+            }
+
+            val s
+            = {
+               ;
+
+               val vr
+               = {
+                  ;
+
+                  val p0
+                  = L.Var[Option[InpfaRefreshInvar[Value] ] ](None)
+
+                  (p0.writer, {
+                     ;
+
+                     p0.signal
+
+                     .flatMap({
+                        case Some(dAnim) =>
+                           for {
+                              dFrame <- dAnim 
+                           }
+                           yield Some(dFrame )
+                        case None =>
+                           L.Val(None )
+                     })
+                  })
+               }
+
+               val peer
+               = { forStatic[Value]() }
+
+               wrappedLaminarElement
+               .amend(peer.wrappedLaminarElement )
+
+               vr._2
+               .foreach(e => {
+                  peer
+                  .model_=(e )
+               })(using com.raquo.airstream.ownership.ManualOwner() ) // TODO which right Owner to use as
+
+               vr
+               ._1
+            }
+
+            override
+            def model_=(newMdl: XModel): Unit
+            = {
+               s
+               .onNext(newMdl )
+            }
+
+            // def
+
+            ;
+
+         }
+
+         new XEAndStateBag1
+      }
+
+      ;
+
+      ;
+   }
+
+   extension (pr: L.type )
+      // transparent inline
+      def inpfaReconclCountUpDebugSpan(ms: L.Modifier[ln.ReactiveHtmlElement[dom.HTMLElement ] ]* )
+      : ln.ReactiveHtmlElement[dom.HTMLElement ]
+      = {
+         ;
+
+         val L : pr.type
+         = pr
+         import L.{given}
+
+         L.span(L.display := "inline-block" , (
+            //
+
+            L.span(L.styleAttr := s"display: var(--avfw-inpfadebugspan-display, none ) ", (
+               //
+
+               L.span(L.styleAttr := s"display: flex ; flex-direction: column ; ", (
+                  //
+
+                  L.debugSpan((
+                     L.span(ms : _* )
+                  ))
+               ))
+            ))
+         ))
+      }
+
+   /* a conciciety */
+   @deprecated
+   private
+   def %%%%
+      [XModel]
+      (f1: () => ln.ReactiveHtmlElement[dom.HTMLElement] )
+   = {
+      ;
 
       ({
          import aBackreferencings.{given Conversion[?, ?] }
-
-         val f1
-         = () => new XEAndStateBag1().wrappedLaminarElement
 
          summon[Conversion[f1.type, SpawnabilityAndReconciliabilityNoArg[XModel, ? <: ln.ReactiveHtmlElement[dom.HTMLElement] , ? ] ] ]
          .apply(f1 )
       })
    }
 
-   /**
-    * 
-    * `input`s where setting the attrib-or-prop `value` will do what the name suggests
-    * (as it's not the case when `type` were `button` or `submit` or `checkbox` or `file` )
-    * 
-    */
-   type InpfaStatic[+Value]
-   = InpfaStaticInvar[? <: Value ]
+   ;
 
-   /**
-    * `InpfaStatic`, with invariance in place of co-variance
-    * 
-    */
-   case class InpfaStaticInvar
-      [Value ]
-      (
-         //
-         value: Value
-         ,
-         propagate1 : (evtInfo: dom.Event, newValue: String ) => Unit
-         ,
-      )
-   {
-      ;
-
-      ;
-   }
+   ;
 
    locally {
       ;
 
       //
-      locally({
-         ;
+      // summonInpfaForPv[Boolean]
+      // match { case s => s }
 
-         summon[(
-            //
+      // //
+      // summonInpfaForPv[Int]
+      // match { case s => s }
 
-            SpawnabilityAndReconciliabilityNoArg[
-               Option[InpfaStatic[Boolean] ]
-               ,
-               // ln.ReactiveHtmlElement[dom.HTMLInputElement]
-               // ,
-               // Unit ,
-               ?,
-               ?,
-            ]
-         )]
-      })
-      match { case s => s }
+      // given_SpawnabilityAndReconciliability_Inpfa_impl[Int]
 
-      //
-      locally({
-         ;
-
-         summon[(
-            //
-
-            SpawnabilityAndReconciliabilityNoArg[
-               Option[InpfaStatic[Int] ]
-               ,
-               ?,
-               ?,
-            ]
-         )]
-      })
-      match { case s => s }
+      summonInpfaForPvAlt(using (
+         given_SpawnabilityAndReconciliability_Inpfa_impl[Int]
+      ))
 
       ;
    }
 
    ;
-
-   extension [Pv, Sp, ReconcOpR] (impl: SpawnabilityAndReconciliabilityNoArg[Option[InpfaStatic[Pv]], Sp, ReconcOpR ] ) {
-      //
-
-      // transparent inline
-      def composeForSpawn1
-         ()
-         (using reflect.Typeable[Pv] )
-      : SpawnabilityAndReconciliabilityNoArg[Option[BInputFunc[?] ], Sp, ReconcOpR ]
-      = {
-         ;
-
-         import laminar.api.L
-
-         ;
-
-         ;
-         impl
-         .compose((eOption : Option[BInputFunc[?] ] ) => (
-            //
-
-            // TODO
-
-            ({
-               for {
-                  e <- eOption
-                  case src : L.Var[t] <- Some(e.src )
-               }
-               yield {
-                  InpfaStaticInvar(
-                     //
-                     value = src.now() match { case e => e.asInstanceOf[Pv] } ,
-                     propagate1 = { case _ => } ,
-                  )
-               }
-            })
-
-         ) )
-      }
-
-      //
-   }
 
    ;
 

@@ -42,6 +42,42 @@ val _ = {
    .nn
 }
 
+/** 
+ * the Signal will `throw` after an initial delay by `delay`.
+ * 
+ */
+def reconcNoconfDelaySig
+   [Initial]
+   (
+      //
+      delay: concurrent.duration.FiniteDuration
+      = {
+         import scala.concurrent.duration.{*, given }
+         5.seconds
+      }
+      ,
+   )
+   (initialVal: => Initial )
+= {
+   ;
+
+   import laminar.api.L
+
+   {
+      L.Val(() )
+      .flatMap(_ => {
+         ;
+
+         L.EventStream.delay(delay.toMillis.toInt )
+         .scanLeft(initialVal)({ case _ => {
+            throw
+               new AssertionError(s"no model configured yet")
+         } })
+      })
+   }
+
+}
+
 trait ELaminarQckCoreFailsafeReconcilers
 extends
    AnyRef
@@ -57,6 +93,8 @@ extends
    import com.raquo.laminar.{nodes as ln}
 
    import org.scalajs.dom
+
+   import laminar.api.L
 
    ;
 
@@ -103,14 +141,51 @@ extends
          this.lE
       }
 
-      // // TODO remove this
-      // private
-      // val cst
-      // = { new CstError(s"for ${this }") }
+      // TODO remove this
+      /** the stack trace where this constructor gets run */
+      private[s1]
+      val cst
+      = { new CstError(s"for ${this }") }
 
       // TODO remove this
       lEAlt
 
+   }
+
+   extension [
+      HL0 ,
+
+      ContentModel1,
+      UOpR ,
+      
+   ] (this1: XScanLeftReconciliativeOps[HL0, ContentModel1, UOpR ] ) {
+      //
+
+      /**
+       * derived instance with mapped `.wrappedNativeElem` aka `.lE`
+       * 
+       */
+      def mapHl
+         [HL2](f: HL0 => HL2)
+      : XScanLeftReconciliativeOps[HL2, ContentModel1, UOpR ]
+      = {
+         val convertedLE
+         = f(this1.lE )
+
+         import this1.{given_TypeTest_ContentModel1 }
+
+         ({
+            ;
+            object main1 extends
+               XScanLeftReconciliativeOps[convertedLE.type, ContentModel1, UOpR ](lE = convertedLE )
+            {
+               export this1.updateTo
+            }
+            main1
+         })
+      }
+
+      //
    }
 
    extension [HL] (this1: XScanLeftReconciliativeOps[HL, ?, ?] ) {
@@ -298,12 +373,25 @@ extends
 
       ;
 
+      // TODO
+      implicit
+      val subscrOwner
+      = com.raquo.airstream.ownership.ManualOwner()
+
       def reconcileOrRecreate(scMaybe : Option[SpawnedAsScReconciler], newMdl: ContentModelBase)
       : SpawnedAsScReconciler
       = {
          ;
 
          ;
+
+         ({
+            val p = (scMaybe, newMdl )
+            for { v <- Some(p ) }
+            yield {
+               v.getClass()
+            }
+         })
 
          /**
           * at the first turn `scMaybe` would be `None`, and
@@ -316,7 +404,11 @@ extends
             /** at the first turn `scMaybe` would be `None` */
             sc <- scMaybe
 
-            /** it's possible `sc.TypeTest` point(ed) to a `type` which `newMdl` doesn't conform to */
+            /** 
+             * it's possible `sc.TypeTest` point(ed) to a `type` which `newMdl` doesn't conform to ;
+             * if so then
+             * we need it to "start over" (ie re-spawn it)
+             */
             case sc.given_TypeTest_ContentModel1(newMdl) <- Some(newMdl)
          }
          yield {
@@ -347,6 +439,18 @@ extends
 
       def newContentModelLmVar()
       = {
+         ;
+
+         /** 
+          * can't use `EventStream` here ;
+          * the arrival of *observer*s might be later than the arrival of *item*s, and
+          * neither `(_ : L.EventBus[?] ).events` nor `(_ : L.Signal[?] ).changes` would repeat ;
+          * it's also "conceptually wrong"
+          * 
+          * 
+          * 
+          */
+
          ;
 
          L.Var[Option[(ContentModelBase) ] ](None)
@@ -394,22 +498,36 @@ extends
                .<--({
 
                   mdlOptionAnim
-                  .changes
-                  // .delay(5 * 1000) // TODO remove this LOC
-                  .collect({ case Some(v) => v })
-                  .scanLeft[Option[SpawnedAsScReconciler] ](None)({
-                     //
+                  .composeAll[Option[SpawnedAsScReconciler] ] (s => {
+                     s
 
-                     case (scMaybe, newMdl) =>
-                        ;
+                     .collect({ case Some(v) => v })
+                     .scanLeft[Option[SpawnedAsScReconciler] ](None)({
+                        //
 
-                        reconcileOrRecreate(scMaybe, newMdl )
-                        match { case r => Some(r) }
+                        case (scMaybe, newMdl) =>
+                           ;
 
-                     //
-                  })
+                           reconcileOrRecreate(scMaybe, newMdl )
+                           match { case r => Some(r) }
+
+                        //
+                     })
+                     .changes
+                  } , mdlOptionTr => {
+                     for {
+                        mdlOption <- mdlOptionTr
+                     }
+                     yield {
+                        for {
+                           mdl <- mdlOption
+                        }
+                        yield reconcileOrRecreate(None, mdl )
+                     }
+                  } )
                   .map(o => (o.map(_.wrappedLaminarElem) getOrElse L.span() ) )
                   .map(e => e )
+                  .observe
                   // TODO
                   .recoverToTry
                   .map(e => {
@@ -425,6 +543,13 @@ extends
                      })
                      .get
                   })
+                  .recover({
+                     case util.control.NonFatal(t) =>
+                        throw
+                           new LlrConHError(s"exception: ${t} ", t )
+                  })
+                  .observe
+                  .map(e => e )
                })
 
             ))
@@ -471,7 +596,7 @@ extends
    private
    object unmountOnFailureDone
    {
-      org.scalajs.dom.console.warn(new Exception(s"unmounted the component, due to an exception") )
+      org.scalajs.dom.console.warn(new LlrConHException(s"unmounted the component, due to an exception" , null ) )
    }
    
    ;
@@ -526,52 +651,52 @@ extends
 
    ;
 
-   def llrConvToArt
-      [
-         SpawnedAsScReconciler <: XScanLeftReconciliativeOps[? <: ln.ReactiveHtmlElement[?], ?, UOpR ]
-         ,
-         ContentModelBase
-         ,
-         ContainerNative <: org.scalajs.dom.HTMLElement ,
-         UOpR >: Unit <: Unit ,
-      ]
-      (container : com.raquo.laminar.tags.HtmlTag[ContainerNative] )
-      (spawnAsScReconciler: (mdl: ContentModelBase ) => SpawnedAsScReconciler)
-      (initialDataValue: ContentModelBase )
-   : Article
-   = {
-      ;
+   // def llrConvToArt
+   //    [
+   //       SpawnedAsScReconciler <: XScanLeftReconciliativeOps[? <: ln.ReactiveHtmlElement[?], ?, UOpR ]
+   //       ,
+   //       ContentModelBase
+   //       ,
+   //       ContainerNative <: org.scalajs.dom.HTMLElement ,
+   //       UOpR >: Unit <: Unit ,
+   //    ]
+   //    (container : com.raquo.laminar.tags.HtmlTag[ContainerNative] )
+   //    (spawnAsScReconciler: (mdl: ContentModelBase ) => SpawnedAsScReconciler)
+   //    (initialDataValue: ContentModelBase )
+   // : Article
+   // = {
+   //    ;
 
-      val art = llrConv(container)(spawnAsScReconciler)
+   //    val art = llrConv(container)(spawnAsScReconciler)
 
-      {
-         ;
+   //    {
+   //       ;
 
-         type artSc
-         = ({ type Main[T] = T match { case SpawnabilityAndReconciliabilityNoArg[?, sc, ?] => sc } })#Main[art.type ]
+   //       type artSc
+   //       = ({ type Main[T] = T match { case SpawnabilityAndReconciliabilityNoArg[?, sc, ?] => sc } })#Main[art.type ]
 
-         // (art, initialDataValue ) : Article
+   //       // (art, initialDataValue ) : Article
 
-         // summon[(
-         //    Conversion[
-         //       //
+   //       // summon[(
+   //       //    Conversion[
+   //       //       //
 
-         //       ? <: (
-         //          // SpiwmTwos[ContentModelBase, ?, ? ]
-         //          // &
-         //          // (SpawnabilityAndReconciliabilityNoArg[ContentModelBase, LElemPlusPossibleData[? <: ln.ReactiveHtmlElement[?] ], ? ], Any )
-         //          (SpawnabilityAndReconciliabilityNoArg[ContentModelBase, ?, ? ], Any )
-         //       ) ,
-         //       ?
-         //       <: LaminarSpawnable[ln.ReactiveHtmlElement[dom.HTMLElement], dom.HTMLElement]
-         //       ,
-         //    ]
-         // ) ]
-         // given_Conversion_SpiwmTwos_LaminarSpawnable[ln.ReactiveHtmlElement[dom.HTMLElement], dom.HTMLElement, ContentModelBase ]
-         given_Conversion_SpiwmTwos_LaminarSpawnable[artSc, dom.HTMLElement, ContentModelBase ]
-         .apply(((initialDataValue, art) : (initialDataValue.type, art.type) ).swap )
-      }
-   }
+   //       //       ? <: (
+   //       //          // SpiwmTwos[ContentModelBase, ?, ? ]
+   //       //          // &
+   //       //          // (SpawnabilityAndReconciliabilityNoArg[ContentModelBase, LElemPlusPossibleData[? <: ln.ReactiveHtmlElement[?] ], ? ], Any )
+   //       //          (SpawnabilityAndReconciliabilityNoArg[ContentModelBase, ?, ? ], Any )
+   //       //       ) ,
+   //       //       ?
+   //       //       <: LaminarSpawnable[ln.ReactiveHtmlElement[dom.HTMLElement], dom.HTMLElement]
+   //       //       ,
+   //       //    ]
+   //       // ) ]
+   //       // given_Conversion_SpiwmTwos_LaminarSpawnable[ln.ReactiveHtmlElement[dom.HTMLElement], dom.HTMLElement, ContentModelBase ]
+   //       given_Conversion_SpiwmTwos_LaminarSpawnable[artSc, dom.HTMLElement, ContentModelBase ]
+   //       .apply(((initialDataValue, art) : (initialDataValue.type, art.type) ).swap )
+   //    }
+   // }
 
    ;
 }

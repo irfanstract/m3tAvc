@@ -24,7 +24,25 @@ def runSMain(): Unit
       import org.scalajs.dom
       val eb = avcframewrk.forms.templating.w3e.impl.js.s1.ebAll
       import com.raquo.laminar.api.L
-      L.renderOnDomContentLoaded(dom.document.querySelector("#app") match { case e => e.innerHTML = "" ; e } , {
+      (if true then {
+         val prz = {
+            Iterator.fill(3)((z: Throwable) => {
+               org.scalajs.dom.console.error(z)
+            } )
+            .concat({ org.scalajs.dom.console.error(s"too many exceptions logged ; no more will be emitted") ; Iterator.continually((z: Throwable) => {} ) } )
+         }
+         import  com.raquo.airstream.core.AirstreamError
+         AirstreamError.unregisterUnhandledErrorCallback(AirstreamError.consoleErrorCallback )
+         AirstreamError.registerUnhandledErrorCallback(z => { prz.next().apply(z) } )
+      })
+      def renderOnDomContentLoadedAlt[I](e: => dom.Element, run1: => com.raquo.laminar.nodes.ReactiveElement.Base )
+      : Unit
+      = {
+         // scalajs.js.timers.setTimeout(3 * 1000 )(new com.raquo.laminar.nodes.RootNode(e , run1).mount() )
+         L.renderOnDomContentLoaded(e, run1 )
+      }
+      // renderOnDomContentLoaded
+      renderOnDomContentLoadedAlt(dom.document.querySelector("#app") match { case e => e.innerHTML = "" ; e } , {
          val a
          = {
             eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"hello from SJS" )
@@ -47,7 +65,7 @@ def runSMain(): Unit
             ({
                eb.PlainLocaleStringPlainTxtArticle(locale = Locale.ROOT.nn , txt = s"do no thing" )
                match { case label => {
-                  val action = eb.Action(baseTitle = "click here" )(PartialFunction.empty[Product, Unit] )
+                  val action = eb.Action(baseTitle = "click here" )(PartialFunction.fromFunction((e: Product ) => org.scalajs.dom.console.info(s"event: ", e ) ) )
                   eb.describeButtonByAction(action )
                } }
             })
@@ -64,6 +82,7 @@ def runSMain(): Unit
                      eb.VarEditingAction(baseTitle = label )(var1 )
                   }
                   eb.describeButtonByAction(action )
+                  match { case a => a ++ a }
                }
             })
             ++
@@ -109,9 +128,11 @@ def runSMain(): Unit
                      eb.VarEditingAction(baseTitle = label )(var1 )
                   }
                   eb.describeButtonByAction(action )
+                  match { case e => (e ++ e ) }
                }
             })
-         ).spawn()
+         )
+         match { case v => import eb.laminarInSpawneddLLImplicits.{given } ; v.spawn() }
       } )
    }
 }
