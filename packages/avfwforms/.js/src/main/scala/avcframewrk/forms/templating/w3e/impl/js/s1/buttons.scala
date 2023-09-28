@@ -86,7 +86,7 @@ extends
    /* a temporary treat necessary to prevent the compiler from hanging */
    with ELaminarQckButtonsReconc
    // with ELaminarQckCoreHtml
-   with ELaminarQckCoreHtmlArticleDecorsExt
+   // with ELaminarQckCoreHtmlArticleDecorsExt
 {
    this : (
       AnyRef
@@ -94,7 +94,7 @@ extends
       with ELaminarQckCoreHtml
       with ELaminarQckButtonsReconc
       with ELaminarQckPlainStringConts
-      with ELaminarQckCoreHtmlArticleDecorsExt
+      // with ELaminarQckCoreHtmlArticleDecorsExt
    ) =>
    ;
 
@@ -127,9 +127,61 @@ extends
       (using BfSnaConfig )
    : ButtonArt
    = {
-      (summon[SpawnabilityAndReconciliabilityNoArg[Action, ?, ?] ] , a )
-      match { case r => r : ([NativeE <: dom.HTMLElement ] =>> LaminarSpawnable[ln.ReactiveHtmlElement[NativeE], NativeE ] )[dom.HTMLElement] }
-      // ; ???
+      // TODO
+      locally[ButtonArt] ({
+         ;
+
+         ({ summon[BfSnaConfig] match { case s => ((), s.expectInlineHeadline) } })
+         match {
+            case ((), true )  => inlineDbbaFac.apply(a )
+            case ((), false ) => skippableDbbaFac.apply(a )
+         }
+      })
+   }
+
+   // TODO
+   private
+   final
+   lazy val skippableDbbaFac
+   = {
+      ;
+
+      allocateDbbaFac(config = BfSnaConfig(expectInlineHeadline = false ) )
+   }
+
+   // TODO
+   private
+   final
+   lazy val inlineDbbaFac
+   = {
+      ;
+
+      allocateDbbaFac(config = BfSnaConfig(expectInlineHeadline = true ) )
+   }
+
+   // TODO
+   private
+   def allocateDbbaFac(config: BfSnaConfig )
+   : ((model: Action ) => ButtonArt )
+   = {
+      ;
+
+      // TODO
+      given config.type
+      = config
+      given_SpawnabilityAndReconciliabilityNoArg_Action_ReactiveHtmlElement_Unit
+
+      val lspw
+      = {
+         summon[SpawnabilityAndReconciliabilityNoArg[Action, ?, ?] ]
+         .withAfterSpawnIntercept((e, _) => e.asInstanceOf[ln.ReactiveHtmlElement[? <: dom.HTMLElement] & SpawnedButtonL ] )
+      }
+
+      lazy val defaultNoOpAction
+      = URLAction(baseTitle = "")({ case _ => new java.net.URI("javascript", s"void(0)", null ) })
+
+      SRNA.allocateGScanLeft(defaultNoOpAction )(lspw )
+      match { case k => laminarSpawnableMdlFactory(k) }
    }
 
    override
@@ -167,6 +219,7 @@ extends
 
    extension (mainLineContents: Article) {
 
+      // TODO
       private
       def asHavingDirectActionImpl(action: Action)
       : Article
@@ -181,6 +234,8 @@ extends
          match { case a : ActionDescImpl[t1, t2] => a }
          match { case a : ActionDescImpl[t1, t2] => a.withGivenConstantTitle(mainLineContents ) }
          match { case a => describeButtonByActionGiven1(a) }
+
+         // mainLineContents
       }
 
    } // (mainLineContents: Article) asHavingDirectActionImpl(action: Action)
@@ -202,6 +257,7 @@ extends
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
    with ELaminarQckCoreHtml
    with w3e.pre.Articles
+   with ELaminarQckCoreFailsafeReconcilers
 {
    this : (
       AnyRef
@@ -210,6 +266,7 @@ extends
       with ELaminarQckButtonsActionModelling
       with ELaminarQckButtonsActionModellingTwo
       with ENativeElementsD1
+      with ELaminarQckCoreFailsafeReconcilers
    ) =>
    ;
 
@@ -229,7 +286,7 @@ extends
     * 
     */
    private
-   trait XScanLeftReconciliativeOps[ContentModel]
+   trait XScanLeftReconciliativeOps1[ContentModel]
    {
       ;
 
@@ -238,7 +295,7 @@ extends
 
       def tryUpdateTo
          (m : ContentModel )
-      : Either[XScanLeftReconciliativeOps[ContentModel] , Unit]
+      : Either[XScanLeftReconciliativeOps1[ContentModel] , Unit]
 
    }
 
@@ -274,7 +331,7 @@ extends
          //
 
          def renderLaminar()
-         : laminar.api.L.Signal[() => ln.ReactiveHtmlElement[dom.HTMLElement ] ]
+         : laminar.api.L.Signal[ln.ReactiveHtmlElement[dom.HTMLElement ] ]
          = {
             ;
 
@@ -284,15 +341,32 @@ extends
 
             import CallbackTypeL.{A, B, C }
 
+            import abcdCallbackRenderablility1.{*, given }
+
             // TODO
             (m.stateSpecificCallbackAnim1.unlifted combineWith m.stateTitleAnim.toLaminarObservable )
-            .map({
+
+            .map(<:<.refl[(A | B | C, Article ) ] )
+
+            match { case s => {
                ;
+               val reconciler
+               = {
+                  llrConv(L.span )((
+                     //
 
-               import abcdCallbackRenderablility1.renderFromScratch
+                     (identity[(A | B | C , Article ) ] _ )
+                     .andThen({
+                        case (l, title) =>
+                           spawnAndGetOptReconciler(urlOption = l , title = title ) 
+                     })
+                  ))
+               }
 
-               { case (urlOption, title) => () => renderFromScratch(urlOption = urlOption, title = title ) }
-            })
+               spawnLlrScanConv(s match { case s => s } )(using reconciler )
+            } }
+
+            match { case s => s }
          }
 
       }
@@ -337,17 +411,11 @@ extends
          = {
             ;
             L.child
-            .startChildrenListUpdateNow((
-               //
+            .startChildrenListUpdateNow(((_: Any, item: ln.ReactiveHtmlElement[dom.HTMLElement] ) => {
+               ;
 
-               identity[(
-                  ([C] =>> ((Option[C], ( ) => C ) => C ) )
-                  [ln.ReactiveHtmlElement[dom.HTMLElement] ]
-               )]((existingLElemOption, updatedArt ) => {
-                  updatedArt
-                  .apply( )
-               })
-            ) , initialDataValue = ( ) => L.span() )
+               item
+            }) , initialDataValue = L.span() )
          } // cRendPipe1$
 
          def model_=(m: ButtonContentModel )
