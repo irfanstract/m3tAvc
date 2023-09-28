@@ -90,8 +90,8 @@ extends
     */
    protected
    type LaminarSpawnable[
-      +HL <: ln.ReactiveElement[HD & dom.Element],
-      +HD <: dom.Node ,
+      +SpawnedLaminar <: ln.ReactiveElement[SpawnedDOMNode & dom.Element],
+      +SpawnedDOMNode <: dom.Node ,
    ]
 
 }
