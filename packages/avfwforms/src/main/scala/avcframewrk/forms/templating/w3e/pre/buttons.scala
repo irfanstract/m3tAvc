@@ -198,8 +198,10 @@ with StdGsps
       ,
    )
 
+   @deprecated
    protected[avcframewrk]
-   given Conversion[(
+   given VarEditingActionConstructorFromAVar
+   : Conversion[(
       //
 
       [Value] =>
