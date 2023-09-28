@@ -65,16 +65,6 @@ extends
    ;
 
    val VarEditingAction
-   : (
-      AnyRef
-      & (
-         [Value] =>
-         (baseTitle: String | Article ) =>
-         (operand: ({ val L : laminar.api.L.type ; type LSS = L.SignalSource[Value] & L.Sink[Value] })#LSS ) =>
-         (GivenSpinner[Value] ) ?=>
-            Action
-      )
-   )
    = {
       ;
 
