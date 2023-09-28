@@ -100,39 +100,6 @@ extends
                (
                            //
 
-                           //
-                           // ({
-                           //    ;
-
-                           //    Pffr2RffrGivenUnpckBy[[_] =>> ((Any) & (A | B | C) , FlowThroughMode , Article ) ] (
-                           //       //
-                           //       [E] =>
-                           //       (e: E) =>
-                           //          summon[reflect.Typeable[((Any) & (A | B | C) , FlowThroughMode , Article ) ] ].unapply(e ).get
-                           //       , 
-                           //       defaultNoOpActional
-                           //       ,
-                           //    )
-                           // })
-                           // match { case tc => {
-                           //    ;
-
-                           //    tc
-                           //    .contramap[[_] =>> (
-                           //       //
-                           //       L.Signal[tc.XPackedly[Any] ]
-                           //    ), L.Signal[Any] ] ((e: L.Signal[Any] ) => {
-                           //       e
-                           //       match {
-                           //          case s : L.Signal[eT] =>
-                           //             s
-                           //             .map(_.asInstanceOf[tc.XPackedly[Any] ] )
-                           //          case s =>
-                           //             throw
-                           //                new Error(new MatchError(s).toString() )
-                           //       }
-                           //    } )
-                           // } }
                            Pffr2RffrGivenUnpckByOption1
                               [[E] =>> E , ((Any) & (A | B | C) , FlowThroughMode , Article ) ]
                               (e => e , (defaultNoOpActional ) )
@@ -156,12 +123,6 @@ extends
             } )
          } )
 
-         // // TODO remove this debug-only LOC
-         // .compose(([E] => () => (e: E) => {
-         //    // org.scalajs.dom.console.log(e.toString() )
-         //    e 
-         // } ).apply() )
-
          .compose(([E] => () => (e: E) => Some(e) ).apply() )
 
          .compose(<:<.refl)
@@ -170,23 +131,87 @@ extends
       match { case f00 => {
          ;
 
-         val defaultS
-         = {
-            val dna = defaultNoOpActional
-            reconcNoconfDelaySig
-               ({ import scala.concurrent.duration.{*, given} ; 5.second })
-               (dna )
-         }
+         f00
+         .allocateReconcKeyAndGetHomomorphicInstance1(defaultNoOpActional )
+      } }
+   }
 
+   private
+   def reconcNoconfDelaySig1
+      [Mdl]
+      (defaultMdl: Mdl )
+   = {
+      ;
+
+      reconcNoconfDelaySig
+         ({ import scala.concurrent.duration.{*, given} ; 5.second })
+         (defaultMdl )
+   }
+
+   extension [
+      Mdl,
+      Spw <: ln.ReactiveHtmlElement[? <: dom.HTMLElement] ,
+      U ,
+   ] (f01: SRNA[Mdl, Spw, U ] ) {
+      //
+
+      /** 
+       * directly a (tagged) `ln.ReactiveElement` without wrapper
+       * 
+       */
+      def toUnwrappedLaminarSpawner
+         (defaultS: Mdl )
+      // : SpawnabilityAndReconciliabilityNoArg[Mdl, Spw, U ]
+      = {
          ;
-         val f01 = SRNA.allocateGScanLeft(defaultS )(f00 )
+
          val f02 = laminarSpawnableMdlFactory(f01 )
-         val f03 = {
-            lnByModelElemReconciler1(f02.compose(([E] => (fb: DummyImplicit ?=> E ) => (e : Option[E] ) => e.getOrElse(fb) ).apply(defaultS ) ) )(using <:<.refl )
+         val f03
+         = {
+            lnByModelElemReconciler1
+               ({
+                  f02
+                  .compose({
+                     ([E] => (fb: DummyImplicit ?=> E ) => (e : Option[E] ) => e.getOrElse(fb) )
+                     .apply(defaultS )
+                  } )
+               } )
+               (using <:<.refl )
             .compose(([E] => () => Some.apply[E] _ ).apply() )
          }
          f03
-      } }
+      }
+
+      //
+   }
+
+   extension [
+      Mdl,
+      Spw <: ln.ReactiveHtmlElement[? <: dom.HTMLElement] ,
+      U ,
+   ] (f00: SpawnabilityAndReconciliabilityNoArg[L.Signal[Mdl], Spw, U ] ) {
+      //
+
+      @deprecated
+      def allocateReconcKeyAndGetHomomorphicInstance1
+         (defaultMdl: Mdl )
+      = {
+         ;
+
+         val defaultS
+         = {
+            reconcNoconfDelaySig1
+               (defaultMdl )
+         }
+
+         ;
+         val f01
+         = f00.allocateReconcKey(defaultMdl = defaultS )
+
+         f01.toUnwrappedLaminarSpawner(defaultS = defaultS )
+      }
+
+      //
    }
 
    private[s1]
