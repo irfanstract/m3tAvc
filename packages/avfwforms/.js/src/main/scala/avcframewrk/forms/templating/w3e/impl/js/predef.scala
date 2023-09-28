@@ -54,9 +54,33 @@ extension (console: org.scalajs.dom.Console ) {
          locally[java.io.Closeable](() => {
             console.groupEnd()
          } )
-      })(_ => console.info(z) )
+      })(_ => {
+         console.info({
+            z
+            /* on DevTools stack-trace printing-out broke unless the class-name ended with `Error` */
+            match {
+               case z : scalajs.js.JavaScriptException =>
+                  z.exception
+                  match { case z => (z.asJsDynamic.stack) : Any }
+                  match { case z => {
+                     z.toString()
+                     // .replaceFirst("Exception\\b", "Error")
+                     .prependedAll("Error: ")
+                  } }
+               case z =>
+                  z
+            }
+         })
+      } )
    }
 } // infoExceptionCollapsed$
+
+/* again, on DevTools stack-trace printing-out broke unless the class-name ended with `Error` */
+type IecJavascriptException
+= IecJavascriptError
+private class IecJavascriptError(z: scalajs.js.JavaScriptException )
+extends
+Exception
 
 object ParentChildRelationship {
 
@@ -206,6 +230,62 @@ def nativeTypStrFor(edType: w3e.pre.StdGsps.ofSnb.GivenSpinner1[?] )
 
    match { case v => org.scalajs.dom.AvfwHTMLButtonType(v) }
 } // nativeTypStrFor
+
+val _ = if false then {
+   ;
+
+   import org.scalajs.dom.console
+
+   ;
+   def inEgc[R] (msg: => String) (impl: => R )
+   = {
+      ;
+
+      util.Using.resource({
+         console.groupCollapsed(msg )
+         locally[java.io.Closeable](() => console.groupEnd() )
+      })(_ => {
+         impl
+      })
+   }
+
+   ;
+   templating.rendering.reconciliabilityCWgc.impl_=([E] => (c: Product, impl: DummyImplicit ?=> E ) => {
+      inEgc(s"reconciling ${c} ")({
+         inEgc("(...)")(impl )
+         match { case r =>
+            console.log("done")
+            r
+         }
+      })
+   } )
+}
+
+/* 
+ * 
+ * use as cond breakpoint in the JS console
+ * 
+ * 
+ * ```
+ * (() => { try { $m_Lcom_raquo_airstream_core_Transaction$pendingTransactions$().done__Lcom_raquo_airstream_core_Transaction__V(transaction) ; } catch (z) { if (z.message.match(/Maximum call/g) ) { console.error(z) ; return true ; } } return false ; })()
+ * ```
+ * 
+ * ```
+ * (() => {
+ *    try {
+ *       $m_Lcom_raquo_airstream_core_Transaction$pendingTransactions$().done__Lcom_raquo_airstream_core_Transaction__V(transaction) ;
+ *       return false ;
+ *    }
+ *    catch (z) {
+ *       if (z.message.match(/Maximum call/g) )
+ *       { console.error(z) ; return true ; }
+ *    }
+ *    return false ; 
+ * })
+ * ()
+ * ```
+ * 
+ */
 
 
 
