@@ -36,6 +36,7 @@ extends
    /* */
    with ENativeElementsD1
    with ELaminarQckButtonsReconcNatives
+   with ELaminarQckInputElemsReconcNativesExt
    /* due to the self-types */
    with ELaminarQckInputElemsDataTypesPre
    /* a temporary repetition here (of below) necessary to prevent the compiler from hanging */
@@ -82,13 +83,6 @@ extends
 
    ;
 
-   def summonInpfaForPv
-      [Value]
-      //
-      (using GspGoodDefaultValuation[Value ] )
-      (using GivenSpinner1[Value ] )
-   = summonInpfaForPvB[Value]
-
    object abcdCallbackRenderablility1
    {
       ;
@@ -101,22 +95,31 @@ extends
 
       ;
 
+      def ftm
+         (using BfSnaConfig)
+      : FlowThroughMode
+      = {
+         if summon[BfSnaConfig].expectInlineHeadline
+         then FlowThroughMode.forThroughness
+         else FlowThroughMode.forSkip
+      }
+
       case class SkpmTitlePair(skpm: FlowThroughMode, title: Article )
 
       given Conversion[BfSnaConfig, FlowThroughMode]
       = { c => (((), c.expectInlineHeadline ) match { case ((), true ) => FlowThroughMode.forThroughness ; case ((), false ) => FlowThroughMode.forSkip } ) }
 
-      case class SkpmTitlePairInputSpwOps(config: SkpmTitlePair ) {
-         //
-
-         import config.title
+      object skpmCoreR {
+         ;
 
          ;
-         
-         def renderIntrinsic[Pv] (edTypeOption: Option[BInputFunc[Pv] ] )
+
+         def renderInpfa[Pv] (edTypeOption: Option[BInputFunc[Pv] ] )
          : XScanLeftReconciliativeOps[ln.ReactiveHtmlElement[dom.HTMLElement ], ? <: Option[BInputFunc[?] ], Unit ]
          = {
             ;
+
+            import ffRcKeying1.{*, given}
 
             import L.{given }
 
@@ -199,6 +202,33 @@ extends
             }
          }
 
+         ;
+      }
+
+      //
+      case class SkpmTitlePairInputSpwOps(config: SkpmTitlePair ) {
+         //
+
+         import config.title
+
+         ;
+         
+         def renderIntrinsic[Pv] (edTypeOption: Option[BInputFunc[Pv] ] )
+         : XScanLeftReconciliativeOps[ln.ReactiveHtmlElement[dom.HTMLElement ], ? <: Option[BInputFunc[?] ], Unit ]
+         = {
+            ;
+
+            skpmCoreR.renderInpfa(edTypeOption = edTypeOption )
+         }
+
+         def spawnDisabledInputElem()
+         : XScanLeftReconciliativeOps[ln.ReactiveHtmlElement[dom.HTMLElement ], ? <: Option[BInputFunc[?] ], Unit ]
+         = {
+            ;
+
+            skpmCoreR.spawnDisabledInputElem()
+         }
+
          def renderHeadline(edTypeOption: Option[BInputFunc[?] ] )
          : ln.ReactiveHtmlElement[dom.HTMLElement ]
          = {
@@ -231,6 +261,27 @@ extends
       def spawnAndGetOptReconciler
          (urlOption : A | B | C, title: Article )
          (using BfSnaConfig )
+      = {
+         ;
+         spawnAndGetOptReconciler1(
+            //
+            urlOption = urlOption ,
+            ftm = ftm ,
+            title = title ,
+         )
+      }
+
+      final
+      lazy val spawnabilityOfAbc
+      : SpawnabilityAndReconciliabilityNoArg[(A | B | C, FlowThroughMode, Article), ? <: ln.ReactiveHtmlElement[dom.HTMLElement], Unit]
+      = {
+         ;
+
+         llrConv(L.span )((spawnAndGetOptReconciler1 _ ).tupled )
+      }
+
+      def spawnAndGetOptReconciler1
+         (urlOption : A | B | C, ftm: FlowThroughMode , title: Article )
       : (
          //
 
@@ -255,60 +306,24 @@ extends
          urlOption
          match {
             case md @ C(_ ) =>
-            ;
+               ;
 
-            // edTypeOption
-
-            // import spawnabilityOfInputDataActionsImpl.{*, given }
-
-            val anSkpmTitlePairInputSpwOps
-            = SkpmTitlePair(skpm = summon[BfSnaConfig], title = title ) match { case p => SkpmTitlePairInputSpwOps(p) }
-
-            import anSkpmTitlePairInputSpwOps.{*, given}
-
-            llrConv(L.span )((mdl: Option[BInputFunc[?] ] ) => {
-               mdl
-               /** needs to extract type `t`, as a work-around to avoid the spurious type-mismatch */
-               match { case (e : Option[BInputFunc[t]] ) => renderIntrinsic[t](e) }
-               match { case e => e }
-            } )
-            .compose((md: C) => md.edTypeOption )
-            .spawnAsXsr(md )
-
-            // TODO remove this test LOC
-            match { case e => {
-               e.wrappedLaminarElem
-               .ref
-               .parentNode
-               e
-            } }
+               spawnInpfaAndGetOptReconciler(title = title, urlOption = md )
 
             //
             case md @ B(_) =>
                ;
 
-               given_SpawnabilityAndReconciliability_Btna[BtnaStaticWithoutHeadline]
+               spawnabilityOfB
                .compose({
-                  ({
-                     ;
-                     (summon[BfSnaConfig] match { case config => ((), config.expectInlineHeadline ) } )
-                     match {
-                        case ((), true) => BtnaStaticInline
-                        case ((), false) => BtnaStaticAside
-                     }
-                  })
-                  match { case f => { f } }
-                  match { case f => { f } }
-                  match { case f => { f.tupled } }
+                  (desc: (Article, B ) ) =>
+                     ftm *: desc
                } )
                .compose((
                   //
 
                   (m : B ) =>
-                     (title, {
-                        for { callback <- m.callbackOption }
-                        yield BtnaStaticWithoutHeadline(onClick = callback.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
-                     } )
+                     (title, m )
 
                ) )
                .spawnAsXsr(md )
@@ -316,16 +331,16 @@ extends
             case md @ A(_) =>
                ;
 
-               given_SpawnabilityAndReconciliability_Laspa[LaspaStaticWithoutHeadline]
-               .compose(laspaStaticAFromAcTuple2.apply _ )
+               spawnabilityOfA
+               .compose({
+                  (desc: (Article, A ) ) =>
+                     ftm *: desc
+               } )
                .compose((
                   //
 
                   (m : A ) =>
-                     (title, {
-                        for { href <- m.hrefOption }
-                        yield LaspaStaticWithoutHeadline(href = Some(href) )
-                     } )
+                     (title, m )
 
                ) )
                .spawnAsXsr(md )
@@ -334,6 +349,140 @@ extends
          match { case e => {
             e
          } }
+      }
+
+      def spawnInpfaAndGetOptReconciler
+         (urlOption : C, title: Article )
+         // (using BfSnaConfig )
+      : (
+         //
+
+         XScanLeftReconciliativeOps[
+            //
+            ? <: ln.ReactiveHtmlElement[dom.HTMLElement]
+            ,
+            ? <: C
+            ,
+            Unit
+            ,
+         ]
+      )
+      = {
+         ;
+
+         val md : urlOption.type
+         = valueOf
+
+         ;
+
+         // edTypeOption
+
+         // import spawnabilityOfInputDataActionsImpl.{*, given }
+
+         import skpmCoreR.{*, given}
+
+         spawnabilityOfC
+         .spawnAsXsr(md )
+
+         // TODO remove this test LOC
+         match { case e => {
+            e.wrappedLaminarElem
+            .ref
+            .parentNode
+            e
+         } }
+      }
+
+      final
+      lazy val spawnabilityOfA
+      = {
+         ;
+
+         spawnabilityOfLaspa1
+         .compose(LaspaStaticByHeadline.tupled )
+         // TODO
+         .compose((desc: (FlowThroughMode, Article, A ) ) => {
+            ;
+
+            import desc._3.hrefOption
+
+            desc
+            .copy(_3 = {
+               ;
+               for { href <- hrefOption }
+               yield LaspaStaticWithoutHeadline(href = Some(href) )
+            })
+         } )
+      }
+
+      final
+      lazy val spawnabilityOfB
+         //
+      = {
+         ;
+
+         spawnabilityOfBtna
+         .compose(BtnaStaticByHeadline.tupled )
+         .compose((desc: (FlowThroughMode, Article, B ) ) => {
+            ;
+
+            import desc._3.callbackOption
+            
+            desc
+            .copy(_3 = {
+               for { callback <- callbackOption }
+               yield BtnaStaticWithoutHeadline(onClick = callback.compose((_: org.scalajs.dom.Event ).asInstanceOf[EdsbEventInfo ] ) )
+            })
+         } )
+      }
+
+      final
+      lazy val spawnabilityOfC
+      = {
+         ;
+         spawnabilityOfInpfa
+      }
+
+      final
+      lazy val spawnabilityOfLaspa1
+      = {
+         ;
+         spawnabilityOfLaspa
+      }
+
+      final
+      lazy val spawnabilityOfLaspa
+      : SpawnabilityAndReconciliabilityNoArg[LaspaStaticA, ? <: ln.ReactiveHtmlElement[dom.HTMLElement], Unit]
+      = {
+         ;
+         given_SpawnabilityAndReconciliability_Laspa[LaspaStaticWithoutHeadline]
+      }
+
+      final
+      lazy val spawnabilityOfBtna
+      : SpawnabilityAndReconciliabilityNoArg[BtnaStaticA, ? <: ln.ReactiveHtmlElement[dom.HTMLElement], Unit]
+      = {
+         ;
+         given_SpawnabilityAndReconciliability_Btna[BtnaStaticWithoutHeadline]
+      }
+
+      final
+      lazy val spawnabilityOfInpfa
+      : SpawnabilityAndReconciliabilityNoArg[C, ? <: ln.ReactiveHtmlElement[dom.HTMLElement], Unit]
+      = {
+         ;
+
+         ;
+
+         import skpmCoreR.{*, given}
+
+         llrConv(L.span )((mdl: Option[BInputFunc[?] ] ) => {
+            mdl
+            /** needs to extract type `t`, as a work-around to avoid the spurious type-mismatch */
+            match { case (e : Option[BInputFunc[t]] ) => renderInpfa[t](e) }
+            match { case e => e }
+         } )
+         .compose((md: C) => md.edTypeOption )
       }
 
       ;
