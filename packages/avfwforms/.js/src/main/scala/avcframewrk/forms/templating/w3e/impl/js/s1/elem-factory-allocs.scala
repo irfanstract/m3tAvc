@@ -126,6 +126,56 @@ extends
 
    ;
 
+   extension [
+      Mdl,
+      Spw <: ln.ReactiveHtmlElement[? <: dom.HTMLElement] ,
+      U ,
+   ] (f00: SpawnabilityAndReconciliabilityNoArg[Mdl, Spw, U ] ) {
+      //
+
+      def allocateReconcKey
+         (defaultMdl: Mdl )
+      : SRNA[Mdl, Spw, U ]
+      = {
+         ;
+
+         val f01
+         = f00.allocateReconcKeyAlt(defaultMdl )(identity(_) )
+
+         f01
+      }
+
+      //
+   }
+
+   extension [ 
+      Mdl,
+      Spw0 ,
+      U ,
+   ] (f00: SpawnabilityAndReconciliabilityNoArg[Mdl, Spw0, U ] ) {
+      //
+
+      def allocateReconcKeyAlt
+         [
+            //
+            Spw1 <: ln.ReactiveHtmlElement[? <: dom.HTMLElement]
+            ,
+         ]
+         (defaultMdl: Mdl )
+         (gex: Spw0 => Spw1 )
+      : SRNA[Mdl, Spw1, U ]
+      = {
+         ;
+
+         val f01
+         = SRNA.allocateGScanLeftAlt((defaultMdl ) )(f00 )(gex )
+
+         f01
+      }
+
+      //
+   }
+
    /** 
     * warning - this's add a reg into the registry (with)in the NS `LReconciliativeKey`, leading to "memory leak"!
     * 
