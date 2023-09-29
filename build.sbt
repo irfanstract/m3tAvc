@@ -56,7 +56,7 @@ lazy val avcEvLibProject
   .asLeafProjectWithNecessarySettings()
   .dependsOn(avFwAlgebLibProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
-  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % "3.4.1" ) // https://www.scala-js.org/doc/project/linking-errors.html .
+  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % Build.externalLibraryVersions.comMonixLibraryVer ) // https://www.scala-js.org/doc/project/linking-errors.html .
 
 // lazy val amf
 // =
@@ -74,8 +74,8 @@ lazy val avcFormsProject
   .dependsOn(avcEvLibProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
-  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % "3.4.1" ) // https://www.scala-js.org/doc/project/linking-errors.html .
-  .settings(libraryDependencies += "com.raquo" %%% "airstream" % "16.0.0" )
+  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % Build.externalLibraryVersions.comMonixLibraryVer ) // https://www.scala-js.org/doc/project/linking-errors.html .
+  .settings(libraryDependencies += "com.raquo" %%% "airstream" % Build.externalLibraryVersions.comRaquoAirstreamLibVer )
   .withDevLaminar()
 
 lazy val mainSjs
@@ -89,7 +89,7 @@ lazy val mainSjs
   .dependsOn(avcFormsProject )
   .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
   .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
-  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % "3.4.1" ) // https://www.scala-js.org/doc/project/linking-errors.html .
+  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % Build.externalLibraryVersions.comMonixLibraryVer ) // https://www.scala-js.org/doc/project/linking-errors.html .
   .jsSettings(libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.2.0" ) // https://www.scala-js.org/doc/project/linking-errors.html .
   .withDevLaminar()
 
