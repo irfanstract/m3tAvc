@@ -21,48 +21,93 @@ package ext.givmk
 
 
 
-opaque type ButtonModelAllocator
-<: ButtonModelAllocatorImpl
-= ButtonModelAllocatorImpl
-
-protected
-trait ButtonModelAllocatorImpl
-extends
-AnyRef
-   with TypeBoxLikeAllocatorImpl[Nothing, Any]
+/**
+ * 
+ * some fw(s), like Swing,
+ * makes distinction between "button component" and "button model" -
+ * a "button model" are essentially "callback-function"s, and
+ * a single "button model" can be assigned to multiple "button component" at once (but the converse is untrue!!!), and
+ * the properties of the receiving "button component" will animate in sync with changes to the assigned "button model" .
+ * chances are
+ * recent fw(s) are doing the same thing
+ * 
+ */
+object ButtonModel
 {
    ;
+
    ;
+
+   protected
+   val ssco
+   = ImplDefinedDataType._Def.BasicStaticScopedOps()
+
+   export ssco.{*, given }
+
    ;
 }
 
-def callbackButtonModel
-   (using btnModelAlloc : ButtonModelAllocator )
-   (using cbConv : CallbackButtonConv[btnModelAlloc.CAP] )
-   (f: cbConv.FMin )
-= cbConv.apply(f)
-
-opaque type CallbackButtonConv[+R]
-<: CallbackButtonConvImpl[R, AnyRef, Unit | Boolean ]
-=  CallbackButtonConvImpl[R, AnyRef, Unit | Boolean ]
-
-protected
-trait CallbackButtonConvImpl[+ArtR, +FArg0, -FReturn0]
+/**
+ * 
+ * some fw(s), like Swing,
+ * makes distinction between "button component" and "button model" -
+ * a "button model" are essentially "callback-function"s, and
+ * a single "button model" can be assigned to multiple "button component" at once (but the converse is untrue!!!), and
+ * the properties of the receiving "button component" will animate in sync with changes to the assigned "button model" .
+ * chances are
+ * recent fw(s) are doing the same thing
+ * 
+ */
+object CallbackButtonModel
 {
    ;
 
-   type FMin
-   >: (PartialFunction[FArg0 , FReturn0] ) @annotation.unchecked.uncheckedVariance
-   <: (PartialFunction[FArg0 , FReturn0] ) @annotation.unchecked.uncheckedVariance
+   ;
 
+   /**
+    * summon a `CallbackButtonModel` with given constraints
+    * 
+    */
+   transparent inline
    def apply
-      [F <: FMin ]
-      (f: F )
-   : ArtRFromF[f.type ]
+      //
+      (using artism : Article._Allocator )
+      (label: => artism.CAP )
+      (using eventism : Event._Allocator )
+      (using fromXDescToArtConv : FromCbConv.ForLabelAndCbArg[artism.CAP, eventism.CAP ] )
+      // [F <: fromXDescToArtConv.FMin ] /* wait until `language.clauseInterweaving` no longer `@experimental` */
+      (f: fromXDescToArtConv.FMin )
+   : artism.CAP
+   = {
+      fromXDescToArtConv(label = label )(f)
+   }
+ 
+   /**
+    * implements
+    * the conversion from `(R, Function1)` to some `ButtonModelAllocator`'s `.CAP`
+    * 
+    */
+   object FromCbConv
+   {
+      ;
 
-   type ArtRFromF
-      [+F <: FMin]
-   <: ArtR
+      ;
+
+      /**
+       * for the given `Label` and `CallBackFncArg`
+       * 
+       */
+      opaque
+      type ForLabelAndCbArg[Lbl, +CbArg]
+      <: PccGeneralisedFactoryImpl[? >: Lbl <: Lbl , PartialFunction[? >: CbArg, Unit | Boolean ] ]
+      =  PccGeneralisedFactoryImpl[? >: Lbl <: Lbl , PartialFunction[? >: CbArg, Unit | Boolean ] ]
+
+      ;
+   }
+
+   ;
+
+   ;
 
    ;
 }
