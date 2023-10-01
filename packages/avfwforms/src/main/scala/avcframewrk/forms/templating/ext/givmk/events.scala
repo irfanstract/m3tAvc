@@ -21,7 +21,7 @@ package ext.givmk
 
 
 
-object Article {
+object Event {
    ;
 
    ;
@@ -30,7 +30,9 @@ object Article {
    val ssco
    = ImplDefinedDataType._Def.BasicStaticScopedOps()
 
-   export ssco.{*, given }
+   export ssco.{given }
+
+   export ssco.{_Allocator as _Allocator }
 
    ;
 }
