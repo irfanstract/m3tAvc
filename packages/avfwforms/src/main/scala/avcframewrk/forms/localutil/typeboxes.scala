@@ -77,6 +77,9 @@ object TypeBoxProvider {
          [U <: GlbU ]
       = ByLU[U, U ]
 
+      type ForTheUpperBound
+      = ForExactly[GlbU]
+
       /* 
        * 
        * we
