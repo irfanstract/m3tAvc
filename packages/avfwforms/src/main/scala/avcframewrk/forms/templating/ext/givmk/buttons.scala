@@ -118,6 +118,51 @@ object CallbackButtonModel
       =  PccGeneralisedUniLabelledFactoryImpl[? >: Lbl <: Lbl , PartialFunction[? >: CbArg, _ReturnValueBaseTrait ] ]
 
       ;
+
+      def apply
+         //
+         (using artism : Article._Allocator )
+         (using eventism : Event._Allocator )
+         // [_Label >: artism.CAP <: artism.CAP , _Evt >: eventism.CAP <: eventism.CAP ] /* wait until `language.clauseInterweaving` no longer `@experimental` */
+         (impl: (
+            label : artism.CAP
+            ,
+            cb : PartialFunction[? >: eventism.CAP , _ReturnValueBaseTrait ]
+            ,
+         ) => artism.CAP )
+      : ForLabelAndCbArg[artism.CAP, eventism.CAP ]
+      = {
+         ;
+
+         type _Label
+         >: artism.CAP
+         <: artism.CAP
+
+         type _CallbackArg
+         >: eventism.CAP
+         <: eventism.CAP
+
+         type _Callback
+         >: PartialFunction[? >: _CallbackArg , _ReturnValueBaseTrait ]
+         <: PartialFunction[? >: _CallbackArg , _ReturnValueBaseTrait ]
+
+         PccGeneralisedUniLabelledFactoryImpl
+            [_Label , _Callback ]
+            ((
+               [F <: _Callback ] =>
+               (label: _Label, cb: F) =>
+                  impl(label, cb )
+            ) )
+         : PccGeneralisedUniLabelledFactoryImpl[_Label , PartialFunction[? >: _CallbackArg, _ReturnValueBaseTrait ] ]
+      }
+
+      // protected
+      // val apply1Impl
+      // = PccGeneralisedUniLabelledFactoryImpl.apply[artism.CAP , PartialFunction[eventism.CAP , _ReturnValueBaseTrait ] ] _
+
+      // export apply1Impl.{apply as apply1 }
+
+      ;
    }
 
    ;
