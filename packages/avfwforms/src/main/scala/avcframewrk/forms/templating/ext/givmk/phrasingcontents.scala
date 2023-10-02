@@ -37,6 +37,10 @@ object PhrasalContent
 
    ;
 
+   object _AllocatorImpl {
+      export Pca.forReprT
+   }
+
    ;
 }
 
@@ -59,6 +63,12 @@ object Pca {
       ;
       type Repr = ReprT
    }
+
+   def forReprT
+      [ReprT]
+      (using concatenability : avcalg.CBC[ReprT] )
+   : ByRepr[ReprT]
+   = new Impl[ReprT]
 
    ;
 }
