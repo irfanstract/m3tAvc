@@ -15,6 +15,11 @@ package avcalg
 
 
 
+final
+lazy val thisPkgFile
+: this.type
+= this
+
 trait Concatenability[C ](using peer : cats.Semigroup[C] )
 extends
 AnyRef
@@ -48,6 +53,10 @@ AnyRef
 
 }
 
+object Concatenability {
+   export thisPkgFile.ConcatenabilityFromCatsSemigroup
+}
+
 trait ConcatenabilityK[C[_] ](using peer : cats.SemigroupK[C] )
 extends
 AnyRef
@@ -79,6 +88,10 @@ AnyRef
    def reverse
    = peer.reverse
 
+}
+
+object ConcatenabilityK {
+   export thisPkgFile.ConcatenabilityKFromCatsSemigroupK
 }
 
 given ConcatenabilityFromCatsSemigroup[C    ](using peer : cats.Semigroup[C]  ) : Concatenability[C] with {}
@@ -115,6 +128,10 @@ with Concatenability[C ]
 
 }
 
+object CBC {
+   export thisPkgFile.given_CBC_basic
+}
+
 trait CBCK[C[_] ](using peer : cats.MonoidK[C] )
 extends
 AnyRef
@@ -136,9 +153,13 @@ with ConcatenabilityK[C ]
 
 }
 
-given [C    ](using peer : cats.Monoid[C]  ) : CBC[C] with {}
+object CBCK {
+   export thisPkgFile.given_CBCK_basic
+}
 
-given [C[_] ](using peer : cats.MonoidK[C]  ) : CBCK[C] with {}
+given given_CBC_basic [C    ](using peer : cats.Monoid[C]  ) : CBC[C] with {}
+
+given given_CBCK_basic [C[_] ](using peer : cats.MonoidK[C]  ) : CBCK[C] with {}
 
 
 
