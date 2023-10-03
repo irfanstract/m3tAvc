@@ -47,6 +47,17 @@ object Lspw
    type _Base
    = Impl[Nothing, Any ]
 
+   def byReconcilerAndModelPair
+      [Mdl, CompStateBag ]
+      (impl: (
+         //
+         LReconciliativeKeyTo1[ScnAllocAndReconcileAndDistillH[CompStateBag, Mdl, AcceptableLE ] ]
+         ,
+         Mdl ,
+      ) )
+   : Impl[Mdl, Mdl ]
+   = ImplReconcilerAndMdlPair[Mdl](impl )
+
    opaque type Impl
       [
          -MdlL <: MdlU, +MdlU ,
@@ -75,7 +86,8 @@ private[givmk]
 case class ImplReconcilerAndMdlPair
    [Mdl]
    (protected val impl: (
-      ScnAllocAndReconcileAndDistillH[?, Mdl, AcceptableLE ] ,
+      LReconciliativeKeyTo1[ScnAllocAndReconcileAndDistillH[?, Mdl, AcceptableLE ] ]
+      ,
       Mdl ,
    ) )
 {
@@ -83,7 +95,10 @@ case class ImplReconcilerAndMdlPair
 
    export impl.{_2 as mdl }
 
-   export impl.{_1 as sbReconciler }
+   export impl.{_1 as reconciliativeKey }
+
+   val sbReconciler
+   = reconciliativeKey.toScnAllocAndReconcileAndDistillH
 
    // export sbReconciler.{IntermediateState as CompIntermediateState }
    opaque type CompIntermediateState
@@ -138,6 +153,7 @@ templating.w3e.pre.ArticlesImplByL1
 }
 export rcKeyingDefiner1.{LReconciliativeKey, LReconciliativeKeyTo1, LReconciliativeKeyToMdl }
 export rcKeyingDefiner1.LReconciliativeKey.ScnAllocAndReconcileAndDistillH
+export rcKeyingDefiner1.toScnAllocAndReconcileAndDistillH
 
 
 
