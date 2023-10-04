@@ -23,7 +23,7 @@ package impl
 
 
 
-private
+// private
 given predefChainingOps
 : AnyRef with {
    ;

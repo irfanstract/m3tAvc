@@ -42,7 +42,77 @@ def runSMain(): Unit
       }
       // renderOnDomContentLoaded
       renderOnDomContentLoadedAlt(dom.document.querySelector("#app") match { case e => e.innerHTML = "" ; e } , {
-         L.div()
+         import avcframewrk.forms.templating.ext.givmk.impl.{
+            predefChainingOps ,
+         }
+         import avcframewrk.forms.templating.ext.givmk.impl.{
+            allocateLlTagReconciler ,
+            LlKeyOrPropSetReconciliability1 ,
+            LlPropAnimableSettibility ,
+            rcKeyingDefiner1
+         }
+         import LlKeyOrPropSetReconciliability1.{*}
+         // L.div()
+         ({
+            ;
+            import avcframewrk.forms.templating.laminar.api.L
+            import L.{given}
+            val r = {
+               allocateLlTagReconciler(L.button )
+               .toScnAllocAndReconcileAndDistillH
+            }
+            ({
+               implicit val o
+               = com.raquo.airstream.ownership.ManualOwner()
+               object _Lg {
+                  org.scalajs.dom.console.log("anim init")
+               }
+               val eS = {
+                  r
+                  .pipeExactSelf(e => {
+                     e : rcKeyingDefiner1.ScnAllocAndReconcileAndDistillH[r.IntermediateState, r.Mdl, r.HLI ]
+                  })
+                  .spawnMd((
+                     //
+                     //
+                     byAttrAssignList((
+                        Seq()
+                        .toSeq
+                        .toSet
+                     ))
+                  ) )
+                  // r.spawnMdAsL(??? )
+               }
+               val dataTypAttr
+               = L.dataAttr("type")
+               L.EventStream.periodic(1500 )
+               .delay(3000 )
+               .scanLeft[(Int, Boolean)]((0, false))({ case ((_, v), i) => (i, v.unary_! ) } )
+               .map({
+                  e => { _Lg ; e }
+               })
+               .foreach({ case (i, efl) => {
+                  ;
+
+                  r.reconcile(eS, (
+                     //
+
+                     //
+                     byAttrAssignList((
+                        Seq()
+                        .:+(AttrKeyAndValuePair((L.typ, "button") ) )
+                        .:+(AttrKeyAndValuePair((dataTypAttr, i.toHexString ) ) )
+                        .:+(AttrKeyAndValuePair((L.disabled, efl ) ) )
+                        .toSeq
+                        .toSet
+                     ))
+                  ) )
+               }})
+               val e = r.distillLHandle(eS)
+               e.amend("run the main action")
+               e
+            })
+         })
       } )
    }
 }
