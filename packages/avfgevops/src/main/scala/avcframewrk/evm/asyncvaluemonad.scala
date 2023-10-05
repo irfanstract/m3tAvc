@@ -47,6 +47,27 @@ type AsyncAlgebrMonad[E1]
 type AsyncAlgMonad[E1]
    = AsyncAlgebraicMonad[E1]
 
+@deprecated
+// export AsyncAlgebraicItemStream.{newPipe => newAlgebrPipe } /* cannot use this idiom; it discarded the default args */
+def newAlgebrPipe[E1](
+   typingFnc: E1 => Unit ,
+
+   multicastStrategy
+   : MonixMulticastStrategy[E1]
+   ,
+
+   scheduler
+   : monix.execution.Scheduler
+   = monix.execution.Scheduler.Implicits.global
+   ,
+   
+)
+= AsyncAlgebraicItemStream.newPipe[E1](typingFnc = typingFnc, multicastStrategy = multicastStrategy, scheduler = scheduler)
+
+object AsyncAlgebraicItemStream
+{
+;
+
 /**
  * 
  * a fresh/independent/new pipe (`AsyncAlgebraicMonad`) ;
@@ -64,7 +85,7 @@ type AsyncAlgMonad[E1]
  * @param scheduler `monix.execution.Scheduler`
  * 
  */
-def newAlgebrPipe[E1](
+def newPipe[E1](
    typingFnc: E1 => Unit ,
 
    multicastStrategy
@@ -101,7 +122,50 @@ def newAlgebrPipe[E1](
    }
 
    (core1, core1 )
-}
+} // newPipe
+
+/**
+ * 
+ * a fresh/independent/new re-routible pipe (`AsyncAlgebraicMonad`) ;
+ * the first itc being for the producer-side,
+ * the second itc being for the consumer-side
+ * 
+ * 
+ * @param typingFnc a work-around to programmers forgetting to define `E1` explicitly
+ * 
+ * @param scheduler `monix.execution.Scheduler`
+ * 
+ */
+def newReroutiblePipe[S](
+   //
+
+   scheduler
+   : monix.execution.Scheduler
+   = monix.execution.Scheduler.Implicits.global
+   ,
+   
+)
+= {
+   ;
+
+   val (input, outputPre) = {
+      newPipe[AsyncAlgebraicMonad[S] ](
+         //
+         typingFnc = (_) => {} ,
+         multicastStrategy = MonixMulticastStrategy.whichRestrictsToSubscription,
+         scheduler = scheduler ,
+      )
+   }
+
+   val output = {
+      outputPre
+      .switch
+   }
+
+   (input, output)
+} // newReroutiblePipe
+
+} // AsyncAlgebraicItemStream$
 
 /**
  * 
