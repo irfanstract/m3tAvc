@@ -421,6 +421,35 @@ object Build {
 
       }
 
+      implicit class ScpScalablyTypedOps(receiver: CrossProject ) {
+        //
+
+        import org.scalablytyped.converter.plugin.*
+
+        import org.scalablytyped.converter.plugin.ScalablyTypedPluginBase.autoImport.*
+        import org.scalablytyped.converter.plugin.ScalablyTypedConverterGenSourcePlugin.autoImport.*
+        import org.scalablytyped.converter.plugin.ScalablyTypedConverterPlugin.autoImport.*
+        import org.scalablytyped.converter.plugin.ScalablyTypedConverterExternalNpmPlugin.autoImport.*
+
+        def withScalablyTypedConv()
+        = {
+          receiver
+          .platformsEnablePlugins(JSPlatform )(ScalablyTypedConverterPlugin )
+          .jsSettings(
+            //
+            /* ERROR Unable to reload workspace: scalaJSModuleKind must be set to ModuleKind.CommonJSModule in projects where ScalaJSBundler plugin is enabled */
+            scalaJSLinkerConfig ~= {
+
+              //  import org.scalajs.linker.interface.ModuleSplitStyle
+
+               _.withModuleKind(ModuleKind.CommonJSModule)
+            },
+          )
+        }
+
+        //
+      }
+
       /* (with)in-chain utils */
 
       /**
