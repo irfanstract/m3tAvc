@@ -50,27 +50,14 @@ object Build {
       lazy val comMonixLibraryVer
          = "3.4.1"
 
-      lazy val comMonix
-         = identity[ModuleID]("io.monix" %% "monix" % externalLibraryVersions.comMonixLibraryVer )
-
       lazy val comRaquoAirstreamLibVer
         = "16.0.0"
 
-      lazy val orgTypelevelCatsCore
-         = identity[ModuleID]("org.typelevel" %% "cats-core" % "2.9.0" )
-
-      lazy val ioOpticsMonocleCore
-        = identity[ModuleID]( "dev.optics" %% "monocle-core" % "3.2.0" )
-
-      lazy val orgTypelevelKittens
-         = identity[ModuleID]( "org.typelevel" %% "kittens" % "3.0.0" )
+      lazy val ioOpticsMonocleVersion
+        = "3.2.0"
 
       lazy val orgTypelevelCatsEffects
          = identity[ModuleID]( "org.typelevel" %% "cats-effect" % "3.5.1" )
-
-      /* https://index.scala-lang.org/kitlangton/quotidian */
-      lazy val kitlangtonQuotidian
-         = identity[ModuleID]( "io.github.kitlangton" %% "quotidian" % "0.0.6" )
 
       lazy val comPLoKhotNyukJsonIterLibVer
         = "2.23.5"
@@ -191,25 +178,21 @@ object Build {
 
           /* STD LIB DEPENDENCIES */
 
-          libraryDependencies ++= Seq(
-            "org.scalatest" %% "scalatest" % externalLibraryVersions.orgScalatestLibVer % Test
+          libraryDependencies ++= Seq[ModuleID] (
+            "org.scalatest" %%% "scalatest" % externalLibraryVersions.orgScalatestLibVer % Test
           )
           ,
+          libraryDependencies += ("org.typelevel"   %%% "cats-core"    % "2.9.0"  ) ,
+          libraryDependencies += ("org.typelevel"   %%% "kittens"      % "3.0.0"  ) ,
+          //
           libraryDependencies ++= Seq(
-            externalLibraryVersions.ioOpticsMonocleCore
-            ,
-            externalLibraryVersions.kitlangtonQuotidian
-            ,
-          )
-          ,
-          /* still unsure if these usage of `%%%` is right */
-          libraryDependencies ++= Seq(
-            // Use the %%% operator instead of %% for Scala.js and Scala Native 
-            "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-core"   % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer
-            ,
-            // Use the "provided" scope instead when the "compile-internal" scope is not supported  
-            "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-macros" % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer % "compile-internal"
-            ,
+            identity[ModuleID]( "dev.optics" %%% "monocle-core"       % externalLibraryVersions.ioOpticsMonocleVersion )              ,
+            identity[ModuleID]( "dev.optics" %%% "monocle-macro"      % externalLibraryVersions.ioOpticsMonocleVersion )              ,
+            identity[ModuleID]( "dev.optics" %%% "monocle-law"        % externalLibraryVersions.ioOpticsMonocleVersion ) % "test"     ,
+            identity[ModuleID]( "dev.optics" %%% "monocle-refined"    % externalLibraryVersions.ioOpticsMonocleVersion )              ,
+            //
+            // identity[ModuleID]( "io.github.kitlangton" %%% "quotidian" % "0.0.6" )
+            // ,
           )
           ,
 
@@ -236,15 +219,79 @@ object Build {
         Seq()
       }
 
-      /** "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting." */
+      /** 
+       * 
+       * https://www.scala-js.org/doc/project/linking-errors.html .
+       * also,
+       * "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting."
+       * 
+       */
       implicit class CrossProjectDevLaminarDependencyOps(receiver: CrossProject ) {
+        //
 
-         def withDevLaminar()
-         = {
-            receiver
-            /* a JS-only library building on `js.dom`. also, Laminar (re)exports Airstream as well, no need to explicitly list it here */
-            .jsSettings(libraryDependencies += "com.raquo" %%% "laminar" % externalLibraryVersions.comRaquoLaminarLibVer )
-         }
+        /** 
+         * for some reason
+         * `java.util.Locale` fails to link out-of-the-box
+         * 
+         */
+        def withJavaUtilLocaleCQuiroz()
+        = {
+          receiver
+          .jsSettings(libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.2.0" )
+        }
+
+        /** 
+         * `plokhotnyuk`'s `jsoniter`
+         * 
+         */
+        def withJsonIterLib()
+        = {
+          receiver
+          .settings(
+            //
+            /* still unsure if these usage of `%%%` is right */
+            libraryDependencies ++= Seq(
+              // Use the %%% operator instead of %% for Scala.js and Scala Native 
+              "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-core"   % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer
+              ,
+              // Use the "provided" scope instead when the "compile-internal" scope is not supported  
+              "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-macros" % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer % "compile-internal"
+              ,
+            )
+            ,
+          )
+        }
+
+        /**
+         * `com.raquo.airstream`.
+         * a spin-off from Laminar, solely dealing with FRP.
+         * 
+         * Airstream makes distinction between `EventStream` and `Signal` ;
+         * Monix doesn't do this
+         * 
+         */
+        def withComRaquoAirstream()
+        = {
+          receiver
+          .settings(libraryDependencies += "com.raquo" %%% "airstream" % externalLibraryVersions.comRaquoAirstreamLibVer )
+        }
+
+        /**
+         * Monix
+         * 
+         */
+        def withMonix()
+        = {
+          receiver
+          .jsSettings(libraryDependencies += "io.monix" %%% "monix" % externalLibraryVersions.comMonixLibraryVer )
+        }
+
+        def withDevLaminar()
+        = {
+          receiver
+          /* a JS-only library building on `js.dom`. also, Laminar (re)exports Airstream as well, no need to explicitly list it here */
+          .jsSettings(libraryDependencies += "com.raquo" %%% "laminar" % externalLibraryVersions.comRaquoLaminarLibVer )
+        }
 
       }
 
@@ -279,6 +326,7 @@ object Build {
          : CrossProject
          = {
             receiver
+            .withJavaUtilLocaleCQuiroz()
             .jsSettings(
             //
 
@@ -368,6 +416,7 @@ object Build {
             //
           )
           .withSuggestedPlatformSpecifics()
+          .withJsonIterLib()
         }
 
       }

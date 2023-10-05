@@ -46,8 +46,6 @@ lazy val avFwAlgebLibProject
 =
   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfwalgeb" ) )
   .asLeafProjectWithNecessarySettings()
-  .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
-  .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelKittens )
   // .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
 
 lazy val avcEvLibProject
@@ -55,15 +53,7 @@ lazy val avcEvLibProject
   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfgevops" ) )
   .asLeafProjectWithNecessarySettings()
   .dependsOn(avFwAlgebLibProject )
-  .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
-  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % Build.externalLibraryVersions.comMonixLibraryVer ) // https://www.scala-js.org/doc/project/linking-errors.html .
-
-// lazy val amf
-// =
-//   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "amfnf" ) )
-//   .aggregate(
-// 
-//   )
+  .withMonix()
 
 lazy val avcFormsProject
 =
@@ -72,10 +62,8 @@ lazy val avcFormsProject
   // .dependsOn(avFwHeadlessUtilityLibProject ) /* this pattern is prone to making dependency cycles, and SBT f*c*ed the resol up ☹ */
   .dependsOn(avFwAlgebLibProject )
   .dependsOn(avcEvLibProject )
-  .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
-  .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
-  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % Build.externalLibraryVersions.comMonixLibraryVer ) // https://www.scala-js.org/doc/project/linking-errors.html .
-  .settings(libraryDependencies += "com.raquo" %%% "airstream" % Build.externalLibraryVersions.comRaquoAirstreamLibVer )
+  .withMonix()
+  .withComRaquoAirstream()
   .withDevLaminar()
 
 lazy val mainSjs
@@ -87,21 +75,9 @@ lazy val mainSjs
   .dependsOn(avFwAlgebLibProject )
   .dependsOn(avcEvLibProject )
   .dependsOn(avcFormsProject )
-  .settings(libraryDependencies += Build.externalLibraryVersions.orgTypelevelCatsCore )
-  .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
-  .jsSettings(libraryDependencies += "io.monix" %%% "monix" % Build.externalLibraryVersions.comMonixLibraryVer ) // https://www.scala-js.org/doc/project/linking-errors.html .
-  .jsSettings(libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.2.0" ) // https://www.scala-js.org/doc/project/linking-errors.html .
+  .withMonix()
+  .withJavaUtilLocaleCQuiroz()
   .withDevLaminar()
-
-// // TODO remove this
-// lazy val mainSjsg
-// = {
-//   //
-  
-//   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "main-sjsg" ) )
-//   .asLeafProjectWithNecessarySettings()
-//   .withDbp(mainClassNames = Some("runSMain") )
-// }
 
 
 
