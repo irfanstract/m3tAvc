@@ -37,6 +37,7 @@ def runSMain(): Unit
       ({
          val r = typings.reactDom.clientMod.createRoot(dom.document.querySelector("#app") )
          // (typings.react.mod. )
+         import avcframewrk.forms.templating.reactjs.<
          r
          .render((
             rce.createElement("div", null, (
@@ -50,6 +51,21 @@ def runSMain(): Unit
                      "consider reading the tutorial for more abt it." ,
                   )
                )
+               :+ (
+                  <.button(`type` = "button", "do some simple action" )
+               )
+               :+ (
+                  <.button(`type` = "button", "do my favourite things" )
+               )
+               // :+ (
+               //    <.span(`class` = "button", "do some simple action" )
+               // )
+               // :+ (
+               //    <.label(`for` = "someButton", "do some simple action" )
+               // )
+               // :+ (
+               //    <.span(`className` = "button", children = (Seq() :+ "do some simple action" ) )
+               // )
             ) : _* )
          ))
       })
