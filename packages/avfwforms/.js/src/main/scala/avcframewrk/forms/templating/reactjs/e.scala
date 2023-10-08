@@ -49,10 +49,10 @@ object KS
       def applyDynamicNamed
          //
          [
-            C <: String ,
+            C <: _ElementConstructor ,
          ]
          (cls: C )
-         (inline propSeq: (String, ReactPropValueAny )* )
+         (inline propSeq: (String, _DataAny )* )
       = ${mroDynamicRjsElementImpl(clsExpr = '{ cls } )('{ Seq(propSeq : _* ) } ) }
 
       transparent
@@ -60,10 +60,10 @@ object KS
       def applyDynamic
          //
          [
-            C <: String ,
+            C <: _ElementConstructor ,
          ]
          (cls: C )
-         (inline children: (ReactPropValueAny )* )
+         (inline children: (_DataAny )* )
       = ${mroDynamicRjsElementAltImpl(clsExpr = '{ cls } )('{ Seq(children : _* ) } ) }
 
       ;
@@ -78,68 +78,154 @@ object KS
 
    export ksDefaultReactJsImpl.{*}
 
-}
-
-object ksDefaultReactJsImpl
-{
-   ;
-
-   ;
-
-   def mroDynamicRjsElementAltImpl
-      //
-      [
-         C <: String
-         : quoted.Type
-         ,
-      ]
-      (clsExpr: quoted.Expr[C] )
-      (e: quoted.Expr[Seq[(ReactPropValueAny ) ] ] )
-      (using quoted.Quotes )
-   = {
+   object _Impl {
       ;
 
-      mroDynamicRjsElementImpl1(clsExpr = clsExpr )({
+      class Impl
+         [C <: _ImplImpl.Impl & Singleton ]
+         (using val ksDefaultImplImpl : C )
+      extends
+      AnyRef with ImplCtxsAndThereofTypeReexports
+      {
          ;
 
-         '{ ${ e }.map(("", _ ) ) }
-      })
-   }
-
-   def mroDynamicRjsElementImpl
-      //
-      [
-         C <: String
-         : quoted.Type
-         ,
-      ]
-      (clsExpr: quoted.Expr[C] )
-      (e: quoted.Expr[Seq[(String, ReactPropValueAny ) ] ] )
-      (using quoted.Quotes )
-   = {
-      mroDynamicRjsElementImpl1(clsExpr = clsExpr )({
          ;
 
-         propKvPairSeqCheckedImpl(clsExpr = clsExpr )(e)
-      })
+         def mroDynamicRjsElementAltImpl
+            //
+            [
+               C <: _ElementConstructor
+               : quoted.Type
+               ,
+            ]
+            (clsExpr: quoted.Expr[C] )
+            (e: quoted.Expr[Seq[(_DataAny ) ] ] )
+            (using quoted.Quotes )
+            (using quoted.Type[_DataAny] )
+         = {
+            ;
+
+            mroDynamicRjsElementImpl1(clsExpr = clsExpr )({
+               ;
+
+               '{ ${ e }.map(("", _ ) ) }
+            })
+         }
+
+         def mroDynamicRjsElementImpl
+            //
+            [
+               C <: _ElementConstructor
+               : quoted.Type
+               ,
+            ]
+            (clsExpr: quoted.Expr[C] )
+            (e: quoted.Expr[Seq[(String, _DataAny ) ] ] )
+            (using quoted.Quotes )
+         = {
+            mroDynamicRjsElementImpl1(clsExpr = clsExpr )({
+               ;
+
+               propKvPairSeqCheckedImpl(clsExpr = clsExpr )(e)
+            })
+         }
+
+         export ksDefaultImplImpl.{
+            mroDynamicRjsElementImpl1 ,
+            propKvPairSeqCheckedImpl ,
+         }
+
+         @annotation.experimental
+         private[forms]
+         def e3(e: _ElementConstructor )
+         : ksDefaultImplImpl._ElementConstructor
+         = e
+
+         ;
+      }
+
+      protected
+      trait ImplCtxsAndThereofTypeReexports
+      {
+         ;
+
+         val ksDefaultImplImpl : _ImplImpl.Impl
+
+         export ksDefaultImplImpl.{
+            _DataAny ,
+            _ElementConstructor ,
+         }
+
+         ;
+      }
+
+      ;
    }
 
-   export ksDefaultReactJsImplImpl.{
-      mroDynamicRjsElementImpl1 ,
-      propKvPairSeqCheckedImpl ,
+   object _ImplImpl {
+      ;
+
+      trait Impl
+      {
+         ;
+
+         type _ElementConstructor
+
+         type _DataAny
+
+         def mroDynamicRjsElementImpl1
+            //
+            [
+               C <: _ElementConstructor
+               : quoted.Type
+               ,
+            ]
+            (clsExpr: quoted.Expr[C] )
+            (  e1: quoted.Expr[Seq[(String, _DataAny ) ] ] )
+            (using quoted.Quotes )
+         : quoted.Expr[ReactElement.FromCls[C] ]
+
+         def propKvPairSeqCheckedImpl
+            //
+            (clsExpr: (
+               // quoted.Expr[? >: _ElementConstructor <: Any]
+               quoted.Expr[? <: Any]
+            ) )
+            (e: quoted.Expr[Seq[(String, _DataAny ) ] ] )
+            (using quoted.Quotes )
+         : quoted.Expr[Seq[(String, _DataAny ) ] ]
+
+         ;
+      }
+
+      ;
    }
 
-   ;
 }
+
+final
+lazy val ksDefaultReactJsImpl
+= KS._Impl.Impl(using ksDefaultReactJsImplImpl )
 
 protected
 object ksDefaultReactJsImplImpl
+extends
+AnyRef
+with KS._ImplImpl.Impl
 {
 
    private[avcframewrk]
    final
    lazy val PlcPacked
    = ksImplUtil.PlcPacked
+
+   type _ElementConstructor
+   >: String
+   <: String
+
+   type _DataAny
+   >: ReactPropValueAny
+   <: ReactPropValueAny
 
    // protected
    def propsAndChildrenFromApplyDyn
@@ -205,13 +291,13 @@ object ksDefaultReactJsImplImpl
    def mroDynamicRjsElementImpl1
       //
       [
-         C <: String
+         C <: _ElementConstructor
          : quoted.Type
          ,
       ]
       (clsExpr: quoted.Expr[C] )
-      // (e: quoted.Expr[Seq[(String, ReactPropValueAny ) ] ] )
-      (  e1: quoted.Expr[Seq[(String, ReactPropValueAny ) ] ] )
+      // (e: quoted.Expr[Seq[(String, _DataAny ) ] ] )
+      (  e1: quoted.Expr[Seq[(String, _DataAny ) ] ] )
       (using quoted.Quotes )
    = {
       '{
@@ -244,10 +330,13 @@ object ksDefaultReactJsImplImpl
    // protected[templating]
    def propKvPairSeqCheckedImpl
       //
-      (clsExpr: quoted.Expr[Any] )
-      (e: quoted.Expr[Seq[(String, ReactPropValueAny ) ] ] )
+      (clsExpr: (
+         // quoted.Expr[? >: _ElementConstructor <: Any]
+         quoted.Expr[? <: Any]
+      ) )
+      (e: quoted.Expr[Seq[(String, _DataAny ) ] ] )
       (using quoted.Quotes )
-   : quoted.Expr[Seq[(String, ReactPropValueAny ) ] ]
+   : quoted.Expr[Seq[(String, _DataAny ) ] ]
    = {
       ;
 

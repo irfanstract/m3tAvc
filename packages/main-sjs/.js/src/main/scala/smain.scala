@@ -51,82 +51,82 @@ def runSMain(): Unit
          .render((
             rce.createElement("div", null, (
                Seq()
-               :+ rce.createElement("p", null, "hello!" )
-               // :+ rce.createElement("a", scalajs.js.Dictionary(("href", "javascript:console.log(\"opening the tutorial...\")" )), "consider reading the tutorial for more abt it." )
-               :+ (
-                  <.a(
-                     // href = "javascript:console.log(\"opening the tutorial...\")"
-                     // ,
-                     "consider reading the tutorial for about it."
-                     ,
-                  )
-               )
-               :+ (
-                  <.button(`type` = "button", "do some simple action" )
-               )
-               :+ (
-                  <.button(typ = "button", "do some simple action" )
-               )
-               :+ (
-                  <.button(`type` = "button", "do my favourite things" )
-               )
+               // :+ rce.createElement("p", null, "hello!" )
+               // // :+ rce.createElement("a", scalajs.js.Dictionary(("href", "javascript:console.log(\"opening the tutorial...\")" )), "consider reading the tutorial for more abt it." )
                // :+ (
-               //    <.span(`class` = "button", "do some simple action" )
+               //    <.a(
+               //       // href = "javascript:console.log(\"opening the tutorial...\")"
+               //       // ,
+               //       "consider reading the tutorial for about it."
+               //       ,
+               //    )
                // )
                // :+ (
-               //    <.label(`for` = "someButton", "do some simple action" )
+               //    <.button(`type` = "button", "do some simple action" )
                // )
-               :+ (
-                  <.label(htmlFor = "someButton", "do some simple action" )
-               )
-               :+ (
-                  <.select(`child` = <.option("option side 1" ), <.option("option main 1" ) )
-               )
-               :+ (
-                  <.select(children = Seq() :+ <.option("option side 1" ), <.option("option main 1" ) )
-               )
-               :+ (
-                  <.button(typ = "button", "do some simple action" )
-               )
-               :+ (
-                  <.p(attachedSnippet = "button", "do some simple action" )
-               )
-               :+ (
-                  <.ul((
-                     Seq()
+               // :+ (
+               //    <.button(typ = "button", "do some simple action" )
+               // )
+               // :+ (
+               //    <.button(`type` = "button", "do my favourite things" )
+               // )
+               // // :+ (
+               // //    <.span(`class` = "button", "do some simple action" )
+               // // )
+               // // :+ (
+               // //    <.label(`for` = "someButton", "do some simple action" )
+               // // )
+               // :+ (
+               //    <.label(htmlFor = "someButton", "do some simple action" )
+               // )
+               // :+ (
+               //    <.select(`child` = <.option("option side 1" ), <.option("option main 1" ) )
+               // )
+               // :+ (
+               //    <.select(children = Seq() :+ <.option("option side 1" ), <.option("option main 1" ) )
+               // )
+               // :+ (
+               //    <.button(typ = "button", "do some simple action" )
+               // )
+               // :+ (
+               //    <.p(attachedSnippet = "button", "do some simple action" )
+               // )
+               // :+ (
+               //    <.ul((
+               //       Seq()
 
-                     :+ (
-                        <.li(key = "button", "do my favourite things" )
-                     )
-                     // :+ (
-                     //    <.li(key = "button" -> "", "do my favourite things" )
-                     // )
-                     :+ (
-                        <.li(key = "button", "do my favourite things" )
-                     )
-                     // :+ (
-                     //    <.li(key = "button" -> "", "do my favourite things" )
-                     // )
-                     // :+ (
-                     //    <.li(ref = "button", "do those things" )
-                     // )
-                     // :+ (
-                     //    <.li(ref = (_ => {} ) : Function1[Product, ?] , "do those things" )
-                     // )
-                     // :+ (
-                     //    <.li(ref = ((_) => {} ) : scalajs.js.Function1[?, ?] , "do those things" )
-                     // )
-                     :+ (
-                        <.li(key = "edothesethings", "do those things" )
-                     )
-                     // :+ (
-                     //    <.li(key = "edothesethings", "do those things" -> "bar" )
-                     // )
-                  ) )
-               )
-               // :+ (
-               //    <.span(`className` = "button", children = (Seq() :+ "do some simple action" ) )
+               //       :+ (
+               //          <.li(key = "button", "do my favourite things" )
+               //       )
+               //       // :+ (
+               //       //    <.li(key = "button" -> "", "do my favourite things" )
+               //       // )
+               //       :+ (
+               //          <.li(key = "button", "do my favourite things" )
+               //       )
+               //       // :+ (
+               //       //    <.li(key = "button" -> "", "do my favourite things" )
+               //       // )
+               //       // :+ (
+               //       //    <.li(ref = "button", "do those things" )
+               //       // )
+               //       // :+ (
+               //       //    <.li(ref = (_ => {} ) : Function1[Product, ?] , "do those things" )
+               //       // )
+               //       // :+ (
+               //       //    <.li(ref = ((_) => {} ) : scalajs.js.Function1[?, ?] , "do those things" )
+               //       // )
+               //       :+ (
+               //          <.li(key = "edothesethings", "do those things" )
+               //       )
+               //       // :+ (
+               //       //    <.li(key = "edothesethings", "do those things" -> "bar" )
+               //       // )
+               //    ) )
                // )
+               // // :+ (
+               // //    <.span(`className` = "button", children = (Seq() :+ "do some simple action" ) )
+               // // )
             ) : _* )
          ))
       })
