@@ -209,10 +209,44 @@ object StdPropsCheckCompulsion
       }
    }
 
+   export supplementaryPccs.commonAttribSpellingsTutoUrl
+   
+   ;
+}
+
+object supplementaryPccs
+{
+   ;
+
    val commonAttribSpellingsTutoUrl
    = "https://react.dev/reference/react-dom/components/common"
 
-   ;
+   lazy
+   val denyEverythingsInstance
+   : PropCheckCompulsion._CheckingFnc.ByPropNameAndValue[String, Any ]
+   = {
+      PropCheckCompulsion._CheckingFnc(splctx ?=> (kExpr, vlExpr) => {
+         splctx.reflect.report.error((
+            Seq()
+            :+ s"not allowed "
+            mkString("\n")
+         ))
+      })
+   }
+
+   given PropCheckCompulsion._CheckingFnc.ByPropNameAndValue["typ", Any ]
+   = {
+      PropCheckCompulsion._CheckingFnc(splctx ?=> (kExpr, vlExpr) => {
+         splctx.reflect.report.error((
+            Seq()
+            :+ s"unsupported attrib : Laminar HTML attrib 'typ'. "
+            :+ s"no such rename <<'type' to 'typ'>> imposed here. "
+            :+ s"for the correct syntax-or-spelling, \nsee ${commonAttribSpellingsTutoUrl } . "
+            mkString("\n")
+         ))
+      })
+   }
+
 }
 
 ;
