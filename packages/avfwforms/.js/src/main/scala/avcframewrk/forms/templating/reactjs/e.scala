@@ -276,19 +276,31 @@ object KS
 
 }
 
+extension (quotesReflectReportingModule: quoted.Quotes#reflectModule#reportModule )
+   def ksErrorAndAbort(msg: => String, subjectedArea: quoted.Expr[Any] )
+   = {
+      throw {
+         object ksErrorException extends Exception(msg)
+         ksErrorException
+      }
+   }
+
 // private[avcframewrk]
 object ksImplUtil
 {
    ;
+
+   import compiletime.*
+   import quoted.*
 
    // private[avcframewrk]
    object PlcPacked {
       ;
 
       def unapply
-         [E : quoted.Type ]
-         (e : quoted.Expr[Seq[E] ] )
-         (using quoted.Quotes )
+         [E : Type ]
+         (e : Expr[Seq[E] ] )
+         (using Quotes )
       = {
          ;
 
@@ -301,6 +313,26 @@ object ksImplUtil
                e1
                .asExprOf[Seq[E ] ]
          })
+      }
+   }
+
+   def plcPackQuotedVarargs
+      [E : Type ]
+      (expr: Expr[Seq[E] ] )
+      (using Quotes)
+   : Expr[Seq[E] ]
+   = {
+      import quotes.reflect.*
+      expr
+      match {
+         case Varargs(exprs) =>
+            Expr.ofSeq(exprs)
+         case e =>
+            throw
+               new IllegalArgumentException({
+                  new MatchError(e.asTerm )
+                  .getMessage()
+               } )
       }
    }
 
