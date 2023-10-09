@@ -55,8 +55,10 @@ def runSMain(): Unit
                // :+ rce.createElement("a", scalajs.js.Dictionary(("href", "javascript:console.log(\"opening the tutorial...\")" )), "consider reading the tutorial for more abt it." )
                :+ (
                   <.a(
-                     // href = "javascript:console.log(\"opening the tutorial...\")"
-                     // ,
+                     href = "javascript:console.log(\"opening the tutorial...\")"
+                     ,
+                     "consider reading the tutorial for about it."
+                     ,
                      "consider reading the tutorial for about it."
                      ,
                   )

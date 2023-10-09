@@ -158,10 +158,14 @@ with KS._ImplImpl.Impl
       import quoted.*
       import quotes.reflect.*
 
+      import ksImplUtil.VarargsOrSeqLike
+
+      import ksImplUtil.asLinebreaking
+
       // TODO
       def eshow(e: Term)
       = {
-         s"(${e.getClass().getName() }) ${Printer.TreeCode.show(e) } "
+         s"(${e.getClass().getName() }) ${Printer.TreeCode.asLinebreaking().show(e) } "
       }
 
       ({
@@ -175,12 +179,24 @@ with KS._ImplImpl.Impl
             case PlcPacked(e) =>
                e
 
+            case e @ ksImplUtil.CrookedVarargs() =>
+               locally[(msg: String, e: Expr[?] ) => Any ]({
+                  // report.errorAndAbort(_, _)
+                  report.error(_, _)
+               })
+               .apply((
+                  s"[propKvPairSeqCheckedImpl] crooked varargs: ${Printer.TreeCode.asLinebreaking().show(e.asTerm ) } /// ${Printer.TreeStructure.asLinebreaking().show(e.asTerm ) }  "
+               ) , e )
+               e
+
             case e =>
                locally[(msg: String, e: Expr[?] ) => Any ]({
                   // report.errorAndAbort(_, _)
                   report.error(_, _)
                })
-               .apply(s"[propKvPairSeqCheckedImpl] unsupported expr: ${Printer.TreeCode.show(e.asTerm ) } /// ${Printer.TreeStructure.show(e.asTerm ) }  " , e )
+               .apply((
+                  s"[propKvPairSeqCheckedImpl] unsupported expr: ${Printer.TreeCode.asLinebreaking().show(e.asTerm ) } /// ${Printer.TreeStructure.asLinebreaking().show(e.asTerm ) }  "
+               ) , e )
                e
 
          })
@@ -190,9 +206,9 @@ with KS._ImplImpl.Impl
 
          /** a debug-log-and-abort case - do not enable unless debugging! */
          case Varargs(e1Ls) if false =>
-            report.errorAndAbort(s"[react.js] [propKvPairSeqCheckedImpl] the expr was: ${ e1Ls.map(e1 => eshow(e1.asTerm ) ) } : (spread as varargs) " )
+            report.ksErrorAndAbort(s"[react.js] [propKvPairSeqCheckedImpl] the expr was: ${ e1Ls.map(e1 => eshow(e1.asTerm ) ) } : (spread as varargs) " )
 
-         case e @ Varargs(e1Ls) =>
+         case e @ VarargsOrSeqLike(e1Ls) =>
             ;
 
             Varargs({
@@ -207,9 +223,49 @@ with KS._ImplImpl.Impl
                } ) 
             })
 
+         case e1 @ ksImplUtil.CrookedVarargs() =>
+
+            report.error((
+               Seq()
+               :+ s"match error, \n  (${ Printer.TreeShortCode.asLinebreaking(lnCLimit = 8 ).show(e.asTerm ) }) : "
+               :+ s"unsupported-or-crooked spread-to-varargs Expr. "
+               :+ s"please rewrite into regular direct varargs,"
+               :+ s"and try again. "
+               :+ s"=== "
+               :+ s"note: "
+               :+ s"  - repeated quoting-and-splicing can lead to an (erroneous) extraneous synthetic '.asInstanceOf[_* & _* ]' suffix, "
+               :+ s"    leading to this error, "
+               :+ s"    consider simply passing the quoted-ref-to-varargs Expr directly, to avoid that issue "
+               :+ s"fix the code, and try again. "
+               :+ "==="
+
+               mkString "\n"
+            ) , e )
+
+            e
+
          case _ =>
 
-            report.errorAndAbort(s"yup2 (${ Printer.TreeCode.show(e.asTerm ) }) : " + Printer.TreeStructure.show(e.asTerm ) )
+            report.error((
+               Seq()
+               :+ s"match error, \n  (${ Printer.TreeShortCode.asLinebreaking().show(e.asTerm ) }) : "
+               :+ s"unsupported Expr. "
+               :+ s"=== "
+               :+ s"supported Expr(s) include: "
+               :+ s"  - Expr(s) obtained from 'Varargs' or from quoted ref to varargs "
+               :+ s"note: "
+               :+ s"  - repeated quoting-and-splicing can lead to an (erroneous) extraneous synthetic '.asInstanceOf[_* & _* ]' suffix, "
+               :+ s"    leading to this error, "
+               :+ s"    consider simply passing the quoted-ref-to-varargs Expr directly, to avoid that issue "
+               :+ s"fix the code, and try again. "
+               :+ "==="
+               // :+ "==="
+               // :+ s"${ Printer.TreeCode.show(e.asTerm ) } "
+               // :+ s"// "
+               // :+ s"${ Printer.TreeStructure.show(e.asTerm ) } "
+
+               mkString "\n"
+            ) , e )
 
             e
 

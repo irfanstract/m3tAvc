@@ -54,7 +54,7 @@ object KS
                : ValueOf[T]
                = ${
                   Expr.summon[ValueOf[T] ]
-                  .getOrElse(report.errorAndAbort("cannot re-resolve the ValueOf[T]") )
+                  .getOrElse(report.ksErrorAndAbort("cannot re-resolve the ValueOf[T]") )
                }
                valueOf[T]
             }
@@ -90,7 +90,7 @@ object KS
          = {
             import quotes.reflect.*
             ( for (value <- Type.valueOfConstant[T] ) yield ValueOf(value ) )
-            .getOrElse(report.errorAndAbort(s"no Type.valueOfConstant[T]. \neligible types include (... ...) ") )
+            .getOrElse(report.ksErrorAndAbort(s"no Type.valueOfConstant[T]. \neligible types include (... ...) ") )
          }
 
          ;
@@ -117,7 +117,7 @@ object KS
          ]
          (cls: C )
          (inline propSeq: (String, _DataAny )* )
-      = ${mroDynamicRjsElementImpl(clsExpr = '{ cls } )('{ Seq(propSeq : _* ) } ) }
+      = ${mroDynamicRjsElementImpl(clsExpr = '{ cls } )('propSeq ) }
 
       transparent
       inline
@@ -128,7 +128,7 @@ object KS
          ]
          (cls: C )
          (inline children: (_DataAny )* )
-      = ${mroDynamicRjsElementAltImpl(clsExpr = '{ cls } )('{ Seq(children : _* ) } ) }
+      = ${mroDynamicRjsElementAltImpl(clsExpr = '{ cls } )('children ) }
 
       ;
    }
@@ -170,11 +170,13 @@ object KS
                ,
             ]
             (clsExpr: quoted.Expr[C] )
-            (e: quoted.Expr[Seq[(_DataAny ) ] ] )
+            (e0: quoted.Expr[Seq[(_DataAny ) ] ] )
             (using quoted.Quotes )
             (using quoted.Type[_DataAny] )
          = {
             ;
+
+            val e = ksImplUtil.plcPackQuotedVarargs(e0)
 
             mroDynamicRjsElementImpl1(clsExpr = clsExpr )({
                ;
@@ -191,9 +193,14 @@ object KS
                ,
             ]
             (clsExpr: quoted.Expr[C] )
-            (e: quoted.Expr[Seq[(String, _DataAny ) ] ] )
+            (e0: quoted.Expr[Seq[(String, _DataAny ) ] ] )
             (using quoted.Quotes )
+            (using quoted.Type[_DataAny] )
          = {
+            ;
+
+            val e = ksImplUtil.plcPackQuotedVarargs(e0)
+
             mroDynamicRjsElementImpl1(clsExpr = clsExpr )({
                ;
 
@@ -277,7 +284,12 @@ object KS
 }
 
 extension (quotesReflectReportingModule: quoted.Quotes#reflectModule#reportModule )
+   transparent inline
    def ksErrorAndAbort(msg: => String, subjectedArea: quoted.Expr[Any] )
+   : Nothing
+   = ksErrorAndAbort(msg)
+   def ksErrorAndAbort(msg: => String )
+   : Nothing
    = {
       throw {
          object ksErrorException extends Exception(msg)
@@ -325,14 +337,125 @@ object ksImplUtil
       import quotes.reflect.*
       expr
       match {
-         case Varargs(exprs) =>
+         // case Varargs(exprs) =>
+         //    Expr.ofSeq(exprs)
+         case Varargs[E](exprs) =>
             Expr.ofSeq(exprs)
          case e =>
             throw
-               new IllegalArgumentException({
-                  new MatchError(e.asTerm )
-                  .getMessage()
-               } )
+               ({
+                  e match {
+                     case CrookedVarargs() =>
+                        ;
+                        new IllegalArgumentException({
+                           s"[plcPackQuotedVarargs crooked varargs] ${Printer.TreeShortCode.asLinebreaking().show(e.asTerm ) } "
+                        } )
+                     case _ =>
+                        ;
+                        new IllegalArgumentException({
+                           s"[plcPackQuotedVarargs match error] ${Printer.TreeShortCode.asLinebreaking().show(e.asTerm ) } "
+                        } )
+                  }
+               })
+      }
+   }
+
+   object VarargsOrSeqLike
+   {
+
+      def unapply
+         [T : Type ]
+         (expr: Expr[Seq[T] ] )
+         (using Quotes)
+      : Option[Seq[Expr[T]]]
+      = {
+         ;
+
+         import quotes.reflect.*
+
+         expr
+
+         match {
+            //
+
+            case Varargs(e) =>
+               Some(e)
+
+            case '{ Seq[t](${ Varargs[T](e) } : _*) } =>
+               /** oh god */
+               Some {
+                  e
+               }
+
+            case _ =>
+               None
+         }
+      }
+   }
+
+   object CrookedVarargs
+   {
+
+      def unapply
+         [T : Type ]
+         (expr: Expr[Seq[T] ] )
+         (using Quotes)
+      // : Option[Seq[Expr[T]]]
+      : Boolean
+      = {
+         ;
+
+         import quotes.reflect.*
+
+         expr
+
+         match {
+            //
+
+            case e if {
+               Printer.TreeCode.show(e.asTerm )
+               .pipeLooseSelf({ val P = (util.matching.Regex.quote(".$asInstanceOf$[_* & _*]") + "\\s*" + "\\z" ).r.unanchored ; <:<.refl[String].andThen(P.unapplySeq(_) ) }.andThen(_.nonEmpty ) )
+            } =>
+               true
+
+            case _ =>
+               // None
+               false
+         }
+      }
+   }
+
+   extension [V] (using ctx: Quotes) (impl: ctx.reflect.Printer[V] ) {
+      //
+
+      /** 
+       * under VSCode,
+       * without line-breaking like this,
+       * would result in extended-duration hang in the "errors" tab
+       * 
+       */
+      def asLinebreaking
+         //
+         (lineWidth : Int = 90, lineSep : String = System.lineSeparator().nn, lnCLimit: Int = 512 )
+      : ctx.reflect.Printer[V]
+      = (d) => {
+         ;
+
+         impl.show(d )
+
+         .grouped(lineWidth )
+
+         .take(lnCLimit)
+
+         .mkString(lineSep )
+
+         // .take({
+         //    // 200
+         //    // 20
+         //    // 50
+         //    // 300
+         //    2000
+         // } )
       }
    }
 
