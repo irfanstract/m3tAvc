@@ -113,22 +113,36 @@ object KS
       def applyDynamicNamed
          //
          [
-            C <: _ElementConstructor ,
+            // C <: _ElementConstructor ,
+            T1 ,
+            implS <: (
+               Singleton &
+               KS._Impl._Any
+            ) ,
          ]
-         (cls: C )
-         (inline propSeq: (String, _DataAny )* )
-      = ${mroDynamicRjsElementImpl(clsExpr = '{ cls } )('propSeq ) }
+         (using implManifest: _ImplManifest[implS] )
+         (using impl: implManifest.value.type = implManifest.value )
+         (cls: impl._ElementConstructor )
+         (inline propSeq: (String, ReactPropValueAny )* )
+      = ${sd.importable.mroDynamicRjsElementImpl[impl.type, implS ] ('{ impl }) (clsExpr = '{ cls } )('propSeq ) }
 
       transparent
       inline
       def applyDynamic
          //
          [
-            C <: _ElementConstructor ,
+            // C <: _ElementConstructor ,
+            T1 ,
+            implS <: (
+               Singleton &
+               KS._Impl._Any
+            ) ,
          ]
-         (cls: C )
-         (inline children: (_DataAny )* )
-      = ${mroDynamicRjsElementAltImpl(clsExpr = '{ cls } )('children ) }
+         (using implManifest: _ImplManifest[implS] )
+         (using impl: implManifest.value.type = implManifest.value )
+         (cls: impl._ElementConstructor )
+         (inline children: ReactPropValueAny* )
+      = ${sd.importable.mroDynamicRjsElementAltImpl[impl.type, implS ] ('{ impl }) (clsExpr = '{ cls } )('children ) }
 
       ;
    }
@@ -140,8 +154,25 @@ object KS
     */
    class Voibility[-C, -N <: Int ]
 
-   export ksDefaultReactJsImpl.{*}
+   /** 
+    * the way the multi-staging happens to be implemented,
+    * it becomes impossible to directly pass the impl directly .
+    * sadly macro(s) were disallowed to take ctx-bound(s) either .
+    * hence the need to do this
+    * 
+    */
+   case class _ImplManifest
+      [+C <: _Impl._Any & Singleton ]
+      (value : C )
 
+   /** 
+    * instances each
+    * provide the full impl, impl of those `applyDynamicNamed` and `applyDynamic` methods .
+    * note --
+    * cannot directly run instance methods in the top-level splice (ie the `${...}s`) in macro(s), so
+    * needs a helper below, see below
+    * 
+    */
    object _Impl {
       ;
 
@@ -240,6 +271,143 @@ object KS
       ;
    }
 
+   /** 
+    * a helper to
+    * summon instances of the impl-ref type, and then invoke the selected method.
+    * this is necessary as
+    * the compiler restricts macros away from calling non-static methods
+    * 
+    */
+   object sd {
+      ;
+
+      ;
+
+      import compiletime.*
+      import quoted.*
+
+      ;
+
+      extension [
+         I <: I0 & Singleton,
+         I0 <: (KS._Impl._Any & Singleton ) ,
+      ] (implRef: Expr[I] )
+         (using Type[I] )
+         (using Type[I0] )
+         // (using ugh: implRef.type = implRef )
+         (using Quotes )
+      {
+         export implAk.*
+
+         private
+         def implAk : _IReExportsFrom[I]
+         = {
+            import quotes.reflect.*
+            given Type[I]
+            = {
+               Type.of[I0]
+               .pipeLooseSelf({
+                  e => {
+                     e
+                  }
+               })
+               .asInstanceOf[Type[I] ]
+            }
+            (for {
+               impl <- {
+                  None
+                  .orElse(Type.valueOfConstant[I] )
+                  .orElse({
+                     for {
+                        case TermRef(prefixT, name) <- Some(TypeRepr.of[I] )
+                        // prefixObj <- Type.valueOfConstant(using prefixT.asType.asInstanceOf[Type[? <: Any ] ] )
+                        // _ <- Option.when(prefixT.sym) {}
+                        cS <- prefixT.classSymbol
+                        r <- {
+                           ;
+
+                           // ;
+                           // report
+                           // .ksErrorAndAbort(s"[KS] TermRef(${prefixT }, '$name' ) -> (in ${cS.fullName } ) ; ", implRef )
+                           /** reflection is unavailable on SJS .. hope that the SJS compiler don't pick this LOC up */
+                           ({
+                              import language.unsafeNulls
+                              for {
+                                 r1 <- {
+                                    ;
+
+                                    // java.lang.invoke.MethodHandles.lookup()
+                                    // .in(java.lang.Class.forName(cS.fullName ) )
+                                    java.lang.Class.forName(cS.fullName )
+                                    .getFields()
+                                    .find(_.getName().startsWith("MODUL") )
+                                    .map(_.get(null ) )
+                                 }
+                              }
+                              yield {
+                                 ;
+
+                                 r1
+                                 .pipeLooseSelf(e => e.getClass().getMethod(name).invoke(e) )
+                                 .asInstanceOf[I]
+                              }
+                           })
+                        }
+                     }
+                     yield {
+                        r
+                     }
+                  } )
+               } : Option[I]
+            } yield _IReExportsFrom(impl) )
+            .getOrElse({
+               report
+               .ksErrorAndAbort(s"cannot re-summon (in spliceOwner: ${Symbol.spliceOwner.fullName } ): ${Type.show[I] } ; ", implRef )
+            })
+         }
+      }
+
+      case class _IReExportsFrom
+         [+I <: (KS._Impl._Any & Singleton )]
+         (impl: I )
+      {
+
+         /** 
+          * cannot safely base the `export` directly on/at `impl`, as
+          * that resulted in the types approx-ed to `?`.
+          * instead,
+          * the `export` needs to be "based on a `val` whose 'underlying type' is not a(other) wildcard-type"
+          * 
+          */
+         val implProxy
+         : impl.type
+         = impl
+
+         export implProxy.{*, given}
+
+      }
+
+      /** 
+       * interestingly,
+       * we still need another level of indirection,
+       * like this one
+       * 
+       */
+      object importable {
+         export sd.{*, given}
+      }
+
+      ;
+   }
+
+   /** 
+    * instances each
+    * does exactly these things
+    * - specialise `_ElementConstructor` and `_Element` and `_ElementFromCls` and `_DataAny`
+    * - provide impl for `propKvPairSeqCheckedImpl` (validation of the props-list)
+    * - provide impl for `mroDynamicRjsElementImpl1` (translated the pre-validated list-of-props, into `_Element` )
+    * 
+    */
    object _ImplImpl {
       ;
 
@@ -251,7 +419,20 @@ object KS
 
          type _ElementConstructor
 
+         // TODO
+         type _Element
+         >: _DataAny & ReactElement.FromCls[Any]
+         <: _DataAny & ReactElement.FromCls[Any]
+
+         // TODO
+         type _ElementFromCls[+C]
+         >: _Element & ReactElement.FromCls[C]
+         <: _Element & ReactElement.FromCls[C]
+
          type _DataAny
+         // TODO remove this pre-bounding
+         >: ReactPropValueAny
+         <: ReactPropValueAny
 
          def mroDynamicRjsElementImpl1
             //
@@ -263,7 +444,7 @@ object KS
             (clsExpr: quoted.Expr[C] )
             (  e1: quoted.Expr[Seq[(String, _DataAny ) ] ] )
             (using quoted.Quotes )
-         : quoted.Expr[ReactElement.FromCls[C] ]
+         : quoted.Expr[_ElementFromCls[C] ]
 
          def propKvPairSeqCheckedImpl
             //
@@ -279,184 +460,6 @@ object KS
       }
 
       ;
-   }
-
-}
-
-extension (quotesReflectReportingModule: quoted.Quotes#reflectModule#reportModule )
-   transparent inline
-   def ksErrorAndAbort(msg: => String, subjectedArea: quoted.Expr[Any] )
-   : Nothing
-   = ksErrorAndAbort(msg)
-   def ksErrorAndAbort(msg: => String )
-   : Nothing
-   = {
-      throw {
-         object ksErrorException extends Exception(msg)
-         ksErrorException
-      }
-   }
-
-// private[avcframewrk]
-object ksImplUtil
-{
-   ;
-
-   import compiletime.*
-   import quoted.*
-
-   // private[avcframewrk]
-   object PlcPacked {
-      ;
-
-      def unapply
-         [E : Type ]
-         (e : Expr[Seq[E] ] )
-         (using Quotes )
-      = {
-         ;
-
-         //
-
-         ;
-         Some(e)
-         .collect({
-            case '{ Seq(${e1 } : _* ) } =>
-               e1
-               .asExprOf[Seq[E ] ]
-         })
-      }
-   }
-
-   def plcPackQuotedVarargs
-      [E : Type ]
-      (expr: Expr[Seq[E] ] )
-      (using Quotes)
-   : Expr[Seq[E] ]
-   = {
-      import quotes.reflect.*
-      expr
-      match {
-         // case Varargs(exprs) =>
-         //    Expr.ofSeq(exprs)
-         case Varargs[E](exprs) =>
-            Expr.ofSeq(exprs)
-         case e =>
-            throw
-               ({
-                  e match {
-                     case CrookedVarargs() =>
-                        ;
-                        new IllegalArgumentException({
-                           s"[plcPackQuotedVarargs crooked varargs] ${Printer.TreeShortCode.asLinebreaking().show(e.asTerm ) } "
-                        } )
-                     case _ =>
-                        ;
-                        new IllegalArgumentException({
-                           s"[plcPackQuotedVarargs match error] ${Printer.TreeShortCode.asLinebreaking().show(e.asTerm ) } "
-                        } )
-                  }
-               })
-      }
-   }
-
-   object VarargsOrSeqLike
-   {
-
-      def unapply
-         [T : Type ]
-         (expr: Expr[Seq[T] ] )
-         (using Quotes)
-      : Option[Seq[Expr[T]]]
-      = {
-         ;
-
-         import quotes.reflect.*
-
-         expr
-
-         match {
-            //
-
-            case Varargs(e) =>
-               Some(e)
-
-            case '{ Seq[t](${ Varargs[T](e) } : _*) } =>
-               /** oh god */
-               Some {
-                  e
-               }
-
-            case _ =>
-               None
-         }
-      }
-   }
-
-   object CrookedVarargs
-   {
-
-      def unapply
-         [T : Type ]
-         (expr: Expr[Seq[T] ] )
-         (using Quotes)
-      // : Option[Seq[Expr[T]]]
-      : Boolean
-      = {
-         ;
-
-         import quotes.reflect.*
-
-         expr
-
-         match {
-            //
-
-            case e if {
-               Printer.TreeCode.show(e.asTerm )
-               .pipeLooseSelf({ val P = (util.matching.Regex.quote(".$asInstanceOf$[_* & _*]") + "\\s*" + "\\z" ).r.unanchored ; <:<.refl[String].andThen(P.unapplySeq(_) ) }.andThen(_.nonEmpty ) )
-            } =>
-               true
-
-            case _ =>
-               // None
-               false
-         }
-      }
-   }
-
-   extension [V] (using ctx: Quotes) (impl: ctx.reflect.Printer[V] ) {
-      //
-
-      /** 
-       * under VSCode,
-       * without line-breaking like this,
-       * would result in extended-duration hang in the "errors" tab
-       * 
-       */
-      def asLinebreaking
-         //
-         (lineWidth : Int = 90, lineSep : String = System.lineSeparator().nn, lnCLimit: Int = 512 )
-      : ctx.reflect.Printer[V]
-      = (d) => {
-         ;
-
-         impl.show(d )
-
-         .grouped(lineWidth )
-
-         .take(lnCLimit)
-
-         .mkString(lineSep )
-
-         // .take({
-         //    // 200
-         //    // 20
-         //    // 50
-         //    // 300
-         //    2000
-         // } )
-      }
    }
 
 }

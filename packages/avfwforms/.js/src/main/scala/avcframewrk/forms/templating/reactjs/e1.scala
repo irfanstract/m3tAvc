@@ -176,7 +176,9 @@ with KS._ImplImpl.Impl
          .pipeLooseSelf({
             //
 
-            case PlcPacked(e) =>
+            // case PlcPacked(e) =>
+            //    e
+            case e @ Varargs(e1) =>
                e
 
             case e @ ksImplUtil.CrookedVarargs() =>
