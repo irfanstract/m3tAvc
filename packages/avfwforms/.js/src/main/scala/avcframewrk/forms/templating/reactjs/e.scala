@@ -106,6 +106,8 @@ object KS
    {
       ;
 
+      import slToExprValueOfGvns.{*, given }
+
       transparent
       inline
       def applyDynamicNamed
@@ -143,6 +145,9 @@ object KS
    object _Impl {
       ;
 
+      type _Any
+      = Impl[?]
+
       class Impl
          [C <: _ImplImpl.Impl & Singleton ]
          (using val ksDefaultImplImpl : C )
@@ -150,6 +155,10 @@ object KS
       AnyRef with ImplCtxsAndThereofTypeReexports
       {
          ;
+
+         ;
+
+         import slToExprValueOfGvns.{*, given }
 
          ;
 
@@ -229,6 +238,8 @@ object KS
 
       trait Impl
       {
+         ;
+
          ;
 
          type _ElementConstructor
