@@ -12,6 +12,12 @@
 
 
 
+import avcframewrk.forms.templating.reactjs.{
+   < ,
+   KS ,
+   ksDefaultReactJsImpl ,
+}
+
 @main
 def runSMain(): Unit
 = {
@@ -46,7 +52,6 @@ def runSMain(): Unit
          //    System.currentTimeMillis().->(fnc )
          //    ({})
          // })
-         import avcframewrk.forms.templating.reactjs.<
          r
          .render((
             rce.createElement("div", null, (
@@ -71,6 +76,9 @@ def runSMain(): Unit
                )
                :+ (
                   <.button(`type` = "button", "do my favourite things" )
+               )
+               :+ (
+                  <.button(`typed` = "button", "do my favourite things" )
                )
                // :+ (
                //    <.span(`class` = "button", "do some simple action" )
@@ -121,6 +129,9 @@ def runSMain(): Unit
                      :+ (
                         <.li(key = "edothesethings", "do those things" )
                      )
+                     :+ (
+                        <.li(keyo = "edothesethings", "do those things" )
+                     )
                      // :+ (
                      //    <.li(key = "edothesethings", "do those things" -> "bar" )
                      // )
@@ -134,6 +145,11 @@ def runSMain(): Unit
       })
    }
 }
+
+// given defaultJsxImpl
+implicit val defaultJsxImpl
+: KS._ImplManifest[ksDefaultReactJsImpl.type ]
+= KS._ImplManifest(ksDefaultReactJsImpl )
 
 
 
