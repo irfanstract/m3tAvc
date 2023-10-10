@@ -43,6 +43,61 @@ object ksImplUtil
    import compiletime.*
    import quoted.*
 
+   // private[avcframewrk]
+   object PlcPacked {
+      ;
+
+      def unapply
+         [E : Type ]
+         (e : Expr[Seq[E] ] )
+         (using Quotes )
+      = {
+         ;
+
+         //
+
+         ;
+         Some(e)
+         .collect({
+            case '{ Seq(${e1 } : _* ) } =>
+               e1
+               .asExprOf[Seq[E ] ]
+         })
+      }
+   }
+
+   def plcPackQuotedVarargs
+      [E : Type ]
+      (expr: Expr[Seq[E] ] )
+      (using Quotes)
+   : Expr[Seq[E] ]
+   = {
+      import quotes.reflect.*
+      expr
+      match {
+         // case Varargs(exprs) =>
+         //    Expr.ofSeq(exprs)
+         case Varargs[E](exprs) =>
+            Expr.ofSeq(exprs)
+         case e =>
+            throw
+               ({
+                  e match {
+                     case CrookedVarargs() =>
+                        ;
+                        new IllegalArgumentException({
+                           s"[plcPackQuotedVarargs crooked varargs] ${Printer.TreeShortCode.asLinebreaking().show(e.asTerm ) } "
+                        } )
+                     case _ =>
+                        ;
+                        new IllegalArgumentException({
+                           s"[plcPackQuotedVarargs match error] ${Printer.TreeShortCode.asLinebreaking().show(e.asTerm ) } "
+                        } )
+                  }
+               })
+      }
+   }
+
    object VarargsOrSeqLike
    {
 
