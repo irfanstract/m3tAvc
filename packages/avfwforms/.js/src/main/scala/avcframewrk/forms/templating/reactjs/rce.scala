@@ -20,7 +20,11 @@ import scalajs.js
 
 export typings.react.mod.{createElement as describeElement }
 
-// export typings.react.mod.ReactElement
+type ReactChildren
+= typings.react.mod.ReactNode
+
+type ReactNode
+= typings.react.mod.ReactNode
 
 type ReactElement
 = typings.react.mod.ReactElement

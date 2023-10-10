@@ -21,91 +21,44 @@ package reactjs
 
 ;
 
-extension (quotesReflectReportingModule: quoted.Quotes#reflectModule#reportModule )
-   transparent inline
-   def ksErrorAndAbort(msg: => String, subjectedArea: quoted.Expr[Any] )
-   : Nothing
-   = ksErrorAndAbort(msg)
-   def ksErrorAndAbort(msg: => String )
-   : Nothing
-   = {
-      throw {
-         object ksErrorException extends Exception(msg)
-         ksErrorException
-      }
-   }
+import compiletime.{ops as _, *}
+import quoted.{runtime as _, *}
+
+export avcframewrk.forms.templating.ext.ks.ksErrorAndAbort
+
+export avcframewrk.forms.templating.ext.ks.valueFromQuotesOption
 
 // private[avcframewrk]
 object ksImplUtil
 {
    ;
 
-   import compiletime.*
-   import quoted.*
-
-   object VarargsOrSeqLike
-   {
+   // private[avcframewrk]
+   object PlcPacked {
+      ;
 
       def unapply
-         [T : Type ]
-         (expr: Expr[Seq[T] ] )
-         (using Quotes)
-      : Option[Seq[Expr[T]]]
+         [E : Type ]
+         (e : Expr[Seq[E] ] )
+         (using Quotes )
       = {
          ;
 
-         import quotes.reflect.*
+         //
 
-         expr
-
-         match {
-            //
-
-            case Varargs(e) =>
-               Some(e)
-
-            case '{ Seq[t](${ Varargs[T](e) } : _*) } =>
-               /** oh god */
-               Some {
-                  e
-               }
-
-            case _ =>
-               None
-         }
+         ;
+         Some(e)
+         .collect({
+            case '{ Seq(${e1 } : _* ) } =>
+               e1
+               .asExprOf[Seq[E ] ]
+         })
       }
    }
 
-   object CrookedVarargs
-   {
-
-      def unapply
-         [T : Type ]
-         (expr: Expr[Seq[T] ] )
-         (using Quotes)
-      // : Option[Seq[Expr[T]]]
-      : Boolean
-      = {
-         ;
-
-         import quotes.reflect.*
-
-         expr
-
-         match {
-            //
-
-            case e if {
-               Printer.TreeCode.show(e.asTerm )
-               .pipeLooseSelf({ val P = (util.matching.Regex.quote(".$asInstanceOf$[_* & _*]") + "\\s*" + "\\z" ).r.unanchored ; <:<.refl[String].andThen(P.unapplySeq(_) ) }.andThen(_.nonEmpty ) )
-            } =>
-               true
-
-            case _ =>
-               // None
-               false
-         }
-      }
+   export avcframewrk.forms.templating.ext.ks.ksImplUtil.{
+      asLinebreaking as _,
+      *, given
    }
 
    extension [V] (using ctx: Quotes) (impl: ctx.reflect.Printer[V] ) {
