@@ -48,12 +48,34 @@ def runSMain(): Unit
          (() => {
             typings.react.mod.AllHTMLAttributes.apply().style
          })
-         // (() => {
-         //    val fnc
-         //    = avcframewrk.forms.templating.reactjs.Em.apply
-         //    System.currentTimeMillis().->(fnc )
-         //    ({})
-         // })
+         (() => {
+            import scala.reflect.Selectable.reflectiveSelectable
+            val fnc
+            = avcframewrk.forms.templating.reactjs.Em.apply
+            System.currentTimeMillis().->(fnc )
+            ({
+               val e = ((e: Any) => Some[e.type](e) )("type: " + compiletime.codeOf(Some(fnc) ) )
+            })
+            ({
+               object byPnfc {
+                  export fnc.apply
+               }
+               // byPnfc.apply(about = ??? )
+            })
+            ({
+               val e
+               = new AnyRef with Selectable {
+                  def apply
+                     (key: Int = 1 )
+                  : Unit
+                  = {}
+               }
+               // val eApplied = e.apply()
+               // eApplied
+               ()
+            })
+            ({})
+         })
          r
          .render((
             rce.createElement("div", null, (
