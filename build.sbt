@@ -38,7 +38,7 @@ lazy val avFwHeadlessUtilityLibProject
 
     avFwAlgebLibProject ,
 
-    avcEvLibProject ,
+    // avcEvLibProject ,
     
   )
 
@@ -48,12 +48,18 @@ lazy val avFwAlgebLibProject
   .asLeafProjectWithNecessarySettings()
   // .settings(libraryDependencies += Build.externalLibraryVersions.comMonix )
 
-lazy val avcEvLibProject
-=
-  (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfgevops" ) )
-  .asLeafProjectWithNecessarySettings()
-  .dependsOn(avFwAlgebLibProject )
-  .withMonix()
+// lazy val avcFormsPredefsProject
+// =
+//   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfwforms-predefs" ) )
+//   .asLeafProjectWithNecessarySettings()
+//   .dependsOn(avFwAlgebLibProject )
+
+// lazy val avcEvLibProject
+// =
+//   (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfgevops" ) )
+//   .asLeafProjectWithNecessarySettings()
+//   .dependsOn(avFwAlgebLibProject )
+//   .withMonix()
 
 lazy val avcFormsProject
 =
@@ -61,10 +67,19 @@ lazy val avcFormsProject
   .asLeafProjectWithNecessarySettings()
   // .dependsOn(avFwHeadlessUtilityLibProject ) /* this pattern is prone to making dependency cycles, and SBT f*c*ed the resol up ☹ */
   .dependsOn(avFwAlgebLibProject )
-  .dependsOn(avcEvLibProject )
+  // .dependsOn(avcFormsPredefsProject )
+  // .dependsOn(avcEvLibProject )
   .withMonix()
   .withComRaquoAirstream()
   .withDevLaminar()
+  .dependsOn(avFwScTProject )
+
+lazy val avcFormsWAuProject
+=
+  (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfwau" ) )
+  .asLeafProjectWithNecessarySettings()
+  .dependsOn(avcFormsProject )
+  .withComRaquoAirstream()
   .dependsOn(avFwScTProject )
 
 lazy val avFwScTProject
@@ -93,9 +108,10 @@ lazy val mainSjs
   .withDbp(mainClassNames = Some("runSMain") )
   // .dependsOn(avFwHeadlessUtilityLibProject ) /* this pattern is prone to making dependency cycles, and SBT f*c*ed the resol up ☹ */
   .dependsOn(avFwAlgebLibProject )
-  .dependsOn(avcEvLibProject )
+  // .dependsOn(avcEvLibProject )
   .dependsOn(avcFormsProject )
   .dependsOn(avFwScTProject )
+  .dependsOn(avcFormsWAuProject )
   .withMonix()
   .withJavaUtilLocaleCQuiroz()
   .withDevLaminar()
