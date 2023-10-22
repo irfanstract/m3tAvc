@@ -23,58 +23,6 @@ object Build {
 
    } /* object vars */
 
-   /**
-    * 
-    * external library versions
-    * 
-    * to avoid problems,
-    * there should only be one art-version for each "artifact name"
-    * (IOW you should avoid using multiple versions at once, like "Monix v3.4 and Monix v3.5 at once" )
-    * 
-    */
-   object externalLibraryVersions {
-
-      import sbt.*
-
-      /** 
-       * the implicit con providing the triple variant of `%`
-       * was not defined within package `sbt.` directly, but
-       * was instead within `org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport`
-       * 
-       */
-      import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
-
-      lazy val orgScalatestLibVer
-        = "3.2.9"
-
-      lazy val comMonixLibraryVer
-         = "3.4.1"
-
-      lazy val comRaquoAirstreamLibVer
-        = "16.0.0"
-
-      lazy val ioOpticsMonocleVersion
-        = "3.2.0"
-
-      lazy val orgTypelevelCatsEffects
-         = identity[ModuleID]( "org.typelevel" %% "cats-effect" % "3.5.1" )
-
-      lazy val comPLoKhotNyukJsonIterLibVer
-        = "2.23.5"
-
-      lazy val orgScalaJsDOmLibVer
-        = "2.4.0"
-
-      lazy val comRaquoLaminarLibVer
-        = "15.0.1"
-
-      /* 
-       * cannot list any `%%%`-ed entry here  --
-       * "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting."
-       */
-
-   } // externalLibraryVersions$
-
    // final
    // lazy val pre
    // : PreBuild.type
@@ -164,6 +112,7 @@ object Build {
           scalacOptions += "-Yexplicit-nulls" ,
           scalacOptions += "-Ysafe-init" ,
 
+          // scalacOptions += "-explain" ,
           scalacOptions += "-feature" ,
           scalacOptions += "-deprecation" ,
           scalacOptions += "-unchecked" ,
@@ -176,40 +125,13 @@ object Build {
           )
           ,
 
-          /* STD LIB DEPENDENCIES */
-
-          libraryDependencies ++= Seq[ModuleID] (
-            "org.scalatest" %%% "scalatest" % externalLibraryVersions.orgScalatestLibVer % Test
-          )
-          ,
-          libraryDependencies += ("org.typelevel"   %%% "cats-core"    % "2.9.0"  ) ,
-          libraryDependencies += ("org.typelevel"   %%% "kittens"      % "3.0.0"  ) ,
-          //
-          libraryDependencies ++= Seq(
-            identity[ModuleID]( "dev.optics" %%% "monocle-core"       % externalLibraryVersions.ioOpticsMonocleVersion )              ,
-            identity[ModuleID]( "dev.optics" %%% "monocle-macro"      % externalLibraryVersions.ioOpticsMonocleVersion )              ,
-            identity[ModuleID]( "dev.optics" %%% "monocle-law"        % externalLibraryVersions.ioOpticsMonocleVersion ) % "test"     ,
-            identity[ModuleID]( "dev.optics" %%% "monocle-refined"    % externalLibraryVersions.ioOpticsMonocleVersion )              ,
-            //
-            // identity[ModuleID]( "io.github.kitlangton" %%% "quotidian" % "0.0.6" )
-            // ,
-          )
-          ,
+          /* 
+           * THE STD LIB DEPENDENCY SPEC
+           * HAS BEEN MOVED BELOW, UNDER `withXMinimumNecessaryBoilerplate`,
+           * CALLED BY `asLeafProjectWithNecessarySettings`
+           */
 
         )
-      }
-
-      lazy val xCompileAllTaskKey = {
-
-        taskKey[Any]("compile all")
-      }
-
-      // TODO
-      case class OfInputTask[R](peer : InputKey[R]) {
-
-        // def value
-        // = peer.evaluated
-
       }
 
       libraryDependencies ++= {
@@ -221,13 +143,89 @@ object Build {
 
       /** 
        * 
-       * https://www.scala-js.org/doc/project/linking-errors.html .
+       * https://www.scala-js.org/doc/project/linking-errors.html ,
+       * necessitating expanding the `%%`s into `%%%`
+       * .
        * also,
        * "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting."
        * 
        */
       implicit class CrossProjectDevLaminarDependencyOps(receiver: CrossProject ) {
         //
+
+        def withOrgScalatestForTests()
+        = {
+          ;
+
+          receiver
+          .settings(libraryDependencies += (
+            "org.scalatest" %%% "scalatest"
+            % "3.2.9"
+            % Test
+          ) )
+        }
+
+        /** TYPICAL UTILITY LIB DEPENDENCIES */
+        def withXMinimumNecessaryBoilerplate()
+        = {
+          ;
+
+          import sbt.Keys._
+
+          // TODO
+          receiver
+          .withOrgScalatestForTests()
+          .withOrgTypelevelCatsCore()
+          .withOrgTypelevelKittens()
+          .withDevMonocle()
+          .withQuotidian()
+        }
+
+        def withOrgTypelevelCatsCore()
+        = {
+          ;
+
+          receiver
+          .settings(libraryDependencies += (
+            "org.typelevel"   %%% "cats-core" 
+            % "2.9.0"
+          ))
+        }
+
+        def withOrgTypelevelKittens()
+        = {
+          ;
+
+          receiver
+          .settings(libraryDependencies += (
+            "org.typelevel"   %%% "kittens"
+            % "3.0.0"  
+          ))
+        }
+
+        def withDevMonocle()
+        = {
+          ;
+
+          import sbt.Keys._
+
+          // TODO
+          receiver
+          .settings(
+            //
+
+            libraryDependencies ++= ((ioOpticsMonocleVersion: String) => Seq[ModuleID] (
+              ( "dev.optics" %%% "monocle-core"       % ioOpticsMonocleVersion )              ,
+              ( "dev.optics" %%% "monocle-macro"      % ioOpticsMonocleVersion )              ,
+              ( "dev.optics" %%% "monocle-law"        % ioOpticsMonocleVersion ) % Test       ,
+              ( "dev.optics" %%% "monocle-refined"    % ioOpticsMonocleVersion )              ,
+              //
+            ))("3.2.0")
+            ,
+            //
+
+          )
+        }
 
         /** 
          * for some reason
@@ -237,7 +235,22 @@ object Build {
         def withJavaUtilLocaleCQuiroz()
         = {
           receiver
-          .jsSettings(libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.2.0" )
+          .jsSettings(libraryDependencies += (
+            "io.github.cquiroz" %%% "scala-java-locales"
+            % "1.2.0"
+          ) )
+        }
+
+        def withQuotidian()
+        = {
+          ;
+
+          receiver
+          .settings(libraryDependencies += (
+            "io.github.kitlangton" %% /* not found for non-JVM */ "quotidian"
+            % "0.0.6"
+            % Compile 
+          ))
         }
 
         /** 
@@ -246,16 +259,18 @@ object Build {
          */
         def withJsonIterLib()
         = {
+          ;
+          val comPLoKhotNyukJsonIterLibVer = "2.23.5"
           receiver
           .settings(
             //
             /* still unsure if these usage of `%%%` is right */
             libraryDependencies ++= Seq(
               // Use the %%% operator instead of %% for Scala.js and Scala Native 
-              "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-core"   % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer
+              "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-core"   % comPLoKhotNyukJsonIterLibVer
               ,
               // Use the "provided" scope instead when the "compile-internal" scope is not supported  
-              "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-macros" % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer % "compile-internal"
+              "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-macros" % comPLoKhotNyukJsonIterLibVer % "compile-internal"
               ,
             )
             ,
@@ -273,7 +288,10 @@ object Build {
         def withComRaquoAirstream()
         = {
           receiver
-          .settings(libraryDependencies += "com.raquo" %%% "airstream" % externalLibraryVersions.comRaquoAirstreamLibVer )
+          .settings(libraryDependencies += (
+            "com.raquo" %%% "airstream"
+            % "16.0.0"
+          ) )
         }
 
         /**
@@ -283,25 +301,29 @@ object Build {
         def withMonix()
         = {
           receiver
-          .jsSettings(libraryDependencies += "io.monix" %%% "monix" % externalLibraryVersions.comMonixLibraryVer )
+          .jsSettings(libraryDependencies += "io.monix" %%% "monix" % "3.4.1" )
+        }
+
+        def withOrgTypelevelCatsEffects()
+        = {
+          ;
+          receiver
+          .settings(libraryDependencies += (
+            "org.typelevel" %%% "cats-effect"
+            % "3.5.1"
+          ) )
         }
 
         def withDevLaminar()
         = {
           receiver
           /* a JS-only library building on `js.dom`. also, Laminar (re)exports Airstream as well, no need to explicitly list it here */
-          .jsSettings(libraryDependencies += "com.raquo" %%% "laminar" % externalLibraryVersions.comRaquoLaminarLibVer )
+          .jsSettings(libraryDependencies += "com.raquo" %%% "laminar" % "15.0.1" )
         }
 
       }
 
       //
-
-      @deprecated("this is a misnomer.")
-      lazy val bci = {
-
-        settingKey[Seq[Task[Any] ] ]("")
-      }
 
       /* see also [https://github.com/portable-scala/sbt-crossproject](`sbt-crossproject`) */
       val suggestedTargetPlatforms: Seq[sbtcrossproject.Platform ]
@@ -330,20 +352,8 @@ object Build {
             .jsSettings(
             //
 
-            // /** 
-            //  * 
-            //  * Depend on the scalajs library.
-            //  * 
-            //  * repeated here.
-            //  * work-around for Bloop
-            //  * 
-            //  */
-            // libraryDependencies += (
-            //   scalaJsStdLibDepSpec
-            // )
-            // ,
-
             // Tell Scala.js that this is an application with a main method
+            // I'll keep it here for quite a while
             scalaJSUseMainModuleInitializer := true
             ,
 
@@ -354,19 +364,20 @@ object Build {
             * - emit as few (large) modules as possible for all other classes
             *   (in particular, for the standard library)
             */
-            scalaJSLinkerConfig ~= {
+            scalaJSLinkerConfig ~= (s0 => {
 
-               import org.scalajs.linker.interface.ModuleSplitStyle
+              import org.scalajs.linker.interface.ModuleSplitStyle
 
-               _.withModuleKind(ModuleKind.ESModule)
-                  .withModuleSplitStyle(
-                  ModuleSplitStyle.SmallModulesFor(List("scm2023021")))
-            },
+              s0
+              .withModuleKind(ModuleKind.ESModule)
+              .withModuleSplitStyle(
+                ModuleSplitStyle.FewestModules )
+            }),
 
             /* 
              * 
-             * otherwise, one'll get `Error` when it needs to be `RuntimeException` instead.
              * https://www.scala-js.org/doc/semantics.html .
+             * otherwise, one'll get `Error` when it needs to be `RuntimeException` instead.
              * 
              */
             scalaJSLinkerConfig ~= (c => (
@@ -377,26 +388,36 @@ object Build {
             ) )
             ,
 
+            /* can't do this checking since Metals won't put the SBT Bloop Plugin outside usage of it */
             // /**
             //  * Bloop
             //  * refuses to fully evaluate the std fields, citing the issues with side-effects, and instead
             //  * evaluates the "proxy" fields, in this case `bloopScalaJSModuleKind`
             //  */
-            // bloopScalaJSModuleKind := Some("ESModule")
-            // ,
-            // bloopScalaJSStage := Some("fastopt")
+            // bloopScalaJSModuleKind := {
+            //   throw new IllegalStateException(s"unsupported Bloop-import ; please switch to SBT-BSP")
+            // }
             // ,
 
-            /* Depend on the scalajs-dom library.
-            * It provides static types for the browser DOM APIs.
-            */
-            libraryDependencies += "org.scala-js" %%% "scalajs-dom" % externalLibraryVersions.orgScalaJsDOmLibVer
+            /* Depend on the SJS-idiomatic DOM library.
+             * It provides static types for ECMA-262 and one for Browser DOM APIs.
+             */
+            /* 
+             * see also https://scalablytyped.org/docs/conversion-options#stusescalajsdom 
+             */
+            libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.4.0"
             ,
+            org.scalablytyped.converter.plugin.ScalablyTypedPluginBase.autoImport.stUseScalaJsDom := {
+              false
+            }
+            ,
+            // scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.npmDependencies += (
+            //   "std" ->
+            //   "^4.3"
+            // )
+            // ,
 
             //
-
-            // bloop.integrations.sbt.ScalaJsKeys.scalaJSEmitSourceMaps := true
-            // ,
 
             )
          }
@@ -415,10 +436,33 @@ object Build {
 
             //
           )
+          .withXMinimumNecessaryBoilerplate()
           .withSuggestedPlatformSpecifics()
           .withJsonIterLib()
         }
 
+      }
+
+      implicit class ScpScalablyTypedBuilderOps(receiver: CrossProject ) {
+        //
+
+        import org.scalablytyped.converter.plugin.*
+
+        import org.scalablytyped.converter.plugin.ScalablyTypedPluginBase.autoImport.*
+        import org.scalablytyped.converter.plugin.ScalablyTypedConverterGenSourcePlugin.autoImport.*
+        import org.scalablytyped.converter.plugin.ScalablyTypedConverterPlugin.autoImport.*
+        import org.scalablytyped.converter.plugin.ScalablyTypedConverterExternalNpmPlugin.autoImport.*
+
+        def asScalablyTypedImportRepo()
+        : CrossProject
+        = {
+          receiver
+          // TODO
+          .asLeafProjectWithNecessarySettings()
+          .withScalablyTypedConv()
+        }
+
+        //
       }
 
       implicit class ScpScalablyTypedOps(receiver: CrossProject ) {
@@ -616,17 +660,6 @@ object Build {
 
             /* etc */
 
-            // bci += {
-            //   Def.task[Any ] ({
-            //     println(s"bci in Settings")
-            //     runSge()
-            //     Seq()
-            //   })
-            //   .triggeredBy(Compile / Keys.compile )
-            //   .taskValue
-            // }
-            // ,
-
           )
           .jsSettings(
             //
@@ -657,20 +690,6 @@ object Build {
             ,
 
             /* etc */
-
-            // Keys.bspSbtEnabled := true
-            // ,
-
-            // bci += {
-            //   Def.task[Any ] ({
-            //     println(s"bci in JsSettings")
-            //     runSge()
-            //     Seq()
-            //   })
-            //   .triggeredBy(Compile / Keys.compile )
-            //   .taskValue
-            // }
-            // ,
 
           )
         }
