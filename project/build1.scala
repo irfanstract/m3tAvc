@@ -23,58 +23,6 @@ object Build {
 
    } /* object vars */
 
-   /**
-    * 
-    * external library versions
-    * 
-    * to avoid problems,
-    * there should only be one art-version for each "artifact name"
-    * (IOW you should avoid using multiple versions at once, like "Monix v3.4 and Monix v3.5 at once" )
-    * 
-    */
-   object externalLibraryVersions {
-
-      import sbt.*
-
-      /** 
-       * the implicit con providing the triple variant of `%`
-       * was not defined within package `sbt.` directly, but
-       * was instead within `org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport`
-       * 
-       */
-      import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
-
-      lazy val orgScalatestLibVer
-        = "3.2.9"
-
-      lazy val comMonixLibraryVer
-         = "3.4.1"
-
-      lazy val comRaquoAirstreamLibVer
-        = "16.0.0"
-
-      lazy val ioOpticsMonocleVersion
-        = "3.2.0"
-
-      lazy val orgTypelevelCatsEffects
-         = identity[ModuleID]( "org.typelevel" %% "cats-effect" % "3.5.1" )
-
-      lazy val comPLoKhotNyukJsonIterLibVer
-        = "2.23.5"
-
-      lazy val orgScalaJsDOmLibVer
-        = "2.4.0"
-
-      lazy val comRaquoLaminarLibVer
-        = "15.0.1"
-
-      /* 
-       * cannot list any `%%%`-ed entry here  --
-       * "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting."
-       */
-
-   } // externalLibraryVersions$
-
    // final
    // lazy val pre
    // : PreBuild.type
@@ -114,6 +62,12 @@ object Build {
     * 
     */
    object mainly
+   extends
+   AnyRef
+   with StdLibBuild
+   with ScalablyTypedBuildUtil
+   with SpecialBspConfigs
+   with SpecialSjsBuildConfigs
    {
       //
 
@@ -164,6 +118,7 @@ object Build {
           scalacOptions += "-Yexplicit-nulls" ,
           scalacOptions += "-Ysafe-init" ,
 
+          // scalacOptions += "-explain" ,
           scalacOptions += "-feature" ,
           scalacOptions += "-deprecation" ,
           scalacOptions += "-unchecked" ,
@@ -176,40 +131,13 @@ object Build {
           )
           ,
 
-          /* STD LIB DEPENDENCIES */
-
-          libraryDependencies ++= Seq[ModuleID] (
-            "org.scalatest" %%% "scalatest" % externalLibraryVersions.orgScalatestLibVer % Test
-          )
-          ,
-          libraryDependencies += ("org.typelevel"   %%% "cats-core"    % "2.9.0"  ) ,
-          libraryDependencies += ("org.typelevel"   %%% "kittens"      % "3.0.0"  ) ,
-          //
-          libraryDependencies ++= Seq(
-            identity[ModuleID]( "dev.optics" %%% "monocle-core"       % externalLibraryVersions.ioOpticsMonocleVersion )              ,
-            identity[ModuleID]( "dev.optics" %%% "monocle-macro"      % externalLibraryVersions.ioOpticsMonocleVersion )              ,
-            identity[ModuleID]( "dev.optics" %%% "monocle-law"        % externalLibraryVersions.ioOpticsMonocleVersion ) % "test"     ,
-            identity[ModuleID]( "dev.optics" %%% "monocle-refined"    % externalLibraryVersions.ioOpticsMonocleVersion )              ,
-            //
-            // identity[ModuleID]( "io.github.kitlangton" %%% "quotidian" % "0.0.6" )
-            // ,
-          )
-          ,
+          /* 
+           * THE STD LIB DEPENDENCY SPEC
+           * HAS BEEN MOVED BELOW, UNDER `withXMinimumNecessaryBoilerplate`,
+           * CALLED BY `asLeafProjectWithNecessarySettings`
+           */
 
         )
-      }
-
-      lazy val xCompileAllTaskKey = {
-
-        taskKey[Any]("compile all")
-      }
-
-      // TODO
-      case class OfInputTask[R](peer : InputKey[R]) {
-
-        // def value
-        // = peer.evaluated
-
       }
 
       libraryDependencies ++= {
@@ -219,93 +147,30 @@ object Build {
         Seq()
       }
 
-      /** 
-       * 
-       * https://www.scala-js.org/doc/project/linking-errors.html .
-       * also,
-       * "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting."
-       * 
-       */
-      implicit class CrossProjectDevLaminarDependencyOps(receiver: CrossProject ) {
-        //
-
-        /** 
-         * for some reason
-         * `java.util.Locale` fails to link out-of-the-box
-         * 
-         */
-        def withJavaUtilLocaleCQuiroz()
-        = {
-          receiver
-          .jsSettings(libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.2.0" )
-        }
-
-        /** 
-         * `plokhotnyuk`'s `jsoniter`
-         * 
-         */
-        def withJsonIterLib()
-        = {
-          receiver
-          .settings(
-            //
-            /* still unsure if these usage of `%%%` is right */
-            libraryDependencies ++= Seq(
-              // Use the %%% operator instead of %% for Scala.js and Scala Native 
-              "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-core"   % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer
-              ,
-              // Use the "provided" scope instead when the "compile-internal" scope is not supported  
-              "com.github.plokhotnyuk.jsoniter-scala" %%% "jsoniter-scala-macros" % externalLibraryVersions.comPLoKhotNyukJsonIterLibVer % "compile-internal"
-              ,
-            )
-            ,
-          )
-        }
-
-        /**
-         * `com.raquo.airstream`.
-         * a spin-off from Laminar, solely dealing with FRP.
-         * 
-         * Airstream makes distinction between `EventStream` and `Signal` ;
-         * Monix doesn't do this
-         * 
-         */
-        def withComRaquoAirstream()
-        = {
-          receiver
-          .settings(libraryDependencies += "com.raquo" %%% "airstream" % externalLibraryVersions.comRaquoAirstreamLibVer )
-        }
-
-        /**
-         * Monix
-         * 
-         */
-        def withMonix()
-        = {
-          receiver
-          .jsSettings(libraryDependencies += "io.monix" %%% "monix" % externalLibraryVersions.comMonixLibraryVer )
-        }
-
-        def withDevLaminar()
-        = {
-          receiver
-          /* a JS-only library building on `js.dom`. also, Laminar (re)exports Airstream as well, no need to explicitly list it here */
-          .jsSettings(libraryDependencies += "com.raquo" %%% "laminar" % externalLibraryVersions.comRaquoLaminarLibVer )
-        }
-
-      }
-
       //
-
-      @deprecated("this is a misnomer.")
-      lazy val bci = {
-
-        settingKey[Seq[Task[Any] ] ]("")
-      }
 
       /* see also [https://github.com/portable-scala/sbt-crossproject](`sbt-crossproject`) */
       val suggestedTargetPlatforms: Seq[sbtcrossproject.Platform ]
       = Seq(JSPlatform)
+
+      implicit class XCrossProjectSuggestedSourceArtefactSettingsOps(receiver: CrossProject ) {
+
+        def asLeafProjectWithNecessarySettings()
+        : CrossProject
+        = {
+          receiver
+          .settings(
+
+            computeNecessaryProjectSrcCodeManifest() ,
+
+            //
+          )
+          .withXMinimumNecessaryBoilerplate()
+          .withSuggestedPlatformSpecifics()
+          .withJsonIterLib()
+        }
+
+      }
 
       implicit class XCrossProjectBuilderSuggestedSettingsOps(receiver: CrossProject.Builder ) {
 
@@ -327,197 +192,299 @@ object Build {
          = {
             receiver
             .withJavaUtilLocaleCQuiroz()
-            .jsSettings(
-            //
-
-            // /** 
-            //  * 
-            //  * Depend on the scalajs library.
-            //  * 
-            //  * repeated here.
-            //  * work-around for Bloop
-            //  * 
-            //  */
-            // libraryDependencies += (
-            //   scalaJsStdLibDepSpec
-            // )
-            // ,
-
-            // Tell Scala.js that this is an application with a main method
-            scalaJSUseMainModuleInitializer := true
-            ,
-
-            /* Configure Scala.js to emit modules in the optimal way to
-            * connect to Vite's incremental reload.
-            * - emit ECMAScript modules
-            * - emit as many small modules as possible for classes in the "livechart" package
-            * - emit as few (large) modules as possible for all other classes
-            *   (in particular, for the standard library)
-            */
-            scalaJSLinkerConfig ~= {
-
-               import org.scalajs.linker.interface.ModuleSplitStyle
-
-               _.withModuleKind(ModuleKind.ESModule)
-                  .withModuleSplitStyle(
-                  ModuleSplitStyle.SmallModulesFor(List("scm2023021")))
-            },
-
+            .toSwitchLinkerToEsm()
             /* 
-             * 
-             * otherwise, one'll get `Error` when it needs to be `RuntimeException` instead.
-             * https://www.scala-js.org/doc/semantics.html .
-             * 
-             */
-            scalaJSLinkerConfig ~= (c => (
-               c.withSemantics(s => (
-                  s
-                  .withAsInstanceOfs(org.scalajs.linker.interface.CheckedBehavior.Compliant )
-               ) )
-            ) )
-            ,
+              * 
+              * https://www.scala-js.org/doc/semantics.html .
+              * otherwise, one'll get `Error` when it needs to be `RuntimeException` instead.
+              * 
+              */
+            .withMaintainedClassCastExceptioning()
+            // .asBrowserBasedApp()
+            .withWebCtxStdLib()
+            // TODO
+            .withSuggestedResFilesOps()
+         }
 
-            // /**
-            //  * Bloop
-            //  * refuses to fully evaluate the std fields, citing the issues with side-effects, and instead
-            //  * evaluates the "proxy" fields, in this case `bloopScalaJSModuleKind`
-            //  */
-            // bloopScalaJSModuleKind := Some("ESModule")
-            // ,
-            // bloopScalaJSStage := Some("fastopt")
-            // ,
-
-            /* Depend on the scalajs-dom library.
-            * It provides static types for the browser DOM APIs.
-            */
-            libraryDependencies += "org.scala-js" %%% "scalajs-dom" % externalLibraryVersions.orgScalaJsDOmLibVer
-            ,
-
+         def withMainClass
             //
+            (mainClassNames: Option[String])
+         : CrossProject
+         = {
+            ;
+            receiver
+            .settings(
+              //
 
-            // bloop.integrations.sbt.ScalaJsKeys.scalaJSEmitSourceMaps := true
-            // ,
+              (Compile / Keys.mainClass) := mainClassNames
+              ,
+
+            )
+            .jsSettings(
+              //
+
+              // Tell Scala.js that this is an application with a main method
+              // I'll keep it here for quite a while
+              scalaJSUseMainModuleInitializer := true
+              ,
+
+              /* Configure Scala.js to emit modules in the optimal way to
+               * connect to Vite's incremental reload.
+               * - emit as many small modules as possible for classes in the "livechart" package
+               * - emit as few (large) modules as possible for all other classes
+               *   (in particular, for the standard library)
+               */
+              scalaJSLinkerConfig ~= (s0 => {
+
+                import org.scalajs.linker.interface.ModuleSplitStyle
+
+                s0
+                .withModuleSplitStyle(
+                  ModuleSplitStyle.FewestModules )
+              }),
+
+            )
+         }
+
+         def asBrowserBasedApp
+            //
+            (mainClassNames: Option[String])
+         : CrossProject
+         = {
+            ;
+            receiver
+            .withMainClass(mainClassNames )
+            .withWebCtxStdLib()
+         }
+
+         /* 
+          * 
+          * https://www.scala-js.org/doc/semantics.html .
+          * otherwise, one'll get `Error` when it needs to be `RuntimeException` instead.
+          * 
+          */
+         def withMaintainedClassCastExceptioning()
+         : CrossProject
+         = {
+            ;
+            receiver
+            .jsSettings(
+              //
+
+              scalaJSLinkerConfig ~= (c => (
+                 c.withSemantics(s => (
+                    s
+                    .withAsInstanceOfs(org.scalajs.linker.interface.CheckedBehavior.Compliant )
+                 ) )
+              ) )
+              ,
 
             )
          }
 
       }
 
-      implicit class XCrossProjectSuggestedSourceArtefactSettingsOps(receiver: CrossProject ) {
+      implicit class XCrossProjectSuggestedResFilesOps(receiver: CrossProject ) {
+        //
 
-        def asLeafProjectWithNecessarySettings()
+        def withSuggestedResFilesOps()
         : CrossProject
         = {
           receiver
           .settings(
-
-            computeNecessaryProjectSrcCodeManifest() ,
-
             //
+            (Compile / Keys.sourceGenerators) ++= {
+              // (
+              //   Nil
+              //   :+ (Keys.unmanagedResourceDirectories )
+              //   :+ (Keys.unmanagedSourceDirectories )
+              // )
+              // .map(key => {
+              //   ((), bsk(srcDirsConfig = key))
+              // })
+              // .map(e => e._2.taskValue )
+              (
+                Nil
+                :+ bsk(srcDirsConfig = Keys.unmanagedResourceDirectories ).taskValue
+                :+ bsk(srcDirsConfig = Keys.unmanagedSourceDirectories   ).taskValue
+              )
+            }
+            ,
           )
-          .withSuggestedPlatformSpecifics()
-          .withJsonIterLib()
         }
 
-      }
+        // workaround to compiler failure due to exception
+        private
+        def bsk
+          (srcDirsConfig: SettingKey[Seq[File]] )
+        = Def.taskDyn {
+          ;
 
-      implicit class ScpScalablyTypedOps(receiver: CrossProject ) {
-        //
+          ({
+            ;
 
-        import org.scalablytyped.converter.plugin.*
+            val logger
+            = {
+              (Keys.streams).value
+              .log
+            }
 
-        import org.scalablytyped.converter.plugin.ScalablyTypedPluginBase.autoImport.*
-        import org.scalablytyped.converter.plugin.ScalablyTypedConverterGenSourcePlugin.autoImport.*
-        import org.scalablytyped.converter.plugin.ScalablyTypedConverterPlugin.autoImport.*
-        import org.scalablytyped.converter.plugin.ScalablyTypedConverterExternalNpmPlugin.autoImport.*
+            val destDir
+            = {
+              (Compile / Keys.sourceManaged).value
+            } : File
 
-        def withScalablyTypedConv()
+            (Compile / srcDirsConfig).value
+            .map(rootDir => {
+              // printAllResFilesIn(rootDir )(logger )
+              // (() -> Seq() )
+              ({
+                ;
+
+                toTranslateAllResFilesIn(srcRoot = rootDir )(destDir = destDir )
+              })
+            })
+            match { case tasks => {
+              // Def.sequential(tasks)
+              tasks
+              .foldLeft[Def.Initialize[Task[Seq[File] ] ] ](Def.task(Seq() ) )((t0, t1) => Def.task({ t0.value ++ t1.value }) )
+            } }
+          })
+        }
+
+        // TODO
+        /* no need to restrict to JS ; we're only doing logging here */
+        def printAllResFilesIn
+          (f: File )
+          (logger : Logger )
+        : Unit
         = {
-          receiver
-          .platformsEnablePlugins(JSPlatform )(ScalablyTypedConverterPlugin )
-          .jsSettings(
-            //
-            /* ERROR Unable to reload workspace: scalaJSModuleKind must be set to ModuleKind.CommonJSModule in projects where ScalaJSBundler plugin is enabled */
-            scalaJSLinkerConfig ~= {
+          //
+          // val logger = Keys.streams.value.log
+          logger.info("traversing, for resource files: " + f )
+          import sbt.io.*
+          for (itemPath <- PathFinder(f).descendantsExcept("*.css", ".ignore").get.take(15 ) ) {
+            logger.info("resource file: " + itemPath )
+          }
+        }
 
-              //  import org.scalajs.linker.interface.ModuleSplitStyle
+        // TODO
+        def toTranslateAllResFilesIn
+          (srcRoot: File )
+          (destDir : File )
+        = Def.task {
+          //
+          def qtd(value: String)
+          = "\"" + value + "\""
+          def qtdPath(value: java.nio.file.Path)
+          = {
+            import scala.jdk.CollectionConverters.*
+            "\"" + value.iterator.asScala.toIndexedSeq.map(_.toString() ).mkString("/") + "\""
+          }
+          val logger
+          = Keys.streams.value.log
+          val platformLetter = crossProjectPlatform.value.identifier
+          import sbt.io.*
+          logger.debug(s"toTranslateAllResFilesIn: " )
+          logger.debug(s"for src dir $srcRoot -> dest dir $destDir " )
+          case class SpecialTranslateRelativePathIntoPkgAndClassName
+            (itemRelativePath: File )
+          {
+            ;
 
-               _.withModuleKind(ModuleKind.CommonJSModule)
-            },
-          )
+            val sFullName
+            = {
+              itemRelativePath
+              .toString()
+              .replace("\\", "/")
+              .replaceFirst("\\A\\.\\/", "")
+              .replace(".", "_")
+              .split("\\/")
+              .toIndexedSeq
+            }
+
+            val sPkgName :+ sLeafName
+            = sFullName
+          }
+          for (itemRelativePath <- {
+            PathFinder(srcRoot).descendantsExcept("*.css", ".ignore").get
+            .map(itemAbsPath => {
+              srcRoot
+              .relativize(itemAbsPath ).get
+            } )
+          } )
+          yield {
+            // logger.info("resource file: " + itemPath )
+            val prs = SpecialTranslateRelativePathIntoPkgAndClassName(itemRelativePath = itemRelativePath )
+            import prs.{itemRelativePath => _ , sLeafName => sFileLeafName , _}
+            // TODO
+            (for (
+              (generatedFileContent, destPath) <- Some( {
+                //
+                ;
+                val finalLeafName
+                = s"${sFileLeafName}_${platformLetter}Asset"
+                ;
+                (
+                  Seq()
+                  .++({
+                    sPkgName
+                    .map("package " + _)
+                  })
+                  .:+("" )
+                  // .:+("import typings.{std as domItc } " )
+                  // .:+("import typings.std.{global as dom } " )
+                  .:+("" )
+                  .:+(s"/**" )
+                  .:+(s" * generated from" )
+                  .:+(s" * file `${itemRelativePath }` in src-tree `${srcRoot }` " )
+                  .:+(s" * for import/reference from Scala ." )
+                  .:+(s" */ " )
+                  // .:+(s"object $finalLeafName {" )
+                  // // .:+(s"  scala.util.Try({" )
+                  // // .:+(s"    val href = ${ } " )
+                  // // .:+(s"    dom.document.appendChild(dom.document.createElement(\"div\") ) " )
+                  // // .:+(s"    .innerHTML = \"<link rel=stylesheet href >\" " )
+                  // // .:+(s"  }) " )
+                  // // .:+(s"  .recover(z => { " )
+                  // // .:+(s"    dom.console.info(${"\"cannot do CSS injection:\"" }, z.toString() )   " )
+                  // // .:+(s"  } ) " )
+                  // .:+(s"} // $finalLeafName " )
+                  .:+("final /* works-around the \"not a legal path\" complaint */" )
+                  .:+(s"lazy val $finalLeafName " )
+                  .:+(s"= avcframewrk.forms.templating.assetsymbolism.`%%`( " )
+                  .:+(s"  symbolisedName = ${qtd(finalLeafName ) } , " )
+                  .:+(s"  itemRelativePath = ${qtdPath(itemRelativePath.toPath ) } , " )
+                  .:+(s"  srcRoot = ${qtdPath(srcRoot.toPath ) } , " )
+                  .:+(s") " )
+                  .:+("" )
+                  .mkString("\r\n")
+                ) : String
+              } , {
+                Some(itemRelativePath)
+                .map( { s => new File(s.toString() + ".scala") })
+                // .map( { s => (new File("scala") ).toPath .resolve(s.toPath() ) .toFile })
+                .map( { s => destDir.toPath .resolve(s.toPath() ) .toFile })
+                .get
+              } : File )
+            )
+            yield {
+              ;
+              logger.info(s"generating $destPath " )
+              ;
+              logger.info("contents: " + generatedFileContent )
+              IO.write(destPath, generatedFileContent : String )
+              ;
+              (() , destPath)
+            })
+            .get._2
+          }
         }
 
         //
       }
 
       /* (with)in-chain utils */
-
-      /**
-       * 
-       * runs `println(value)`.
-       * 
-       * */
-      def kPrintln(value: Any)
-      = println(value)
-
-      /*  
-       * https://github.com/sbt/sbt/blob/ecfb0624e911798a6d2bdf1f6a7c45acb1c59b1e/main/src/main/scala/sbt/internal/server/BuildServerProtocol.scala
-       * .
-       */
-      object bspConfigs
-      {
-
-        //
-
-        /** 
-         * 
-         * `bspBuildTargetCompile`.
-         * scoped at `Global`.
-         * 
-         * an `InputKey` rather than a `TaskKey` !!!
-         * 
-         */
-        lazy val forBuildTargetCompile
-        = {
-          //
-
-          Global / Keys.bspBuildTargetCompile
-        }
-
-        /** 
-         * 
-         * `bspBuildTargetCompileItem`.
-         * scoped at `phase`, which will need to be one of `Compile`, `Test`, `IntegrationTest`.
-         * 
-         */
-        def forBuildTargetCompileItemAt(phase: Configuration)
-        = {
-          //
-
-          phase / Keys.bspBuildTargetCompileItem
-        }
-
-      }
-
-      object sJsTasks
-      {
-
-        //
-
-        def fastLinkDuring(Phase1 : Configuration)
-        : Def.Initialize[Task[Seq[File] ] ]
-        = {
-          //
-
-          Def.task[Seq[File] ] ({
-            kPrintln(s"invoking FastLinkJs")
-            val fjsv = (Phase1 / fastLinkJS).value
-            kPrintln(s"fjsv: ${fjsv}")
-            Seq()
-          })
-        }
-
-      }
 
       /**
        * 
@@ -537,20 +504,6 @@ object Build {
         .printStackTrace()
       }
 
-      @deprecated("renamed into 'sJsTasks.fastLinkDuring(Phase1 = Phase1 )'.")
-      def fjsHighLevelTaskIn(Phase1 : Configuration)
-      : Def.Initialize[Task[Seq[File] ] ]
-      = {
-        //
-
-        sJsTasks.fastLinkDuring(Phase1 = Phase1)
-      }
-
-      @deprecated("renamed into 'fjsHighLevelTaskIn(Phase1 = Compile )'.")
-      private[mainly]
-      def fjsHighLevelTask
-      = fjsHighLevelTaskIn(Phase1 = Compile )
-
       implicit class CrossProjectDbpOPs(receiver: CrossProject)
       {
 
@@ -562,72 +515,65 @@ object Build {
           //
           
           receiver
+          
+          .asBrowserBasedApp(mainClassNames )
 
-          .settings(
-            //
+          // .settings(
+          //   //
 
-            Compile / Keys.compile := {
-              //
+          //   Compile / Keys.compile := {
+          //     //
 
-              val value = (Compile / Keys.compile).value
-              kPrintln(s"done Compile:Compile")
-              value
-            }
-            ,
+          //     val value = (Compile / Keys.compile).value
+          //     kPrintln(s"done Compile:Compile")
+          //     value
+          //   }
+          //   ,
 
-            Compile / Keys.compileIncremental := {
-              //
+          //   Compile / Keys.compileIncremental := {
+          //     //
 
-              val value = (Compile / Keys.compileIncremental).value
-              kPrintln(s"done Compile:compileIncremental")
-              value
-            }
-            , 
+          //     val value = (Compile / Keys.compileIncremental).value
+          //     kPrintln(s"done Compile:compileIncremental")
+          //     value
+          //   }
+          //   , 
 
-            bspConfigs.forBuildTargetCompile := {
-              //
+          //   bspConfigs.forBuildTargetCompile := {
+          //     //
 
-              val value = (bspConfigs.forBuildTargetCompile ).evaluated
-              kPrintln(s"done ${bspConfigs.forBuildTargetCompile }")
-              value
-            }
-            , 
+          //     val value = (bspConfigs.forBuildTargetCompile ).evaluated
+          //     kPrintln(s"done ${bspConfigs.forBuildTargetCompile }")
+          //     value
+          //   }
+          //   , 
 
-            bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) := {
-              //
+          //   bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) := {
+          //     //
 
-              val value = (bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) ).value
-              kPrintln(s"done ${bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) } ; exit-code ${value } ")
-              value
-            }
-            ,
+          //     val value = (bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) ).value
+          //     kPrintln(s"done ${bspConfigs.forBuildTargetCompileItemAt(phase = Compile ) } ; exit-code ${value } ")
+          //     value
+          //   }
+          //   ,
 
-            (Compile / Keys.sourceGenerators) += {
-              //
+          //   (Compile / Keys.sourceGenerators) += {
+          //     //
 
-              Def.task[Seq[File] ] ({
-                runSge()
-                Seq()
-              })
-              .taskValue
-              // .triggeredBy((Compile / fastLinkJS) )
-            }
-            ,
+          //     Def.task[Seq[File] ] ({
+          //       runSge()
+          //       Seq()
+          //     })
+          //     .taskValue
+          //     // .triggeredBy((Compile / fastLinkJS) )
+          //   }
+          //   ,
 
-            /* etc */
+          //   /* etc */
 
-            // bci += {
-            //   Def.task[Any ] ({
-            //     println(s"bci in Settings")
-            //     runSge()
-            //     Seq()
-            //   })
-            //   .triggeredBy(Compile / Keys.compile )
-            //   .taskValue
-            // }
-            // ,
-
-          )
+          // )
+          .jsEnablePlugins(scalajsbundler.sbtplugin.ScalaJSBundlerPlugin )
+          .withRelevantScJsBundlerSpecificSetup(Compile )
           .jsSettings(
             //
 
@@ -637,6 +583,8 @@ object Build {
               val value = (bspConfigs.forBuildTargetCompile ).evaluated
               kPrintln(s"done Compile:${bspConfigs.forBuildTargetCompile.toString }")
               fjsHighLevelTask.value
+              // ({ ; (Compile / org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.fullOptJS / scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.webpack ).value })
+              sJsTasks.bundleWithWebpackTaskDuring(Compile ).value
               value
             }
             ,
@@ -652,25 +600,8 @@ object Build {
               // .triggeredBy((Compile / fastLinkJS) )
             }
             , 
-            
-            (Compile / Keys.mainClass) := mainClassNames
-            ,
 
             /* etc */
-
-            // Keys.bspSbtEnabled := true
-            // ,
-
-            // bci += {
-            //   Def.task[Any ] ({
-            //     println(s"bci in JsSettings")
-            //     runSge()
-            //     Seq()
-            //   })
-            //   .triggeredBy(Compile / Keys.compile )
-            //   .taskValue
-            // }
-            // ,
 
           )
         }

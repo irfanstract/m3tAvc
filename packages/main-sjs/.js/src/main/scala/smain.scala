@@ -12,6 +12,10 @@
 
 
 
+import scalajs.js
+
+import typings.{std as dom }
+
 @main
 def runSMain(): Unit
 = {
@@ -21,41 +25,43 @@ def runSMain(): Unit
    ()
 
    locally {
-      import java.util.Locale
-      import org.scalajs.dom
+      ;
       
       ;
 
-      object rce {
-         /* don't use `typings.react.global.React` */
-         export typings.react.mod.{
-            createElement ,
-            createContext ,
-         }
-      }
-
       ({
-         val r = typings.reactDom.clientMod.createRoot(dom.document.querySelector("#app") )
          // (typings.react.mod. )
-         r
+         mainAppMountRoot
          .render((
-            rce.createElement("div", null, (
-               Seq()
-               :+ rce.createElement("p", null, "hello!" )
-               // :+ rce.createElement("a", scalajs.js.Dictionary(("href", "javascript:console.log(\"opening the tutorial...\")" )), "consider reading the tutorial for more abt it." )
-               :+ (
-                  rce.createElement(
-                     "a",
-                     typings.react.mod.Attributes().set("href" , "javascript:console.log(\"opening the tutorial...\")" ) ,
-                     "consider reading the tutorial for more abt it." ,
-                  )
-               )
-            ) : _* )
+            rce.describeElement(rce.example23._C , null )
          ))
       })
+
+      dom.global.console.log("[main] starting 'runLocalStorageDemoAsync' " )
+
+      runLocalStorageDemoAsync()
+      .`catch`({
+            //
+
+            case z : js.JavaScriptException =>
+               dom.global.console.warn(z.exception )
+               // throw new MspError(z)
+
+            case util.control.NonFatal(z : Exception) =>
+               throw z
+            case z =>
+               throw js.JavaScriptException(z)
+      })
+      .`then`(_ => {
+         ;
+
+         dom.global.console.log("[main] done done with 'runLocalStorageDemoAsync' " )
+      })
+
+
+
    }
 }
-
 
 
 
