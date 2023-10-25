@@ -31,6 +31,12 @@ type InstanceOf[+C]
    >: Singleton & C
    <: Singleton & C
 
+export monocle.Lens
+
+export monocle.{Prism as Extractor }
+export monocle.{Prism as Selector }
+export monocle.{Prism as Matcher }
+
 
 
 
