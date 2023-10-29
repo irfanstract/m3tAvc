@@ -171,7 +171,7 @@ trait RceUndoAndRedoEssentials
       = ReactComponent1.describe((_: Any ) => {
          ;
          import avcframewrk.forms.documentstatemgmt.UndoAndRedo
-         val undoAndRedoImpl = SelfContUndoRedoHook.useForT[String] (initialValue = "this is the field's initial value")
+         val undoAndRedoImpl = SelfContUndoRedoHook.useForT[String] (initialValue = "this is the field's initial value, and then")
          import undoAndRedoImpl.{evs, updateEVs }
          import undoAndRedoImpl.{presentlyState }
          import undoAndRedoImpl.{undoBtn, redoBtn }

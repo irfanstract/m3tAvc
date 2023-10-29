@@ -14,7 +14,13 @@
 
 import scalajs.js
 
+import scalajs.js.annotation.*
+
 import typings.{std as dom }
+
+// @js.native
+// @JSImport("./kcss.css", JSImport.Namespace )
+// val kCss: Any = js.native
 
 @main
 def runSMain(): Unit
@@ -29,6 +35,9 @@ def runSMain(): Unit
       
       ;
 
+      // s"$kCss"
+      // .intern().nn
+
       ({
          // (typings.react.mod. )
          mainAppMountRoot
@@ -37,9 +46,14 @@ def runSMain(): Unit
          ))
       })
 
+      dom.global.console.log("[main] starting those little things...ePercentPercentE " )
+
       dom.global.console.log("[main] starting 'runLocalStorageDemoAsync' " )
 
-      runLocalStorageDemoAsync()
+      ( 
+         runLocalStorageDemoAsync()
+         // js.Promise.resolve({ dom.global.console.warn("[main] not a real impl of'runLocalStorageDemoAsync' " ) })
+      )
       .`catch`({
             //
 
