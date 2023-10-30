@@ -12,6 +12,26 @@
 
 
 
+import cps.{async, await}
+
+import scalajs.js
+
+import scalajs.js.annotation.*
+
+import com.github.plokhotnyuk.jsoniter_scala
+
+import cps.monads.jsfuture.JSFuture
+
+import typings.{std as dom }
+
+import com.raquo.airstream
+
+import avcframewrk.forms.domNavigatorObj.storageUsageUtil.FsWatch
+
+// @js.native
+// @JSImport("./kcss.css", JSImport.Namespace )
+// val kCss: Any = js.native
+
 @main
 def runSMain(): Unit
 = {
@@ -21,42 +41,96 @@ def runSMain(): Unit
    ()
 
    locally {
-      import java.util.Locale
-      import org.scalajs.dom
+      ;
       
       ;
 
-      object rce {
-         /* don't use `typings.react.global.React` */
-         export typings.react.mod.{
-            createElement ,
-            createContext ,
-         }
-      }
+      // s"$kCss"
+      // .intern().nn
+
+      locally({ })
 
       ({
-         val r = typings.reactDom.clientMod.createRoot(dom.document.querySelector("#app") )
          // (typings.react.mod. )
-         r
+         mainAppMountRoot
          .render((
-            rce.createElement("div", null, (
-               Seq()
-               :+ rce.createElement("p", null, "hello!" )
-               // :+ rce.createElement("a", scalajs.js.Dictionary(("href", "javascript:console.log(\"opening the tutorial...\")" )), "consider reading the tutorial for more abt it." )
-               :+ (
-                  rce.createElement(
-                     "a",
-                     typings.react.mod.Attributes().set("href" , "javascript:console.log(\"opening the tutorial...\")" ) ,
-                     "consider reading the tutorial for more abt it." ,
-                  )
-               )
-            ) : _* )
+            xAppDemo
          ))
       })
+
+      dom.global.console.log("[main] starting those little things...ePercentPercentE1 " )
+
+      ({
+         ;
+
+         dom.global.console.log("[main] starting 'runLocalStorageDemoAsync' " )
+
+         ( 
+            runLocalStorageDemoAsync()
+            // js.Promise.resolve({ dom.global.console.warn("[main] not a real impl of'runLocalStorageDemoAsync' " ) })
+         )
+         .`catch`({
+               //
+
+               case z : js.JavaScriptException =>
+                  dom.global.console.warn(z.exception )
+                  // throw new MspError(z)
+
+               case util.control.NonFatal(z : Exception) =>
+                  throw z
+               case z =>
+                  throw js.JavaScriptException(z)
+         })
+         .`then`(_ => {
+            ;
+
+            dom.global.console.log("[main] done done with 'runLocalStorageDemoAsync' " )
+         })
+      })
+
+
+
    }
 }
 
+val _ = {
+   js.eval(s"File.prototype.toString = function () { return ${"`[object File (${this.name} (${this.type}, ${this.size}) - last modified at ${new Date(this.lastModified)} )]`"} } ;")
+}
 
+case class XDemoAppGeneralisedAspect(r: String, l: String )
+
+lazy val xAppDemo
+: rce.ReactElement
+= {
+   ;
+   // xEmusAppDemo
+   ({
+      ;
+      val _C = avcframewrk.forms.templating.ext.reactjsify.eclSmmstComponent1
+      rce.describeElement(_C, null )
+   })
+}
+
+lazy val xFormEditingAppDemo
+= {
+   ;
+   val _C = {
+      ;
+      val _C1 = {
+         rce.ReactProductEditComponent.forValueT[(
+           XDemoAppGeneralisedAspect
+         )]
+      }
+      val value
+      = {
+         XDemoAppGeneralisedAspect(r = "R", l = "L")
+      }
+      rce.ReactComponent1.describe((_: Any) => {
+         rce.describeElement(_C1, rce.ReactProductEditComponent.propsIValue(value) )
+      })
+   }
+   rce.describeElement(_C, null )
+}
 
 
 
