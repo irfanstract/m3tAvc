@@ -12,6 +12,34 @@
 
 
 
+import cps.{async, await}
+
+import scalajs.js
+
+import scalajs.js.annotation.*
+
+import com.github.plokhotnyuk.jsoniter_scala
+
+import cps.monads.jsfuture.JSFuture
+
+import typings.std.{global as dom }
+
+import com.raquo.airstream
+
+import avcframewrk.forms.domNavigatorObj.storageUsageUtil.FsWatch
+
+// @js.native
+// @JSImport("./kcss.css", JSImport.Namespace )
+// val kCss: Any = js.native
+
+val _ = {
+   // TODO
+   // dom.console.info(s"pre-release React/Slinky polyfilling")
+   // js.eval(s"ReactDOM.render = (rElem, receiver) => ReactDOMClient ;")
+   // js.`import`("react-dom")
+   ;
+}
+
 @main
 def runSMain(): Unit
 = {
@@ -21,42 +49,107 @@ def runSMain(): Unit
    ()
 
    locally {
-      import java.util.Locale
-      import org.scalajs.dom
+      ;
       
       ;
 
-      object rce {
-         /* don't use `typings.react.global.React` */
-         export typings.react.mod.{
-            createElement ,
-            createContext ,
-         }
-      }
+      // s"$kCss"
+      // .intern().nn
+
+      locally({ })
 
       ({
-         val r = typings.reactDom.clientMod.createRoot(dom.document.querySelector("#app") )
          // (typings.react.mod. )
-         r
+         mainAppMountRoot
          .render((
-            rce.createElement("div", null, (
-               Seq()
-               :+ rce.createElement("p", null, "hello!" )
-               // :+ rce.createElement("a", scalajs.js.Dictionary(("href", "javascript:console.log(\"opening the tutorial...\")" )), "consider reading the tutorial for more abt it." )
-               :+ (
-                  rce.createElement(
-                     "a",
-                     typings.react.mod.Attributes().set("href" , "javascript:console.log(\"opening the tutorial...\")" ) ,
-                     "consider reading the tutorial for more abt it." ,
-                  )
-               )
-            ) : _* )
+            xAppDemo
          ))
       })
+
+      dom.console.log("[main] starting those little things...ePercentPercentE1 " )
+
+      ({
+         ;
+
+         dom.console.log("[main] starting 'runLocalStorageDemoAsync' " )
+
+         ( 
+            runLocalStorageDemoAsync()
+            // js.Promise.resolve({ dom.console.warn("[main] not a real impl of'runLocalStorageDemoAsync' " ) })
+         )
+         .`catch`({
+               //
+
+               case z : js.JavaScriptException =>
+                  dom.console.warn(z.exception )
+                  // throw new MspError(z)
+
+               case util.control.NonFatal(z : Exception) =>
+                  throw z
+               case z =>
+                  throw js.JavaScriptException(z)
+         })
+         .`then`(_ => {
+            ;
+
+            dom.console.log("[main] done done with 'runLocalStorageDemoAsync' " )
+         })
+      })
+
+
+
    }
 }
 
+val _ = {
+   js.eval(s"File.prototype.toString = function () { return ${"`[object File (${this.name} (${this.type}, ${this.size}) - last modified at ${new Date(this.lastModified)} )]`"} } ;")
+}
 
+case class XDemoAppGeneralisedAspect(r: String, l: String )
+
+lazy val xAppDemo
+: typings.react.mod.ReactElement
+= {
+   ;
+   // xEmusAppDemo.asStReactElement
+   // slinkyFormEditingAppDemo
+   // slinkyAngularSlider
+   // slinkyImagz
+   xEmusAppDemo.asStReactElement
+}
+
+lazy val xReactJsIfyDemo
+: typings.react.mod.ReactElement
+= {
+   ;
+   ({
+      ;
+      val _C = avcframewrk.forms.templating.ext.reactjsify.eclSmmstComponent1
+      rce.describeElement(_C, null )
+   })
+}
+
+lazy val slinkyFormEditingAppDemo
+= {
+   ;
+   ({
+      ;
+      val _C = {
+         ;
+         slinky.core.FunctionalComponent[Any ] ((_) => {
+            ;
+            import slinky.web.html
+            html.div(
+               html.p("another form element.") ,
+               html.p(html.label("value", ":" , html.input() ) ) ,
+            )
+         } )
+      }
+      _C(("", "") )
+      .build
+   })
+   .asStReactElement
+}
 
 
 
