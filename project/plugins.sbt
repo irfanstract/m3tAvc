@@ -24,6 +24,12 @@ addSbtPlugin("org.scala-js"       % "sbt-scalajs"                   % "1.13.2")
 /* ScalablyTyped, as demonstrated at https://www.scala-js.org/doc/tutorial/scalablytyped.html */
 addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta41")
 
+/* https://scalacenter.github.io/scalajs-bundler/getting-started.html . */
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % (
+   // "0.21.1+22-3d7106a1-SNAPSHOT"
+   "0.21.1"
+))
+
 
 
 
