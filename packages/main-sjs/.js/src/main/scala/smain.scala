@@ -12,6 +12,16 @@
 
 
 
+import scalajs.js
+
+import scalajs.js.annotation.*
+
+import typings.{std as dom }
+
+// @js.native
+// @JSImport("./kcss.css", JSImport.Namespace )
+// val kCss: Any = js.native
+
 @main
 def runSMain(): Unit
 = {
@@ -21,41 +31,53 @@ def runSMain(): Unit
    ()
 
    locally {
-      import java.util.Locale
-      import org.scalajs.dom
+      ;
       
       ;
 
-      object rce {
-         /* don't use `typings.react.global.React` */
-         export typings.react.mod.{
-            createElement ,
-            createContext ,
-         }
-      }
+      // s"$kCss"
+      // .intern().nn
+
+      locally({ })
 
       ({
-         val r = typings.reactDom.clientMod.createRoot(dom.document.querySelector("#app") )
          // (typings.react.mod. )
-         r
+         mainAppMountRoot
          .render((
-            rce.createElement("div", null, (
-               Seq()
-               :+ rce.createElement("p", null, "hello!" )
-               // :+ rce.createElement("a", scalajs.js.Dictionary(("href", "javascript:console.log(\"opening the tutorial...\")" )), "consider reading the tutorial for more abt it." )
-               :+ (
-                  rce.createElement(
-                     "a",
-                     typings.react.mod.Attributes().set("href" , "javascript:console.log(\"opening the tutorial...\")" ) ,
-                     "consider reading the tutorial for more abt it." ,
-                  )
-               )
-            ) : _* )
+            rce.describeElement(rce.example23._C , null )
          ))
       })
+
+      dom.global.console.log("[main] starting those little things...ePercentPercentE " )
+
+      dom.global.console.log("[main] starting 'runLocalStorageDemoAsync' " )
+
+      ( 
+         runLocalStorageDemoAsync()
+         // js.Promise.resolve({ dom.global.console.warn("[main] not a real impl of'runLocalStorageDemoAsync' " ) })
+      )
+      .`catch`({
+            //
+
+            case z : js.JavaScriptException =>
+               dom.global.console.warn(z.exception )
+               // throw new MspError(z)
+
+            case util.control.NonFatal(z : Exception) =>
+               throw z
+            case z =>
+               throw js.JavaScriptException(z)
+      })
+      .`then`(_ => {
+         ;
+
+         dom.global.console.log("[main] done done with 'runLocalStorageDemoAsync' " )
+      })
+
+
+
    }
 }
-
 
 
 
