@@ -15,6 +15,20 @@ package avcframewrk.forms
 
 
 
+transparent
+inline
+def assert(inline r : Boolean, msg : String = "")
+: Unit
+= scala.Predef.assert(r, {
+   msg
+   match {
+      case "" =>
+         s"not satisfied : ${compiletime.codeOf(r) } "
+      case e =>
+         e
+   }
+} )
+
 /**
  * 
  * `C`, supposed to be a type-lmd.
@@ -36,7 +50,12 @@ export avcframewrk.forms.math.CSingleton
 
 export avcframewrk.forms.math.InstanceOf
 
-export reflect.Selectable.reflectiveSelectable
+implicit
+def reflectiveSelectable
+   [T <: AnyRef ]
+   (x: T )
+: reflect.Selectable
+= reflect.Selectable.reflectiveSelectable(x)
 
 /**
  * 
