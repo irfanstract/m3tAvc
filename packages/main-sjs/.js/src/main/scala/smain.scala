@@ -22,6 +22,8 @@ import cps.monads.jsfuture.JSFuture
 
 import typings.{std as dom }
 
+import com.raquo.airstream
+
 import avcframewrk.forms.domNavigatorObj.storageUsageUtil.FsWatch
 
 // @js.native
@@ -124,7 +126,16 @@ lazy val xAppDemo
                ()
             = {
                ;
-               FsWatchInReact.useContentsFrom(() => tryGetFilePath() , Nil :+ "" )
+               FsWatchInReact.useContentsFrom(() => {
+                  // async[JSFuture] {
+                  //    val path = await(tryGetFilePath() )
+                  //    ;
+                  //    val dataBlob = await(path.getFile() )
+                  //    val dataStr = await(dataBlob.text() )
+                  //    s"[txt: '$dataStr' ; ]"
+                  // }
+                  tryGetFilePath()
+               } , Nil :+ "" )
             }
 
             ;
@@ -133,9 +144,27 @@ lazy val xAppDemo
          rce.ReactComponent1.describe((_: Any ) => {
             ;
 
-            val (s, () ) = {
+            val (s, () )
+            = {
                XData.useSnapshot()
             }
+            // val data1
+            // = {
+            //    // rce.useJsFuture(() => (
+            //    //    //
+            //    //    async[JSFuture] {
+            //    //       s match {
+            //    //       //
+            //    //       case path =>
+            //    //          ;
+            //    //          ;
+            //    //          val dataBlob = await(path.getFile() )
+            //    //          val dataStr = await(dataBlob.text() )
+            //    //          s"[txt: '$dataStr' ; ]"
+            //    //       }
+            //    //    }
+            //    // ))
+            // }
             rce.describeElement("div", null, (
                Nil
                :+ rce.describeElement("p", null, "main app" )
@@ -154,6 +183,17 @@ object FsWatchInReact {
 
    ;
 
+   def plainTxtBlob
+      //
+      (c: String)
+   : dom.global.Blob
+   = {
+      new (dom.global.Blob)(js.Array(c ) , (
+         dom.BlobPropertyBag()
+         .setType("text/plain")
+      ) )
+   }
+
    def useContentsFrom
       //
       (
@@ -162,8 +202,6 @@ object FsWatchInReact {
       )
    = {
       ;
-
-      import com.raquo.airstream
 
       rce.useRaqueFrpState(() => {
          ;
