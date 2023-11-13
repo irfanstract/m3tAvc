@@ -320,7 +320,7 @@ trait EclOps
                ) , eTree.pos )
 
             case eTree @ CaselyObjDef(_) =>
-               ;
+            ;
                report.errorAndAbort((
                   formatNhErrorMsg(s"cannot define 'case object's in React Hooks setting.", eTree )
                ) , eTree.pos )
@@ -329,7 +329,11 @@ trait EclOps
              * handling `ValDef`s, including if defined as `object`
              * 
              */
-            case tree @ (_ : ValDef ) =>
+            case tree @ (_ : ValDef ) if {
+               // TODO
+               import language.unsafeNulls
+               !(tree.symbol.name contains "proxy" )
+            } =>
                ;
                val owner = tree.symbol
                val tpt1 = transformTypeTree(tree.tpt)(owner)
