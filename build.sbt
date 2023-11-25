@@ -104,7 +104,20 @@ lazy val avcFormsGenericCoreProject
 
 lazy val avcFormsTemplatingFwsProject
 =
-  (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfwforms-templatingext" ) )
+  (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfwforms-b-templatingext" ) )
+  .asLeafProjectWithNecessarySettings()
+  .dependsOn(avcAlgebraLibProject )
+  // .dependsOn(avcEvLibProject )
+  .withComRaquoAirstream()
+  .dependsOn(avcFormsPredefsProject )
+  .dependsOn(avcFormsGenericCoreProject )
+  .withDevSlinky()
+  .dependsOn(avFwScTReactAppDepsProject )
+  .dependsOn(avcFormsNativeToolkitUsageHelperProject )
+
+lazy val avcFormsNativeToolkitUsageHelperProject
+=
+  (crossProject(suggestedTargetPlatforms : _* ).withSuggestedSettings() in (packagesParentDir / "avfwforms-b-nativetoolkithelper" ) )
   .asLeafProjectWithNecessarySettings()
   .dependsOn(avcAlgebraLibProject )
   // .dependsOn(avcEvLibProject )
@@ -128,6 +141,7 @@ lazy val avcFormsGenericProject
   .dependsOn(avcFormsTemplatingSpecificConcurrencyProject )
   .withDevSlinky()
   .dependsOn(avFwScTReactAppDepsProject )
+  .dependsOn(avcFormsNativeToolkitUsageHelperProject )
   .dependsOn(avcFormsTemplatingFwsProject )
 
 lazy val avcReactAppFormsProject
