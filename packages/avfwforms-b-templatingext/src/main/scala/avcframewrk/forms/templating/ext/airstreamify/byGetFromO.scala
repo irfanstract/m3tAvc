@@ -141,60 +141,132 @@ object ByGetFromO {
       ;
    }
 
+   def validateStubCallReceiverT
+      //
+      [stubI <: ImplementativeCtxOps._Any : Type ]
+      (using Quotes)
+      (errorFeedbackTarget : Expr[?] )
+   = {
+      ;
+
+      import quotes.reflect.{Singleton as _, *}
+
+      Some(Type.of[stubI] )
+      .collect({
+         case '[t & ByGetFromO.stubs.type ] =>
+      })
+      .getOrElse[Unit] ({
+         report.error((
+            s"""
+            invalid stub call (T: ${Printer.TypeReprCode.show(TypeRepr.of[stubI] ) } ) . 
+            only obvious calls on 'ByGetFromO.stubs' are supported here . 
+            the receiver needs to be direct ; avoid extracting into a variable ; 
+            """
+            .stripMargin
+         ), errorFeedbackTarget )
+      })
+   }
+
+   trait MainTraversalCtxOpsImpl private[templating]()
+   {
+      ;
+
+      def doInternSrcRef
+         [Value : Type ]
+         (srcExpr : Expr[airstream.core.Signal[Value] ] )
+      : Expr[Value ]
+
+   }
+
+   transparent inline
+   def mainTraversalCtxOpsImpl
+      (using c : MainTraversalCtxOpsImpl)
+   : c.type
+   = c
+
    private[templating]
    class Implementative
-      (using val splCtx : Quotes )
+      // (using val splCtx : Quotes )
       ()
    {
       ;
 
       ;
 
-      import quotes.reflect.*
+      // import quotes.reflect.*
 
-      extension [R : Type] (fExpr0 : Expr[R] ) {
-         //
-
-         def applyTreeTransform
-            //
-            (tx: TreeMap )
-         : Expr[R]
-         = {
-            ;
-            tx
-            .transformTerm(fExpr0.asTerm )(Symbol.spliceOwner )
-            .asExpr
-            .asExprOf[R]
-         }
-
-         //
-      }
+      import airstreamifyQuotesAttUtils.{*, given }
 
       ;
 
       ;
 
-      def validateStubCallReceiverT
+      def mainTranslatingTreeMap
          //
-         [stubI <: ImplementativeCtxOps._Any : Type ]
-         (errorFeedbackTarget : Expr[?] )
+         (using Quotes )
+         (using MainTraversalCtxOpsImpl )
       = {
          ;
+         import mainTraversalCtxOpsImpl.*
+         import xReflect.*
 
-         Some(Type.of[stubI] )
-         .collect({
-            case '[t & ByGetFromO.stubs.type ] =>
-         })
-         .getOrElse[Unit] ({
-            report.error((
-               s"""
-               invalid stub call (T: ${Printer.TypeReprCode.show(TypeRepr.of[stubI] ) } ) . 
-               only obvious calls on 'ByGetFromO.stubs' are supported here . 
-               the receiver needs to be direct ; avoid extracting into a variable ; 
-               """
-               .stripMargin
-            ), errorFeedbackTarget )
-         })
+         ;
+
+         (new TreeMap {
+            // TODO
+            ;
+
+            override
+            def transformTerm
+               (tree: Term)
+               (owner: Symbol)
+            : Term
+            = {
+               ;
+
+               given Quotes
+               = owner.asQuotes
+
+               import xReflect.*
+
+               (
+                  tree
+                  *:
+                  Some(tree)
+                  .collect({
+                     case term if term.isExpr =>
+                        term.asExpr
+                  })
+                  *:
+                  EmptyTuple
+               )
+               match {
+               //
+
+               /* re-write every call to `stubs.pick(...)` */
+               case _ *: (
+                  Some((
+                     r @ '{
+                        (${_} : (stubI & ImplementativeCtxOps._Any ) )
+                        .pick[actualSrcValueT] (${ srcExpr })
+                     } 
+                  ))
+               ) *: _ =>
+                  ;
+
+                  validateStubCallReceiverT
+                     [(stubI & ImplementativeCtxOps._Any )]
+                     (errorFeedbackTarget = r )
+
+                  // TODO
+                  doInternSrcRef(srcExpr )
+                  .asTerm
+
+               case _ =>
+                  super.transformTerm(tree)(owner)
+               }
+            }
+         } )
       }
 
       ;
@@ -202,6 +274,7 @@ object ByGetFromO {
       class AnalyseAndPreAirstrify
          //
          [R : Type ]
+         (using val splCtx: Quotes)
          (
             private val fExpr0Pre: Expr[R ] ,
             private val fwdBaseType : Type[Tuple] ,
@@ -209,135 +282,119 @@ object ByGetFromO {
       {
          ;
 
-         /* avoiding the extra boundary `Inlined` */
-         val '{ ${fExpr0} }
-         = '{ ${ fExpr0Pre } }
+         import xReflect.*
+
          ;
+
+         val fExpr0
+         = {
+            ;
+
+            // ({
+            //    /* avoiding the extra boundary `Inlined` */
+            //    '{ ${ fExpr0Pre } }
+            //    .match { case '{ ${e} } => e }
+            // })
+            fExpr0Pre
+         } : Expr[R]
 
          private[Implementative]
          var srcImplExprs0
          : Seq[Expr[airstream.core.Signal[?] ] ]
          = Seq()
 
-         ;
+         private[Implementative]
+         def getAllAndInplaceAddSrcExpr
+            (addend: Expr[airstream.core.Signal[?] ] )
+         = {
+            ;
+            val priorL = srcImplExprs0
+            srcImplExprs0 =
+               priorL :+ addend
+            priorL
+         }
+
          private
-         def fExpr1Inner
-            //
-            (srcEmittedValArrayRefE: Expr[IndexedSeq[?] ] )
-         : Expr[R]
-         = '{
+         object fsemis {
             ;
 
-            val srcEmittedValList
-            = ${srcEmittedValArrayRefE }
-
-            ${
+            /**
+             * primarily for use by the following method
+             * 
+             */
+            private
+            def fExpr1Inner
+               //
+               (srcEmittedValArrayRefE: Expr[IndexedSeq[?] ] )
+            : Expr[R]
+            = '{
                ;
 
-               def srcEmittedValRefAtE
-                  //
-                  (i: Int)
-               = {
+               val srcEmittedValList
+               = ${srcEmittedValArrayRefE }
+
+               ${
                   ;
 
-                  '{ srcEmittedValList.apply(${Expr[Int](i) }) }
-               }
+                  import xReflect.*
 
-               def doInternSrcRef
-                  [Value : Type ]
-                  (srcExpr : Expr[airstream.core.Signal[Value] ] )
-               : Expr[Value ]
-               = {
                   ;
 
-                  /** */
-                  val i
-                  = srcImplExprs0.length
-
-                  srcImplExprs0 =
-                     srcImplExprs0 :+ {
-                        ;
-                        srcExpr : Expr[airstream.core.Observable[Any] ]
-                        srcExpr
-                     }
-
-                  '{ ${srcEmittedValRefAtE(i) }.asInstanceOf[Value ] }
-               }
-
-               fExpr0
-               /* apply substitution to every valid calls to those stub methods */
-               .applyTreeTransform({
-                  ;
-
-                  (new TreeMap {
-                     // TODO
+                  given travCtx
+                  : AnyRef with MainTraversalCtxOpsImpl with {
                      ;
 
-                     override
-                     def transformTerm
-                        (tree: Term)
-                        (owner: Symbol)
-                     : Term
+                     def srcEmittedValRefAtE
+                        //
+                        (i: Int)
                      = {
                         ;
 
-                        // given Quotes
-                        // = owner.asQuotes
-
-                        (
-                           tree
-                           *:
-                           Some(tree)
-                           .collect({
-                              case term if term.isExpr =>
-                                 term.asExpr
-                           })
-                           *:
-                           EmptyTuple
-                        )
-                        match {
-                        //
-
-                        /* re-write every call to `stubs.pick(...)` */
-                        case _ *: (
-                           Some((
-                              r @ '{
-                                 (${_} : (stubI & ImplementativeCtxOps._Any ) )
-                                 .pick[actualSrcValueT] (${ srcExpr })
-                              } 
-                           ))
-                        ) *: _ =>
-                           ;
-
-                           validateStubCallReceiverT
-                              [(stubI & ImplementativeCtxOps._Any )]
-                              (errorFeedbackTarget = r )
-
-                           // TODO
-                           doInternSrcRef(srcExpr )
-                           .asTerm
-
-                        case _ =>
-                           super.transformTerm(tree)(owner)
-                        }
+                        '{ srcEmittedValList.apply(${Expr[Int](i) }) }
                      }
-                  } )
-               })
+
+                     def doInternSrcRef
+                        [Value : Type ]
+                        (srcExpr : Expr[airstream.core.Signal[Value] ] )
+                     : Expr[Value ]
+                     = {
+                        ;
+
+                        /** */
+                        val i *: _
+                        = {
+                           ;
+                           getAllAndInplaceAddSrcExpr
+                              (addend = srcExpr )
+                           .match { case l => (l.length, () ) }
+                        }
+
+                        '{ ${srcEmittedValRefAtE(i) }.asInstanceOf[Value ] }
+                     }
+
+                  }
+
+                  fExpr0
+                  /* apply substitution to every valid calls to those stub methods */
+                  .applyTreeTransform({
+                     ;
+
+                     mainTranslatingTreeMap
+                  })
+               }
             }
-         }
 
-         val asByActualValuesSeqIife
-         = {
-            ;
-
-            ;
-
-            Lambda(Symbol.spliceOwner, {
-               MethodType
-                  (Nil :+ "actualValues1")
-                  (_ => (Nil :+ TypeRepr.of[fwdBaseType.Underlying ] ), _ => TypeRepr.of[R] )
-            }, { case (closureOwner, srcEmittedValArrayRef +: _ ) => {
+            def fExpr1SemiInner
+               //
+               (closureOwner: Symbol, srcEmittedValArrayRef: Tree)
+            : Term
+            = {
                ;
+
+               given Quotes
+               = closureOwner.asQuotes
+
+               import xReflect.*
 
                ({
                   ;
@@ -362,7 +419,35 @@ object ByGetFromO {
                   fExpr1Inner(srcEmittedValArrayRefE = srcEmittedValArrayRefE  )
                })
                .asTerm
+               // TODO given that, is this still necessary? probably no.
                .changeOwner(closureOwner )
+            }
+
+            ;
+         }
+
+         ;
+         val asByActualValuesSeqIife
+         = {
+            ;
+
+            ;
+
+            import fsemis.fExpr1SemiInner
+
+            ;
+
+            ;
+
+            Lambda(Symbol.spliceOwner, {
+               MethodType
+                  (Nil :+ "actualValues1")
+                  (_ => (Nil :+ TypeRepr.of[fwdBaseType.Underlying ] ), _ => TypeRepr.of[R] )
+            }, { case (closureOwner, srcEmittedValArrayRef +: _ ) => {
+               ;
+
+               fExpr1SemiInner
+                  (closureOwner = closureOwner , srcEmittedValArrayRef = srcEmittedValArrayRef )
             } } )
             .asExpr.asExprOf[(actualValues: fwdBaseType.Underlying ) => R ]
          }
@@ -370,32 +455,15 @@ object ByGetFromO {
          ;
       }
 
-      def combinedValuesTypeReprBy
-         //
-         (srcExprs : IndexedSeq[Expr[airstream.core.Signal[?] ] ] )
-      = {
-         ;
-
-         srcExprs
-
-         .map({
-            case '{ ${_} : airstream.core.Signal[t] } =>
-               '{ ??? : t }
-         })
-         .foldLeft[Expr[Tuple] ] ('{ EmptyTuple })({
-            case (e0, '{ ${newItem } : newItemActualT }) => {
-               '{ ${e0 } :* ${newItem} }
-            }
-         })
-         .asTerm.tpe
-      }
-
       class AnalyseAndAirstrify
          //
          [R : Type ]
          (private val fExpr0Pre: Expr[R ] )
+         (using val splCtx : Quotes)
       {
          ;
+
+         import xReflect.*
 
          ;
 
@@ -423,8 +491,6 @@ object ByGetFromO {
 
          val srcImplExprs0
          = prePhase.srcImplExprs0
-
-         import prePhase.fExpr1Inner
 
          export prePhase.asByActualValuesSeqIife
 
@@ -526,6 +592,7 @@ object ByGetFromO {
       def airstreamify
          //
          [R : Type ]
+         (using Quotes)
          (fExpr0Pre: Expr[R ] )
       = {
          ;
@@ -540,6 +607,11 @@ object ByGetFromO {
       }
 
       ;
+
+      ;
+
+      ;
+
    }
 
    extension [Value] (src: airstream.core.Observable[Value] )

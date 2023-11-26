@@ -115,6 +115,7 @@ lazy val xAppDemo
    // slinkyFormEditingAppDemo
    // slinkyAngularSlider
    // slinkyImagz
+   // avcframewrk.forms.templating.ext.reactjsifyDemos.W3SR.MStreamUi.describeForNodeRec().asStReactElement
    xEmusAppDemo.asStReactElement
 }
 

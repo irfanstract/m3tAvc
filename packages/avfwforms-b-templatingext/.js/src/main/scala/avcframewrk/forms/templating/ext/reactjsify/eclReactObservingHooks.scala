@@ -56,8 +56,16 @@ object eclReactObservingHooksImpl {
 
    ;
 
+   @deprecated
    protected
-   object EOBSMPP
+   final
+   lazy val EOBSMPP
+   : SpclAcrossRedrawsBroadlyOps.type
+   = SpclAcrossRedrawsBroadlyOps
+
+   // TODO make non-private
+   protected
+   object SpclAcrossRedrawsBroadlyOps
    {
       ;
 
@@ -143,14 +151,20 @@ object eclReactObservingHooksImpl {
       ;
    }
 
-   object EOBSM
+   @deprecated
+   final
+   lazy val EOBSM
+   : SpclPerRedrawBroadlyOps.type
+   = SpclPerRedrawBroadlyOps
+
+   object SpclPerRedrawBroadlyOps
    {
       ;
 
       final
       lazy val PersistingPeer
-      : EOBSMPP.type
-      = EOBSMPP
+      : SpclAcrossRedrawsBroadlyOps.type
+      = SpclAcrossRedrawsBroadlyOps
 
       type _Any
       = _Impl[Any]
@@ -264,51 +278,121 @@ object eclReactObservingHooksImpl {
 
       ;
 
-      object app {
+      //
+
+      @deprecated
+      final
+      lazy val app
+      : stubsImpl.type
+      = stubsImpl
+
+      ;
+   }
+
+   final
+   lazy val stubs
+   : stubsImpl.type
+   = stubsImpl
+
+   object stubsImpl {
+      ;
+
+      ;
+
+      // TODO
+      /* TODO switch to clause-interweaved sig */
+      def valueOf
+         [S]
+         (using SpclPerRedrawBroadlyOps._Any )
+         (src: airstream.core.Signal[S] )
+      : S
+      = {
          ;
 
-         // TODO
-         /* TODO switch to clause-interweaved sig */
-         def valueOf
-            [S]
-            (using EOBSM._Any )
-            (src: airstream.core.Signal[S] )
-         : S
-         = {
-            // TODO
-            summon[EOBSM._Any ].valueOf(src )
-         }
+         /** 
+          * part of the protocol
+          */
+         eclWildQueryNecessitatedRedrawCallability.invokeBasicOn(
+            implicitly[SpclPerRedrawBroadlyOps._Any ] )
 
-         def newJsTimeout
-            //
-            (duration: concurrent.duration.FiniteDuration )
-         : js.Promise[Unit]
-         = {
-            newJsVoidCallbackPromise(cont => js.timers.setTimeout(duration )(cont() ) )
-         }
-
-         def newJsVoidCallbackPromise
-            //
-            (doResolve: (
-               ([ResolverSynchronousR] =>> ((complete: () => ResolverSynchronousR ) => ResolverSynchronousR ) )
-               [Unit ]
-            ) )
-         = js.Promise[Unit] ((cb, _) => doResolve(complete = () => cb(() ) ) )
-
+         summon[SpclPerRedrawBroadlyOps._Any ]
+         .valueOf(src )
       }
+
+      // transparent inline
+      def summonEobsm
+         (using impl: SpclPerRedrawBroadlyOps._Any)
+      : impl.type
+      = impl
+
+      ;
+
+      def newJsTimeout
+         //
+         (duration: concurrent.duration.FiniteDuration )
+      : js.Promise[Unit]
+      = {
+         newJsVoidCallbackPromise(cont => js.timers.setTimeout(duration )(cont() ) )
+      }
+
+      def newJsVoidCallbackPromise
+         //
+         (doResolve: (
+            ([ResolverSynchronousR] =>> ((complete: () => ResolverSynchronousR ) => ResolverSynchronousR ) )
+            [Unit ]
+         ) )
+      = js.Promise[Unit] ((cb, _) => doResolve(complete = () => cb(() ) ) )
 
       ;
    }
 
    ;
 
-   // def takeGsgv
-   export EOBSM.app.{valueOf as takeGsgv }
+   /* TODO switch to clause-interweaved sig */
+   def takeGsgv
+      [S]
+      (using SpclPerRedrawBroadlyOps._Any )
+      (src: airstream.core.Signal[S] )
+   = {
+      ;
+      ;
+      stubsImpl.valueOf(src )
+   }
+
+   // transparent inline
+   def summonEobsm
+      (using impl: SpclPerRedrawBroadlyOps._Any)
+   : impl.type
+   = impl
 
    ;
 
    ;
 
+}
+
+object eclWildQueryNecessitatedRedrawCallability {
+   ;
+
+   ;
+
+   def invokeBasicOn
+      //
+      (receiver: eclReactObservingHooksImpl.SpclPerRedrawBroadlyOps._Any )
+   //
+   = {
+      ;
+
+      receiver
+      .scheduleRefresh({
+         eclReactObservingHooksImpl.SpclPerRedrawBroadlyOps.app.newJsTimeout(duration = {
+            import concurrent.duration.*
+            (1.950 ).second
+         })
+      })
+   }
+
+   ;
 }
 
 
