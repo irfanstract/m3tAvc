@@ -23,6 +23,16 @@ object Key {
 
    ;
 
+   transparent
+   inline
+   def bySemitonesFromCKey
+      (v: Double )
+   = byDegreesFromCKey(v * 30 )
+
+   def byDegreesFromCKey
+      (v: Double )
+   = byAngleFromCKey(trig.Angular.fromDegrees(v ) )
+
    def byFromCKeyDeviation
       (v: trig.Angular._Any )
    = byAngleFromCKey(v)
@@ -30,8 +40,13 @@ object Key {
    private[Key]
    def byAngleFromCKey
       (v: trig.Angular._Any )
-   : _Impl
+   : ByAngleFromCKey[v.type ]
    = _Impl(fromKeyCDeviation = v )
+
+   opaque type ByAngleFromCKey
+      [+Value <: trig.Angular._Any ]
+   <: _Impl
+   =  _Impl
 
    ;
 
@@ -85,6 +100,28 @@ java.lang.Enum[InTwelvethKey ]
    case B_FLAT
    case B
 
+   transparent
+   inline
+   def fromKeyCOrdinalImpl
+   = this match {
+      //
+
+      case C       => 0
+      case C_SHARP => 1
+      case D       => 2
+      case E_FLAT  => 3
+      case E       => 4
+
+      case F       => 5
+      case F_SHARP => 6
+      case G       => 7
+      case A_FLAT  => 8
+      case A       => 9
+      case B_FLAT  => 10
+      case B       => 11
+
+   }
+
    override
    def toString
    = name().nn
@@ -111,6 +148,8 @@ object InTwelvethKey {
           * the devtn from the key `A`
           * 
           */
+         transparent
+         inline
          def fromKeyADeviation
          = trig.Angular.fromMusicalSemitones(c.fromKeyAOrdinal )
 
@@ -119,14 +158,20 @@ object InTwelvethKey {
           * the devtn from the key `C`
           * 
           */
+         transparent
+         inline
          def fromKeyCDeviation
          = trig.Angular.fromMusicalSemitones(c.fromKeyCOrdinal )
 
+         transparent
+         inline
          def fromKeyAOrdinal
-         = (3 + c.ordinal ) % 12
+         = (3 + c.fromKeyCOrdinal ) % 12
 
+         transparent
+         inline
          def fromKeyCOrdinal
-         = c.ordinal
+         = c.fromKeyCOrdinalImpl
 
       }
 

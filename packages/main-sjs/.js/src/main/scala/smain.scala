@@ -115,7 +115,30 @@ lazy val xAppDemo
    // slinkyFormEditingAppDemo
    // slinkyAngularSlider
    // slinkyImagz
-   xEmusAppDemo.asStReactElement
+   // avcframewrk.forms.templating.ext.reactjsifyDemos.EOBS1.MStreamUi.describeForNodeRec().asStReactElement
+   // avcframewrk.beepSoundForms.examples.e1.asStReactElement
+   // xJsEvalBasedElementDemo
+   avcframewrk.beepSoundForms.examples.e1.asStReactElement
+}
+
+lazy val xJsEvalBasedElementDemo
+= {
+   ;
+   ({
+      ;
+
+      val dateTimeStr
+      = js.Date()
+
+      rce.describeElement("p", null, "date:", (
+         //
+
+         avcframewrk.fjsc.eval((
+           s"""const date = ${dateTimeStr } ; ; console.info("current system time:", date ) ; console.debug(new Error() ) ; date """
+         ))
+         .asInstanceOf[String ]
+      ))
+   })
 }
 
 lazy val xReactJsIfyDemo
