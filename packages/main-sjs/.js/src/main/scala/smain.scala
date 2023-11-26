@@ -115,7 +115,8 @@ lazy val xAppDemo
    // slinkyFormEditingAppDemo
    // slinkyAngularSlider
    // slinkyImagz
-   xEmusAppDemo.asStReactElement
+   // avcframewrk.forms.templating.ext.reactjsifyDemos.EOBS1.MStreamUi.describeForNodeRec().asStReactElement
+   avcframewrk.beepSoundForms.examples.e1.asStReactElement
 }
 
 lazy val xReactJsIfyDemo

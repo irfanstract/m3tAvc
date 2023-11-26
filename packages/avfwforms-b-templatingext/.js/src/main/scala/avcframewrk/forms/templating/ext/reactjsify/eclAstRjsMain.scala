@@ -54,15 +54,15 @@ with EclTdfOps
 
    ;
 
-   import quotes.reflect.{Singleton as _ , *}
+   // import quotes.reflect.{Singleton as _ , *}
 
-   // final
-   // lazy val %%::! = eclAstRjsUtil.constructs
-   import %%::!.{
-      applyTransform as _,
-      splCtx as _,
-      *, given
-   }
+   // // final
+   // // lazy val %%::! = eclAstRjsUtil.constructs
+   // import %%::!.{
+   //    applyTransform as _,
+   //    splCtx as _,
+   //    *, given
+   // }
 
    ;
 
@@ -71,13 +71,20 @@ with EclTdfOps
    // TODO
    def mainReliftingTreeMap
       //
+      (using splCtx : Quotes)
       ()
-   : TreeMap
+      (using ExtraReflectiveOpExports1[splCtx.type ] )
+   : quotes.reflect.TreeMap
    = {
       ;
 
+      import extraReflectiveOpExports.*
+
       val nhDoc
       = {
+         ;
+         import language.unsafeNulls
+         ;
          s"""
          | 
          | to avoid bugs like `false negatives for object-literal, across redraws, resulting in constant call/firing`
@@ -90,11 +97,122 @@ with EclTdfOps
          (msg: => String, pos: Tree )
       : String
       = {
-         "".++(msg ).++("\r\n").++(nhDoc )
+         ;
+         import language.unsafeNulls
+         ;
+         s"""
+         |${msg }
+         |
+         |${Printer.TreeShortCode.show(pos ).indent(2) }
+         |
+         |${nhDoc }
+         """.stripMargin
+      }
+
+      /** 
+       * 
+       * `ValDef`s (which are not `var`s) and possibly `DefDef`s,
+       * including if syntactically defined as `object`
+       * 
+       * ```
+       * val bar
+       * = { ... } : T
+       * 
+       * val bar : T
+       * = ...
+       * 
+       * object spclDispatches {
+       *    ...
+       *    ...
+       * }
+       * 
+       * def currentSystemTimeMillis
+       * = System.currentTimeMillis
+       * 
+       * ```
+       * 
+       * currently we can't handle `var`s, but
+       * as documented, the compiler extends `ValDef`s to `var`s, so
+       * `ValDef`s which are `var`s will be rejected here
+       * 
+       */
+      object InternablyValued1Def {
+         ;
+
+         ;
+
+         def unapply
+            (tree: ValDef | DefDef )
+         //
+         = {
+            ;
+            trait Ier extends Selectable
+            {
+               ;
+
+               val s = tree.symbol
+
+               val tpt0 : TypeTree
+
+               val rhs0 : Option[Term]
+
+               ;
+            }
+            Some(tree)
+            .collect[(
+               // tree.type
+               ValDef | DefDef
+               , (() => Any ) *: EmptyTuple.type
+               , Ier
+            )] ({
+               //
+               case tree @ (_ : ValDef) if { !(tree.symbol.flags is Flags.Mutable ) } =>
+                  ;
+                  (
+                     tree
+                     *:
+                     ((() => ??? ) *: EmptyTuple)
+                     *: {
+                        new Ier {
+                           ;
+
+                           val tpt0 = tree.tpt
+                           val rhs0 = tree.rhs
+
+                        }
+                     }
+                     *:
+                        EmptyTuple
+                  )
+            })
+         }
+
+         ;
+      }
+
+      object NoTxPleaseeeBoundedExpr {
+         ;
+
+         def unapply
+            [R : Type ]
+            (e: Expr[R])
+         = {
+            Some(e)
+            .collect({
+               case e @ '{ (${_ } : (eclFrontEnd.type ) ).eclAsm(${quer1 } : quer1T ) } =>
+                  (quer1.asExprOf[R] , () )
+            })
+         }
       }
 
       new TreeMap {
          ;
+
+         transparent inline def mQuotes0 = summon[Quotes]
+
+         extension (owner: Symbol)
+            def asQuotesC
+            = owner.asQuotes.asInstanceOf[Quotes { val reflect : mQuotes0.reflect.type } ]
 
          override
          def transformStatement
@@ -107,6 +225,13 @@ with EclTdfOps
             def fallbackToDefaultImpl()
             = super.transformStatement(tree )(owner = owner )
 
+            implicit
+            val mQuotes
+            = owner.asQuotesC
+            // given mQuotes.type
+            // = mQuotes
+            import extraReflectiveOpExports.*
+
             tree match {
             //
 
@@ -116,27 +241,44 @@ with EclTdfOps
              * 
              */
 
-            case eTree @ CaseClassDef(_) =>
+            case eTree @ (CaseClassDef(_) | CaselyObjDef(_) ) =>
                ;
-               report.errorAndAbort((
-                  formatNhErrorMsg(s"Case Of Unsoundness: 'case class'es in React Hooks setting.", eTree )
-               ) , eTree.pos )
 
-            case eTree @ CaselyObjDef(_) =>
-               ;
                report.errorAndAbort((
-                  formatNhErrorMsg(s"Case Of Unsoundness: 'case object's in React Hooks setting.", eTree )
+                  //
+                  formatNhErrorMsg({
+                     ;
+                     s"Case Of Unsoundness: ${
+                        eTree
+                        .match {
+                           case CaseClassDef(_) =>
+                              "a 'case class'"
+                           case CaselyObjDef(_) =>
+                              "a 'case object'"
+                           case _ =>
+                              "'case class' or 'case object'"
+                        }
+                     } in React Hooks setting. \n  ${eTree.toString().take(80) } "
+                  } , eTree )
                ) , eTree.pos )
 
             /** 
-             * handling `ValDef`s (which are not `var`s) and possibly `DefDef`s,
+             * handling
+             * `ValDef`s (which are not `var`s) and possibly `DefDef`s,
              * including if defined as `object`
              * 
              */
-            case _ @ &%%!(tree *: _ *: o *: _ ) =>
+            case _ @ InternablyValued1Def(tree *: _ *: o *: _ ) =>
                ;
+
                import o.{rhs0, tpt0}
+
                val owner = tree.symbol
+
+               // given Quotes
+               // = owner.asQuotes
+               // import extraReflectiveOpExports.*
+
                val tpt1 = transformTypeTree(tpt0)(owner)
                val rhs1 = {
                   rhs0
@@ -152,7 +294,20 @@ with EclTdfOps
                      case SingleArgTerm(xpr1) => {
                         ;
                         xpr1.asExpr
-                        .toDeferredAsExpected(assumedOwner = owner )
+                        .pipeLooseSelf({
+                           case (
+                              quer1
+                              // @ '{ ${_} : t }
+                           ) =>
+                              quer1 match {
+                              //
+                              case NoTxPleaseeeBoundedExpr(quer1 *: _ ) =>
+                                 quer1
+                              case e =>
+                                 e
+                                 .toDeferredAsExpected(assumedOwner = owner )
+                              }
+                        })
                         // /* ad-hoc early-detection of the spurious type-mismatch (bug) */
                         // .asExprOf(using { tpt1.tpe.asType match { case '[t] => Type.of[t] } } )
                         .asTerm
@@ -161,6 +316,7 @@ with EclTdfOps
                         xpr1
                   })
                }
+
                /**
                 * depending on what's going on,
                 * we might need to override/replace the type to be ascribed
@@ -171,6 +327,7 @@ with EclTdfOps
                   rhs1
                   .map(((_: Term).tpe ) andThen (t => TypeTree.of(using t.asType ) ) )
                }
+
                ValDef.copy(tree)(tree.name, (
                   /**
                    * depending on what's going on,
@@ -204,15 +361,8 @@ with EclTdfOps
                ).mkString("\n") , eTree.pos )
                eTree
 
-            case Try(FromExprTree('{ ${e } : (t & typings.react.mod.ReactElement ) }), catch1, finally1) =>
-               // TODO
-               '{
-                  import typings.react.mod.*
-                  createElement("reactjs-errorcaught", null, ${e } )
-               }
-               .asTerm
-
             case _ : Term =>
+               /* will eventually reach `transformTerm` */
                fallbackToDefaultImpl()
 
             case _ @ (_ : (Term | DefDef | TypeDef | (Import | Export ) ) ) =>
@@ -228,66 +378,69 @@ with EclTdfOps
             }
          }
 
-         /** 
-          * for both `ValDef` and (TODO) `DefDef`
-          * 
-          * currently we can't handle `var`s, but
-          * as documented, the compiler extends `ValDef`s to `var`s, so
-          * `ValDef`s which are `var`s will be rejected here
-          * 
-          */
-         object &%%! {
+         override
+         def transformTerm
+            (tree: Term)
+            (owner: Symbol)
+         : Term
+         = {
             ;
 
-            ;
+            def fallbackToDefaultImpl()
+            = super.transformTerm(tree )(owner = owner )
 
-            def unapply
-               (tree: ValDef | DefDef )
-            //
-            = {
+            given Quotes
+            = owner.asQuotes
+            import extraReflectiveOpExports.*
+
+            object spclDebug {
                ;
-               trait Ier extends Selectable
-               {
+
+               object getClsCmp {
                   ;
 
-                  val s = tree.symbol
-
-                  val tpt0 : TypeTree
-
-                  val rhs0 : Option[Term]
+                  def format(tree: java.lang.Object, tree1: java.lang.Object )
+                  = s"${tree.getClass()}/${tree1.getClass()}"
 
                   ;
                }
-               Some(tree)
-               .collect[(
-                  // tree.type
-                  ValDef | DefDef
-                  , (() => Any ) *: EmptyTuple.type
-                  , Ier
-               )] ({
-                  //
-                  case tree @ (_ : ValDef) if { !(tree.symbol.flags is Flags.Mutable ) } =>
-                     ;
-                     (
-                        tree
-                        *:
-                        ((() => ??? ) *: EmptyTuple)
-                        *: {
-                           new Ier {
-                              ;
 
-                              val tpt0 = tree.tpt
-                              val rhs0 = tree.rhs
-
-                           }
-                        }
-                        *:
-                           EmptyTuple
-                     )
-               })
+               ;
             }
 
-            ;
+            tree match {
+            //
+
+            case (FromExprTree('{ (${_} : eclFrontEnd.type ).takeGsgv(${sAnimExpr } ) : s }) ) =>
+               '{
+                  eclFrontEnd.takeGsgvM[s](${sAnimExpr } )
+               }
+               .asTerm
+
+            case (FromExprTree('{ ${ FromTreeExpr(PolymorphicApply(FromExprTree('{ ${_} : eclFrontEnd.type }) , typeArgs, FromExprTree(sAnimExpr) ) ) } : s }) ) =>
+               '{
+                  eclFrontEnd.takeGsgvM[s](${sAnimExpr.asExprOf[airstream.core.Signal[s] ] } )
+               }
+               .asTerm
+
+            case Try(FromExprTree('{ ${e } : (t & typings.react.mod.ReactElement ) }), catch1, finally1) =>
+               '{
+                  import typings.react.mod.*
+                  createElement("reactjs-errorcaught", null, ${e } )
+               }
+               .asTerm
+
+            case _ : Term =>
+               fallbackToDefaultImpl()
+
+            /** FAILING FALLBACK */
+            case eTree =>
+               report.error((
+                  new MatchError(eTree )
+                  .getMessage()
+               ) , eTree.pos )
+               eTree
+            }
          }
 
          //
@@ -298,8 +451,10 @@ with EclTdfOps
    def closingTreeTransform
       //
       ()
-   : TreeMap
+   : quotes.reflect.TreeMap
    = {
+      ;
+      import quotes.reflect.*
       new TreeMap {}
    }
 

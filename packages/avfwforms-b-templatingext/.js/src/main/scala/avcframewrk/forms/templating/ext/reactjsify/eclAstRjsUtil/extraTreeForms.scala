@@ -36,26 +36,39 @@ import quoted.*
 // protected
 trait WithSplCtxImpl[+C <: Quotes & Singleton ](using val splCtx : C )
 
-def constructs
+given constructs
    //
-   (using splCtx1: Quotes)
-= {
-   new WithSplCtxImpl[splCtx1.type] with ConstructsImpl
-}
+   [C <: Singleton & Quotes ]
+   (using splCtx1: C)
+: WithSplCtxImpl[C ] with ConstructsImpl
 
-protected
-trait ConstructsImpl
-{
-   this : WithSplCtxImpl[?] =>
+given FTE
+   [C <: Singleton & Quotes ](using C )
+: AnyRef with {
    ;
 
    import quotes.reflect.{Singleton as _ , *}
 
    object FromExprTree {
       ;
-      def apply(e: Expr[?] ) = e.asTerm
+      def apply(e: Expr[?] ) = e.asTerm.underlyingArgument
       def unapply(eStr: Term ) = Some(eStr).collect({ case eStr if eStr.isExpr => eStr.asExpr })
    }
+
+   object FromTreeExpr {
+      ;
+      def unapply(e: Expr[?] ) = Some(FromExprTree(e) )
+      def apply(eStr: Term ) = FromExprTree.unapply(eStr ).get
+   }
+
+}
+
+given CAT
+   [C <: Singleton & Quotes ](using given_C : C )
+: AnyRef with {
+   ;
+
+   import given_C.reflect.{Singleton as _ , *}
 
    extension (e: Term)
       def applyTransform
@@ -67,6 +80,17 @@ trait ConstructsImpl
          tx.transformTerm(e)(owner = owner )
       }
    //
+
+}
+
+given QuotesQuasiPathRefs1
+   [C <: Singleton & Quotes ](using given_C : C )
+: AnyRef with {
+   ;
+
+   import given_C.reflect.{Singleton as _ , *}
+   
+   ;
 
    // TODO
    /** 
@@ -180,6 +204,45 @@ trait ConstructsImpl
 
    }
 
+}
+
+// private
+given ConstructsImplAlt
+   [C <: Singleton & Quotes ](using given_C : C )
+   (using given_FTE : FTE                 [given_C.type ] )
+   (using given_CAT : CAT                 [given_C.type ] )
+   (using given_QPR : QuotesQuasiPathRefs1[given_C.type ] )
+: AnyRef with {
+   ;
+
+   import quotes.reflect.{Singleton as _ , *}
+
+   export given_FTE.{*, given}
+
+   export given_CAT.{*, given}
+
+   export given_QPR.{*, given}
+
+}
+
+protected
+trait ConstructsImpl
+{
+   this : WithSplCtxImpl[?] =>
+   ;
+
+   import quotes.reflect.{Singleton as _ , *}
+
+   // val fetCciSplCtx
+   // : splCtx.type
+   // = splCtx
+
+   private[ConstructsImpl ]
+   val peer1
+   = summon[ConstructsImplAlt[splCtx.type ] ] 
+
+   export peer1.{*, given }
+
    object CaseClassDef {
       def unapply
          (s: ClassDef )
@@ -199,11 +262,32 @@ trait ConstructsImpl
       = {
          Some(s)
          .collect({
-            // 'case object's
+            //
+
+            /** 
+             * 'case object's.
+             * 
+             * for some reason,
+             * those two flag-checks
+             * did not reject
+             * (ie in a `case`-like setting) pattern-binding whose "underlying type" happen to conform to `case object` ST(s), so
+             * an additional check will be necessary
+             * 
+             */
             case s: (ValDef | DefDef) if (
-               (s.symbol.flags is Flags.Module) && (s.symbol.flags is Flags.Case)
+               (
+                  (s.symbol.flags is Flags.Module) && (s.symbol.flags is Flags.Case)
+               )
+               &&
+               (
+                  Printer.TreeShortCode.show(s )
+                  .matches("\\w+")
+                  /* uh oh, it's a wrong one */
+                  .unary_!
+               )
             ) =>
                s
+
          })
       }
    }
