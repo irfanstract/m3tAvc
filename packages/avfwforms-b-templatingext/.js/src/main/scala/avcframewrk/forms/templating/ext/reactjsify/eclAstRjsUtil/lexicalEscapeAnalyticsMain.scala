@@ -76,6 +76,79 @@ trait LxEscAnalytique
             ;
             ;
 
+            def runSuperImpl()
+            = super.foldOverTree(x, tree )(owner = owner )
+
+            val DDL
+            = PartialFunction.fromFunction(<:<.refl[Tree ] ).andThen[(
+               Option[Symbol] ,
+               Some[Symbol] ,
+               collection.immutable.Iterable[Symbol] ,
+               collection.immutable.Iterable[Symbol] ,
+            )] ({
+               //
+
+               case ddef @ DefDef(_, paramss, tpt, rhs) =>
+                  val symbol = ddef.symbol
+
+                  val owner = symbol
+
+                  // TODO
+                  val allReferencedSymbols
+                  = {
+                     ;
+
+                     x
+                     .map(ls => ls.concat(Nil :+ owner ) )
+                     .pipeLooseSelf(x => foldTrees(x, rhs)(owner = owner ) )
+                     .pipeLooseSelf(x => foldTree(x, tpt)(owner = owner ) )
+                     .pipeLooseSelf(x => {
+                        ;
+                        paramss
+                        .foldLeft[X] (x)((x, params ) => {
+                           ;
+                           foldTrees(x , params.params )(owner = owner )
+                        } )
+                     } )
+                     .get
+                  } : collection.immutable.Iterable[Symbol]
+
+                  val allParamNameDeclSyms
+                  = {
+                     ;
+
+                     paramss
+                     .flatMap(params => {
+                        params.params
+                        .map(_.symbol)
+                     } )
+                  } : Seq[Symbol]
+
+                  (Some(symbol), Some(owner), allReferencedSymbols, allParamNameDeclSyms )
+
+               case dmx @ Match(scrutinee, cases1) =>
+                  ;
+                  val allReferencedSymbols = runSuperImpl().get
+                  ;
+                  // TODO
+                  val _ = {
+                     cases1
+                     .flatMap(casd => {
+                        // TODO
+                        Nil :+ casd.pattern
+                     } )
+                  }
+                  // TODO this is a hard one
+                  ({
+                     throw new IllegalArgumentException((
+                        s"currently 'match' is not supported."
+                     ))
+                  })
+                  (None, Some(owner), (
+                     Nil
+                  ), Nil )
+            })
+
             tree match {
             //
 
@@ -144,31 +217,12 @@ trait LxEscAnalytique
                   allReferredOuterInScopeSymbols
                }
 
-            case ddef @ DefDef(_, paramss, tpt, rhs) =>
-               val owner = ddef.symbol
-               // foldTrees(foldTree(paramss.foldLeft(x)((acc, y) => foldTrees(acc, y.params)(owner)), tpt)(owner), rhs)(owner)
-               x
-               .pipeLooseSelf(x => foldTrees(x, rhs)(owner = owner ) )
-               .pipeLooseSelf(x => foldTree(x, tpt)(owner = owner ) )
-               .pipeLooseSelf(x => {
-                  /* NEGATIVE */
-                  paramss
-                  .foldLeft[X] (x)((x, params ) => {
-                     ;
-                     ;
-                     for  (referredSymbols <- x )
-                     yield {
-                        ;
+            case ddef @ DDL(d, Some(owner), allReferencedSymbols, allParamNameDeclSyms ) =>
+               ;
 
-                        val util.Success(mNeg)
-                        = {
-                           foldTrees(util.Success(Nil ) , params.params )(owner = owner )
-                        }
-
-                        referredSymbols.toSet -- mNeg
-                     }
-                  } )
-               } )
+               util.Try {
+                  allReferencedSymbols.toSet -- (allParamNameDeclSyms ++ d.toList ).toSet
+               }
 
             // TODO for `Def`s
 
@@ -196,7 +250,7 @@ trait LxEscAnalytique
                x.map(x => x.++(Nil :+ s.symbol ) )
 
             case _ =>
-               super.foldOverTree(x, tree )(owner = owner )
+               runSuperImpl()
             }
          }
 

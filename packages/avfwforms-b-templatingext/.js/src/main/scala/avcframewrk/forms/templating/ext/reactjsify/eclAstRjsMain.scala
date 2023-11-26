@@ -54,15 +54,15 @@ with EclTdfOps
 
    ;
 
-   import quotes.reflect.{Singleton as _ , *}
+   // import quotes.reflect.{Singleton as _ , *}
 
-   // final
-   // lazy val %%::! = eclAstRjsUtil.constructs
-   import %%::!.{
-      applyTransform as _,
-      splCtx as _,
-      *, given
-   }
+   // // final
+   // // lazy val %%::! = eclAstRjsUtil.constructs
+   // import %%::!.{
+   //    applyTransform as _,
+   //    splCtx as _,
+   //    *, given
+   // }
 
    ;
 
@@ -72,12 +72,17 @@ with EclTdfOps
    def mainReliftingTreeMap
       //
       ()
-   : TreeMap
+   : quotes.reflect.TreeMap
    = {
       ;
 
+      import extraReflectiveOpExports.*
+
       val nhDoc
       = {
+         ;
+         import language.unsafeNulls
+         ;
          s"""
          | 
          | to avoid bugs like `false negatives for object-literal, across redraws, resulting in constant call/firing`
@@ -90,7 +95,16 @@ with EclTdfOps
          (msg: => String, pos: Tree )
       : String
       = {
-         "".++(msg ).++("\r\n").++(nhDoc )
+         ;
+         import language.unsafeNulls
+         ;
+         s"""
+         |${msg }
+         |
+         |${Printer.TreeShortCode.show(pos ).indent(2) }
+         |
+         |${nhDoc }
+         """.stripMargin
       }
 
       new TreeMap {
@@ -106,6 +120,10 @@ with EclTdfOps
 
             def fallbackToDefaultImpl()
             = super.transformStatement(tree )(owner = owner )
+
+            given Quotes
+            = owner.asQuotes
+            import extraReflectiveOpExports.*
 
             tree match {
             //
@@ -135,8 +153,15 @@ with EclTdfOps
              */
             case _ @ &%%!(tree *: _ *: o *: _ ) =>
                ;
+
                import o.{rhs0, tpt0}
+
                val owner = tree.symbol
+
+               // given Quotes
+               // = owner.asQuotes
+               // import extraReflectiveOpExports.*
+
                val tpt1 = transformTypeTree(tpt0)(owner)
                val rhs1 = {
                   rhs0
@@ -161,6 +186,7 @@ with EclTdfOps
                         xpr1
                   })
                }
+
                /**
                 * depending on what's going on,
                 * we might need to override/replace the type to be ascribed
@@ -171,6 +197,7 @@ with EclTdfOps
                   rhs1
                   .map(((_: Term).tpe ) andThen (t => TypeTree.of(using t.asType ) ) )
                }
+
                ValDef.copy(tree)(tree.name, (
                   /**
                    * depending on what's going on,
@@ -298,8 +325,10 @@ with EclTdfOps
    def closingTreeTransform
       //
       ()
-   : TreeMap
+   : quotes.reflect.TreeMap
    = {
+      ;
+      import quotes.reflect.*
       new TreeMap {}
    }
 

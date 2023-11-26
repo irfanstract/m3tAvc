@@ -83,7 +83,8 @@ trait EclTdfOps
                ;
 
                ${ toSummonEobsm() }
-               .pipeLooseSelf(esgSpecificRedrawCallability.invokeBasicOn(_) )
+               // .match { case eobsm => esgSpecificRedrawCallability.invokeBasicOn(eobsm) }
+               .pipeLooseSelf({ eobsm => esgSpecificRedrawCallability.invokeBasicOn(eobsm) })
             })
 
             /**
