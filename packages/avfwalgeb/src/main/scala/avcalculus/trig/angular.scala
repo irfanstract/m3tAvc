@@ -40,14 +40,44 @@ object Angular {
 
    ;
 
-   def fromDegrees
-      (value: Double)
-   : _ByValueD[Double ]
-   = _Impl (valueInDegrees = floorMod1(dividend = value, divisor = 360 ) )
+   final
+   lazy val thirtyDegreeInstance
+   = fromDegreesUnchecked(30 )
 
+   final
+   lazy val fourtyFiveDegreeInstance
+   = fromDegreesUnchecked(45 )
+
+   final
+   lazy val sixtyDegreeInstance
+   = fromDegreesUnchecked(60 )
+
+   final
+   lazy val ninetyDegreeInstance
+   = fromDegreesUnchecked(90 )
+
+   transparent
+   inline
    def fromMusicalSemitones
       (value: Double)
    = fromDegrees(value = value * 30 )
+
+   transparent
+   inline
+   def fromDegrees
+      (value: Double)
+   : _ByValueD[Double ]
+   = fromDegreesUnchecked( floorMod1(dividend = value, divisor = 360 ) )
+
+   /** 
+    * DO NOT CALL DIRECTLY! only for binary compat.
+    * 
+    */
+   // private
+   def fromDegreesUnchecked
+      (value: Double)
+   : _ByValueD[value.type ]
+   = _Impl[value.type ] (valueInDegrees = value )
 
    ;
 
@@ -102,6 +132,8 @@ PolarQuad
 export NeWsPolarQuad.{north, east, west, south }
 sealed trait PolarQuad
 
+transparent
+inline
 def floorMod1
    (dividend: Double, divisor: Int )
 = dividend match {

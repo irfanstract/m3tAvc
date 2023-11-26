@@ -136,7 +136,7 @@ object eclReactHooks {
 }
 
 /** 
- * `EclReactHookSummonable`
+ * `EclKitReactHookSummonable`
  * 
  * `eclReactHooks.useCachedValue`
  * happens to be another `inline` one ;
@@ -147,7 +147,7 @@ object eclReactHooks {
  * , currently an indirection as (an IIFE involving `stdlib.compiletime.summonInline` )
  * 
  */
-object EclReactHookSummonable {
+object EclKitReactHookSummonable {
    ;
 
    ;
@@ -186,7 +186,7 @@ object eclReactHookingProtocolTopLevel {
 
    ;
 
-   export EclReactHookSummonable.ByRQueryAndDependenciesArrayThenDoAndReturnR
+   export EclKitReactHookSummonable.ByRQueryAndDependenciesArrayThenDoAndReturnR
 
    ;
 

@@ -42,6 +42,17 @@ AnyRef
    rce =>
    ;
 
+   import avcframewrk.forms.templating.reactjs_s1.AvfwReactFunctionComponent
+
+   export avcframewrk.forms.templating.reactjs_s1.ReactComponent1.implicits.asFunctionComp
+
+   def describeFunctionComp
+      [Props](f: js.Function1[Props, ReactElement | typings.react.mod.Component[?, ?, ?] ] )(using ValueOf[Unit] )
+   = {
+      f
+      .asInstanceOf[AvfwReactFunctionComponent[Props ] ]
+   }
+
    export avcframewrk.forms.templating.reactjs_s1.describeElement
    export avcframewrk.forms.templating.reactjs_s1.{describeElement as createElement }
 
