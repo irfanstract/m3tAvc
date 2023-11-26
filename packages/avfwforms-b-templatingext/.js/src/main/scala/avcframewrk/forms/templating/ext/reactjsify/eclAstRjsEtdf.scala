@@ -55,35 +55,66 @@ trait EclTdfOps
 
    ;
 
-   extension [mainQueryExprReturnTpe : Type ] (mainQuery: Expr[mainQueryExprReturnTpe ] )
+   @deprecated
+   private
+   def &&&&?%(ctx1: Quotes )(s: ctx1.reflect.Symbol )
+   = s.asInstanceOf[Symbol ]
+
+   extension [mainQueryExprReturnTpe : Type ] (mainQuery: Expr[mainQueryExprReturnTpe ] ) (using Quotes )
       //
 
       def toDeferredToXMemoisingHook
          //
-         (assumedOwner: Symbol )
+         (assumedOwner: quotes.reflect.Symbol )
       : Expr[mainQueryExprReturnTpe ]
       = {
          ;
+
+         import quotes.reflect.{Singleton as _, * }
 
          // TODO
          val debugMode : Boolean = false
 
          // TODO
          val dependenciesArrayLiteral
-         = mainQuery.renderReactJsDependenciesArray(assumedOwner = assumedOwner , debugMode = debugMode )
+         = mainQuery.renderReactJsDependenciesArray(assumedOwner = (
+            // assumedOwner
+
+            &&&&?%(summon[Quotes ] )(assumedOwner )
+         ) , debugMode = debugMode )
 
          '{
             ;
 
+            /** debug-only splice - convey the original code. can't do this in prod; it intensely filled up generated code */
+            (${
+               if false then '{
+
+                  "the original code"
+                  if false then {
+                     ${
+                        Printer.TreeStructure.show(mainQuery.asTerm )
+                        .grouped(80 ).toIndexedSeq
+                        .map(Expr(_))
+                        /* cannot use `Expr.ofList` ; they didn't linebreak well the way `Block`s do */
+                        .reduceRight[Expr[?] ] ((e0, e1) => '{ ${e0} ; ${e1} } )
+                     } : Unit
+                  }
+               }
+
+               else '{}
+            } : Unit )
+
             /**
-             * `esgSpecificRedrawCallability`
+             * `eclWildQueryNecessitatedRedrawCallability`
              * 
              */
             ({
                ;
 
                ${ toSummonEobsm() }
-               .pipeLooseSelf(esgSpecificRedrawCallability.invokeBasicOn(_) )
+               // .match { case eobsm => eclWildQueryNecessitatedRedrawCallability.invokeBasicOn(eobsm) }
+               .pipeLooseSelf({ eobsm => eclWildQueryNecessitatedRedrawCallability.invokeBasicOn(eobsm) })
             })
 
             /**
@@ -103,22 +134,24 @@ trait EclTdfOps
                ([T] => (tg: Type[T]) ?=> {
                   '{ compiletime.summonInline[T] }
                })
-                  [EclReactHookSummonable.ToUseCachedValue._ForR[mainQueryExprReturnTpe ] ]
+                  [EclKitReactHookSummonable.ToUseCachedValue._ForR[mainQueryExprReturnTpe ] ]
             } } )
             .apply(${mainQuery } , ${dependenciesArrayLiteral } )
          }
       }
 
    // implicit class ExprDeferredToXMemoisingHookOps
-   extension [R : Type ] (x: Expr[R] )
+   extension [R : Type ] (x: Expr[R] ) (using Quotes )
       //
 
       def toDeferredAsExpected
          //
-         (assumedOwner: Symbol )
+         (assumedOwner: quotes.reflect.Symbol )
       : Expr[R]
       = {
          ;
+
+         import quotes.reflect.{Singleton as _, * }
 
          ;
          x
@@ -200,30 +233,6 @@ def toSummonEobsmInlineEsg
 
    ((ctx: EOBSM._Any ) ?=> ctx )
       (using compiletime.summonInline )
-}
-
-object esgSpecificRedrawCallability {
-   ;
-
-   ;
-
-   def invokeBasicOn
-      //
-      (receiver: eclReactObservingHooksImpl.EOBSM._Any )
-   //
-   = {
-      ;
-
-      receiver
-      .scheduleRefresh({
-         eclReactObservingHooksImpl.EOBSM.app.newJsTimeout(duration = {
-            import concurrent.duration.*
-            (1.950 ).second
-         })
-      })
-   }
-
-   ;
 }
 
 def esgSingletonSelf
