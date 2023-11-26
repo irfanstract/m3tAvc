@@ -92,6 +92,8 @@ object eisr {
 
    // val srf = (_: dom.MediaStream).startRecording _
 
+   export ByConstructedMediaStreamRcCtx.defaultPreferredBlobLikeEvtReducer
+
    object ByConstructedMediaStreamRcCtx {
       ;
 
@@ -146,16 +148,72 @@ object eisr {
             stop()
          }
 
-         type SpclOnWorkerTerminativeEvtInfo
-         >: GeneralisedSpclOnWorkerTerminativeEvtInfo[Unit ]
-         <: GeneralisedSpclOnWorkerTerminativeEvtInfo[Unit ]
-
          peer.addEventListener_start(typings.std.stdStrings.start , (_, evt) => {
             dom.console log(s"recording started (from MediaStream)", evt )
          } )
 
-         private
-         def addOnDataAvailableOrCompleteListener
+         export peer.start
+
+         export peer.pause
+
+         export peer.stop
+
+         type SpclOnWorkerTerminativeEvtInfo
+         >: GeneralisedSpclOnWorkerTerminativeEvtInfo[Unit ]
+         <: GeneralisedSpclOnWorkerTerminativeEvtInfo[Unit ]
+
+         object SpclOnWorkerTerminativeEvtInfo {
+            def apply(desc: SpclOnWorkerTerminativeEvtInfo )
+            = desc
+         }
+
+         export peer.{
+            addEventListener as addEventListenerOnPeer ,
+            /** need these all, to work-around the limitation of the ScT's enc schm */
+            addEventListener_start ,
+            addEventListener_resume ,
+            addEventListener_pause ,
+            addEventListener_stop ,
+            addEventListener_dataavailable ,
+            addEventListener_error ,
+         }
+
+         def addOnTerminativeListener
+            //
+            (
+               //
+               handleTermtEvt
+               : (evt: SpclOnWorkerTerminativeEvtInfo ) => Unit
+               ,
+            )
+         : Unit
+         = {
+            ;
+            peer.addEventListener_error(typings.std.stdStrings.error , (_, evt) => {
+               handleTermtEvt(SpclOnWorkerTerminativeEvtInfo(util.Left(evt) , () ) )
+            } )
+            peer.addEventListener_stop(typings.std.stdStrings.stop , (_, evt) => {
+               handleTermtEvt(SpclOnWorkerTerminativeEvtInfo(util.Right(()) , () ) )
+            } )
+         }
+
+         def addOnDataAvailableListener
+            //
+            (
+               //
+               handleNewPartAvailEvt
+               : domItc.BlobEvent => Unit
+               ,
+            )
+         = {
+            ;
+            peer.addEventListener_dataavailable(typings.std.stdStrings.dataavailable , (_, evt) => {
+               handleNewPartAvailEvt(evt)
+            } )
+         }
+
+         // private
+         def addOnDataAvailableOrTerminativeListener
             //
             (
                //
@@ -166,25 +224,14 @@ object eisr {
                : (evt: SpclOnWorkerTerminativeEvtInfo ) => Unit
                ,
             )
+         : Unit
          = {
             ;
-            peer.addEventListener_dataavailable(typings.std.stdStrings.dataavailable , (_, evt) => {
-               handleNewPartAvailEvt(evt)
-            } )
-            peer.addEventListener_error(typings.std.stdStrings.error , (_, evt) => {
-               handleTermtEvt((util.Left(evt) , () ) : SpclOnWorkerTerminativeEvtInfo )
-            } )
-            peer.addEventListener_stop(typings.std.stdStrings.stop , (_, evt) => {
-               handleTermtEvt((util.Right(()) , () ) : SpclOnWorkerTerminativeEvtInfo )
-            } )
+            addOnDataAvailableListener(handleNewPartAvailEvt )
+            addOnTerminativeListener(handleTermtEvt )
          }
 
-         export peer.start
-
-         export peer.pause
-
-         export peer.stop
-
+         final
          val fullLengthBlobAnim *: termStateAnim *: _
          = {
             ;
@@ -203,7 +250,7 @@ object eisr {
             val o = {
                ;
 
-               addOnDataAvailableOrCompleteListener(
+               addOnDataAvailableOrTerminativeListener(
                   //
                   handleNewPartAvailEvt = evt => {
                      // payloadS
@@ -228,7 +275,9 @@ object eisr {
 
       export epberDefs.{*, given }
 
-      given simplePreferredBlobLikeEvtReducer.type
+      @deprecated
+      given defaultPreferredBlobLikeEvtReducer
+      : simplePreferredBlobLikeEvtReducer.type
       = simplePreferredBlobLikeEvtReducer
 
       type GeneralisedSpclOnWorkerTerminativeEvtInfo

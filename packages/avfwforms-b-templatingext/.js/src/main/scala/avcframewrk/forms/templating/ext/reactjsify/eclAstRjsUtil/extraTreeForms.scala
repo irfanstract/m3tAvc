@@ -51,10 +51,20 @@ trait ConstructsImpl
 
    import quotes.reflect.{Singleton as _ , *}
 
+   // val fetCciSplCtx
+   // : splCtx.type
+   // = splCtx
+
    object FromExprTree {
       ;
-      def apply(e: Expr[?] ) = e.asTerm
+      def apply(e: Expr[?] ) = e.asTerm.underlyingArgument
       def unapply(eStr: Term ) = Some(eStr).collect({ case eStr if eStr.isExpr => eStr.asExpr })
+   }
+
+   object FromTreeExpr {
+      ;
+      def unapply(e: Expr[?] ) = Some(FromExprTree(e) )
+      def apply(eStr: Term ) = FromExprTree.unapply(eStr ).get
    }
 
    extension (e: Term)
@@ -199,11 +209,32 @@ trait ConstructsImpl
       = {
          Some(s)
          .collect({
-            // 'case object's
+            //
+
+            /** 
+             * 'case object's.
+             * 
+             * for some reason,
+             * those two flag-checks
+             * did not reject
+             * (ie in a `case`-like setting) pattern-binding whose "underlying type" happen to conform to `case object` ST(s), so
+             * an additional check will be necessary
+             * 
+             */
             case s: (ValDef | DefDef) if (
-               (s.symbol.flags is Flags.Module) && (s.symbol.flags is Flags.Case)
+               (
+                  (s.symbol.flags is Flags.Module) && (s.symbol.flags is Flags.Case)
+               )
+               &&
+               (
+                  Printer.TreeShortCode.show(s )
+                  .matches("\\w+")
+                  /* uh oh, it's a wrong one */
+                  .unary_!
+               )
             ) =>
                s
+
          })
       }
    }

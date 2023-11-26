@@ -302,8 +302,18 @@ object eclReactObservingHooksImpl {
 
    ;
 
-   // def takeGsgv
-   export EOBSM.app.{valueOf as takeGsgv }
+   /* TODO switch to clause-interweaved sig */
+   def takeGsgv
+      [S]
+      (using EOBSM._Any )
+      (src: airstream.core.Signal[S] )
+   = EOBSM.app.valueOf(src )
+
+   // transparent inline
+   def summonEobsm
+      (using impl: EOBSM._Any)
+   : impl.type
+   = impl
 
    ;
 

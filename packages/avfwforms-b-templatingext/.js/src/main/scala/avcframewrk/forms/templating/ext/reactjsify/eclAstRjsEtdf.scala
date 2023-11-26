@@ -75,6 +75,25 @@ trait EclTdfOps
          '{
             ;
 
+            /** debug-only splice - convey the original code. can't do this in prod; it intensely filled up generated code */
+            (${
+               if false then '{
+
+                  "the original code"
+                  if false then {
+                     ${
+                        Printer.TreeStructure.show(mainQuery.asTerm )
+                        .grouped(80 ).toIndexedSeq
+                        .map(Expr(_))
+                        /* cannot use `Expr.ofList` ; they didn't linebreak well the way `Block`s do */
+                        .reduceRight[Expr[?] ] ((e0, e1) => '{ ${e0} ; ${e1} } )
+                     } : Unit
+                  }
+               }
+
+               else '{}
+            } : Unit )
+
             /**
              * `esgSpecificRedrawCallability`
              * 
@@ -83,7 +102,8 @@ trait EclTdfOps
                ;
 
                ${ toSummonEobsm() }
-               .pipeLooseSelf(esgSpecificRedrawCallability.invokeBasicOn(_) )
+               // .match { case eobsm => esgSpecificRedrawCallability.invokeBasicOn(eobsm) }
+               .pipeLooseSelf({ eobsm => esgSpecificRedrawCallability.invokeBasicOn(eobsm) })
             })
 
             /**
