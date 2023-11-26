@@ -75,15 +75,35 @@ trait EclTdfOps
          '{
             ;
 
+            /** debug-only splice - convey the original code. can't do this in prod; it intensely filled up generated code */
+            (${
+               if false then '{
+
+                  "the original code"
+                  if false then {
+                     ${
+                        Printer.TreeStructure.show(mainQuery.asTerm )
+                        .grouped(80 ).toIndexedSeq
+                        .map(Expr(_))
+                        /* cannot use `Expr.ofList` ; they didn't linebreak well the way `Block`s do */
+                        .reduceRight[Expr[?] ] ((e0, e1) => '{ ${e0} ; ${e1} } )
+                     } : Unit
+                  }
+               }
+
+               else '{}
+            } : Unit )
+
             /**
-             * `esgSpecificRedrawCallability`
+             * `eclWildQueryNecessitatedRedrawCallability`
              * 
              */
             ({
                ;
 
                ${ toSummonEobsm() }
-               .pipeLooseSelf(esgSpecificRedrawCallability.invokeBasicOn(_) )
+               // .match { case eobsm => eclWildQueryNecessitatedRedrawCallability.invokeBasicOn(eobsm) }
+               .pipeLooseSelf({ eobsm => eclWildQueryNecessitatedRedrawCallability.invokeBasicOn(eobsm) })
             })
 
             /**
@@ -200,30 +220,6 @@ def toSummonEobsmInlineEsg
 
    ((ctx: EOBSM._Any ) ?=> ctx )
       (using compiletime.summonInline )
-}
-
-object esgSpecificRedrawCallability {
-   ;
-
-   ;
-
-   def invokeBasicOn
-      //
-      (receiver: eclReactObservingHooksImpl.EOBSM._Any )
-   //
-   = {
-      ;
-
-      receiver
-      .scheduleRefresh({
-         eclReactObservingHooksImpl.EOBSM.app.newJsTimeout(duration = {
-            import concurrent.duration.*
-            (1.950 ).second
-         })
-      })
-   }
-
-   ;
 }
 
 def esgSingletonSelf

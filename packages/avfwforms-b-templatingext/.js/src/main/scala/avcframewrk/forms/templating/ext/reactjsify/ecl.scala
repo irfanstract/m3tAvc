@@ -28,251 +28,307 @@ import com.raquo.airstream
 
 
 object eclFrontEnd {
-   ;
+  ;
 
-   type XFunctionComponent[-Props]
-   = typings.react.mod.FunctionComponent[? >: Props]
+  type XFunctionComponent[-Props]
+  = typings.react.mod.FunctionComponent[? >: Props]
 
-   /* a work-around to these incremental-compl issues */
-   Ecl
+  export eclEods.{*, given}
 
-   // TODO
-   inline
-   def ecl
-      [Props, E <: typings.react.mod.ReactElement ]
-      (inline renderContents1: (props: Props) => E )
-   : XFunctionComponent[Props ]
-   = ${
-      eclByExpr(renderContents1E = 'renderContents1 )
-   }
+  import eclEods.{*, given}
 
-   def eclByExpr
-      [Props : Type, E <: typings.react.mod.ReactElement : Type ]
-      (using Quotes)
-      (renderContents1E: Expr[(props: Props) => E ] )
-   // : XFunctionComponent[Props ]
-   = {
+  import eclEobs.{*, given}
+
+  /* a work-around to these incremental-compl issues */
+  Ecl
+
+  // TODO
+  inline
+  def ecl
+    [Props, E <: typings.react.mod.ReactElement ]
+    (inline renderContents1: (props: Props) => E )
+  : XFunctionComponent[Props ]
+  = ${
+    eclMacroImpl(renderContents1E = 'renderContents1 )
+  }
+
+  def eclMacroImpl
+    [Props : Type, E <: typings.react.mod.ReactElement : Type ]
+    // (using EopDebugConfig )
+    (using Quotes)
+    (renderContents1E: Expr[(props: Props) => E ] )
+  = eclByExpr[Props, E ] (renderContents1E)
+
+  def eclByExpr
+    [Props : Type, E <: typings.react.mod.ReactElement : Type ]
+    (using EopDebugConfig )
+    (using Quotes)
+    (renderContents1E: Expr[(props: Props) => E ] )
+  // : XFunctionComponent[Props ]
+  = {
+    ;
+
+    import quotes.reflect.*
+
+    eclRenderFncExprByExpr(renderContents1E )
+
+    .match { case fncExpr => '{
       ;
-      
-      import quotes.reflect.*
-      
-      val clsCoreExpr
-      = {
-         ;
+      locally[js.Function1[Props, E] ] (${ fncExpr }.apply(_) )
+      .asInstanceOf[XFunctionComponent[Props ] ]
+    } }
+  }
 
-         '{
+  def eclRenderFncExprByExpr
+    [Props : Type, E <: typings.react.mod.ReactElement : Type ]
+    (using EopDebugConfig )
+    (using Quotes)
+    (renderContents1E: Expr[(props: Props) => E ] )
+  = {
+    ;
+    
+    import quotes.reflect.*
+    
+    val clsCoreExpr
+    = {
+      ;
+
+      '{
+        ;
+
+        ((fnc: (props: Props) => E ) => fnc ) (props => {
+          ;
+
+          ${
             ;
 
-            ((fnc: (props: Props) => E ) => fnc ) (props => {
-               ;
-
-               ${
-                  ;
-                  (Expr.betaReduce('{ ${renderContents1E }(props ) }) )
-
-                  /* `eopByExpr` */
-                  .pipeLooseSelf(expr => (
-                     //
-                     eclFrontEnd.eopByExpr(expr )
-                  ))
-
-                  /* apply this "Airstreamification" */
-                  .pipeLooseSelf(origExpr => {
-                     ;
-
-                     val analysis
-                     = {
-                        ;
-                        avcframewrk.forms.templating.ext.airstreamify.ByGetFromO.analyseExprAndAirstreamify
-                           (origExpr , warnResultingCode = false )
-                     }
-
-                     val srcExprs
-                     = analysis.srcExprs
-
-                     /** 
-                      * to avoid practical device b-out issues,
-                      * let's disallow non-constant expr(s) from taking part
-                      */
-                     srcExprs
-                     .tapLooseSelf(exprs => {
-                        for {
-                           expr <- exprs
-                        }
-                        do {
-                           val exprEvaluatedTRepr
-                           = (expr.asTerm ).tpe
-
-                           if !(exprEvaluatedTRepr.<:<(TypeRepr.of[scala.Singleton ] ) ) then {
-                              report.error(s"Implementation Restriction: can only make constant reference. \n non-trivial source expr(s) would risk dvc b-out, and cannot trivially be auto-memoised ; \n we're disallowing those, as Impl Restriction ", expr )
-                           }
-                        }
-                     } )
-
-                     '{
-                        ;
-
-                        val srcs
-                        = ${Expr.ofList(srcExprs ) }.toIndexedSeq
-
-                        ${analysis.asByActualValuesSeqIife }
-                        .apply({
-                           // TODO
-                           ${
-                              literateEclSpecificObsoAll(srcsExpr = '{ srcs } )
-                           }
-                        } : Tuple )
-
-                        ;
-                     }
-                  } : Expr[E] )
-
-                  .pipeLooseSelf(expr => expr )
-               } : E
-            } )
-         }
-
-         .pipeLooseSelf(fncExpr => ('{
-            ;
+            import quotes.reflect.*
 
             ;
+            (Expr.betaReduce('{ ${renderContents1E }(props ) }) )
 
-            (props: Props) => {
-               ;
+            /* `eopByExpr` */
+            .pipeLooseSelf(expr => (
+              //
+              eclFrontEnd.eopByExpr(expr )
+            ))
 
-               // TODO
-               given given_SCA
-               : eclReactHookingLambdalComponentEsvAndImplicitlyPassedInstallmentalOpsDefs.%%@.mainInstance.SCA
-               = eclReactHookingLambdalComponentEsvAndImplicitlyPassedInstallmentalOpsDefs.%%@.mainInstance.StateHoldEwmDInReactJs.useCarrier()
-               implicit val eobsm
-               = given_SCA.eobsm
+            /* apply this "Airstreamification" */
+            .airstreamify1()
 
-               ${fncExpr }(props )
-            }
-         }) : Expr[(props: Props ) => E ] )
+            .pipeLooseSelf(expr => expr )
+          } : E
+        } )
       }
 
-      clsCoreExpr
-      .pipeLooseSelf(fncExpr => '{
-         ;
-         locally[js.Function1[Props, E] ] (${ fncExpr }.apply(_) )
-         .asInstanceOf[XFunctionComponent[Props ] ]
-      })
-   }
+      .match { case fncExpr => ('{
+        ;
 
-   /* a work-around to issues with incr-compile */
-   (avcframewrk.forms.templating.ext.airstreamify.ByGetFromO)
+        ;
 
-   def literateEclSpecificObsoAll
-      //
-      (using Quotes )
-      (srcsExpr: Expr[IndexedSeq[airstream.core.Signal[?] ] ] )
-   = {
-      ;
-
-      '{
-         val srcs = ${srcsExpr}
-
-         (compiletime.summonInline : eclReactObservingHooksImpl.EOBSM._Any )
-         .pipeLooseSelf(ctx1 => {
-            for (src <- srcs )
-            yield {
-               ctx1.valueOf(src )
-            }
-         } )
-         .pipeLooseSelf(valsSeq => (
-            Tuple.fromIArray(IArray(valsSeq* ) )
-         ) : Tuple )
-      } : Expr[Tuple ]
-   }
-
-   def literateEclSpecificObso
-      //
-      [Value : Type ]
-      (using Quotes )
-      (srcExpr: Expr[airstream.core.Signal[Value] ] )
-   = {
-      ;
-      '{
-         val src = ${srcExpr}
-
-         (compiletime.summonInline : eclReactObservingHooksImpl.EOBSM._Any )
-         .pipeLooseSelf(ctx1 => {
-            ctx1.valueOf(src )
-         } )
-      } : Expr[Value ]
-   } : Expr[Value ]
-
-   // transparent
-   inline
-   def eop
-      [R]
-      (inline e: R )
-   = ${eopByExpr('e) }
-
-   def eopByExpr
-      [R : Type ]
-      (e: Expr[R])
-      (using Quotes)
-   = {
-      ;
-
-      avcframewrk.forms.templating.ext.airstreamify.commonProtocol.runQuotativeSessionDmpably
-         //
-         (e, (e, _) => {
+        (props: Props) => {
             ;
 
-            import quotes.reflect.{Singleton as _ , *}
+            // TODO
+            given given_SCA
+            : eclReactHookingLambdalComponentEsvAndImplicitlyPassedInstallmentalOpsDefs.%%@.mainInstance.SCA
+            = eclReactHookingLambdalComponentEsvAndImplicitlyPassedInstallmentalOpsDefs.%%@.mainInstance.StateHoldEwmDInReactJs.useCarrier()
+            implicit val eobsm
+            = given_SCA.eobsm
 
-            val ctx1
-            = Ecl()
+            ${fncExpr }(props )
+        }
+      }) : Expr[(props: Props ) => E ] }
+    }
 
-            import ctx1.{given }
+    clsCoreExpr
+  }
 
-            import ctx1.applyTransform
+  /* a work-around to issues with incr-compile */
+  (avcframewrk.forms.templating.ext.airstreamify.ByGetFromO)
 
-            ({
-               ;
+  /* I wanna get rid of this one `export` */
+  export eclFrontEndTakeGsgvStubDefs.{
+    preTakeGsgvInline1 ,
+  }
 
-               e
-               .asTerm
-               .applyTransform({
-                  ctx1.mainReliftingTreeMap()
-               } )(owner = Symbol.spliceOwner )
-               .applyTransform({
-                  ctx1.closingTreeTransform()
-               } )(owner = Symbol.spliceOwner )
-               .asExpr
-            })
-            match {
-            case '{ ${e} : eReturnType & R } => {
-               ;
-               '{
-                  /** 
-                   * note --
-                   * the prefix-part of the IIFE needs indirection like this,
-                   * otherwise a flawed (ie a lossy one) beta-reduction will kick in
-                   * 
-                   */
-                  ({
-                     ;
-                     "no B-reduction here"
-                     (
-                        sCa: eclReactHookingLambdalComponentEsvAndImplicitlyPassedInstallmentalOpsDefs.%%@.mainInstance.SCA ,
-                     ) ?=>
-                        implicit val eobsm = sCa.eobsm
-                        ${e }
-                  })(using
-                     //
-                     compiletime.summonInline ,
-                  )
-               }
-            }
-            }
-         } , warnResultingCode = false )
-   }
+  export eclFrontEndTakeGsgvStubDefs.{
+    takeGsgv ,
+    takeGsgvM ,
+  }
 
-   ;
+  /** `do not wrap or rewrite` */
+  def eclAsm
+    [A]
+    (value: A )
+  : value.type
+  = value
+
+  ;
+}
+
+// private
+// private[avcframewrk]
+/* can't be `private` due to possible `summon`s */
+object eclFrontEndTakeGsgvStubDefs {
+  ;
+
+  ;
+
+  import eclEods.{*, given}
+
+  import eclEobs.{*, given}
+
+  ;
+
+  transparent
+  inline
+  def preTakeGsgvInline1()
+  : Unit
+  = {
+    ;
+    java.lang.System.currentTimeMillis()
+    // toSummonEobsmInlineEsg()
+    // takeGsgv(??? )
+    java.lang.System.currentTimeMillis()
+  }
+
+  /** 
+   * `takeGsgv` - a stub `get the Signal's presently value` .
+   * STUB-ONLY
+   * 
+   * primarily intended for calls from ECL blocks ;
+   * failed to work properly if it were real (inline) methods,
+   * due to
+   * premature inlining of calls to `inline` methods
+   * despite being (with)in a block passed as `inline` arg
+   * 
+   */
+  def takeGsgv
+    [E]
+    (src: airstream.core.Signal[E])
+  : E
+  = {
+    ;
+    throw
+      new UnsupportedOperationException({
+        s"not inlined. \n .only meant for use with supporting decorators - \n those rewriting calls to 'takeGsgv' into calls to 'takeGsgvM'"
+      })
+  }
+
+  /** 
+   * the real version of `takeGsgv` .
+   * exercises a `compiletime.summonInline[EOBSM]`, and therefore
+   * cannot be reliably called directly from ECL blocks
+   * due to premature inlining of calls to `inline` methods despite the containing block being an `inline` param/arg
+   * 
+   */
+  // transparent /* necessary for proper working */
+  inline
+  def takeGsgvM
+    [E]
+    (src: airstream.core.Signal[E])
+  : E
+  = ${takingGsgvMacroImpl('{ (src, () ) }) }
+
+  private
+  def takingGsgvMacroImpl
+    //
+    [E : Type]
+    (using Quotes )
+    (srcs: Expr[(airstream.core.Signal[E] , Unit )] )
+  : Expr[E]
+  = '{
+    val (src *: _) = ${srcs }
+    // val src = ${srcs }._1 /* was a necessary fallback as the AST transformer didn't support `match`es */
+
+    {
+      ;
+
+      type EOBSM = eclReactObservingHooksImpl.EOBSM._Any
+      ((ctx1 : EOBSM ) ?=> {
+        ;
+
+        eclReactObservingHooksImpl.takeGsgv(src )
+      } )(using {
+        // TODO clean this up
+
+        // compiletime.summonInline[EOBSM ]
+        // compiletime.summonFrom({
+        //   case tc: EOBSM => tc
+        //   case tc: GsgvNf._Any => ???
+        //   case _ =>
+        //     GsgvNf.mainInstance
+        //     (???)
+        // })
+        // summonInTakingGsgvEobsm()
+        // ${ java.lang.System.currentTimeMillis() ; '{ compiletime.summonInline[EOBSM ] } }
+        // ${ java.lang.System.currentTimeMillis() ; '{ toSummonEobsmInlineEsg() } }
+        // GsgvNf.mainInstance
+
+        summonInTakingGsgvEobsm()
+      } : EOBSM )
+    }
+  }
+
+  transparent /* necessary for proper working */
+  inline
+  def summonInTakingGsgvEobsm
+    ()
+  = {
+    ;
+
+    type EOBSM = eclReactObservingHooksImpl.EOBSM._Any
+
+    // TODO clean this up
+    {
+      ;
+
+      // compiletime.summonInline[EOBSM ]
+      // compiletime.summonFrom({
+      //   case tc: EOBSM => tc
+      //   case tc: GsgvNf._Any => ???
+      //   case _ =>
+      //     GsgvNf.mainInstance
+      //     (???)
+      // })
+      // toSummonEobsmInlineEsg()
+
+      compiletime.summonFrom({
+        case tc: EOBSM => tc
+        case tc: GsgvNf._Any => ???
+        case _ =>
+          GsgvNf.mainInstance
+          (???)
+      })
+    } : EOBSM
+  }
+
+  object GsgvNf {
+    ;
+
+    type _Any
+    inline given mainInstance(using DummyImplicit)
+    : _Any
+    = ${applyMacroImpl() }
+
+    def applyMacroImpl
+      (using Quotes)
+      ()
+    : Expr[_Any]
+    = {
+      ;
+
+      // throw new AssertionError
+      //   ("no given instance of EOBSM was found. check for possible illegal call - supposed to be inside an ECL-or-EOP block.")
+      // '{ ??? }
+
+      throw new AssertionError
+        ("no given instance of EOBSM was found. check for possible illegal call - supposed to be inside an ECL-or-EOP block.")
+    }
+  }
+
+  ;
 }
 
 
